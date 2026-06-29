@@ -1,6 +1,7 @@
 import bolt from '@slack/bolt';
 import { config } from './config.js';
-import { askClaude } from './claude.js';
+import { runAgent } from './claude.js';
+import { startCoach } from './coach.js';
 
 const { App } = bolt;
 
@@ -12,16 +13,13 @@ const app = new App({
 
 let botUserId = null;
 
-/**
- * Strip a leading "<@BOTID>" mention from a message so Claude doesn't see it.
- */
 function stripMention(text) {
   if (!text) return '';
   return text.replace(/<@[^>]+>/g, '').trim();
 }
 
 /**
- * Build a Claude-friendly message list from a Slack thread.
+ * Rebuild the conversation from a Slack thread so Claude has context.
  * The bot's own messages become "assistant" turns, everyone else "user".
  */
 async function buildHistory(client, channel, threadTs) {
@@ -43,49 +41,43 @@ async function buildHistory(client, channel, threadTs) {
       })
       .filter(Boolean);
   } catch (err) {
-    console.error('Could not load thread history:', err.message);
+    console.error('Kon thread-historie niet laden:', err.message);
     return null;
   }
 }
 
-/**
- * Shared handler: figure out what was said, ask Claude, reply in-thread.
- */
 async function handleMessage({ event, client, say }) {
   const text = stripMention(event.text);
   if (!text) return;
-
   const threadTs = event.thread_ts || event.ts;
 
   try {
-    // Show a typing-style placeholder by reacting; ignore failures.
     await client.reactions
       .add({ channel: event.channel, timestamp: event.ts, name: 'eyes' })
       .catch(() => {});
 
     const history = await buildHistory(client, event.channel, threadTs);
-    const messages = history && history.length
-      ? history
-      : [{ role: 'user', content: text }];
+    const messages =
+      history && history.length ? history : [{ role: 'user', content: text }];
 
-    const reply = await askClaude(messages);
-    await say({ text: reply || 'Sorry, ik wist even geen antwoord.', thread_ts: threadTs });
-  } catch (err) {
-    console.error('Error handling message:', err);
+    const reply = await runAgent(messages);
     await say({
-      text: 'Oeps, er ging iets mis bij het ophalen van een antwoord.',
+      text: reply || 'Sorry, ik wist even geen antwoord.',
+      thread_ts: threadTs,
+    });
+  } catch (err) {
+    console.error('Fout bij verwerken bericht:', err);
+    await say({
+      text: 'Oeps, er ging iets mis. Probeer het zo nog eens.',
       thread_ts: threadTs,
     });
   }
 }
 
-// Respond when someone @-mentions the bot in a channel.
 app.event('app_mention', handleMessage);
 
-// Respond to direct messages (DMs) to the bot.
 app.message(async (args) => {
   const { event } = args;
-  // Only handle direct messages here; channel mentions are handled above.
   if (event.channel_type === 'im' && !event.bot_id && event.subtype === undefined) {
     await handleMessage(args);
   }
@@ -95,6 +87,8 @@ app.message(async (args) => {
   const auth = await app.client.auth.test({ token: config.slack.botToken });
   botUserId = auth.user_id;
   await app.start();
-  console.log(`⚡️ Claude-werknemer draait in Slack als @${auth.user} (${botUserId})`);
-  console.log(`   Model: ${config.anthropic.model}`);
+  console.log(`⚡️ Persoonlijke assistent draait in Slack als @${auth.user}`);
+  console.log(`   Model: ${config.anthropic.model} | Coach: ${config.anthropic.coachModel}`);
+  console.log(`   Web search: ${config.anthropic.webSearch} | Google: ${config.google.enabled}`);
+  startCoach(app.client);
 })();

@@ -1,0 +1,19 @@
+{
+  "name": "slack-claude-employee",
+  "version": "1.0.0",
+  "description": "A Slack bot that acts as a virtual employee, powered by Claude.",
+  "type": "module",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "node --watch src/app.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.69.0",
+    "@slack/bolt": "^4.2.0",
+    "dotenv": "^16.4.7"
+  }
+}

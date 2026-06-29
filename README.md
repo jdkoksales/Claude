@@ -40,11 +40,11 @@ dezelfde database als de Slack-bot.
         src/app.js  ──►  src/claude.js  ──►  Claude API (tool use + web search)
                   ▲             │
    proactieve     │             ▼
-   check-ins ◄────┤        src/tools.js ──► src/db.js (SQLite: taken/doelen/voortgang)
+   check-ins ◄────┤        src/tools.js ──► src/db.js (JSON-bestand: taken/doelen/voortgang)
    (src/coach.js) │             └────────► src/google.js (Calendar/Gmail, optioneel)
 ```
 
-- **Geheugen**: alles staat in een lokale SQLite-database (`data/assistant.db`).
+- **Geheugen**: alles staat in een lokaal JSON-bestand (`data/assistant.json`).
   Een samenvatting daarvan gaat bij elk gesprek mee als context, zodat de coach
   continuïteit heeft.
 - **Tool use**: Claude krijgt echte "knoppen" (taken, doelen, agenda, mail) en
@@ -169,6 +169,6 @@ De agenda/mail-tools zitten erin maar staan uit tot je deze invult. Zo zet je ze
 - **Hosting**: alleen als je 24/7 check-ins wilt (goedkope VPS / Pi).
 
 ## Privacy
-Je taken, doelen en reflecties staan **lokaal** in `data/assistant.db` (niet in
+Je taken, doelen en reflecties staan **lokaal** in `data/assistant.json` (niet in
 git — `data/` staat in `.gitignore`). Gespreksinhoud gaat naar de Anthropic API
 om antwoorden te genereren.

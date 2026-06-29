@@ -16,7 +16,6 @@
   "dependencies": {
     "@anthropic-ai/sdk": "^0.69.0",
     "@slack/bolt": "^4.2.0",
-    "better-sqlite3": "^11.8.0",
     "dotenv": "^16.4.7",
     "googleapis": "^144.0.0",
     "node-cron": "^3.0.3"

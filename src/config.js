@@ -35,7 +35,7 @@ export const config = {
     webSearch: (process.env.CLAUDE_WEB_SEARCH || 'true') === 'true',
   },
   db: {
-    file: process.env.DB_FILE || 'data/assistant.db',
+    file: process.env.DB_FILE || 'data/assistant.json',
   },
   coach: {
     // IANA timezone for scheduling, e.g. Europe/Amsterdam.

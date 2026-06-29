@@ -1,140 +1,149 @@
-import Database from 'better-sqlite3';
-import { mkdirSync } from 'node:fs';
+import { mkdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { dirname } from 'node:path';
 import { config } from './config.js';
 
-mkdirSync(dirname(config.db.file), { recursive: true });
+/**
+ * Simple pure-JavaScript storage in a single JSON file. No native modules, so
+ * `npm install` never needs a compiler/build tools — it just works on any
+ * machine. Plenty fast for a personal assistant's amount of data.
+ */
 
-const db = new Database(config.db.file);
-db.pragma('journal_mode = WAL');
+const FILE = config.db.file;
+mkdirSync(dirname(FILE), { recursive: true });
 
-db.exec(`
-  CREATE TABLE IF NOT EXISTS tasks (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    title TEXT NOT NULL,
-    due TEXT,
-    status TEXT NOT NULL DEFAULT 'open',
-    created_at TEXT NOT NULL DEFAULT (datetime('now')),
-    completed_at TEXT
-  );
+const empty = {
+  tasks: [],
+  goals: [],
+  progress: [],
+  journal: [],
+  seq: { tasks: 0, goals: 0, progress: 0, journal: 0 },
+};
 
-  CREATE TABLE IF NOT EXISTS goals (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    title TEXT NOT NULL,
-    description TEXT,
-    target_date TEXT,
-    status TEXT NOT NULL DEFAULT 'active',
-    created_at TEXT NOT NULL DEFAULT (datetime('now'))
-  );
+let store;
+try {
+  store = existsSync(FILE)
+    ? { ...empty, ...JSON.parse(readFileSync(FILE, 'utf8')) }
+    : { ...empty };
+} catch {
+  store = { ...empty };
+}
 
-  CREATE TABLE IF NOT EXISTS progress (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    goal_id INTEGER NOT NULL,
-    note TEXT NOT NULL,
-    value REAL,
-    created_at TEXT NOT NULL DEFAULT (datetime('now')),
-    FOREIGN KEY (goal_id) REFERENCES goals (id)
-  );
+function save() {
+  writeFileSync(FILE, JSON.stringify(store, null, 2));
+}
 
-  CREATE TABLE IF NOT EXISTS journal (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    kind TEXT NOT NULL,
-    content TEXT NOT NULL,
-    created_at TEXT NOT NULL DEFAULT (datetime('now'))
-  );
-`);
+function now() {
+  return new Date().toISOString().slice(0, 19).replace('T', ' ');
+}
+
+const byNewest = (a, b) => b.id - a.id;
+const includesCI = (haystack, needle) =>
+  haystack.toLowerCase().includes(needle.toLowerCase());
 
 // --- Tasks ---
 export const tasks = {
   add(title, due = null) {
-    const info = db
-      .prepare('INSERT INTO tasks (title, due) VALUES (?, ?)')
-      .run(title, due);
-    return { id: info.lastInsertRowid, title, due, status: 'open' };
+    const row = {
+      id: ++store.seq.tasks,
+      title,
+      due,
+      status: 'open',
+      created_at: now(),
+      completed_at: null,
+    };
+    store.tasks.push(row);
+    save();
+    return { id: row.id, title, due, status: 'open' };
   },
   list(status = 'open') {
-    if (status === 'all') {
-      return db.prepare('SELECT * FROM tasks ORDER BY created_at DESC').all();
-    }
-    return db
-      .prepare('SELECT * FROM tasks WHERE status = ? ORDER BY created_at DESC')
-      .all(status);
+    const rows =
+      status === 'all'
+        ? [...store.tasks]
+        : store.tasks.filter((t) => t.status === status);
+    return rows.sort(byNewest);
   },
   complete(id) {
-    const info = db
-      .prepare(
-        "UPDATE tasks SET status = 'done', completed_at = datetime('now') WHERE id = ? AND status != 'done'",
-      )
-      .run(id);
-    return info.changes > 0;
+    const t = store.tasks.find((x) => x.id === Number(id) && x.status !== 'done');
+    if (!t) return false;
+    t.status = 'done';
+    t.completed_at = now();
+    save();
+    return true;
   },
   findByTitle(title) {
-    return db
-      .prepare(
-        "SELECT * FROM tasks WHERE status = 'open' AND title LIKE ? ORDER BY created_at DESC LIMIT 1",
-      )
-      .get(`%${title}%`);
+    return store.tasks
+      .filter((t) => t.status === 'open' && includesCI(t.title, title))
+      .sort(byNewest)[0];
   },
 };
 
 // --- Goals & progress ---
 export const goals = {
   add(title, description = null, targetDate = null) {
-    const info = db
-      .prepare(
-        'INSERT INTO goals (title, description, target_date) VALUES (?, ?, ?)',
-      )
-      .run(title, description, targetDate);
-    return { id: info.lastInsertRowid, title, description, targetDate };
+    const row = {
+      id: ++store.seq.goals,
+      title,
+      description,
+      target_date: targetDate,
+      status: 'active',
+      created_at: now(),
+    };
+    store.goals.push(row);
+    save();
+    return { id: row.id, title, description, targetDate };
   },
   list(status = 'active') {
-    if (status === 'all') {
-      return db.prepare('SELECT * FROM goals ORDER BY created_at DESC').all();
-    }
-    return db
-      .prepare('SELECT * FROM goals WHERE status = ? ORDER BY created_at DESC')
-      .all(status);
+    const rows =
+      status === 'all'
+        ? [...store.goals]
+        : store.goals.filter((g) => g.status === status);
+    return rows.sort(byNewest);
   },
   findByTitle(title) {
-    return db
-      .prepare(
-        "SELECT * FROM goals WHERE status = 'active' AND title LIKE ? ORDER BY created_at DESC LIMIT 1",
-      )
-      .get(`%${title}%`);
+    return store.goals
+      .filter((g) => g.status === 'active' && includesCI(g.title, title))
+      .sort(byNewest)[0];
   },
   setStatus(id, status) {
-    return (
-      db.prepare('UPDATE goals SET status = ? WHERE id = ?').run(status, id)
-        .changes > 0
-    );
+    const g = store.goals.find((x) => x.id === Number(id));
+    if (!g) return false;
+    g.status = status;
+    save();
+    return true;
   },
   logProgress(goalId, note, value = null) {
-    const info = db
-      .prepare('INSERT INTO progress (goal_id, note, value) VALUES (?, ?, ?)')
-      .run(goalId, note, value);
-    return { id: info.lastInsertRowid };
+    const row = {
+      id: ++store.seq.progress,
+      goal_id: Number(goalId),
+      note,
+      value,
+      created_at: now(),
+    };
+    store.progress.push(row);
+    save();
+    return { id: row.id };
   },
   recentProgress(goalId, limit = 5) {
-    return db
-      .prepare(
-        'SELECT * FROM progress WHERE goal_id = ? ORDER BY created_at DESC LIMIT ?',
-      )
-      .all(goalId, limit);
+    return store.progress
+      .filter((p) => p.goal_id === Number(goalId))
+      .sort(byNewest)
+      .slice(0, limit);
   },
 };
 
 // --- Journal (check-ins & reflections) ---
 export const journal = {
   add(kind, content) {
-    db.prepare('INSERT INTO journal (kind, content) VALUES (?, ?)').run(
+    store.journal.push({
+      id: ++store.seq.journal,
       kind,
       content,
-    );
+      created_at: now(),
+    });
+    save();
   },
   recent(limit = 5) {
-    return db
-      .prepare('SELECT * FROM journal ORDER BY created_at DESC LIMIT ?')
-      .all(limit);
+    return [...store.journal].sort(byNewest).slice(0, limit);
   },
 };
 
@@ -176,5 +185,3 @@ export function buildContextSummary() {
 
   return lines.join('\n');
 }
-
-export default db;

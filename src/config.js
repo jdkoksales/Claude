@@ -1,25 +1,31 @@
 import 'dotenv/config';
 
-function required(name) {
-  const value = process.env[name];
-  if (!value) {
+/**
+ * Throw a clear error if any of the given env vars are missing. Called at
+ * startup by whatever actually needs them (the Slack app needs Slack tokens;
+ * the terminal CLI only needs the Anthropic key), instead of at import time —
+ * so `npm run chat` works without Slack tokens.
+ */
+export function assertEnv(names) {
+  const missing = names.filter((n) => !process.env[n]);
+  if (missing.length) {
     throw new Error(
-      `Missing required environment variable ${name}. Copy .env.example to .env and fill it in.`,
+      `Ontbrekende variabele(n) in .env: ${missing.join(', ')}.\n` +
+        'Kopieer .env.example naar .env en vul ze in (zie README).',
     );
   }
-  return value;
 }
 
 export const config = {
   slack: {
-    botToken: required('SLACK_BOT_TOKEN'),
-    appToken: required('SLACK_APP_TOKEN'),
+    botToken: process.env.SLACK_BOT_TOKEN || '',
+    appToken: process.env.SLACK_APP_TOKEN || '',
     // The channel/DM where the coach posts proactive check-ins.
     // Use your DM channel id (starts with D) or any channel id the bot is in.
     coachChannel: process.env.SLACK_COACH_CHANNEL || '',
   },
   anthropic: {
-    apiKey: required('ANTHROPIC_API_KEY'),
+    apiKey: process.env.ANTHROPIC_API_KEY || '',
     // Default model for everyday chat/tasks (cheap + fast).
     model: process.env.CLAUDE_MODEL || 'claude-sonnet-4-6',
     // A more capable model used for the deeper coaching moments.

@@ -1,7 +1,9 @@
 import bolt from '@slack/bolt';
-import { config } from './config.js';
+import { config, assertEnv } from './config.js';
 import { runAgent } from './claude.js';
 import { startCoach } from './coach.js';
+
+assertEnv(['SLACK_BOT_TOKEN', 'SLACK_APP_TOKEN', 'ANTHROPIC_API_KEY']);
 
 const { App } = bolt;
 

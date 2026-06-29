@@ -12,6 +12,25 @@ Een eigen AI-teamgenoot in Slack die:
 Het draait op de **Claude API**, dus je betaalt per gebruik (typisch een paar
 euro per maand voor persoonlijk gebruik) in plaats van een vast duur abonnement.
 
+## Snel proberen (zonder Slack)
+
+Wil je de assistent eerst even testen voordat je de hele Slack-setup doet? Dat
+kan met **alleen een Anthropic-key**:
+
+```bash
+npm install
+echo "ANTHROPIC_API_KEY=sk-ant-jouw-key" > .env
+npm run chat
+```
+
+Je praat dan direct in je terminal met de assistent (taken, doelen, web-search —
+alles werkt, behalve de proactieve Slack-check-ins). Wat je hier toevoegt, deelt
+dezelfde database als de Slack-bot.
+
+> **Twijfel je of je `.env` klopt?** Draai `npm run check` voor een controle van
+> al je instellingen (en `npm run check -- --live` om je Anthropic-key echt te
+> testen).
+
 ## Hoe het werkt
 
 ```
@@ -55,14 +74,20 @@ Een Anthropic-sleutel haal je bij https://console.anthropic.com/.
 ### 3. Starten
 ```bash
 npm install
+npm run check   # controleert je .env en test je Slack-token
 npm start
 ```
 Je ziet: `⚡️ Persoonlijke assistent draait in Slack als @...`.
 
 > **Let op:** de check-ins werken alleen zolang het proces draait. Voor 24/7
 > coaching zet je dit op een altijd-aan machine (een goedkope VPS, een Raspberry
-> Pi, of een klein cloud-servertje) en houd je het draaiend met bv. `pm2` of een
-> systemd-service.
+> Pi, of een klein cloud-servertje). Het makkelijkst met **pm2**:
+>
+> ```bash
+> npm install -g pm2
+> pm2 start ecosystem.config.cjs
+> pm2 save && pm2 startup   # blijft draaien, ook na herstart
+> ```
 
 ### 4. Gebruiken
 - Nodig de bot uit in een kanaal (`/invite @...`) en tag hem, of stuur een DM.

@@ -98,6 +98,38 @@ Je ziet: `⚡️ Persoonlijke assistent draait in Slack als @...`.
   - "Zoek de openingstijden van de bibliotheek op en vat ze samen."
   - "Schrijf een nette mail om een afspraak te verzetten."
 
+## 24/7 draaien op je Windows-PC (gratis)
+
+Wil je dat de coach altijd bereikbaar is en vanzelf opstart als je PC aangaat —
+zonder betaalde hosting? Zo doe je dat op Windows:
+
+1. **Node.js installeren** (eenmalig): download de **LTS**-versie van
+   [nodejs.org](https://nodejs.org/) en klik de installer door.
+2. **Project ophalen**: download de repo als ZIP via GitHub (groene **Code**-knop
+   → *Download ZIP*) en pak 'm uit, of gebruik `git clone`.
+3. **Afhankelijkheden + `.env`**: open de projectmap in een terminal
+   (Shift + rechtermuisknop in de map → *Open in Terminal*) en draai:
+   ```bat
+   npm install
+   ```
+   Maak dan je `.env` aan (zie Setup hierboven). Tip: test eerst met
+   `npm run chat` (alleen je Anthropic-key nodig).
+4. **Automatisch starten bij opstarten**:
+   - In de projectmap staat **`start-coach.bat`**. Dubbelklik erop om te testen —
+     er opent een venster en de coach draait (en herstart vanzelf bij een crash).
+   - Druk dan op **Win + R**, typ **`shell:startup`** en druk Enter. De map die
+     opent is je Windows-opstartmap.
+   - Maak een **snelkoppeling** naar `start-coach.bat` (rechtermuisknop op het
+     bestand → *Snelkoppeling maken*) en sleep die snelkoppeling in de
+     opstartmap. Vanaf nu start de coach automatisch zodra je inlogt.
+   - *(Optioneel)* rechtermuisknop op de snelkoppeling → *Eigenschappen* →
+     *Uitvoeren: Geminimaliseerd*, zodat het venster netjes weggeklapt start.
+
+> **Goed om te weten:** de coach draait alleen als je PC **aan** staat. Staat je
+> PC uit op het moment van een check-in (bv. 08:00), dan wordt die check-in
+> overgeslagen — er komt geen inhaalbericht. Kies de check-in-tijden
+> (`COACH_*_CRON`) dus rond momenten dat je PC meestal aanstaat.
+
 ## Google Calendar & Gmail (optioneel)
 
 De agenda/mail-tools zitten erin maar staan uit tot je deze invult. Zo zet je ze aan:

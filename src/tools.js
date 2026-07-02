@@ -41,33 +41,38 @@ export const toolDefs = [
   },
   {
     name: 'add_goal',
-    description: 'Leg een doel van de gebruiker vast.',
+    description:
+      'Leg een doel vast. Geef target_value + unit mee als het meetbaar is ' +
+      '(bv. 10 kg, 100 km), zodat de app een voortgangsbalk kan tonen.',
     input_schema: {
       type: 'object',
       properties: {
         title: { type: 'string' },
         description: { type: 'string' },
-        target_date: { type: 'string', description: 'Optionele streefdatum.' },
+        target_date: { type: 'string', description: 'Optionele streefdatum (YYYY-MM-DD).' },
+        target_value: { type: 'number', description: 'Optionele meetbare doelwaarde.' },
+        unit: { type: 'string', description: 'Eenheid bij target_value, bv. kg of km.' },
       },
       required: ['title'],
     },
   },
   {
     name: 'list_goals',
-    description: 'Toon de doelen van de gebruiker met recente voortgang.',
+    description: 'Toon de doelen van de gebruiker met streaks en recente voortgang.',
     input_schema: { type: 'object', properties: {} },
   },
   {
     name: 'log_progress',
     description:
-      'Noteer voortgang op een doel. Geef goal_id of een stuk van de doeltitel.',
+      'Noteer voortgang op een doel. Geef goal_id of een stuk van de doeltitel. ' +
+      'Geef value mee bij meetbare doelen (de huidige stand, bv. 84.5).',
     input_schema: {
       type: 'object',
       properties: {
         goal_id: { type: 'number' },
         goal_title: { type: 'string' },
         note: { type: 'string', description: 'Wat is er bereikt/gebeurd.' },
-        value: { type: 'number', description: 'Optionele meetwaarde (bv. % of aantal).' },
+        value: { type: 'number', description: 'Optionele huidige meetwaarde.' },
       },
       required: ['note'],
     },
@@ -153,8 +158,14 @@ export const handlers = {
       ? `Taak #${taskId} afgevinkt. 🎉`
       : `Taak #${taskId} niet gevonden of al afgerond.`;
   },
-  add_goal({ title, description, target_date }) {
-    const g = goals.add(title, description || null, target_date || null);
+  add_goal({ title, description, target_date, target_value, unit }) {
+    const g = goals.add(
+      title,
+      description || null,
+      target_date || null,
+      target_value ?? null,
+      unit || null,
+    );
     return `Doel vastgelegd: #${g.id} "${title}".`;
   },
   list_goals() {
@@ -163,10 +174,16 @@ export const handlers = {
     return rows
       .map((g) => {
         const prog = goals.recentProgress(g.id, 2);
+        const streak = goals.streak(g.id);
+        const parts = [`#${g.id} ${g.title}`];
+        if (g.target_value) parts.push(`doel: ${g.target_value}${g.unit ? ' ' + g.unit : ''}`);
+        if (g.target_date) parts.push(`→ ${g.target_date}`);
+        if (streak > 1) parts.push(`streak: ${streak} dagen`);
+        const head = parts.join(' | ');
         const ph = prog.length
           ? '\n   voortgang: ' + prog.map((p) => p.note).join('; ')
           : '';
-        return `#${g.id} ${g.title}${g.target_date ? ` → ${g.target_date}` : ''}${ph}`;
+        return head + ph;
       })
       .join('\n');
   },
@@ -179,7 +196,8 @@ export const handlers = {
     }
     if (!id) return 'Geef goal_id of goal_title op.';
     goals.logProgress(id, note, value ?? null);
-    return `Voortgang genoteerd bij doel #${id}.`;
+    const streak = goals.streak(id);
+    return `Voortgang genoteerd bij doel #${id}.` + (streak > 1 ? ` Streak: ${streak} dagen! 🔥` : '');
   },
   save_reflection({ kind = 'note', content }) {
     journal.add(kind, content);

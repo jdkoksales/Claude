@@ -1,12 +1,12 @@
 {
-  "name": "slack-claude-assistant",
-  "version": "2.0.0",
-  "description": "A personal assistant + coach in Slack, powered by Claude: tasks, goals, progress tracking, research, and proactive check-ins.",
+  "name": "claude-coach-app",
+  "version": "3.0.0",
+  "description": "Personal assistant + coach as a self-hosted web app (PWA), powered by Claude: tasks, goals, streaks, progress charts, chat, and proactive check-ins with push notifications.",
   "type": "module",
-  "main": "src/app.js",
+  "main": "src/server.js",
   "scripts": {
-    "start": "node src/app.js",
-    "dev": "node --watch src/app.js",
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
     "chat": "node src/cli.js",
     "check": "node scripts/check.mjs"
   },
@@ -15,9 +15,10 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.69.0",
-    "@slack/bolt": "^4.2.0",
     "dotenv": "^16.4.7",
+    "express": "^4.21.2",
     "googleapis": "^144.0.0",
-    "node-cron": "^3.0.3"
+    "node-cron": "^3.0.3",
+    "web-push": "^3.6.7"
   }
 }

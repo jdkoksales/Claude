@@ -5,9 +5,8 @@ import { runAgent } from './claude.js';
 
 /**
  * Terminal version of the assistant. Lets you try everything (tasks, goals,
- * web search, coaching) with ONLY an Anthropic API key — no Slack setup needed.
- * It shares the same SQLite memory as the Slack bot, so anything you add here
- * shows up there later too.
+ * web search, coaching) with ONLY an Anthropic API key. It shares the same
+ * memory file as the web app, so anything you add here shows up there too.
  *
  *   npm run chat
  */

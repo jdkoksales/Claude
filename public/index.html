@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Mijn Coach</title>
+  <meta name="theme-color" content="#eb6834" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="/icon.svg" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+
+  <!-- ── Login ── -->
+  <div id="login" class="hidden">
+    <div class="login-card">
+      <div class="login-emoji">🧡</div>
+      <h1>Hoi!</h1>
+      <p>Voer je pincode in om verder te gaan.</p>
+      <div class="pin-dots" id="pinDots"></div>
+      <p class="pin-error" id="pinError"></p>
+      <div class="keypad" id="keypad">
+        <button data-k="1">1</button><button data-k="2">2</button><button data-k="3">3</button>
+        <button data-k="4">4</button><button data-k="5">5</button><button data-k="6">6</button>
+        <button data-k="7">7</button><button data-k="8">8</button><button data-k="9">9</button>
+        <button data-k="back">⌫</button><button data-k="0">0</button>
+        <button data-k="ok" class="key-ok" id="keyOk" disabled>→</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── App ── -->
+  <div id="app" class="hidden">
+    <header class="app-header">
+      <h1 id="greeting">Hoi!</h1>
+      <span class="date" id="today"></span>
+      <span class="spacer"></span>
+    </header>
+
+    <div id="notifBanner" class="notif-banner hidden">
+      <span>🔔</span>
+      <span class="txt">Zet meldingen aan, dan komen de check-ins van je coach ook binnen als de app dicht is.</span>
+      <button id="notifBtn">Aanzetten</button>
+    </div>
+
+    <div class="columns">
+      <div id="colDash">
+        <div class="stats" id="stats"></div>
+
+        <section class="card" id="goalsCard">
+          <h2>🎯 Doelen <span class="count" id="goalCount"></span></h2>
+          <div id="goalList"></div>
+        </section>
+
+        <section class="card">
+          <h2>✅ Taken <span class="count" id="taskCount"></span></h2>
+          <form class="task-add" id="taskForm">
+            <input id="taskInput" type="text" placeholder="Nieuwe taak… (Enter om toe te voegen)" autocomplete="off" maxlength="200" />
+            <button type="submit" aria-label="Taak toevoegen">＋</button>
+          </form>
+          <ul class="tasks" id="taskList"></ul>
+          <details class="done-today" id="doneWrap">
+            <summary id="doneSummary"></summary>
+            <ul class="tasks" id="doneList"></ul>
+          </details>
+        </section>
+
+        <section class="card" id="feedCard">
+          <h2>💌 Check-ins van je coach
+            <button class="btn-soft h-action" id="checkinBtn">▶ Nu een check-in</button>
+          </h2>
+          <div id="feedList"></div>
+        </section>
+      </div>
+
+      <div id="colChat">
+        <section class="card chat-card">
+          <h2>💬 Chat met je coach</h2>
+          <div class="chat-scroll" id="chatScroll"></div>
+          <form class="chat-input" id="chatForm">
+            <textarea id="chatInput" rows="1" placeholder="Typ een bericht…"></textarea>
+            <button type="submit" id="chatSend" aria-label="Versturen">➤</button>
+          </form>
+        </section>
+      </div>
+    </div>
+
+    <nav class="tabbar" id="tabbar">
+      <button data-tab="dash" class="active"><span class="ico">🏠</span>Vandaag</button>
+      <button data-tab="chat"><span class="ico">💬</span>Chat</button>
+      <button data-tab="feed"><span class="ico">💌</span>Check-ins</button>
+    </nav>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>

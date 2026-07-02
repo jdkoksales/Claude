@@ -1,174 +1,136 @@
-# Persoonlijke assistent + coach in Slack (powered by Claude)
+# Mijn Coach — je persoonlijke assistent + coach als app
 
-Een eigen AI-teamgenoot in Slack die:
+Een eigen app (draait op je PC, te openen op al je apparaten) met daarin:
 
-- 🗂️ **taken & planning** bijhoudt (toevoegen, tonen, afvinken);
-- 🎯 **doelen en voortgang** onthoudt en je eraan helpt herinneren;
-- ✍️ **teksten opstelt** (mails, berichten, samenvattingen);
-- 🔎 **op internet zoekt** (via Claude's ingebouwde web-search);
-- 📅 optioneel **Google Calendar & Gmail** bedient;
-- 🌅 **proactief coacht** met ochtend-/avond-check-ins en een wekelijkse review.
+- 💬 **Chat met je coach** — die taken uitvoert, teksten schrijft, op internet
+  zoekt en je helpt met je doelen. Gesprekken worden bewaard.
+- ✅ **Taken** — toevoegen en afvinken met knoppen óf via de chat.
+- 🎯 **Doelen met voortgang** — voortgangsbalken, streak-tellers (🔥 dagen op
+  rij) en grafiekjes over tijd.
+- 💌 **Check-ins** — je coach schrijft elke ochtend, avond en week een
+  persoonlijk bericht in je feed, met een melding op je apparaten.
+- 🔒 **Pincode-slot** — met bescherming tegen gokken.
+- 🌗 **Automatisch licht/donker**, warm design, en op je telefoon te
+  installeren als echte app (via "Toevoegen aan beginscherm").
 
-Het draait op de **Claude API**, dus je betaalt per gebruik (typisch een paar
-euro per maand voor persoonlijk gebruik) in plaats van een vast duur abonnement.
+Draait op de **Claude API**: je betaalt per gebruik (typisch een paar euro per
+maand) in plaats van een vast abonnement.
 
-## Snel proberen (zonder Slack)
-
-Wil je de assistent eerst even testen voordat je de hele Slack-setup doet? Dat
-kan met **alleen een Anthropic-key**:
+## Starten
 
 ```bash
 npm install
-echo "ANTHROPIC_API_KEY=sk-ant-jouw-key" > .env
-npm run chat
+npm run check    # controleert je instellingen
+npm start        # of dubbelklik start-coach.bat (Windows)
 ```
 
-Je praat dan direct in je terminal met de assistent (taken, doelen, web-search —
-alles werkt, behalve de proactieve Slack-check-ins). Wat je hier toevoegt, deelt
-dezelfde database als de Slack-bot.
+Open dan **http://localhost:3000** in je browser. Voer je pincode in — klaar.
 
-> **Twijfel je of je `.env` klopt?** Draai `npm run check` voor een controle van
-> al je instellingen (en `npm run check -- --live` om je Anthropic-key echt te
-> testen).
-
-## Hoe het werkt
+### Eerste keer? Dit heb je nodig in `.env`
 
 ```
-            Slack (Socket Mode)
-                  │  @mention / DM
-                  ▼
-        src/app.js  ──►  src/claude.js  ──►  Claude API (tool use + web search)
-                  ▲             │
-   proactieve     │             ▼
-   check-ins ◄────┤        src/tools.js ──► src/db.js (JSON-bestand: taken/doelen/voortgang)
-   (src/coach.js) │             └────────► src/google.js (Calendar/Gmail, optioneel)
+ANTHROPIC_API_KEY=sk-ant-jouw-key
+APP_PIN=4821
 ```
 
-- **Geheugen**: alles staat in een lokaal JSON-bestand (`data/assistant.json`).
-  Een samenvatting daarvan gaat bij elk gesprek mee als context, zodat de coach
-  continuïteit heeft.
-- **Tool use**: Claude krijgt echte "knoppen" (taken, doelen, agenda, mail) en
-  kiest zelf wanneer hij die gebruikt.
-- **Proactief**: `node-cron` plant de check-ins; ze worden naar je
-  `SLACK_COACH_CHANNEL` gepost.
+- De API-key haal je bij https://console.anthropic.com/ (API Keys; zet ook wat
+  tegoed op Billing).
+- `APP_PIN` kies je zelf: 4-6 cijfers waarmee je de app opent.
+- Optioneel: `USER_NAME=Julian` voor een persoonlijke begroeting.
 
-## Setup
+Zie `.env.example` voor alle instellingen (check-in-tijden, modellen, enz.).
 
-### 1. Slack-app aanmaken
-1. https://api.slack.com/apps → **Create New App** → **From an app manifest**.
-2. Plak [`slack-app-manifest.json`](./slack-app-manifest.json).
-3. **Basic Information → App-Level Tokens**: maak een token met scope
-   `connections:write` → dat is `SLACK_APP_TOKEN` (`xapp-...`).
-4. **OAuth & Permissions**: installeer in je workspace, kopieer het
-   **Bot User OAuth Token** (`xoxb-...`) → `SLACK_BOT_TOKEN`.
-5. Voor `SLACK_COACH_CHANNEL`: open een DM met je bot (of een kanaal waar hij in
-   zit) en kopieer het channel-id (begint met `D` of `C`).
+### Kwam je van de vorige (Slack/terminal-)versie?
 
-### 2. Configureren
 ```bash
-cp .env.example .env
-# vul minimaal in: SLACK_BOT_TOKEN, SLACK_APP_TOKEN, ANTHROPIC_API_KEY, SLACK_COACH_CHANNEL
-```
-Een Anthropic-sleutel haal je bij https://console.anthropic.com/.
-
-### 3. Starten
-```bash
+git pull
 npm install
-npm run check   # controleert je .env en test je Slack-token
-npm start
 ```
-Je ziet: `⚡️ Persoonlijke assistent draait in Slack als @...`.
 
-> **Let op:** de check-ins werken alleen zolang het proces draait. Voor 24/7
-> coaching zet je dit op een altijd-aan machine (een goedkope VPS, een Raspberry
-> Pi, of een klein cloud-servertje). Het makkelijkst met **pm2**:
->
-> ```bash
-> npm install -g pm2
-> pm2 start ecosystem.config.cjs
-> pm2 save && pm2 startup   # blijft draaien, ook na herstart
-> ```
+Voeg `APP_PIN=...` toe aan je `.env` en start met `npm start`. De Slack-tokens
+heb je niet meer nodig. (De app begint bewust met een schoon geheugen;
+`npm run chat` — de terminalversie — werkt ook nog steeds.)
 
-### 4. Gebruiken
-- Nodig de bot uit in een kanaal (`/invite @...`) en tag hem, of stuur een DM.
-- Voorbeelden:
-  - "Zet *offerte sturen naar Jan* op mijn takenlijst voor vrijdag."
-  - "Wat staat er nog open?"
-  - "Mijn doel is 3x per week sporten — hou dat bij."
-  - "Zoek de openingstijden van de bibliotheek op en vat ze samen."
-  - "Schrijf een nette mail om een afspraak te verzetten."
+## Op je telefoon
 
-## 24/7 draaien op je Windows-PC (gratis)
+**Thuis (zelfde WiFi):** open `http://<ip-van-je-pc>:3000` in de browser van je
+telefoon. Het IP van je PC vind je met `ipconfig` (het "IPv4-adres", bv.
+`192.168.1.23`).
 
-Wil je dat de coach altijd bereikbaar is en vanzelf opstart als je PC aangaat —
-zonder betaalde hosting? Zo doe je dat op Windows:
+**Onderweg (overal) + meldingen — via Tailscale (gratis):**
 
-1. **Node.js installeren** (eenmalig): download de **LTS**-versie van
-   [nodejs.org](https://nodejs.org/) en klik de installer door.
-2. **Project ophalen**: download de repo als ZIP via GitHub (groene **Code**-knop
-   → *Download ZIP*) en pak 'm uit, of gebruik `git clone`.
-3. **Afhankelijkheden + `.env`**: open de projectmap in een terminal
-   (Shift + rechtermuisknop in de map → *Open in Terminal*) en draai:
-   ```bat
-   npm install
+Meldingen en "installeren als app" vereisen een beveiligde (https-)verbinding.
+De makkelijkste en veiligste gratis manier is [Tailscale](https://tailscale.com):
+een privé-netwerkje tussen jouw apparaten — niets staat open op internet.
+
+1. Installeer Tailscale op je **PC** (tailscale.com/download) en log in
+   (kan met je Google-account).
+2. Installeer de **Tailscale-app op je telefoon** en log in met hetzelfde
+   account.
+3. Op je PC, in een terminal:
    ```
-   Maak dan je `.env` aan (zie Setup hierboven). Tip: test eerst met
-   `npm run chat` (alleen je Anthropic-key nodig).
-4. **Automatisch starten bij opstarten**:
-   - In de projectmap staat **`start-coach.bat`**. Dubbelklik erop om te testen —
-     er opent een venster en de coach draait (en herstart vanzelf bij een crash).
-   - Druk dan op **Win + R**, typ **`shell:startup`** en druk Enter. De map die
-     opent is je Windows-opstartmap.
-   - Maak een **snelkoppeling** naar `start-coach.bat` (rechtermuisknop op het
-     bestand → *Snelkoppeling maken*) en sleep die snelkoppeling in de
-     opstartmap. Vanaf nu start de coach automatisch zodra je inlogt.
-   - *(Optioneel)* rechtermuisknop op de snelkoppeling → *Eigenschappen* →
-     *Uitvoeren: Geminimaliseerd*, zodat het venster netjes weggeklapt start.
+   tailscale serve --bg 3000
+   ```
+   Dit geeft je een vast **https-adres** (zoiets als
+   `https://jouw-pc.tail1234.ts.net`).
+4. Open dat adres op je telefoon (met Tailscale aan) → log in met je pincode →
+   kies in je browsermenu **"Toevoegen aan beginscherm"** → zet meldingen aan
+   via de banner in de app.
 
-> **Goed om te weten:** de coach draait alleen als je PC **aan** staat. Staat je
-> PC uit op het moment van een check-in (bv. 08:00), dan wordt die check-in
-> overgeslagen — er komt geen inhaalbericht. Kies de check-in-tijden
-> (`COACH_*_CRON`) dus rond momenten dat je PC meestal aanstaat.
+Vanaf nu heb je de coach als app-icoon op je telefoon, overal bereikbaar
+(zolang je PC aanstaat), inclusief check-in-meldingen.
 
-## Google Calendar & Gmail (optioneel)
+## Automatisch starten met Windows
 
-De agenda/mail-tools zitten erin maar staan uit tot je deze invult. Zo zet je ze aan:
+1. Dubbelklik `start-coach.bat` om te testen — de app start en je browser opent
+   vanzelf.
+2. Druk **Win + R**, typ `shell:startup`, Enter.
+3. Maak een snelkoppeling naar `start-coach.bat` (rechtermuisknop →
+   *Snelkoppeling maken*) en sleep die in de geopende opstartmap.
 
-1. Ga naar de [Google Cloud Console](https://console.cloud.google.com/) → nieuw
-   project → **APIs & Services**.
-2. Zet **Google Calendar API** en **Gmail API** aan.
-3. **OAuth consent screen** instellen (extern, jezelf als testgebruiker).
-4. **Credentials → OAuth client ID** (type *Desktop app*) → kopieer
-   `GOOGLE_CLIENT_ID` en `GOOGLE_CLIENT_SECRET`.
-5. Genereer eenmalig een **refresh token** met scopes
+> De app draait alleen als je PC aanstaat. Check-ins die vallen op een moment
+> dat je PC uit staat, worden overgeslagen — kies de tijden dus rond momenten
+> dat je PC meestal aan is (`COACH_*_CRON` in `.env`).
+
+## Google Agenda & Gmail (optioneel)
+
+De coach kan afspraken inplannen en concept-mails klaarzetten zodra je een
+Google-koppeling invult:
+
+1. [Google Cloud Console](https://console.cloud.google.com/) → nieuw project →
+   zet **Google Calendar API** en **Gmail API** aan.
+2. OAuth consent screen instellen (extern, jezelf als testgebruiker).
+3. **Credentials → OAuth client ID** (type *Desktop app*) → `GOOGLE_CLIENT_ID`
+   en `GOOGLE_CLIENT_SECRET`.
+4. Genereer eenmalig een refresh token met scopes
    `https://www.googleapis.com/auth/calendar` en
    `https://www.googleapis.com/auth/gmail.compose` (bv. via de
    [OAuth 2.0 Playground](https://developers.google.com/oauthplayground/)) →
    `GOOGLE_REFRESH_TOKEN`.
-6. Vul de drie waarden in `.env` en herstart. De assistent merkt vanzelf dat de
-   tools nu beschikbaar zijn.
+5. In `.env` zetten en herstarten.
 
-> Gmail maakt bewust alleen **concepten** (drafts) aan — hij verstuurt niets
-> automatisch, zodat jij altijd de laatste check hebt.
+> Gmail maakt bewust alleen **concepten** aan — er wordt nooit automatisch
+> iets verstuurd.
 
-## Aanpassen
+## Updates ophalen
 
-| Wat | Waar |
-| --- | --- |
-| Persona (assistent + coach) | `CLAUDE_PERSONA` in `.env` |
-| Model voor chat / voor coaching | `CLAUDE_MODEL` / `CLAUDE_COACH_MODEL` |
-| Web-search aan/uit | `CLAUDE_WEB_SEARCH` |
-| Tijden van check-ins | `COACH_*_CRON` + `COACH_TIMEZONE` |
-| Check-ins helemaal uit | `COACH_ENABLED=false` |
+Als er iets nieuws is gebouwd:
 
-## Kosten in het kort
-- **Claude API**: per token. Lichte persoonlijke usage ≈ enkele euro's/maand.
-  Web-search en Opus-coaching kosten iets meer; stel ze af naar smaak.
-- **Slack**: een gratis/bestaand plan volstaat (dit is je eigen app, geen
-  betaalde Claude-Slack-integratie).
-- **Hosting**: alleen als je 24/7 check-ins wilt (goedkope VPS / Pi).
+```bash
+git pull
+npm install
+```
 
-## Privacy
-Je taken, doelen en reflecties staan **lokaal** in `data/assistant.json` (niet in
-git — `data/` staat in `.gitignore`). Gespreksinhoud gaat naar de Anthropic API
-om antwoorden te genereren.
+en herstart de app. Je taken, doelen, gesprekken en instellingen blijven staan
+(die zitten in `data/` en `.env`, en die worden nooit overschreven).
+
+## Kosten & privacy
+
+- **Claude API**: per gebruik; licht persoonlijk gebruik ≈ enkele euro's per
+  maand. De diepere coachmomenten gebruiken een sterker model
+  (`CLAUDE_COACH_MODEL`), instelbaar.
+- **Verder gratis**: de app zelf, Tailscale (persoonlijk gebruik) en meldingen
+  kosten niets.
+- **Privacy**: je taken, doelen, gesprekken en check-ins staan lokaal op je
+  eigen PC in `data/` (staat niet in git). Berichten gaan alleen naar de
+  Anthropic API om antwoorden te genereren.

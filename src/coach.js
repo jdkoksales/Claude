@@ -12,18 +12,30 @@ import { sendToAll } from './push.js';
 
 const PROMPTS = {
   morning:
-    'Het is ochtend. Schrijf een korte, energieke ochtend-check-in voor de feed ' +
-    'in de app: noem de belangrijkste open taken en doelen, stel 1 scherpe ' +
-    'focusvraag voor vandaag, en stel max 3 prioriteiten voor. Houd het kort.',
+    'Het is ochtend. Schrijf de ochtend-briefing voor de feed, op het niveau ' +
+    'van een presidentiële daily brief maar in warme, menselijke taal. Opbouw: ' +
+    '(1) Situatie in één zin — waar staat hij vandaag, met een concreet cijfer ' +
+    'of streak uit de context. (2) **Top 3 van vandaag** — kies zélf de drie ' +
+    'belangrijkste acties uit de open taken en doelen, in volgorde, met bij #1 ' +
+    'waarom die eerst moet. (3) Eén risico dat je vooruit ziet (deadline, ' +
+    'streak die kan breken, taak die al dagen blijft liggen) met een als-dan-' +
+    'voorstel. (4) Sluit af met één scherpe focusvraag. Maximaal ~120 woorden.',
   evening:
-    'Het is avond. Schrijf een korte avond-review voor de feed in de app: vraag ' +
-    'hoe de dag ging t.o.v. de doelen, benoem wat er is afgevinkt, en stel 1 ' +
-    'reflectievraag. Kort en warm.',
+    'Het is avond. Schrijf de avond-debrief voor de feed, kort en warm. ' +
+    'Opbouw: (1) Benoem specifiek wat er vandaag is gelukt — afgevinkte taken ' +
+    'en voortgang, met cijfers/streaks uit de context; geen vaag applaus. ' +
+    '(2) Benoem eerlijk wat bleef liggen, zonder oordeel, en of je er een ' +
+    'patroon in ziet. (3) Stel de #1 voor morgen voor. (4) Sluit af met één ' +
+    'reflectievraag die verder gaat dan "hoe was je dag". Maximaal ~100 woorden.',
   weekly:
-    'Het is het wekelijkse coachmoment. Schrijf een weekreview voor de feed: ' +
-    'blik terug op de week t.o.v. de doelen (gebruik list_goals), benoem ' +
-    'voortgang en wat bleef liggen, en help 2-3 concrete prioriteiten voor de ' +
-    'komende week kiezen.',
+    'Het is het wekelijkse strategiemoment. Schrijf een weekreview voor de ' +
+    'feed zoals een topcoach die zou brengen. Gebruik list_goals en de context. ' +
+    'Opbouw: (1) **De week in cijfers** — voortgang per doel, streaks, wat er ' +
+    'is afgerond. (2) De belangrijkste trend of het patroon dat je ziet ' +
+    '(positief of zorgelijk), recht voor zijn raap. (3) **De 2-3 prioriteiten ' +
+    'voor komende week** — kies ze zelf en onderbouw kort. (4) Eén kleine, ' +
+    'concrete gewoonte-aanpassing voor komende week (als-dan-vorm). ' +
+    '(5) Sluit af met één strategische vraag. Maximaal ~180 woorden.',
 };
 
 const TITLES = {

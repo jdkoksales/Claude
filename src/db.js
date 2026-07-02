@@ -280,6 +280,28 @@ export function buildContextSummary() {
 
   lines.push('# Huidige status van de gebruiker');
 
+  // Cijfers waarop de coach concreet kan sturen.
+  const weekAgo = new Date();
+  weekAgo.setDate(weekAgo.getDate() - 7);
+  const doneToday = tasks.doneToday().length;
+  const doneWeek = store.tasks.filter(
+    (t) => t.status === 'done' && t.completed_at &&
+      new Date(String(t.completed_at).replace(' ', 'T')) >= weekAgo,
+  ).length;
+  const ageDays = (t) =>
+    Math.floor((Date.now() - new Date(String(t.created_at).replace(' ', 'T'))) / 86400000);
+  const stale = openTasks.filter((t) => ageDays(t) >= 5);
+  lines.push('\n## Cijfers');
+  lines.push(`- Vandaag afgerond: ${doneToday} taak/taken; afgelopen 7 dagen: ${doneWeek}`);
+  if (stale.length) {
+    lines.push(
+      `- Blijft liggen (≥5 dagen open): ${stale
+        .slice(0, 5)
+        .map((t) => `"${t.title}" (${ageDays(t)} dagen)`)
+        .join(', ')}`,
+    );
+  }
+
   lines.push('\n## Open taken');
   if (openTasks.length === 0) lines.push('(geen open taken)');
   for (const t of openTasks.slice(0, 15)) {

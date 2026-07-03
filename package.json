@@ -1,13 +1,13 @@
 {
   "name": "claude-coach-app",
-  "version": "3.0.0",
-  "description": "Personal assistant + coach as a self-hosted web app (PWA), powered by Claude: tasks, goals, streaks, progress charts, chat, and proactive check-ins with push notifications.",
+  "version": "4.0.0",
+  "description": "Terugval-bestendige doelen-app met een deterministisch getriggerde AI-coach (Anthropic API): minimum/target-niveaus, dagen actief, comebacks, heatmaps, weekreview, export/import.",
   "type": "module",
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
     "dev": "node --watch src/server.js",
-    "chat": "node src/cli.js",
+    "test": "node --test tests/*.test.mjs",
     "check": "node scripts/check.mjs"
   },
   "engines": {
@@ -16,9 +16,6 @@
   "dependencies": {
     "@anthropic-ai/sdk": "^0.69.0",
     "dotenv": "^16.4.7",
-    "express": "^4.21.2",
-    "googleapis": "^144.0.0",
-    "node-cron": "^3.0.3",
-    "web-push": "^3.6.7"
+    "express": "^4.21.2"
   }
 }

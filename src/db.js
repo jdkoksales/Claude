@@ -1,34 +1,44 @@
-import { mkdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
-import { dirname } from 'node:path';
+import {
+  mkdirSync, readFileSync, writeFileSync, existsSync, copyFileSync,
+} from 'node:fs';
+import { dirname, join } from 'node:path';
 import { config } from './config.js';
+import { ensureV2, emptyStoreV2 } from './lib/migrate.js';
+import { todayKey, canLogDay, isoWeek } from './lib/dates.js';
 
 /**
- * Pure-JavaScript storage in a single JSON file. No native modules, so
- * `npm install` never needs a compiler — it just works on any machine.
- * Plenty fast for a personal coach's amount of data.
+ * Opslag: één JSON-bestand, schema v2. Bij het laden van een v1-bestand wordt
+ * eerst een backup weggeschreven en daarna automatisch gemigreerd.
  */
 
 const FILE = config.db.file;
 mkdirSync(dirname(FILE), { recursive: true });
 
-const empty = {
-  tasks: [],
-  goals: [],
-  progress: [],
-  journal: [],
-  chat: [],
-  subs: [],
-  sessions: [],
-  seq: { tasks: 0, goals: 0, progress: 0, journal: 0, chat: 0 },
-};
-
 let store;
 try {
-  store = existsSync(FILE)
-    ? { ...structuredClone(empty), ...JSON.parse(readFileSync(FILE, 'utf8')) }
-    : structuredClone(empty);
-} catch {
-  store = structuredClone(empty);
+  const raw = existsSync(FILE) ? JSON.parse(readFileSync(FILE, 'utf8')) : null;
+  const needsBackup = raw && raw.schemaVersion == null;
+  if (needsBackup) {
+    const backup = join(
+      dirname(FILE),
+      `backup-v1-${new Date().toISOString().replace(/[:.]/g, '-')}.json`,
+    );
+    copyFileSync(FILE, backup);
+    console.log(`[db] v1-data gevonden — backup gemaakt: ${backup}`);
+  }
+  const { store: migrated, migrated: didMigrate, notes } = ensureV2(raw);
+  store = migrated;
+  if (didMigrate) {
+    for (const n of notes) console.log(`[db] migratie: ${n}`);
+    save();
+    console.log('[db] migratie naar schema v2 voltooid.');
+  }
+} catch (err) {
+  if (existsSync(FILE)) {
+    // Nooit stilletjes overschrijven bij een kapot/onbekend bestand.
+    throw new Error(`Kon ${FILE} niet laden: ${err.message}`);
+  }
+  store = emptyStoreV2();
 }
 
 function save() {
@@ -39,37 +49,152 @@ function now() {
   return new Date().toISOString().slice(0, 19).replace('T', ' ');
 }
 
-/** Local calendar date (YYYY-MM-DD) for a stored timestamp or Date. */
-function localDay(d = new Date()) {
-  const dt = d instanceof Date ? d : new Date(String(d).replace(' ', 'T'));
-  const off = dt.getTimezoneOffset() * 60000;
-  return new Date(dt.getTime() - off).toISOString().slice(0, 10);
+const byNewest = (a, b) => b.id - a.id;
+
+/** Volledige store (voor export en inzichten). Niet muteren van buitenaf. */
+export function raw() {
+  return store;
 }
 
-const byNewest = (a, b) => b.id - a.id;
-const includesCI = (haystack, needle) =>
-  haystack.toLowerCase().includes(needle.toLowerCase());
+/** Vervang de hele store (import). Caller heeft al gevalideerd/gemigreerd. */
+export function replaceStore(newStore) {
+  if (existsSync(FILE)) {
+    const backup = join(
+      dirname(FILE),
+      `backup-pre-import-${new Date().toISOString().replace(/[:.]/g, '-')}.json`,
+    );
+    copyFileSync(FILE, backup);
+  }
+  store = newStore;
+  save();
+}
 
-// --- Tasks ---
+// ─── Doelen ─────────────────────────────────────────────
+export const goals = {
+  /** Actieve doelen; verlopen pauzes worden automatisch weer actief. */
+  active() {
+    let changed = false;
+    for (const g of store.goals) {
+      if (g.status === 'paused' && g.paused_until && g.paused_until < todayKey()) {
+        g.status = 'active';
+        g.paused_until = null;
+        changed = true;
+      }
+    }
+    if (changed) save();
+    return store.goals.filter((g) => g.status === 'active').sort(byNewest);
+  },
+  all() {
+    return [...store.goals].sort(byNewest);
+  },
+  byId(id) {
+    return store.goals.find((g) => g.id === Number(id));
+  },
+  /** Nieuw doel in intentie-format. Max 3 actief — hard afgedwongen. */
+  addIntention({ anchor, action, place, minimum, target, stake }) {
+    if (this.active().length >= 3) {
+      throw Object.assign(new Error('Maximaal 3 actieve doelen. Pauzeer of archiveer er eerst één.'), { status: 400 });
+    }
+    const g = {
+      id: ++store.seq.goals,
+      anchor, action, place, minimum, target,
+      stake: stake || null,
+      status: 'active',
+      paused_until: null,
+      created_at: now(),
+      legacy: null,
+    };
+    store.goals.push(g);
+    save();
+    return g;
+  },
+  update(id, fields) {
+    const g = this.byId(id);
+    if (!g) return null;
+    for (const k of ['anchor', 'action', 'place', 'minimum', 'target', 'stake']) {
+      if (fields[k] !== undefined) g[k] = fields[k] === '' ? null : fields[k];
+    }
+    if (fields.status === 'archived') { g.status = 'archived'; g.paused_until = null; }
+    if (fields.status === 'active') {
+      if (g.status !== 'active' && this.active().length >= 3) {
+        throw Object.assign(new Error('Maximaal 3 actieve doelen.'), { status: 400 });
+      }
+      g.status = 'active'; g.paused_until = null;
+    }
+    if (fields.pause_days) {
+      g.status = 'paused';
+      const until = new Date();
+      until.setDate(until.getDate() + Number(fields.pause_days));
+      g.paused_until = until.toISOString().slice(0, 10);
+    }
+    save();
+    return g;
+  },
+};
+
+// ─── Dag-logs ───────────────────────────────────────────
+export const dayLogs = {
+  all() {
+    return store.dayLogs;
+  },
+  forGoal(goalId) {
+    return store.dayLogs.filter((l) => l.goal_id === Number(goalId));
+  },
+  get(goalId, day) {
+    return store.dayLogs.find((l) => l.goal_id === Number(goalId) && l.day === day);
+  },
+  /**
+   * Zet of wis het niveau voor een dag. Alleen vandaag/gisteren (03:00-grens),
+   * server-side afgedwongen. level null = wissen (undo).
+   */
+  set(goalId, day, level) {
+    if (!canLogDay(day)) {
+      throw Object.assign(new Error('Loggen kan alleen voor vandaag of gisteren.'), { status: 400 });
+    }
+    if (level !== null && !['minimum', 'target', 'skip'].includes(level)) {
+      throw Object.assign(new Error('Ongeldig niveau.'), { status: 400 });
+    }
+    const existing = this.get(goalId, day);
+    if (level === null) {
+      if (existing) {
+        store.dayLogs = store.dayLogs.filter((l) => l !== existing);
+        save();
+      }
+      return null;
+    }
+    if (existing) {
+      existing.level = level;
+      existing.logged_at = now();
+    } else {
+      store.dayLogs.push({
+        id: ++store.seq.dayLogs,
+        goal_id: Number(goalId),
+        day,
+        level,
+        logged_at: now(),
+      });
+    }
+    save();
+    return this.get(goalId, day);
+  },
+};
+
+// ─── Taken (ongewijzigd gedrag) ─────────────────────────
 export const tasks = {
   add(title, due = null) {
     const row = {
       id: ++store.seq.tasks,
-      title,
-      due,
+      title, due,
       status: 'open',
       created_at: now(),
       completed_at: null,
     };
     store.tasks.push(row);
     save();
-    return { id: row.id, title, due, status: 'open' };
+    return row;
   },
   list(status = 'open') {
-    const rows =
-      status === 'all'
-        ? [...store.tasks]
-        : store.tasks.filter((t) => t.status === status);
+    const rows = status === 'all' ? [...store.tasks] : store.tasks.filter((t) => t.status === status);
     return rows.sort(byNewest);
   },
   complete(id) {
@@ -88,174 +213,95 @@ export const tasks = {
     save();
     return true;
   },
-  findByTitle(title) {
-    return store.tasks
-      .filter((t) => t.status === 'open' && includesCI(t.title, title))
-      .sort(byNewest)[0];
-  },
   doneToday() {
-    const today = localDay();
-    return store.tasks.filter(
-      (t) => t.status === 'done' && t.completed_at && localDay(t.completed_at) === today,
-    ).sort(byNewest);
+    const today = todayKey();
+    return store.tasks
+      .filter((t) => t.status === 'done' && t.completed_at &&
+        todayKeyOf(t.completed_at) === today)
+      .sort(byNewest);
   },
 };
 
-// --- Goals & progress ---
-export const goals = {
-  add(title, description = null, targetDate = null, targetValue = null, unit = null) {
-    const row = {
-      id: ++store.seq.goals,
-      title,
-      description,
-      target_date: targetDate,
-      target_value: targetValue,
-      unit,
-      status: 'active',
+function todayKeyOf(ts) {
+  return todayKey(new Date(String(ts).replace(' ', 'T')));
+}
+
+// ─── Weekreview ─────────────────────────────────────────
+export const reviews = {
+  latest() {
+    return [...store.reviews].sort(byNewest)[0] || null;
+  },
+  forWeek(week) {
+    return store.reviews.find((r) => r.week === week) || null;
+  },
+  submit(week, answers, skipped = false) {
+    const existing = this.forWeek(week);
+    if (existing) return existing;
+    const r = {
+      id: ++store.seq.reviews,
+      week,
+      answers: skipped ? null : answers,
+      skipped,
       created_at: now(),
     };
-    store.goals.push(row);
+    store.reviews.push(r);
     save();
-    return { id: row.id, title };
+    return r;
   },
-  list(status = 'active') {
-    const rows =
-      status === 'all'
-        ? [...store.goals]
-        : store.goals.filter((g) => g.status === status);
-    return rows.sort(byNewest);
+  dueFor(today, reviewDay) {
+    const week = isoWeek(today);
+    return !this.forWeek(week) && new Date(today + 'T12:00').getDay() === reviewDay;
   },
-  findByTitle(title) {
-    return store.goals
-      .filter((g) => g.status === 'active' && includesCI(g.title, title))
-      .sort(byNewest)[0];
+};
+
+// ─── Coach-log (max 1 interventie per dag) ──────────────
+export const coachLog = {
+  forDay(day) {
+    return store.coachLog.find((c) => c.day === day) || null;
   },
-  setStatus(id, status) {
-    const g = store.goals.find((x) => x.id === Number(id));
-    if (!g) return false;
-    g.status = status;
-    save();
-    return true;
-  },
-  logProgress(goalId, note, value = null) {
-    const row = {
-      id: ++store.seq.progress,
-      goal_id: Number(goalId),
-      note,
-      value: value == null ? null : Number(value),
+  add(day, trigger, goalId, card) {
+    const entry = {
+      id: ++store.seq.coachLog,
+      day,
+      trigger,
+      goal_id: goalId ?? null,
+      bericht: card.bericht,
+      acties: card.acties,
+      fallback: !!card.fallback,
+      dismissed: false,
       created_at: now(),
     };
-    store.progress.push(row);
+    store.coachLog.push(entry);
     save();
-    return { id: row.id };
+    return entry;
   },
-  recentProgress(goalId, limit = 5) {
-    return store.progress
-      .filter((p) => p.goal_id === Number(goalId))
-      .sort(byNewest)
-      .slice(0, limit);
-  },
-
-  /**
-   * Consecutive-day streak: number of days in a row (ending today, or
-   * yesterday if today has no entry yet) with at least one progress entry.
-   */
-  streak(goalId) {
-    const days = new Set(
-      store.progress
-        .filter((p) => p.goal_id === Number(goalId))
-        .map((p) => localDay(p.created_at)),
-    );
-    if (days.size === 0) return 0;
-    const cursor = new Date();
-    if (!days.has(localDay(cursor))) cursor.setDate(cursor.getDate() - 1);
-    let streak = 0;
-    while (days.has(localDay(cursor))) {
-      streak++;
-      cursor.setDate(cursor.getDate() - 1);
-    }
-    return streak;
-  },
-
-  /**
-   * Chart series for a goal: one point per day.
-   * - If entries carry numeric values → the latest value that day (a measured
-   *   metric like weight or km).
-   * - Otherwise → cumulative count of check-offs (habit-style goals).
-   */
-  series(goalId) {
-    const rows = store.progress
-      .filter((p) => p.goal_id === Number(goalId))
-      .sort((a, b) => a.id - b.id);
-    if (rows.length === 0) return { mode: 'none', points: [] };
-    const numeric = rows.some((r) => r.value != null);
-    const byDay = new Map();
-    let cum = 0;
-    for (const r of rows) {
-      const day = localDay(r.created_at);
-      if (numeric) {
-        if (r.value != null) byDay.set(day, r.value);
-      } else {
-        cum++;
-        byDay.set(day, cum);
-      }
-    }
-    return {
-      mode: numeric ? 'value' : 'count',
-      points: [...byDay.entries()].map(([day, value]) => ({ day, value })),
-    };
-  },
-};
-
-// --- Journal (check-ins & reflections) ---
-export const journal = {
-  add(kind, content) {
-    store.journal.push({
-      id: ++store.seq.journal,
-      kind,
-      content,
-      created_at: now(),
-    });
-    save();
-  },
-  recent(limit = 5) {
-    return [...store.journal].sort(byNewest).slice(0, limit);
-  },
-};
-
-// --- Chat history (the running conversation with the coach) ---
-export const chat = {
-  append(role, content) {
-    store.chat.push({ id: ++store.seq.chat, role, content, created_at: now() });
-    save();
-  },
-  /** Last `limit` messages, oldest→newest, shaped for the Claude API. */
-  forModel(limit = 40) {
-    return store.chat.slice(-limit).map((m) => ({ role: m.role, content: m.content }));
-  },
-  all(limit = 200) {
-    return store.chat.slice(-limit);
-  },
-};
-
-// --- Web-push subscriptions ---
-export const subs = {
-  add(subscription) {
-    if (!store.subs.some((s) => s.endpoint === subscription.endpoint)) {
-      store.subs.push(subscription);
+  dismiss(day) {
+    const c = this.forDay(day);
+    if (c) {
+      c.dismissed = true;
       save();
     }
   },
-  remove(endpoint) {
-    store.subs = store.subs.filter((s) => s.endpoint !== endpoint);
-    save();
+};
+
+// ─── Instellingen & sessies ─────────────────────────────
+export const settings = {
+  get() {
+    return { ...store.settings };
   },
-  all() {
-    return [...store.subs];
+  set(fields) {
+    if (fields.reviewDay !== undefined) {
+      const d = Number(fields.reviewDay);
+      if (!Number.isInteger(d) || d < 0 || d > 6) {
+        throw Object.assign(new Error('reviewDay moet 0-6 zijn.'), { status: 400 });
+      }
+      store.settings.reviewDay = d;
+    }
+    save();
+    return this.get();
   },
 };
 
-// --- Login sessions (so a restart doesn't log you out) ---
 export const sessions = {
   add(token) {
     store.sessions.push({ token, created_at: now() });
@@ -266,68 +312,3 @@ export const sessions = {
     return store.sessions.some((s) => s.token === token);
   },
 };
-
-/**
- * A compact snapshot of the user's current state, injected into the system
- * prompt so Claude has continuity across conversations and check-ins.
- */
-export function buildContextSummary() {
-  const openTasks = tasks.list('open');
-  const activeGoals = goals.list('active');
-  const recentJournal = journal.recent(3);
-
-  const lines = [];
-
-  lines.push('# Huidige status van de gebruiker');
-
-  // Cijfers waarop de coach concreet kan sturen.
-  const weekAgo = new Date();
-  weekAgo.setDate(weekAgo.getDate() - 7);
-  const doneToday = tasks.doneToday().length;
-  const doneWeek = store.tasks.filter(
-    (t) => t.status === 'done' && t.completed_at &&
-      new Date(String(t.completed_at).replace(' ', 'T')) >= weekAgo,
-  ).length;
-  const ageDays = (t) =>
-    Math.floor((Date.now() - new Date(String(t.created_at).replace(' ', 'T'))) / 86400000);
-  const stale = openTasks.filter((t) => ageDays(t) >= 5);
-  lines.push('\n## Cijfers');
-  lines.push(`- Vandaag afgerond: ${doneToday} taak/taken; afgelopen 7 dagen: ${doneWeek}`);
-  if (stale.length) {
-    lines.push(
-      `- Blijft liggen (≥5 dagen open): ${stale
-        .slice(0, 5)
-        .map((t) => `"${t.title}" (${ageDays(t)} dagen)`)
-        .join(', ')}`,
-    );
-  }
-
-  lines.push('\n## Open taken');
-  if (openTasks.length === 0) lines.push('(geen open taken)');
-  for (const t of openTasks.slice(0, 15)) {
-    lines.push(`- [#${t.id}] ${t.title}${t.due ? ` (deadline: ${t.due})` : ''}`);
-  }
-
-  lines.push('\n## Actieve doelen');
-  if (activeGoals.length === 0) lines.push('(geen doelen ingesteld)');
-  for (const g of activeGoals) {
-    const prog = goals.recentProgress(g.id, 1)[0];
-    const streak = goals.streak(g.id);
-    lines.push(
-      `- [#${g.id}] ${g.title}` +
-        (g.target_value ? ` (doel: ${g.target_value}${g.unit ? ' ' + g.unit : ''})` : '') +
-        (g.target_date ? ` → ${g.target_date}` : '') +
-        (streak > 1 ? ` | streak: ${streak} dagen` : '') +
-        (prog ? ` | laatste voortgang: ${prog.note}` : ''),
-    );
-  }
-
-  if (recentJournal.length) {
-    lines.push('\n## Recente check-ins');
-    for (const j of recentJournal) {
-      lines.push(`- (${j.created_at}, ${j.kind}) ${j.content.slice(0, 200)}`);
-    }
-  }
-
-  return lines.join('\n');
-}

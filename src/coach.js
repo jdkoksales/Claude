@@ -1,78 +1,93 @@
-import cron from 'node-cron';
+import Anthropic from '@anthropic-ai/sdk';
 import { config } from './config.js';
-import { runAgent } from './claude.js';
-import { journal } from './db.js';
-import { sendToAll } from './push.js';
 
 /**
- * Proactive coaching: scheduled morning/evening check-ins and a weekly review.
- * Each one asks Claude (coach model + the user's stored context) to write a
- * message, saves it to the feed, and pushes a notification to all devices.
+ * De coachlaag. De code beslist wanneer de coach afgaat (src/lib/insights.js);
+ * dit bestand doet alleen: payload → API → defensief geparsed kaartje.
+ * Bij elke fout: statische fallback. De app werkt altijd zonder coach.
  */
 
-const PROMPTS = {
-  morning:
-    'Het is ochtend. Schrijf de ochtend-briefing voor de feed, op het niveau ' +
-    'van een presidentiële daily brief maar in warme, menselijke taal. Opbouw: ' +
-    '(1) Situatie in één zin — waar staat hij vandaag, met een concreet cijfer ' +
-    'of streak uit de context. (2) **Top 3 van vandaag** — kies zélf de drie ' +
-    'belangrijkste acties uit de open taken en doelen, in volgorde, met bij #1 ' +
-    'waarom die eerst moet. (3) Eén risico dat je vooruit ziet (deadline, ' +
-    'streak die kan breken, taak die al dagen blijft liggen) met een als-dan-' +
-    'voorstel. (4) Sluit af met één scherpe focusvraag. Maximaal ~120 woorden.',
-  evening:
-    'Het is avond. Schrijf de avond-debrief voor de feed, kort en warm. ' +
-    'Opbouw: (1) Benoem specifiek wat er vandaag is gelukt — afgevinkte taken ' +
-    'en voortgang, met cijfers/streaks uit de context; geen vaag applaus. ' +
-    '(2) Benoem eerlijk wat bleef liggen, zonder oordeel, en of je er een ' +
-    'patroon in ziet. (3) Stel de #1 voor morgen voor. (4) Sluit af met één ' +
-    'reflectievraag die verder gaat dan "hoe was je dag". Maximaal ~100 woorden.',
-  weekly:
-    'Het is het wekelijkse strategiemoment. Schrijf een weekreview voor de ' +
-    'feed zoals een topcoach die zou brengen. Gebruik list_goals en de context. ' +
-    'Opbouw: (1) **De week in cijfers** — voortgang per doel, streaks, wat er ' +
-    'is afgerond. (2) De belangrijkste trend of het patroon dat je ziet ' +
-    '(positief of zorgelijk), recht voor zijn raap. (3) **De 2-3 prioriteiten ' +
-    'voor komende week** — kies ze zelf en onderbouw kort. (4) Eén kleine, ' +
-    'concrete gewoonte-aanpassing voor komende week (als-dan-vorm). ' +
-    '(5) Sluit af met één strategische vraag. Maximaal ~180 woorden.',
-};
+// Gehardcodeerd conform de productbeslissing — niet configureerbaar.
+export const SYSTEM_PROMPT = `Je bent een coach in een doelen-app voor iemand die afhaakt rond week 2-3 en na één gemiste dag alles laat vallen. Je krijgt logdata als JSON. Je doel is dat de gebruiker de app over 6 maanden NIET meer nodig heeft.
+Regels:
+(1) Missen is normaal — nooit schuld, verwijt of teleurstelling.
+(2) Bij twijfel: verklein het minimum, verhoog het nooit.
+(3) Vier comebacks expliciet.
+(4) Maximaal 2 zinnen Nederlands, warm en concreet, plus 1-3 acties uit de vaste lijst.
+(5) Bij aanhoudend vastlopen: verwijs naar mensen om de gebruiker heen; positioneer jezelf niet als steunpilaar.
+Toegestane actietypes: "verklein_minimum", "pauzeer_doel", "laat_zo".
+Antwoord uitsluitend als JSON, zonder toelichting of markdown:
+{ "bericht": string, "acties": [{ "label": string, "type": string }] }`;
 
-const TITLES = {
-  morning: '🌅 Ochtend-check-in',
-  evening: '🌙 Avond-review',
-  weekly: '📊 Weekreview',
-};
+export const ACTION_TYPES = ['verklein_minimum', 'pauzeer_doel', 'laat_zo'];
 
-export async function runCheckIn(kind) {
-  const text = await runAgent([{ role: 'user', content: PROMPTS[kind] }], {
-    model: config.anthropic.coachModel,
-  });
-  journal.add(kind, text);
-  const sent = await sendToAll({
-    title: TITLES[kind] || 'Je coach',
-    body: text.length > 160 ? text.slice(0, 157) + '…' : text,
-  });
-  console.log(`[coach] ${kind}-check-in in feed gezet (${sent} melding(en) verstuurd).`);
-  return text;
+export const FALLBACK_CARD = Object.freeze({
+  bericht:
+    'Goed je weer te zien. Je hoeft vandaag niets in te halen — je minimum is genoeg.',
+  acties: [{ label: 'Oké', type: 'laat_zo' }],
+  fallback: true,
+});
+
+/**
+ * Parse het modelantwoord defensief: fences strippen, eerste JSON-object
+ * pakken, schema valideren. Gooit bij elke afwijking (caller vangt op).
+ */
+export function parseCoachReply(text) {
+  if (typeof text !== 'string' || !text.trim()) throw new Error('leeg antwoord');
+  let t = text.replace(/```(?:json)?/gi, '').trim();
+  const start = t.indexOf('{');
+  const end = t.lastIndexOf('}');
+  if (start === -1 || end <= start) throw new Error('geen JSON-object gevonden');
+  const obj = JSON.parse(t.slice(start, end + 1));
+
+  const bericht = typeof obj.bericht === 'string' ? obj.bericht.trim() : '';
+  if (!bericht || bericht.length > 400) throw new Error('ongeldig bericht-veld');
+
+  let acties = Array.isArray(obj.acties) ? obj.acties : [];
+  acties = acties
+    .filter(
+      (a) =>
+        a &&
+        typeof a.label === 'string' &&
+        a.label.trim().length > 0 &&
+        a.label.length <= 60 &&
+        ACTION_TYPES.includes(a.type),
+    )
+    .slice(0, 3)
+    .map((a) => ({ label: a.label.trim(), type: a.type }));
+  if (acties.length === 0) acties = [{ label: 'Laat zo', type: 'laat_zo' }];
+
+  return { bericht, acties };
 }
 
-export function startCoach() {
-  if (!config.coach.enabled) {
-    console.log('[coach] uitgeschakeld (COACH_ENABLED=false).');
-    return;
+let defaultClient = null;
+function client() {
+  if (!defaultClient) defaultClient = new Anthropic({ apiKey: config.anthropic.apiKey });
+  return defaultClient;
+}
+
+/**
+ * Eén coach-call: payload (JSON) in, gevalideerd kaartje uit.
+ * `deps.createMessage` is injecteerbaar voor tests; elke fout → FALLBACK_CARD.
+ */
+export async function generateCard(payload, deps = {}) {
+  const createMessage =
+    deps.createMessage ||
+    ((req) => client().messages.create(req));
+  try {
+    const response = await createMessage({
+      model: config.anthropic.model,
+      max_tokens: 500,
+      system: SYSTEM_PROMPT,
+      messages: [{ role: 'user', content: JSON.stringify(payload) }],
+    });
+    const text = (response.content || [])
+      .filter((b) => b.type === 'text')
+      .map((b) => b.text)
+      .join('\n');
+    return { ...parseCoachReply(text), fallback: false };
+  } catch (err) {
+    console.error('[coach] terugval op statisch kaartje:', err.message);
+    return { ...FALLBACK_CARD };
   }
-  const opts = { timezone: config.coach.timezone };
-  const safe = (kind) => () =>
-    runCheckIn(kind).catch((err) =>
-      console.error(`[coach] ${kind}-check-in mislukt:`, err.message),
-    );
-  cron.schedule(config.coach.morningCron, safe('morning'), opts);
-  cron.schedule(config.coach.eveningCron, safe('evening'), opts);
-  cron.schedule(config.coach.weeklyCron, safe('weekly'), opts);
-  console.log(
-    `[coach] ingepland (${config.coach.timezone}): ` +
-      `ochtend "${config.coach.morningCron}", avond "${config.coach.eveningCron}", ` +
-      `wekelijks "${config.coach.weeklyCron}".`,
-  );
 }

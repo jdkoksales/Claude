@@ -1,10 +1,12 @@
-/* Mijn Coach — client logic (vanilla JS, no dependencies) */
+/* Mijn Coach — dagflow-client (vanilla JS, geen dependencies) */
 
 const $ = (id) => document.getElementById(id);
-let S = null; // latest state snapshot from the server
+let S = null; // laatste state van de server
 let token = localStorage.getItem('coach_token') || '';
+let editingGoalId = null;
+let showNewForm = false;
 
-/* ─── API helper ────────────────────────────────────────── */
+/* ─── Helpers ───────────────────────────────────────────── */
 async function api(path, opts = {}) {
   const res = await fetch(path, {
     ...opts,
@@ -16,57 +18,31 @@ async function api(path, opts = {}) {
   });
   if (res.status === 401 && path !== '/api/login') {
     showLogin();
-    throw new Error('unauthorized');
+    throw new Error('Niet ingelogd.');
   }
   const data = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(data.error || `Fout (${res.status})`);
   return data;
 }
 
-/* ─── Markdown-lite (safe) ──────────────────────────────── */
 function esc(s) {
-  return String(s).replace(/[&<>"']/g, (c) =>
+  return String(s ?? '').replace(/[&<>"']/g, (c) =>
     ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]),
   );
 }
-function md(src) {
-  const lines = esc(src).split(/\r?\n/);
-  const out = [];
-  let list = null;
-  const inline = (t) =>
-    t
-      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-      .replace(/`([^`]+)`/g, '<code>$1</code>');
-  const flushList = () => { if (list) { out.push(`<ul>${list.join('')}</ul>`); list = null; } };
-  for (const raw of lines) {
-    const line = raw.trim();
-    const m = line.match(/^(?:[-*•]|\d+[.)])\s+(.*)$/);
-    if (m) { (list ??= []).push(`<li>${inline(m[1])}</li>`); continue; }
-    flushList();
-    if (!line) continue;
-    const h = line.match(/^#{1,4}\s+(.*)$/);
-    out.push(`<p>${h ? `<strong>${inline(h[1])}</strong>` : inline(line)}</p>`);
-  }
-  flushList();
-  return out.join('');
+
+let toastTimer = null;
+function toast(msg) {
+  document.getElementById('toast')?.remove();
+  const el = document.createElement('div');
+  el.id = 'toast';
+  el.textContent = msg;
+  document.body.appendChild(el);
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.remove(), 3500);
 }
 
-/* ─── Formatting helpers ────────────────────────────────── */
-const fmtNum = (n) => Number(n).toLocaleString('nl-NL', { maximumFractionDigits: 1 });
-function relTime(ts) {
-  const d = new Date(String(ts).replace(' ', 'T'));
-  const mins = Math.round((Date.now() - d.getTime()) / 60000);
-  if (mins < 1) return 'zojuist';
-  if (mins < 60) return `${mins} min geleden`;
-  const h = Math.round(mins / 60);
-  if (h < 24) return `${h} uur geleden`;
-  const days = Math.round(h / 24);
-  if (days === 1) return 'gisteren';
-  if (days < 7) return `${days} dagen geleden`;
-  return d.toLocaleDateString('nl-NL', { day: 'numeric', month: 'short' });
-}
-
-/* ─── Login (PIN pad) ───────────────────────────────────── */
+/* ─── Login (pinpad) ────────────────────────────────────── */
 let pin = '';
 function renderPin() {
   $('pinDots').innerHTML = Array.from({ length: Math.max(4, pin.length) })
@@ -77,10 +53,7 @@ function renderPin() {
 async function submitPin() {
   if (pin.length < 4) return;
   try {
-    const { token: t } = await api('/api/login', {
-      method: 'POST',
-      body: JSON.stringify({ pin }),
-    });
+    const { token: t } = await api('/api/login', { method: 'POST', body: JSON.stringify({ pin }) });
     token = t;
     localStorage.setItem('coach_token', t);
     pin = '';
@@ -114,128 +87,159 @@ function showLogin() {
   renderPin();
 }
 
-/* ─── Rendering ─────────────────────────────────────────── */
+/* ─── Renderers ─────────────────────────────────────────── */
 function renderHeader() {
   const h = new Date().getHours();
   const part = h < 6 ? 'Goedenacht' : h < 12 ? 'Goedemorgen' : h < 18 ? 'Goedemiddag' : 'Goedenavond';
-  $('greeting').textContent = `${part}${S.userName ? ', ' + esc(S.userName) : ''}! 👋`;
-  $('today').textContent = new Date().toLocaleDateString('nl-NL', {
-    weekday: 'long', day: 'numeric', month: 'long',
-  });
+  $('greeting').textContent = `${part}${S.userName ? ', ' + S.userName : ''}!`;
+  $('todayLabel').textContent = S.today.label;
+  const o = S.overall;
+  $('overallStats').textContent =
+    `${o.daysActive} ${o.daysActive === 1 ? 'dag' : 'dagen'} actief · ${o.comebacks} comeback${o.comebacks === 1 ? '' : 's'}`;
 }
 
-function renderStats() {
-  const open = S.tasks.open.length;
-  const done = S.tasks.doneToday.length;
-  const best = Math.max(0, ...S.goals.map((g) => g.streak));
-  $('stats').innerHTML = `
-    <div class="stat"><div class="label">Open taken</div><div class="value">${open}</div></div>
-    <div class="stat"><div class="label">Vandaag afgerond</div><div class="value">${done} ${done > 0 ? '✅' : ''}</div></div>
-    <div class="stat"><div class="label">Beste streak</div><div class="value">${best > 0 ? `${best} ${best === 1 ? 'dag' : 'dagen'} 🔥` : '—'}</div></div>`;
+function sentenceFor(g) {
+  if (g.anchor && g.place) {
+    return `<span class="part">Na</span> ${esc(g.anchor)} <span class="part">doe ik</span> ${esc(g.action)} <span class="part">op/in</span> ${esc(g.place)}`;
+  }
+  return esc(g.action);
 }
 
-/* Line chart per goal — single series, 2px line, 10% area wash, end dot + ring */
-function sparkSVG(goal) {
-  const pts = goal.series.points;
-  if (pts.length < 2) return '';
-  const W = 560, H = 72, padX = 6, padY = 12, padR = 56;
-  const xs = pts.map((p) => new Date(p.day).getTime());
-  const ys = pts.map((p) => p.value);
-  const x0 = Math.min(...xs), x1 = Math.max(...xs);
-  let y0 = Math.min(...ys), y1 = Math.max(...ys);
-  if (y0 === y1) { y0 -= 1; y1 += 1; }
-  const X = (t) => padX + ((t - x0) / (x1 - x0)) * (W - padX - padR);
-  const Y = (v) => H - padY - ((v - y0) / (y1 - y0)) * (H - 2 * padY);
-  const coords = pts.map((p, i) => [X(xs[i]), Y(ys[i])]);
-  const line = coords.map(([x, y], i) => `${i ? 'L' : 'M'}${x.toFixed(1)},${y.toFixed(1)}`).join(' ');
-  const area = `${line} L${coords.at(-1)[0].toFixed(1)},${H - 2} L${coords[0][0].toFixed(1)},${H - 2} Z`;
-  const [ex, ey] = coords.at(-1);
-  // The end label is HTML (not SVG text) so it stays crisp when the chart
-  // stretches on narrow screens.
-  const endLabel = goal.series.mode === 'value'
-    ? `${fmtNum(ys.at(-1))}${goal.unit ? ' ' + esc(goal.unit) : ''}`
-    : `${ys.at(-1)}×`;
-  return `
-  <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" data-goal="${goal.id}">
-    <line x1="0" y1="${H - 2}" x2="${W}" y2="${H - 2}" stroke="var(--hairline)" stroke-width="1"/>
-    <path d="${area}" fill="var(--series-wash)"/>
-    <path d="${line}" fill="none" stroke="var(--series)" stroke-width="2"
-          stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
-    <circle class="hoverdot" r="5" fill="var(--series)" stroke="var(--surface)" stroke-width="2" opacity="0"/>
-    <circle cx="${ex}" cy="${ey}" r="4.5" fill="var(--series)" stroke="var(--surface)" stroke-width="2"/>
-  </svg>
-  <span class="spark-label" style="top:${((ey / H) * 100).toFixed(1)}%">${endLabel}</span>`;
+function logRow(g, dayName, level) {
+  const btn = (lv, label) =>
+    `<button type="button" data-goal="${g.id}" data-day="${dayName}" data-level="${lv}"
+       class="${level === lv ? 'sel-' + lv : ''}">${label}</button>`;
+  return `<div class="log-btns">
+    ${btn('minimum', '✓ Minimum')}
+    ${btn('target', '✓✓ Target')}
+    ${btn('skip', 'Vandaag niet')}
+  </div>`;
 }
 
-function attachSparkHover(container, goal) {
-  const svg = container.querySelector('svg');
-  const tip = document.createElement('div');
-  tip.className = 'tip hidden';
-  container.appendChild(tip);
-  const pts = goal.series.points;
-  svg.addEventListener('pointermove', (e) => {
-    const rect = svg.getBoundingClientRect();
-    const frac = (e.clientX - rect.left) / rect.width;
-    const xs = pts.map((p) => new Date(p.day).getTime());
-    const x0 = Math.min(...xs), x1 = Math.max(...xs);
-    const t = x0 + frac * (x1 - x0);
-    let best = 0;
-    for (let i = 1; i < xs.length; i++) if (Math.abs(xs[i] - t) < Math.abs(xs[best] - t)) best = i;
-    const p = pts[best];
-    const W = 560, H = 72, padX = 6, padY = 12, padR = 56;
-    let y0 = Math.min(...pts.map((q) => q.value)), y1 = Math.max(...pts.map((q) => q.value));
-    if (y0 === y1) { y0 -= 1; y1 += 1; }
-    const cx = (padX + ((xs[best] - x0) / (x1 - x0)) * (W - padX - padR)) / W * rect.width;
-    const cy = (H - padY - ((p.value - y0) / (y1 - y0)) * (H - 2 * padY)) / H * rect.height;
-    const dot = svg.querySelector('.hoverdot');
-    dot.setAttribute('cx', (cx / rect.width) * W);
-    dot.setAttribute('cy', (cy / rect.height) * H);
-    dot.setAttribute('opacity', '1');
-    const when = new Date(p.day).toLocaleDateString('nl-NL', { day: 'numeric', month: 'short' });
-    tip.textContent = `${when}: ${fmtNum(p.value)}${goal.series.mode === 'value' && goal.unit ? ' ' + goal.unit : goal.series.mode === 'count' ? '×' : ''}`;
-    tip.style.left = `${cx}px`;
-    tip.style.top = `${cy}px`;
-    tip.classList.remove('hidden');
-  });
-  svg.addEventListener('pointerleave', () => {
-    tip.classList.add('hidden');
-    svg.querySelector('.hoverdot').setAttribute('opacity', '0');
-  });
+function renderToday() {
+  const wrap = $('todayGoals');
+  if (!S.goals.length) {
+    wrap.innerHTML = `<div class="empty">Nog geen actief doel. Maak er hieronder één aan — <strong>één doel werkt het best</strong>.</div>`;
+    $('yesterdayToggle').classList.add('hidden');
+    $('yesterdayGoals').classList.add('hidden');
+    return;
+  }
+  wrap.innerHTML = S.goals
+    .map(
+      (g) => `<div class="day-goal">
+        <div class="sentence">${sentenceFor(g)}</div>
+        ${g.stake ? `<div class="stake">⚠️ Inzet: ${esc(g.stake)}</div>` : ''}
+        ${logRow(g, 'today', g.todayLevel)}
+        <div class="min-desc">Minimum: ${esc(g.minimum)} · Target: ${esc(g.target)}</div>
+      </div>`,
+    )
+    .join('');
+
+  const yWrap = $('yesterdayGoals');
+  const toggle = $('yesterdayToggle');
+  toggle.classList.remove('hidden');
+  toggle.textContent = yWrap.classList.contains('hidden')
+    ? `Gisteren (${S.yesterday.label}) vergeten te loggen? →`
+    : 'Verberg gisteren';
+  yWrap.innerHTML = `<div class="yesterday-block"><h3>Gisteren — ${esc(S.yesterday.label)}</h3>${S.goals
+    .map(
+      (g) => `<div class="day-goal">
+        <div class="sentence">${sentenceFor(g)}</div>
+        ${logRow(g, 'yesterday', g.yesterdayLevel)}
+      </div>`,
+    )
+    .join('')}</div>`;
+}
+
+function heatmapHTML(g) {
+  const pad = Array.from({ length: g.heatmap.firstWeekday })
+    .map(() => '<span></span>')
+    .join('');
+  const cells = g.heatmap.days
+    .map((d) => {
+      const cls = ['cell', d.level || '', d.isToday ? 'today' : '', d.future ? 'future' : '']
+        .filter(Boolean)
+        .join(' ');
+      return `<span class="${cls}" title="${d.day}"></span>`;
+    })
+    .join('');
+  return `<div class="heatmap">
+    <div class="grid">${pad}${cells}</div>
+    <div class="legend">
+      <span class="l-min"><i></i>minimum</span>
+      <span class="l-tgt"><i></i>target</span>
+      <span><i></i>leeg</span>
+    </div>
+  </div>`;
+}
+
+function goalFormHTML(g = null) {
+  const v = (x) => esc(x ?? '');
+  return `<form class="goal-form" data-goal="${g ? g.id : ''}">
+    <label>Na… <span class="hint-inline">(bestaande gewoonte)</span></label>
+    <input name="anchor" value="${v(g?.anchor)}" placeholder="bv. mijn ochtendkoffie" maxlength="200" />
+    <label>…doe ik… (actie)</label>
+    <input name="action" value="${v(g?.action)}" placeholder="bv. 10 minuten lezen" maxlength="200" />
+    <label>…op/in (plek)</label>
+    <input name="place" value="${v(g?.place)}" placeholder="bv. de bank in de woonkamer" maxlength="200" />
+    <label>Minimum — max 2 minuten, onmogelijk te falen</label>
+    <input name="minimum" value="${v(g?.minimum)}" placeholder="bv. 1 bladzijde lezen" maxlength="200" />
+    <label>Target — de volledige versie</label>
+    <input name="target" value="${v(g?.target)}" placeholder="bv. 20 minuten lezen" maxlength="200" />
+    <label>Inzet / consequentie (optioneel)</label>
+    <input name="stake" value="${v(g?.stake)}" placeholder="bv. €5 in de pot bij een skip-week" maxlength="200" />
+    <p class="form-error"></p>
+    <div class="form-actions">
+      <button type="submit" class="btn-primary">${g ? 'Opslaan' : 'Doel aanmaken'}</button>
+      <button type="button" class="btn-soft form-cancel">Annuleren</button>
+      ${g ? `<button type="button" class="btn-soft" data-pause="${g.id}">⏸ Pauzeer 1 week</button>
+             <button type="button" class="btn-soft" data-archive="${g.id}">🗄 Archiveer</button>` : ''}
+    </div>
+  </form>`;
 }
 
 function renderGoals() {
-  const wrap = $('goalList');
-  $('goalCount').textContent = S.goals.length ? `· ${S.goals.length}` : '';
+  $('goalCount').textContent = `· ${S.activeCount} van max 3`;
+  const wrap = $('goalDetails');
   if (!S.goals.length) {
-    wrap.innerHTML = `<div class="empty">Nog geen doelen. Vertel je coach in de chat wat je wilt bereiken — bijvoorbeeld: <em>“mijn doel is 3x per week sporten”</em>.</div>`;
-    return;
+    wrap.innerHTML = '';
+  } else {
+    wrap.innerHTML = S.goals
+      .map((g) => {
+        if (editingGoalId === g.id) {
+          return `<div class="goal-detail">${goalFormHTML(g)}</div>`;
+        }
+        return `<div class="goal-detail">
+          <div class="head">
+            <span class="name">${esc(g.action)}</span>
+            <span class="nums">${g.daysActive} ${g.daysActive === 1 ? 'dag' : 'dagen'} actief · ${g.comebacks} comeback${g.comebacks === 1 ? '' : 's'}</span>
+            <button class="edit-btn" data-edit="${g.id}" title="Bewerken" aria-label="Bewerk doel">✎</button>
+          </div>
+          ${heatmapHTML(g)}
+        </div>`;
+      })
+      .join('');
   }
-  wrap.innerHTML = '';
-  for (const g of S.goals) {
-    const el = document.createElement('div');
-    el.className = 'goal';
-    const chips = [];
-    if (g.streak > 1) chips.push(`<span class="chip streak">🔥 ${g.streak} dagen</span>`);
-    if (g.target_date) chips.push(`<span class="chip">📅 ${esc(g.target_date)}</span>`);
-    const meter = g.pct != null
-      ? `<div class="meter">
-           <div class="meter-track"><div class="meter-fill" style="width:${g.pct}%"></div></div>
-           <div class="meter-label">
-             <span>${fmtNum(g.latest)}${g.unit ? ' ' + esc(g.unit) : ''} van ${fmtNum(g.target_value)}${g.unit ? ' ' + esc(g.unit) : ''}</span>
-             <span>${g.pct}%</span>
-           </div>
-         </div>`
-      : '';
-    const note = g.recent[0]
-      ? `<div class="goal-note">Laatst: ${esc(g.recent[0].note)} · ${relTime(g.recent[0].created_at)}</div>`
-      : '';
-    el.innerHTML = `
-      <div class="goal-head"><span class="goal-title">${esc(g.title)}</span>${chips.join('')}</div>
-      ${meter}
-      <div class="spark">${sparkSVG(g)}</div>
-      ${note}`;
-    wrap.appendChild(el);
-    if (g.series.points.length >= 2) attachSparkHover(el.querySelector('.spark'), g);
+
+  $('pausedList').innerHTML = S.pausedGoals
+    .map(
+      (p) => `<div class="paused-row">⏸ <span class="name">${esc(p.action)}</span>
+        <span>(gepauzeerd tot ${esc(p.paused_until || 'nader order')})</span>
+        <button class="btn-soft" data-resume="${p.id}">Hervat</button>
+      </div>`,
+    )
+    .join('');
+
+  const nw = $('newGoalWrap');
+  if (showNewForm) {
+    nw.innerHTML = goalFormHTML(null);
+  } else if (S.activeCount < 3) {
+    nw.innerHTML = `<div class="form-actions" style="margin-top:12px">
+      <button class="btn-soft" id="newGoalBtn" type="button">＋ Nieuw doel</button>
+      ${S.activeCount >= 1 ? '<span class="hint" style="margin:0;align-self:center">Tip: één doel tegelijk werkt het best.</span>' : ''}
+    </div>`;
+  } else {
+    nw.innerHTML = `<p class="hint">Maximum bereikt (3 actieve doelen). Archiveer of pauzeer er eerst één.</p>`;
   }
 }
 
@@ -247,216 +251,291 @@ function taskRow(t, done) {
   </li>`;
 }
 function renderTasks() {
-  const open = S.tasks.open, done = S.tasks.doneToday;
+  const open = S.tasks.open;
+  const done = S.tasks.doneToday;
   $('taskCount').textContent = open.length ? `· ${open.length} open` : '';
   $('taskList').innerHTML = open.length
     ? open.map((t) => taskRow(t, false)).join('')
-    : `<div class="empty">Geen open taken — lekker bezig! 🎉</div>`;
+    : `<div class="empty">Geen open taken.</div>`;
   $('doneWrap').classList.toggle('hidden', done.length === 0);
   $('doneSummary').textContent = `Vandaag afgerond (${done.length})`;
   $('doneList').innerHTML = done.map((t) => taskRow(t, true)).join('');
 }
 
-const KINDS = {
-  morning: '🌅 Ochtend-check-in',
-  evening: '🌙 Avond-review',
-  weekly: '📊 Weekreview',
-  note: '📝 Notitie',
-};
-function renderFeed() {
-  const wrap = $('feedList');
-  if (!S.feed.length) {
-    wrap.innerHTML = `<div class="empty">Hier verschijnen de check-ins van je coach (ochtend, avond en wekelijks). Probeer 'm meteen met <strong>▶ Nu een check-in</strong>.</div>`;
+function renderReview() {
+  const card = $('reviewCard');
+  if (!S.review.due) {
+    card.classList.add('hidden');
     return;
   }
-  wrap.innerHTML = S.feed
-    .map(
-      (j) => `<div class="feed-item">
-        <div class="feed-head">
-          <span class="kind">${KINDS[j.kind] || '📝 ' + esc(j.kind)}</span>
-          <span class="when">${relTime(j.created_at)}</span>
-        </div>
-        <div class="feed-body">${md(j.content)}</div>
-      </div>`,
-    )
-    .join('');
+  card.className = 'card review-card';
+  card.innerHTML = `
+    <h2>📋 Weekreview <span class="count">— 4 vragen, max 3 minuten</span></h2>
+    <form id="reviewForm">
+      <label>1. Wat ging deze week makkelijker dan verwacht?</label>
+      <textarea name="makkelijker" rows="1" maxlength="500"></textarea>
+      <label>2. Wat was het zwaarste moment — en wat gebeurde er vlak daarvoor?</label>
+      <textarea name="zwaarste" rows="1" maxlength="500"></textarea>
+      <label>3. Hoe voelde je minimum?</label>
+      <select name="minimum_gevoel">
+        <option value="goed">precies goed</option>
+        <option value="te licht">te licht</option>
+        <option value="te zwaar">te zwaar</option>
+      </select>
+      <label>4. Wat wordt volgende week anders?</label>
+      <textarea name="anders" rows="1" maxlength="500"></textarea>
+      <div class="review-actions">
+        <button type="submit" class="btn-primary">Opslaan</button>
+        <button type="button" class="btn-soft" id="reviewSkip">Deze week overslaan</button>
+      </div>
+    </form>`;
+  card.querySelector('#reviewForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const fd = new FormData(e.target);
+    await act('/api/review', { answers: Object.fromEntries(fd.entries()), skipped: false });
+    toast('Weekreview opgeslagen. 🧡');
+  });
+  card.querySelector('#reviewSkip').addEventListener('click', async () => {
+    await act('/api/review', { skipped: true });
+  });
 }
 
-function renderChat(scroll = true) {
-  const wrap = $('chatScroll');
-  const msgs = S.chat;
-  wrap.innerHTML = msgs.length
-    ? msgs
-        .map((m) => `<div class="msg ${m.role === 'user' ? 'user' : 'coach'}">${md(m.content)}</div>`)
-        .join('')
-    : `<div class="empty">Zeg hoi tegen je coach! 👋 Vertel wat je bezighoudt, zet iets op je takenlijst, of stel een doel.</div>`;
-  if (scroll) wrap.scrollTop = wrap.scrollHeight;
+function renderCoachCard(card) {
+  const el = $('coachCard');
+  if (!card) {
+    el.classList.add('hidden');
+    return;
+  }
+  el.className = 'coach-card';
+  el.innerHTML = `
+    <p class="coach-msg">🧡 ${esc(card.bericht)}</p>
+    <div class="coach-actions">
+      ${card.acties
+        .map((a) => `<button type="button" data-coach-action="${esc(a.type)}">${esc(a.label)}</button>`)
+        .join('')}
+    </div>`;
 }
 
 function renderAll() {
   renderHeader();
-  renderStats();
+  renderToday();
   renderGoals();
   renderTasks();
-  renderFeed();
-  renderChat();
+  renderReview();
+  $('reviewDay').value = String(S.settings.reviewDay);
 }
 
-/* ─── Actions ───────────────────────────────────────────── */
+/* ─── Acties ────────────────────────────────────────────── */
+async function act(path, body) {
+  const { state } = await api(path, { method: 'POST', body: JSON.stringify(body || {}) });
+  S = state;
+  renderAll();
+  return state;
+}
+
+document.addEventListener('click', async (e) => {
+  const t = e.target.closest('button');
+  if (!t) return;
+  try {
+    // Dag-loggen: één tik; nogmaals tikken = ongedaan maken.
+    if (t.dataset.goal && t.dataset.level) {
+      const g = S.goals.find((x) => x.id === Number(t.dataset.goal));
+      const current = t.dataset.day === 'today' ? g?.todayLevel : g?.yesterdayLevel;
+      const level = current === t.dataset.level ? null : t.dataset.level;
+      await act(`/api/goals/${t.dataset.goal}/log`, { day: t.dataset.day, level });
+      return;
+    }
+    if (t.dataset.task) {
+      await act(`/api/tasks/${t.dataset.task}/toggle`);
+      return;
+    }
+    if (t.dataset.edit) {
+      editingGoalId = Number(t.dataset.edit);
+      showNewForm = false;
+      renderGoals();
+      return;
+    }
+    if (t.dataset.pause) {
+      editingGoalId = null;
+      await patchGoal(t.dataset.pause, { pause_days: 7 });
+      toast('Doel 1 week gepauzeerd. Kom terug wanneer jij wilt.');
+      return;
+    }
+    if (t.dataset.archive) {
+      editingGoalId = null;
+      await patchGoal(t.dataset.archive, { status: 'archived' });
+      return;
+    }
+    if (t.dataset.resume) {
+      await patchGoal(t.dataset.resume, { status: 'active' });
+      return;
+    }
+    if (t.id === 'newGoalBtn') {
+      showNewForm = true;
+      editingGoalId = null;
+      renderGoals();
+      return;
+    }
+    if (t.classList.contains('form-cancel')) {
+      showNewForm = false;
+      editingGoalId = null;
+      renderGoals();
+      return;
+    }
+    if (t.dataset.coachAction) {
+      const { state, focusGoal } = await api('/api/coach/action', {
+        method: 'POST',
+        body: JSON.stringify({ type: t.dataset.coachAction }),
+      });
+      S = state;
+      renderCoachCard(null);
+      if (t.dataset.coachAction === 'verklein_minimum' && focusGoal) {
+        editingGoalId = Number(focusGoal);
+      }
+      renderAll();
+      if (t.dataset.coachAction === 'verklein_minimum') {
+        document.querySelector('.goal-form input[name="minimum"]')?.focus();
+        toast('Maak je minimum gerust kleiner — kleiner is beter.');
+      }
+      return;
+    }
+    if (t.id === 'yesterdayToggle') {
+      $('yesterdayGoals').classList.toggle('hidden');
+      renderToday();
+      return;
+    }
+    if (t.id === 'exportBtn') {
+      const res = await fetch('/api/export', { headers: { Authorization: `Bearer ${token}` } });
+      if (!res.ok) throw new Error('Export mislukt.');
+      const blob = await res.blob();
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `coach-backup-${S.today.key}.json`;
+      a.click();
+      URL.revokeObjectURL(a.href);
+      toast('Backup gedownload.');
+      return;
+    }
+  } catch (err) {
+    toast(err.message);
+  }
+});
+
+async function patchGoal(id, fields) {
+  const { state } = await api(`/api/goals/${id}`, { method: 'PATCH', body: JSON.stringify(fields) });
+  S = state;
+  renderAll();
+}
+
+// Doel-formulieren (nieuw + bewerken)
+document.addEventListener('submit', async (e) => {
+  const form = e.target.closest('.goal-form');
+  if (!form) return;
+  e.preventDefault();
+  const fd = new FormData(form);
+  const data = Object.fromEntries(fd.entries());
+  const errEl = form.querySelector('.form-error');
+  try {
+    if (form.dataset.goal) {
+      await patchGoal(form.dataset.goal, data);
+      editingGoalId = null;
+      renderAll();
+      toast('Doel bijgewerkt.');
+    } else {
+      await act('/api/goals', data);
+      showNewForm = false;
+      renderAll();
+      toast('Doel aangemaakt — kleine stappen, lange adem. 🧡');
+    }
+  } catch (err) {
+    if (errEl) errEl.textContent = err.message;
+  }
+});
+
+// Taken toevoegen
 $('taskForm').addEventListener('submit', async (e) => {
   e.preventDefault();
   const title = $('taskInput').value.trim();
   if (!title) return;
   $('taskInput').value = '';
   try {
-    const { state } = await api('/api/tasks', { method: 'POST', body: JSON.stringify({ title }) });
-    S = state;
-    renderStats(); renderTasks();
-  } catch (err) { alert(err.message); }
+    await act('/api/tasks', { title });
+  } catch (err) {
+    toast(err.message);
+  }
 });
 
-document.addEventListener('click', async (e) => {
-  const btn = e.target.closest('button[data-task]');
-  if (!btn) return;
+// Reviewdag-instelling
+$('reviewDay').addEventListener('change', async (e) => {
   try {
-    const { state } = await api(`/api/tasks/${btn.dataset.task}/toggle`, { method: 'POST' });
-    S = state;
-    renderStats(); renderTasks();
-  } catch (err) { alert(err.message); }
-});
-
-let sending = false;
-async function sendChat() {
-  const input = $('chatInput');
-  const text = input.value.trim();
-  if (!text || sending) return;
-  sending = true;
-  $('chatSend').disabled = true;
-  input.value = '';
-  input.style.height = 'auto';
-  S.chat.push({ role: 'user', content: text });
-  renderChat();
-  const wrap = $('chatScroll');
-  const typing = document.createElement('div');
-  typing.className = 'msg coach typing';
-  typing.innerHTML = '<i></i><i></i><i></i>';
-  wrap.appendChild(typing);
-  wrap.scrollTop = wrap.scrollHeight;
-  try {
-    const { state } = await api('/api/chat', { method: 'POST', body: JSON.stringify({ message: text }) });
+    const { state } = await api('/api/settings', {
+      method: 'PATCH',
+      body: JSON.stringify({ reviewDay: Number(e.target.value) }),
+    });
     S = state;
     renderAll();
   } catch (err) {
-    typing.remove();
-    const errEl = document.createElement('div');
-    errEl.className = 'msg coach';
-    errEl.innerHTML = `<p>⚠️ ${esc(err.message)}</p>`;
-    wrap.appendChild(errEl);
-    wrap.scrollTop = wrap.scrollHeight;
-  } finally {
-    sending = false;
-    $('chatSend').disabled = false;
-    input.focus();
+    toast(err.message);
   }
-}
-$('chatForm').addEventListener('submit', (e) => { e.preventDefault(); sendChat(); });
-$('chatInput').addEventListener('keydown', (e) => {
-  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChat(); }
-});
-$('chatInput').addEventListener('input', function () {
-  this.style.height = 'auto';
-  this.style.height = Math.min(this.scrollHeight, 130) + 'px';
 });
 
-$('checkinBtn').addEventListener('click', async () => {
-  const btn = $('checkinBtn');
-  btn.disabled = true;
-  btn.textContent = 'Even denken…';
+// Import
+$('importFile').addEventListener('change', async (e) => {
+  const file = e.target.files?.[0];
+  e.target.value = '';
+  if (!file) return;
   try {
-    const kind = new Date().getHours() >= 18 ? 'evening' : 'morning';
-    const { state } = await api(`/api/checkin/${kind}`, { method: 'POST' });
+    const text = await file.text();
+    const json = JSON.parse(text);
+    const { state, migrated } = await api('/api/import', { method: 'POST', body: JSON.stringify(json) });
     S = state;
-    renderFeed();
-  } catch (err) { alert(err.message); }
-  btn.disabled = false;
-  btn.textContent = '▶ Nu een check-in';
-});
-
-/* ─── Push notifications ────────────────────────────────── */
-function urlB64ToUint8(b64) {
-  const pad = '='.repeat((4 - (b64.length % 4)) % 4);
-  const raw = atob((b64 + pad).replace(/-/g, '+').replace(/_/g, '/'));
-  return Uint8Array.from([...raw].map((c) => c.charCodeAt(0)));
-}
-async function setupNotifBanner() {
-  const supported = 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
-  if (!supported || Notification.permission === 'denied') return;
-  const reg = await navigator.serviceWorker.ready;
-  const existing = await reg.pushManager.getSubscription();
-  if (Notification.permission === 'granted' && existing) return;
-  $('notifBanner').classList.remove('hidden');
-  $('notifBtn').onclick = async () => {
-    try {
-      const perm = await Notification.requestPermission();
-      if (perm !== 'granted') return $('notifBanner').classList.add('hidden');
-      const { key } = await api('/api/push/key');
-      const sub = await reg.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: urlB64ToUint8(key),
-      });
-      await api('/api/push/subscribe', { method: 'POST', body: JSON.stringify(sub) });
-      $('notifBanner').classList.add('hidden');
-    } catch (err) {
-      alert('Meldingen aanzetten lukte niet: ' + err.message);
-    }
-  };
-}
-
-/* ─── Mobile tabs ───────────────────────────────────────── */
-$('tabbar').addEventListener('click', (e) => {
-  const btn = e.target.closest('button[data-tab]');
-  if (!btn) return;
-  document.querySelectorAll('#tabbar button').forEach((b) => b.classList.toggle('active', b === btn));
-  const tab = btn.dataset.tab;
-  const taskCard = $('taskForm').closest('.card');
-  $('stats').classList.toggle('tab-hidden', tab !== 'dash');
-  $('goalsCard').classList.toggle('tab-hidden', tab !== 'dash');
-  taskCard.classList.toggle('tab-hidden', tab !== 'dash');
-  $('feedCard').classList.toggle('tab-hidden', tab !== 'feed');
-  $('colChat').classList.toggle('tab-hidden', tab !== 'chat');
-  if (tab === 'chat') renderChat();
-});
-function initTabs() {
-  if (window.matchMedia('(max-width: 900px)').matches) {
-    $('feedCard').classList.add('tab-hidden');
-    $('colChat').classList.add('tab-hidden');
+    renderAll();
+    toast(migrated ? 'Backup geïmporteerd en gemigreerd naar het nieuwe formaat.' : 'Backup geïmporteerd.');
+  } catch (err) {
+    toast(`Import mislukt: ${err.message}`);
   }
-}
+});
 
 /* ─── Boot ──────────────────────────────────────────────── */
+async function evaluateCoach() {
+  try {
+    const { card } = await api('/api/coach/evaluate', { method: 'POST' });
+    renderCoachCard(card);
+  } catch {
+    renderCoachCard(null); // coach-uitval mag de app nooit raken
+  }
+}
+
 async function refresh() {
   try {
     S = await api('/api/state');
     renderAll();
-  } catch { /* login shown by api() on 401 */ }
+  } catch { /* login wordt al getoond door api() */ }
 }
+
 async function boot() {
   try {
     S = await api('/api/state');
   } catch {
-    return; // not logged in → login screen is visible
+    return;
   }
   $('login').classList.add('hidden');
   $('app').classList.remove('hidden');
-  initTabs();
   renderAll();
-  setupNotifBanner();
+  evaluateCoach();
 }
 
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');
-setInterval(() => { if (document.visibilityState === 'visible' && token && S) refresh(); }, 60000);
+
+// Ververs bij terugkeer naar het tabblad (o.a. voor de 03:00-dagovergang).
 document.addEventListener('visibilitychange', () => {
-  if (document.visibilityState === 'visible' && token && S) refresh();
+  if (document.visibilityState === 'visible' && token && S) {
+    refresh();
+    evaluateCoach();
+  }
 });
+setInterval(() => {
+  if (document.visibilityState === 'visible' && token && S) refresh();
+}, 120000);
 
 if (token) boot(); else showLogin();

@@ -30,67 +30,65 @@
     </div>
   </div>
 
-  <!-- ── App ── -->
+  <!-- ── App: opent op VANDAAG ── -->
   <div id="app" class="hidden">
     <header class="app-header">
-      <h1 id="greeting">Hoi!</h1>
-      <span class="date" id="today"></span>
+      <div>
+        <h1 id="greeting">Hoi!</h1>
+        <span class="date" id="todayLabel"></span>
+      </div>
       <span class="spacer"></span>
+      <span class="overall" id="overallStats"></span>
     </header>
 
-    <div id="notifBanner" class="notif-banner hidden">
-      <span>🔔</span>
-      <span class="txt">Zet meldingen aan, dan komen de check-ins van je coach ook binnen als de app dicht is.</span>
-      <button id="notifBtn">Aanzetten</button>
-    </div>
+    <div id="coachCard" class="hidden"></div>
+    <div id="reviewCard" class="hidden"></div>
 
-    <div class="columns">
-      <div id="colDash">
-        <div class="stats" id="stats"></div>
+    <section class="card" id="todayCard">
+      <h2>Vandaag</h2>
+      <div id="todayGoals"></div>
+      <button class="btn-ghost" id="yesterdayToggle" type="button"></button>
+      <div id="yesterdayGoals" class="hidden"></div>
+    </section>
 
-        <section class="card" id="goalsCard">
-          <h2>🎯 Doelen <span class="count" id="goalCount"></span></h2>
-          <div id="goalList"></div>
-        </section>
+    <section class="card" id="goalsCard">
+      <h2>🎯 Doelen <span class="count" id="goalCount"></span></h2>
+      <div id="goalDetails"></div>
+      <div id="pausedList"></div>
+      <div id="newGoalWrap"></div>
+    </section>
 
-        <section class="card">
-          <h2>✅ Taken <span class="count" id="taskCount"></span></h2>
-          <form class="task-add" id="taskForm">
-            <input id="taskInput" type="text" placeholder="Nieuwe taak… (Enter om toe te voegen)" autocomplete="off" maxlength="200" />
-            <button type="submit" aria-label="Taak toevoegen">＋</button>
-          </form>
-          <ul class="tasks" id="taskList"></ul>
-          <details class="done-today" id="doneWrap">
-            <summary id="doneSummary"></summary>
-            <ul class="tasks" id="doneList"></ul>
-          </details>
-        </section>
+    <section class="card">
+      <h2>✅ Taken <span class="count" id="taskCount"></span></h2>
+      <form class="task-add" id="taskForm">
+        <input id="taskInput" type="text" placeholder="Nieuwe taak… (Enter om toe te voegen)" autocomplete="off" maxlength="200" />
+        <button type="submit" aria-label="Taak toevoegen">＋</button>
+      </form>
+      <ul class="tasks" id="taskList"></ul>
+      <details class="done-today hidden" id="doneWrap">
+        <summary id="doneSummary"></summary>
+        <ul class="tasks" id="doneList"></ul>
+      </details>
+    </section>
 
-        <section class="card" id="feedCard">
-          <h2>💌 Check-ins van je coach
-            <button class="btn-soft h-action" id="checkinBtn">▶ Nu een check-in</button>
-          </h2>
-          <div id="feedList"></div>
-        </section>
+    <section class="card" id="backupCard">
+      <h2>💾 Backup &amp; instellingen</h2>
+      <div class="backup-row">
+        <button class="btn-soft" id="exportBtn" type="button">⬇ Exporteer alles (JSON)</button>
+        <label class="btn-soft" for="importFile">⬆ Importeer backup</label>
+        <input type="file" id="importFile" accept="application/json,.json" class="hidden" />
       </div>
-
-      <div id="colChat">
-        <section class="card chat-card">
-          <h2>💬 Chat met je coach</h2>
-          <div class="chat-scroll" id="chatScroll"></div>
-          <form class="chat-input" id="chatForm">
-            <textarea id="chatInput" rows="1" placeholder="Typ een bericht…"></textarea>
-            <button type="submit" id="chatSend" aria-label="Versturen">➤</button>
-          </form>
-        </section>
+      <div class="settings-row">
+        <label for="reviewDay">Weekreview op:</label>
+        <select id="reviewDay">
+          <option value="1">maandag</option><option value="2">dinsdag</option>
+          <option value="3">woensdag</option><option value="4">donderdag</option>
+          <option value="5">vrijdag</option><option value="6">zaterdag</option>
+          <option value="0">zondag</option>
+        </select>
       </div>
-    </div>
-
-    <nav class="tabbar" id="tabbar">
-      <button data-tab="dash" class="active"><span class="ico">🏠</span>Vandaag</button>
-      <button data-tab="chat"><span class="ico">💬</span>Chat</button>
-      <button data-tab="feed"><span class="ico">💌</span>Check-ins</button>
-    </nav>
+      <p class="hint" id="backupHint">Je data staat lokaal op deze computer. Maak af en toe een export.</p>
+    </section>
   </div>
 
   <script src="/app.js"></script>

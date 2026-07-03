@@ -1,11 +1,10 @@
 import 'dotenv/config';
 
 /**
- * Setup doctor: checks your .env and tells you exactly what is OK, missing, or
- * malformed — so you don't have to guess why something doesn't start.
+ * Setup doctor: controleert je .env en zegt precies wat klopt of mist.
  *
- *   npm run check            (offline format checks)
- *   npm run check -- --live  (also verifies your Anthropic key with a tiny call)
+ *   npm run check            (offline controles)
+ *   npm run check -- --live  (test je Anthropic-key ook echt)
  */
 
 const live = process.argv.includes('--live');
@@ -29,19 +28,12 @@ const pin = process.env.APP_PIN;
 if (!pin) bad('APP_PIN ontbreekt (kies 4-6 cijfers, bv. APP_PIN=4821)');
 else if (!/^\d{4,6}$/.test(pin)) bad('APP_PIN moet 4 tot 6 cijfers zijn');
 else if (['1234', '0000', '1111', '123456', '000000'].includes(pin))
-  warn('APP_PIN is wel érg makkelijk te raden — kies iets minder voor de hand liggends');
+  warn('APP_PIN is wel érg makkelijk te raden');
 else ok('APP_PIN aanwezig');
 
 const port = process.env.PORT || '3000';
 if (!/^\d+$/.test(port) || Number(port) < 1 || Number(port) > 65535) bad('PORT is ongeldig');
 else ok(`PORT: ${port}`);
-
-console.log('\n🔧 Google (optioneel)');
-const g = ['GOOGLE_CLIENT_ID', 'GOOGLE_CLIENT_SECRET', 'GOOGLE_REFRESH_TOKEN'];
-const gSet = g.filter((n) => process.env[n]);
-if (gSet.length === 0) warn('Google-koppeling uit (agenda/mail-tools verborgen)');
-else if (gSet.length === 3) ok('Google volledig geconfigureerd');
-else bad(`Google half ingevuld: mist ${g.filter((n) => !process.env[n]).join(', ')}`);
 
 if (live && key) {
   console.log('\n🌐 Live Anthropic-check');

@@ -1,136 +1,113 @@
-# Mijn Coach — je persoonlijke assistent + coach als app
+# Mijn Coach — doelen volhouden zonder alles-of-niets
 
-Een eigen app (draait op je PC, te openen op al je apparaten) met daarin:
+Een lokale app (op je eigen PC) voor wie gemotiveerd start, rond week 2-3
+afhaakt en na één gemiste dag alles laat vallen. Alles in deze app is daarop
+ontworpen:
 
-- 💬 **Chat met je coach** — die taken uitvoert, teksten schrijft, op internet
-  zoekt en je helpt met je doelen. Gesprekken worden bewaard.
-- ✅ **Taken** — toevoegen en afvinken met knoppen óf via de chat.
-- 🎯 **Doelen met voortgang** — voortgangsbalken, streak-tellers (🔥 dagen op
-  rij) en grafiekjes over tijd.
-- 💌 **Check-ins** — je coach schrijft elke ochtend, avond en week een
-  persoonlijk bericht in je feed, met een melding op je apparaten.
-- 🔒 **Pincode-slot** — met bescherming tegen gokken.
-- 🌗 **Automatisch licht/donker**, warm design, en op je telefoon te
-  installeren als echte app (via "Toevoegen aan beginscherm").
+- 🚫 **Geen streaks.** Missen is verwacht gedrag. De app telt **dagen actief**
+  en **comebacks** (weer beginnen na een gat) — en viert die comebacks.
+- 🪜 **Twee niveaus per doel.** Een **minimum** (max 2 minuten, onmogelijk te
+  falen) en een **target**. Een minimum-dag is een volwaardig succes.
+- ✍️ **Doelen als implementatie-intentie**, afgedwongen format:
+  *"Na [bestaande gewoonte] doe ik [actie] op [plek]"* — max **3 actieve
+  doelen** (en eigenlijk werkt 1 het best).
+- 👆 **Dagflow zonder frictie.** De app opent op VANDAAG; per doel drie
+  knoppen: **[✓ Minimum] [✓✓ Target] [Vandaag niet]** — één tik, geen
+  bevestigingen. Gisteren mag je alsnog loggen; verder terug niet.
+  Een "dag" loopt tot **03:00**.
+- 🗓️ **Maand-heatmap per doel:** licht = minimum, donker = target, leeg = leeg.
+- 🤖 **AI-coach die je met rust laat.** Deterministische code checkt bij het
+  openen de laatste ~14 dagen (drift naar minimums, oplopende "vandaag niet",
+  gaten, comebacks). Alléén dan gaat er een samenvatting naar de Claude-API en
+  verschijnt er één kort kaartje met 1-3 één-tik-acties. Max één interventie
+  per dag, geen chatvenster. Valt de API uit → statisch welkom-terug-kaartje;
+  de app werkt altijd 100% zonder coach.
+- 📋 **Weekreview:** 4 korte vragen op je eigen gekozen dag, overslaanbaar.
+- 💾 **Export/import** van al je data (JSON), prominent in de app.
+- ✅ Plus een simpele takenlijst, pincode-slot, licht/donker, NL, mobiel.
 
-Draait op de **Claude API**: je betaalt per gebruik (typisch een paar euro per
-maand) in plaats van een vast abonnement.
-
-## Starten
+## Draaien
 
 ```bash
 npm install
-npm run check    # controleert je instellingen
+npm run check    # controleert je .env
 npm start        # of dubbelklik start-coach.bat (Windows)
 ```
 
-Open dan **http://localhost:3000** in je browser. Voer je pincode in — klaar.
+Open **http://localhost:3000** en voer je pincode in.
 
-### Eerste keer? Dit heb je nodig in `.env`
+### .env instellen (eenmalig)
+
+Maak een bestand `.env` in de projectmap (zie `.env.example`):
 
 ```
 ANTHROPIC_API_KEY=sk-ant-jouw-key
 APP_PIN=4821
 ```
 
-- De API-key haal je bij https://console.anthropic.com/ (API Keys; zet ook wat
-  tegoed op Billing).
-- `APP_PIN` kies je zelf: 4-6 cijfers waarmee je de app opent.
-- Optioneel: `USER_NAME=Julian` voor een persoonlijke begroeting.
+- **API-sleutel**: https://console.anthropic.com/ → API Keys (zet ook wat
+  tegoed op Billing). De sleutel blijft op de server (je eigen PC) en komt
+  nooit in de browser terecht.
+- **APP_PIN**: zelfgekozen 4-6 cijfers waarmee je de app opent.
+- Optioneel: `USER_NAME=Julian` (begroeting), `PORT`, `CLAUDE_MODEL`.
 
-Zie `.env.example` voor alle instellingen (check-in-tijden, modellen, enz.).
-
-### Kwam je van de vorige (Slack/terminal-)versie?
+## Kom je van de vorige versie? (chat/streaks-versie)
 
 ```bash
 git pull
 npm install
+npm start
 ```
 
-Voeg `APP_PIN=...` toe aan je `.env` en start met `npm start`. De Slack-tokens
-heb je niet meer nodig. (De app begint bewust met een schoon geheugen;
-`npm run chat` — de terminalversie — werkt ook nog steeds.)
+Bij de eerste start gebeurt automatisch:
+1. Er wordt een **backup** van je oude data gemaakt
+   (`data/backup-v1-<datum>.json`).
+2. Je data **migreert zonder verlies**: doelen krijgen een gegenereerd
+   minimum (pas het aan met ✎), je voortgangshistorie telt mee als actieve
+   dagen, en je chat/feed-geschiedenis blijft bewaard in het archief
+   (zit in elke export).
+3. Streaks bestaan niet meer; je historie telt voortaan als dagen actief +
+   comebacks.
 
-## Op je telefoon
+Het chatvenster en de geplande check-ins zijn bewust verdwenen — zie
+`DECISIONS.md` voor alle keuzes en `UPGRADE_PLAN.md` voor het volledige plan.
 
-**Thuis (zelfde WiFi):** open `http://<ip-van-je-pc>:3000` in de browser van je
-telefoon. Het IP van je PC vind je met `ipconfig` (het "IPv4-adres", bv.
-`192.168.1.23`).
+## Mobiel gebruiken
 
-**Onderweg (overal) + meldingen — via Tailscale (gratis):**
+- **Thuis (zelfde WiFi):** open `http://<ip-van-je-pc>:3000` op je telefoon
+  (IP vinden: `ipconfig` → "IPv4-adres").
+- **Onderweg:** installeer [Tailscale](https://tailscale.com) (gratis) op PC
+  én telefoon, log in met hetzelfde account en draai op de PC:
+  `tailscale serve --bg 3000`. Je krijgt een vast https-adres dat overal
+  werkt (zolang je PC aanstaat). Voeg de pagina toe aan je beginscherm voor
+  een app-icoon.
 
-Meldingen en "installeren als app" vereisen een beveiligde (https-)verbinding.
-De makkelijkste en veiligste gratis manier is [Tailscale](https://tailscale.com):
-een privé-netwerkje tussen jouw apparaten — niets staat open op internet.
+## Backuppen
 
-1. Installeer Tailscale op je **PC** (tailscale.com/download) en log in
-   (kan met je Google-account).
-2. Installeer de **Tailscale-app op je telefoon** en log in met hetzelfde
-   account.
-3. Op je PC, in een terminal:
-   ```
-   tailscale serve --bg 3000
-   ```
-   Dit geeft je een vast **https-adres** (zoiets als
-   `https://jouw-pc.tail1234.ts.net`).
-4. Open dat adres op je telefoon (met Tailscale aan) → log in met je pincode →
-   kies in je browsermenu **"Toevoegen aan beginscherm"** → zet meldingen aan
-   via de banner in de app.
-
-Vanaf nu heb je de coach als app-icoon op je telefoon, overal bereikbaar
-(zolang je PC aanstaat), inclusief check-in-meldingen.
+Gebruik **⬇ Exporteer alles (JSON)** onderin de app en bewaar het bestand
+ergens veilig. Terugzetten: **⬆ Importeer backup** — accepteert ook backups
+van de oude versie (migreert automatisch) en maakt vóór het overschrijven
+zelf een reservekopie in `data/`.
 
 ## Automatisch starten met Windows
 
-1. Dubbelklik `start-coach.bat` om te testen — de app start en je browser opent
-   vanzelf.
-2. Druk **Win + R**, typ `shell:startup`, Enter.
-3. Maak een snelkoppeling naar `start-coach.bat` (rechtermuisknop →
-   *Snelkoppeling maken*) en sleep die in de geopende opstartmap.
+1. Dubbelklik `start-coach.bat` om te testen (opent vanzelf je browser).
+2. **Win + R** → `shell:startup` → Enter.
+3. Sleep een snelkoppeling naar `start-coach.bat` in die map.
 
-> De app draait alleen als je PC aanstaat. Check-ins die vallen op een moment
-> dat je PC uit staat, worden overgeslagen — kies de tijden dus rond momenten
-> dat je PC meestal aan is (`COACH_*_CRON` in `.env`).
+## Voor ontwikkelaars
 
-## Google Agenda & Gmail (optioneel)
-
-De coach kan afspraken inplannen en concept-mails klaarzetten zodra je een
-Google-koppeling invult:
-
-1. [Google Cloud Console](https://console.cloud.google.com/) → nieuw project →
-   zet **Google Calendar API** en **Gmail API** aan.
-2. OAuth consent screen instellen (extern, jezelf als testgebruiker).
-3. **Credentials → OAuth client ID** (type *Desktop app*) → `GOOGLE_CLIENT_ID`
-   en `GOOGLE_CLIENT_SECRET`.
-4. Genereer eenmalig een refresh token met scopes
-   `https://www.googleapis.com/auth/calendar` en
-   `https://www.googleapis.com/auth/gmail.compose` (bv. via de
-   [OAuth 2.0 Playground](https://developers.google.com/oauthplayground/)) →
-   `GOOGLE_REFRESH_TOKEN`.
-5. In `.env` zetten en herstarten.
-
-> Gmail maakt bewust alleen **concepten** aan — er wordt nooit automatisch
-> iets verstuurd.
-
-## Updates ophalen
-
-Als er iets nieuws is gebouwd:
-
-```bash
-git pull
-npm install
-```
-
-en herstart de app. Je taken, doelen, gesprekken en instellingen blijven staan
-(die zitten in `data/` en `.env`, en die worden nooit overschreven).
+- `npm test` — 35 unit tests (node:test, geen extra dependencies) over de
+  03:00-daggrens, gisteren-loggen, comeback/drift-detectie, migratie v1→v2
+  en de defensieve coach-parser (incl. kapotte antwoorden → fallback).
+- `npm run dev` — start met auto-herstart bij wijzigingen.
+- Geen build-stap; vanilla JS + Express + één JSON-bestand
+  (`data/coach.json`, schema v2 met versieveld).
 
 ## Kosten & privacy
 
-- **Claude API**: per gebruik; licht persoonlijk gebruik ≈ enkele euro's per
-  maand. De diepere coachmomenten gebruiken een sterker model
-  (`CLAUDE_COACH_MODEL`), instelbaar.
-- **Verder gratis**: de app zelf, Tailscale (persoonlijk gebruik) en meldingen
-  kosten niets.
-- **Privacy**: je taken, doelen, gesprekken en check-ins staan lokaal op je
-  eigen PC in `data/` (staat niet in git). Berichten gaan alleen naar de
-  Anthropic API om antwoorden te genereren.
+- De coach doet hoogstens één kleine API-call per dag (alleen bij een
+  trigger): centen per maand.
+- Al je data staat lokaal in `data/` op je eigen PC (staat niet in git).
+  Alleen de compacte log-samenvatting gaat naar de Anthropic-API, en alleen
+  wanneer de coach afgaat.

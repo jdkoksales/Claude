@@ -1,5 +1,5 @@
-/* Service worker: offline shell + push notifications */
-const CACHE = 'coach-v1';
+/* Service worker: offline shell (pushlaag is bewust verwijderd) */
+const CACHE = 'coach-v4';
 const SHELL = ['/', '/styles.css', '/app.js', '/manifest.webmanifest', '/icon.svg'];
 
 self.addEventListener('install', (e) => {
@@ -27,27 +27,5 @@ self.addEventListener('fetch', (e) => {
         return res;
       })
       .catch(() => caches.match(e.request).then((r) => r || caches.match('/'))),
-  );
-});
-
-self.addEventListener('push', (e) => {
-  let data = { title: 'Je coach', body: 'Er staat iets nieuws voor je klaar.' };
-  try { data = { ...data, ...e.data.json() }; } catch { /* keep defaults */ }
-  e.waitUntil(
-    self.registration.showNotification(data.title, {
-      body: data.body,
-      icon: '/icon.svg',
-      badge: '/icon.svg',
-    }),
-  );
-});
-
-self.addEventListener('notificationclick', (e) => {
-  e.notification.close();
-  e.waitUntil(
-    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((list) => {
-      for (const c of list) if ('focus' in c) return c.focus();
-      return self.clients.openWindow('/');
-    }),
   );
 });

@@ -1,0 +1,133 @@
+@import "tailwindcss";
+
+@theme {
+  --color-void: #06070c;
+  --color-panel: #0c0e17;
+  --color-panel-2: #11141f;
+  --color-line: #1d2233;
+  --color-ink: #e8eaf2;
+  --color-ink-2: #9aa1b5;
+  --color-ink-3: #5c6379;
+  --color-nova: #7c8cff;
+  --color-nova-soft: #2a3162;
+  --color-warm: #ff9d5c;
+  --color-good: #4ade80;
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    sans-serif;
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  background: var(--color-void);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  min-height: 100vh;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(124, 140, 255, 0.13), transparent),
+    radial-gradient(ellipse 60% 40% at 90% 110%, rgba(255, 157, 92, 0.05), transparent);
+  background-attachment: fixed;
+}
+
+/* Glass cards */
+.glass {
+  background: linear-gradient(160deg, rgba(20, 24, 40, 0.72), rgba(12, 14, 23, 0.85));
+  border: 1px solid rgba(124, 140, 255, 0.1);
+  backdrop-filter: blur(14px);
+  border-radius: 1.1rem;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.04) inset,
+    0 20px 50px -30px rgba(0, 0, 0, 0.8);
+}
+
+/* The AI presence orb */
+@keyframes orb-breathe {
+  0%, 100% {
+    box-shadow:
+      0 0 24px 4px rgba(124, 140, 255, 0.45),
+      0 0 90px 20px rgba(124, 140, 255, 0.12);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow:
+      0 0 34px 8px rgba(124, 140, 255, 0.65),
+      0 0 120px 30px rgba(124, 140, 255, 0.2);
+    transform: scale(1.06);
+  }
+}
+.orb {
+  width: 0.9rem;
+  height: 0.9rem;
+  border-radius: 9999px;
+  background: radial-gradient(circle at 32% 30%, #c2cbff, #7c8cff 55%, #4353c9);
+  animation: orb-breathe 2.6s ease-in-out infinite;
+}
+.orb.paused {
+  background: radial-gradient(circle at 32% 30%, #8a8f9f, #5c6379 55%, #3a3f52);
+  animation: none;
+  box-shadow: none;
+}
+
+/* Feed entries slide in */
+@keyframes feed-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.feed-item {
+  animation: feed-in 0.45s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+}
+
+/* Typing/working dots */
+@keyframes dot-blink {
+  0%, 80%, 100% { opacity: 0.25; }
+  40% { opacity: 1; }
+}
+.dots span {
+  animation: dot-blink 1.2s infinite;
+}
+.dots span:nth-child(2) { animation-delay: 0.2s; }
+.dots span:nth-child(3) { animation-delay: 0.4s; }
+
+/* Scanning shimmer over the current task line */
+@keyframes scanline {
+  from { background-position: -200% 0; }
+  to { background-position: 200% 0; }
+}
+.scanning {
+  background: linear-gradient(
+    100deg,
+    var(--color-ink-2) 40%,
+    var(--color-ink) 50%,
+    var(--color-ink-2) 60%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: scanline 2.4s linear infinite;
+}
+
+/* Progress bar toward the daily goal */
+.goalbar {
+  background: linear-gradient(90deg, #7c8cff, #a58bff);
+  box-shadow: 0 0 14px rgba(124, 140, 255, 0.5);
+  transition: width 0.9s cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+
+::selection {
+  background: rgba(124, 140, 255, 0.35);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .orb, .dots span, .scanning, .feed-item {
+    animation: none;
+  }
+}

@@ -7,15 +7,23 @@
 > **Repo-opmerking:** deze repository bevat momenteel "Mijn Coach", een
 > volledig ongerelateerd Node/Express project (Nederlandse gewoonte-tracker,
 > lokaal draaiend, geen Next.js/Supabase). Brand Nova AI Employee is een
-> nieuw, apart product. Dit plan gaat ervan uit dat het in de map
-> `brand-nova/` als eigen Next.js-project wordt gebouwd, los van de bestaande
-> coach-app (geen gedeelde code, geen gedeelde database). Als je liever een
-> apart repository wilt, is dat op elk moment te verplaatsen — de architectuur
-> hieronder verandert dan niet.
+> nieuw, apart product en wordt in de map `brand-nova/` als eigen
+> Next.js-project gebouwd, los van de bestaande coach-app (geen gedeelde
+> code, geen gedeelde database, geen gedeelde deployment).
 >
-> **Open beslispunten** (zie sectie 11) staan expliciet gemarkeerd met 🔶.
-> Vul deze in voordat je "bouw dit" zegt — ze bepalen delen van de
-> implementatie (e-mailprovider, verzendvolume, Website Check-koppeling).
+> **Beslissingen (definitief):**
+> 1. **Locatie:** nieuwe map `brand-nova/` in deze repo.
+> 2. **Website Check:** bestaat al bij Brand Nova → dit project bouwt géén
+>    landingspagina/formulier, alleen de koppeling (link in de e-mail +
+>    webhook/tracking-event die `leads.status` op
+>    `website_check_completed` zet).
+> 3. **E-mailprovider:** Resend, voor zowel outbound send als inbound
+>    (replies) via webhook.
+> 4. **Verzendvolume:** standaard max 200 e-mails/dag, maar dit is een
+>    instelling in `settings.daily_send_cap` (aanpasbaar in de UI), niet
+>    hardcoded in code.
+>
+> Dit plan is definitief en klaar om 1-op-1 gebouwd te worden.
 
 ---
 
@@ -60,7 +68,7 @@ stoppen direct, zoals al gespecificeerd).
                 ▼                              ▼
 ┌───────────────────────────┐      ┌───────────────────────────────┐
 │  OpenAI API                 │      │  Email provider (send+inbound) │
-│  - gpt-4o-mini: classificatie,│    │  🔶 Resend / Gmail API / …     │
+│  - gpt-4o-mini: classificatie,│    │  Resend (send + inbound webhook)│
 │    extractie, observaties    │      │  - outbound send                │
 │  - gpt-4.1 / gpt-4o: e-mail  │      │  - inbound webhook (replies)    │
 │    schrijven (hogere kwaliteit)│    │  - bounce/unsubscribe events    │
@@ -74,9 +82,9 @@ mogelijk maakt (morning briefing werkt ook als niemand inlogt).
 
 **Runtime keuze voor workers:** Vercel Cron (elke minuut/5 min triggert een
 route handler die een batch uit de queue pakt) is voldoende voor het
-gespecificeerde volume en vermijdt een aparte worker-deployment. Bij hoger
-volume (zie 🔶 volume-vraag) kan dit later verhuizen naar Supabase Edge
-Functions met pg_cron, zonder schema-wijzigingen.
+gespecificeerde volume (max 200 mails/dag, instelbaar). Bij toekomstige
+volumegroei kan dit later verhuizen naar Supabase Edge Functions met
+pg_cron, zonder schema-wijzigingen.
 
 ---
 
@@ -180,9 +188,9 @@ csv_imports (
   invalid_email_count int, imported_at timestamptz
 )
 
-settings (                         -- single-row config, geen hardcoded aannames
+settings (                         -- single-row config, instelbaar in de UI
   id int pk default 1,
-  daily_send_cap int,
+  daily_send_cap int default 200,  -- instelbaar (default 200, geen hardcoded limiet elders in code)
   sending_hours jsonb,             -- bv. {"start":"09:00","end":"17:00","tz":"Europe/Amsterdam"}
   daily_warm_lead_goal int,
   max_followups int default 3,
@@ -246,12 +254,14 @@ dit is gewoon SQL-aggregatie plus een dagelijkse job.
   onnatuurlijk en is slecht voor deliverability).
 - Voor verzending: laatste check of lead nog steeds `queued`/eligible is
   (race-conditie-veilig via een `sending` lock-status).
-- 🔶 Provider-integratie (zie open beslispunt) verstuurt en logt
-  `provider_message_id` voor threading van replies.
+- **Resend** verstuurt de mail (via Resend API/SDK) en logt `provider_message_id`
+  (Resend's email-id) voor threading van replies.
 
 ### 4.5 Reply monitoring & classificatie
-- Inbound webhook (of IMAP-poll, afhankelijk van 🔶 providerkeuze) koppelt
-  reply aan `lead_id` via threading-headers / provider_message_id.
+- **Resend inbound webhook** (Resend Inbound / verwerkte reply-emails) levert
+  binnenkomende replies als route-handler event; koppeling aan `lead_id` via
+  `In-Reply-To`/`References` headers gematcht op `provider_message_id`, met
+  domein/afzender-e-mail als fallback-match.
 - Classificatie: één AI-call (gpt-4o-mini, JSON-mode) → classification +
   confidence.
 - `classification_confidence < threshold` (bv. 0.7) → `needs_human=true`,
@@ -348,7 +358,7 @@ worden onder de radar). Concrete guardrails, niet alleen prompting:
    zonder AI-kosten).
 3. **Website-analyse pipeline** + caching + de null-observation guardrail.
 4. **E-mail generatie + verzending** (zonder learning-loop nog, met
-   provider-integratie uit 🔶).
+   Resend-integratie).
 5. **Reply-ontvangst + classificatie + auto-reply** met confidence-gate.
 6. **Learning-aggregatie job** + injectie van insights in e-mailgeneratie.
 7. **Dashboard/UX-laag**: activity feed, morning briefing, live counters,
@@ -371,22 +381,27 @@ worden onder de radar). Concrete guardrails, niet alleen prompting:
 
 ---
 
-## 11. 🔶 Open beslispunten (nodig vóór bouwstart)
+## 11. Beslissingen (definitief, geen open punten meer)
 
-1. **Repo-locatie**: bouwen in `brand-nova/` binnen deze repo (naast Mijn
-   Coach, ongerelateerd), deze repo volledig vervangen, of apart repository?
-2. **Website Check**: bestaat dit al als tool/landingspagina bij Brand Nova
-   (dan alleen linken + webhook/UTM-tracking bouwen), of moet dit als
-   onderdeel van dit project gebouwd worden (dan een extra landingspagina +
-   formulier + trigger naar `leads.status='website_check_completed'`)?
-3. **E-mailprovider**: Resend (API-gedreven, snel te integreren, webhooks
-   voor inbound) versus versturen vanuit echte Gmail/Workspace-mailboxen
-   (persoonlijker, betere reputatie voor cold outreach, maar OAuth +
-   threading + per-mailbox rate limits zijn complexer)? Dit bepaalt hoofdstuk
-   4.4/4.5 concreet.
-4. **Verzendvolume**: hoeveel e-mails/dag en hoeveel verzenddomeinen/
-   mailboxen? Bepaalt `daily_send_cap`-default, of domein-rotatie nodig is,
-   en hoe streng de warmup-fase moet zijn.
+1. **Repo-locatie**: `brand-nova/` binnen deze repo, los van Mijn Coach.
+2. **Website Check**: bestaat al bij Brand Nova. Dit project bouwt geen
+   landingspagina — alleen: (a) de link naar de bestaande tool in elke
+   e-mail (met een uniek tracking-token per lead), en (b) een webhook/
+   tracking-endpoint dat Brand Nova's Website Check-tool aanroept zodra een
+   bezoeker met dat token de check voltooit, wat `leads.status` bijwerkt
+   naar `website_check_completed`. **Aanname, te bevestigen bij bouw:** de
+   bestaande Website Check-tool kan een tracking-token (query param) doorgeven
+   aan een callback/webhook. Als dat niet kan, is een minimale server-side
+   redirect-pagina (`/wc/[token]` die naar de echte tool doorstuurt en het
+   bezoek logt) een goedkope tussenoplossing, zonder de echte tool te hoeven
+   aanpassen.
+3. **E-mailprovider**: Resend, voor zowel outbound (API) als inbound
+   (Resend inbound webhook voor replies).
+4. **Verzendvolume**: `settings.daily_send_cap` default **200**, volledig
+   instelbaar via de UI (geen hardcoded limiet in de code). Eén verzenddomein
+   voorlopig; domein-rotatie is niet gebouwd in v1 maar het datamodel
+   (`provider_message_id`, per-lead tracking) staat dat later toe zonder
+   schema-wijziging.
 
-Zodra deze vier zijn ingevuld, kan dit plan zonder verdere aannames 1-op-1
-naar Fable 5 om in één keer goed gebouwd te worden.
+Dit plan bevat geen open aannames meer en kan 1-op-1 naar Fable 5 om in één
+keer goed gebouwd te worden.

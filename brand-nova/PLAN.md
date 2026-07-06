@@ -13,10 +13,9 @@
 >
 > **Beslissingen (definitief):**
 > 1. **Locatie:** nieuwe map `brand-nova/` in deze repo.
-> 2. **Website Check:** bestaat al bij Brand Nova → dit project bouwt géén
->    landingspagina/formulier, alleen de koppeling (link in de e-mail +
->    webhook/tracking-event die `leads.status` op
->    `website_check_completed` zet).
+> 2. **Website Check:** bestaat al bij Brand Nova → geen integratie, geen
+>    tracking. De AI zet gewoon de bestaande URL als link in de e-mail;
+>    `website_check_completed` wordt herkend via replies of handmatig gezet.
 > 3. **E-mailprovider:** Resend, voor zowel outbound send als inbound
 >    (replies) via webhook.
 > 4. **Verzendvolume:** standaard max 200 e-mails/dag, maar dit is een
@@ -344,8 +343,8 @@ worden onder de radar). Concrete guardrails, niet alleen prompting:
 - SPF/DKIM/DMARC op verzenddomein vóór volume — anders komt niets aan.
 - Bounce-handling: hard bounce → `email_valid=false`, geen retries.
 - GDPR: verwerkingsgrond (gerechtvaardigd belang, B2B-outreach) en
-  redelijke opt-out-termijn vastleggen in een korte privacyparagraaf op de
-  Website Check-landingspagina.
+  redelijke opt-out-termijn vastleggen; buiten scope van dit project (de
+  Website Check-pagina zelf wordt niet door dit project gebouwd of beheerd).
 
 ---
 
@@ -384,17 +383,17 @@ worden onder de radar). Concrete guardrails, niet alleen prompting:
 ## 11. Beslissingen (definitief, geen open punten meer)
 
 1. **Repo-locatie**: `brand-nova/` binnen deze repo, los van Mijn Coach.
-2. **Website Check**: bestaat al bij Brand Nova. Dit project bouwt geen
-   landingspagina — alleen: (a) de link naar de bestaande tool in elke
-   e-mail (met een uniek tracking-token per lead), en (b) een webhook/
-   tracking-endpoint dat Brand Nova's Website Check-tool aanroept zodra een
-   bezoeker met dat token de check voltooit, wat `leads.status` bijwerkt
-   naar `website_check_completed`. **Aanname, te bevestigen bij bouw:** de
-   bestaande Website Check-tool kan een tracking-token (query param) doorgeven
-   aan een callback/webhook. Als dat niet kan, is een minimale server-side
-   redirect-pagina (`/wc/[token]` die naar de echte tool doorstuurt en het
-   bezoek logt) een goedkope tussenoplossing, zonder de echte tool te hoeven
-   aanpassen.
+2. **Website Check**: bestaat al bij Brand Nova. Geen integratie, geen
+   tracking-token, geen webhook — de AI zet gewoon de bestaande, kale
+   Website Check-URL als link in de e-mail, net als elk ander onderdeel van
+   de tekst. Er is dus geen geautomatiseerd signaal wanneer iemand de check
+   voltooit; `leads.status='website_check_completed'` wordt bereikt via
+   dezelfde weg als andere warme classificaties: de reply-classificatie
+   (4.5) herkent het wanneer een lead antwoordt met iets als "we hebben de
+   check ingevuld/gedaan", en als vangnet kan de gebruiker een lead
+   handmatig op deze status zetten vanuit de UI. Dit is een bewuste
+   vereenvoudiging — mocht Brand Nova later toch completion-events kunnen
+   leveren, dan is dat een kleine losse uitbreiding, geen herontwerp.
 3. **E-mailprovider**: Resend, voor zowel outbound (API) als inbound
    (Resend inbound webhook voor replies).
 4. **Verzendvolume**: `settings.daily_send_cap` default **200**, volledig

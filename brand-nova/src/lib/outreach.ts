@@ -334,6 +334,15 @@ export async function previewFirstEmail(leadId: string): Promise<EmailPreview | 
   const insights = await loadInsights();
   const email = await generateGuardedEmail(lead, 0, [], settings, insights);
   if (!email) return null;
+  // Persist so results survive an HTTP timeout on a long preview run.
+  await db().from("bn_email_previews").insert({
+    company_id: lead.company.id,
+    company_name: lead.company.name,
+    to_email: lead.company.email,
+    observation: lead.analysis.improvement_observation,
+    subject: email.subject,
+    body: email.body,
+  });
   await logActivity(
     "writing",
     `Proefmail geschreven voor ${lead.company.name} (testmodus — niets verstuurd).`,

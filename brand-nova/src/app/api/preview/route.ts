@@ -29,26 +29,35 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 
-  const countParam = Number(request.nextUrl.searchParams.get("count") ?? 3);
-  const count = Math.min(5, Math.max(1, Number.isFinite(countParam) ? countParam : 3));
+  // Keep each call short (site fetch + 2 OpenAI calls per lead is slow); the
+  // caller polls the bn_email_previews table, which persists across calls.
+  const countParam = Number(request.nextUrl.searchParams.get("count") ?? 2);
+  const count = Math.min(3, Math.max(1, Number.isFinite(countParam) ? countParam : 2));
 
-  // Prefer leads that already have an analysis; top up with fresh ones.
+  // Skip companies that already have a preview.
+  const { data: done } = await db().from("bn_email_previews").select("company_id");
+  const alreadyPreviewed = new Set((done ?? []).map((r) => r.company_id as string));
+
   const leadIds: string[] = [];
   const { data: queued } = await db()
     .from("bn_leads")
-    .select("id")
+    .select("id, company_id")
     .eq("status", "queued")
-    .limit(count);
-  for (const row of queued ?? []) leadIds.push(row.id as string);
+    .limit(count * 2);
+  for (const row of queued ?? []) {
+    if (leadIds.length >= count) break;
+    if (!alreadyPreviewed.has(row.company_id as string)) leadIds.push(row.id as string);
+  }
 
   if (leadIds.length < count) {
     const { data: fresh } = await db()
       .from("bn_leads")
       .select("id, company_id")
       .eq("status", "new")
-      .limit((count - leadIds.length) * 3); // extra candidates: some will be skipped
+      .limit((count - leadIds.length) * 4); // extra candidates: some get skipped
     for (const row of fresh ?? []) {
       if (leadIds.length >= count) break;
+      if (alreadyPreviewed.has(row.company_id as string)) continue;
       const ok = await ensureAnalysisForCompany(row.company_id as string);
       if (ok) leadIds.push(row.id as string);
     }
@@ -63,6 +72,7 @@ export async function GET(request: NextRequest) {
   return NextResponse.json({
     testMode: true,
     note: "Er is niets verstuurd. Dit zijn de mails zoals de AI ze zou versturen.",
+    generatedThisCall: previews.length,
     previews,
   });
 }

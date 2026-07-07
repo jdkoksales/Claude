@@ -80,9 +80,20 @@ const ANALYSIS_SYSTEM = `Je analyseert de homepage-tekst van een bedrijfswebsite
 
 Extraheer uitsluitend wat LETTERLIJK uit de aangeleverde tekst blijkt. Verzin niets. Als iets niet uit de tekst blijkt, laat het veld leeg of de array leeg.
 
-Het veld "observation" is het belangrijkste: één concrete, specifieke observatie over een verbeterkans van deze website die BEWIJST dat de site echt bekeken is. Goede observaties benoemen iets specifieks van deze site (een ontbrekende call-to-action, een concrete tekst die onduidelijk is, een dienst die verstopt staat). Verboden: algemene feedback die op elke website past ("de site kan moderner", "SEO kan beter"), complimenten, en alles wat niet direct uit de aangeleverde tekst afleidbaar is.
+Het veld "observation" is het belangrijkste: één concrete, specifieke observatie die BEWIJST dat je de site echt bekeken hebt en die een natuurlijke aanleiding vormt voor de gratis Website Check. Verwijs naar iets herkenbaars van DEZE site.
 
-HARDE REGEL: als je geen specifieke, verifieerbare observatie kunt maken uit deze tekst, retourneer "observation": null. Null is een goed antwoord; een generieke observatie is een fout antwoord.
+Een goede observatie gaat over iets wat je op deze specifieke pagina wél of juist NIET ziet, bijvoorbeeld:
+- een dienst of aanbod dat genoemd wordt maar niet verder uitgelegd of moeilijk vindbaar is;
+- geen zichtbare prijzen, tarieven of pakketten terwijl bezoekers daar wel naar zoeken;
+- geen duidelijke manier om te reserveren, contact op te nemen of een offerte aan te vragen;
+- een homepage die veel over het bedrijf zelf vertelt maar weinig een bezoeker uitnodigt tot een volgende stap;
+- een onduidelijke of ontbrekende call-to-action.
+
+Verwijs concreet naar wat het bedrijf doet (dat blijkt uit de tekst) zodat het persoonlijk is. Bijna elke kleine bedrijfssite heeft zo'n concrete verbeterkans — zoek er één.
+
+Verboden: algemene feedback die op elke website past zonder iets specifieks van dit bedrijf te noemen ("de site kan moderner", "SEO kan beter", "responsive design"), complimenten, en verzonnen feiten over het bedrijf die niet uit de tekst blijken.
+
+Retourneer "observation": null ALLEEN als de aangeleverde tekst echt te leeg of onleesbaar is om er iets zinnigs over te zeggen. In vrijwel alle andere gevallen maak je een concrete observatie.
 
 "industry" is één korte branche-aanduiding in het Nederlands (bv. "bouw", "horeca", "advocatuur").
 

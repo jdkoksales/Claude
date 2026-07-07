@@ -38,8 +38,16 @@ export function groundingScore(observation: string, sourceText: string): number 
   return hits / obsWords.length;
 }
 
-/** Minimum grounding score below which an observation is discarded. */
-export const MIN_GROUNDING_SCORE = 0.35;
+/**
+ * Minimum grounding score below which an observation is discarded. Kept low
+ * on purpose: the best observations are often about something *missing* from
+ * the page (no pricing, no booking button), whose words don't appear in the
+ * source text. This threshold only needs to catch wholesale hallucination —
+ * an observation about a completely different company shares ~0% of its
+ * distinctive words with the page. The prompt ("verzin geen feiten") and the
+ * style validator carry the rest.
+ */
+export const MIN_GROUNDING_SCORE = 0.12;
 
 function trigrams(text: string): Set<string> {
   const words = contentWords(text);

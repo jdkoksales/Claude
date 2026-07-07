@@ -122,7 +122,10 @@ export async function analyzeWebsiteText(
 const emailSchema = z.object({
   subject: z.string().min(3),
   body: z.string().min(40),
-  strategy_tags: z.record(z.string(), z.unknown()).optional(),
+  // Accept anything the model puts here (object, string, null, missing) — it's
+  // normalized in code below. z.record would throw on a bare string and kill
+  // an otherwise-perfect email.
+  strategy_tags: z.unknown().optional(),
 });
 
 export interface GeneratedEmail {
@@ -135,10 +138,11 @@ export interface GeneratedEmail {
   };
 }
 
-function normalizeStrategyTags(
-  raw: Record<string, unknown> | undefined
-): GeneratedEmail["strategy_tags"] {
-  const tags = raw ?? {};
+function normalizeStrategyTags(raw: unknown): GeneratedEmail["strategy_tags"] {
+  const tags: Record<string, unknown> =
+    raw && typeof raw === "object" && !Array.isArray(raw)
+      ? (raw as Record<string, unknown>)
+      : {};
   const bucket = tags.length_bucket;
   return {
     opener_style: typeof tags.opener_style === "string" ? tags.opener_style : "",

@@ -1,0 +1,20 @@
+# Drives the Brand Nova AI Employee heartbeat. Vercel's Hobby plan only
+# allows daily cron jobs, so the 5-minute tick runs from GitHub Actions
+# instead. The endpoint throttles itself server-side (max one real tick per
+# ~4 minutes), so no secret is needed here.
+name: brand-nova-tick
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+jobs:
+  tick:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - name: Call tick endpoint
+        run: |
+          curl -fsS --max-time 300 --retry 2 --retry-delay 5 \
+            https://claude-plum-zeta.vercel.app/api/cron/tick

@@ -10,11 +10,14 @@ function openai(): OpenAI {
   return client;
 }
 
+// The third type param is the schema's INPUT type. Fixing it to `unknown`
+// lets schemas that use z.preprocess (which accept unknown input) still infer
+// their OUTPUT type T cleanly at the call site.
 async function jsonCall<T>(
   model: string,
   system: string,
   user: string,
-  schema: z.ZodType<T>,
+  schema: z.ZodType<T, z.ZodTypeDef, unknown>,
   temperature: number
 ): Promise<T> {
   const res = await openai().chat.completions.create({
@@ -40,16 +43,35 @@ async function jsonCall<T>(
 // Website analysis (cheap model, structured extraction, null-observation path)
 // ---------------------------------------------------------------------------
 
+// The model is not perfectly consistent: array fields sometimes come back as
+// a single string (or null), and string fields sometimes as null. These
+// coercions make parsing tolerant instead of throwing away a whole analysis
+// over a formatting quirk.
+const flexibleString = z.preprocess(
+  (v) => (v == null ? "" : typeof v === "string" ? v : String(v)),
+  z.string()
+);
+const flexibleStringArray = (max: number) =>
+  z.preprocess((v) => {
+    if (v == null) return [];
+    if (Array.isArray(v)) return v.map(String).filter(Boolean);
+    if (typeof v === "string") return v.trim() ? [v.trim()] : [];
+    return [];
+  }, z.array(z.string()).max(max));
+
 const analysisSchema = z.object({
-  what_they_do: z.string(),
-  target_audience: z.string(),
-  services: z.array(z.string()).max(8),
-  usp: z.array(z.string()).max(6),
-  trust_signals: z.array(z.string()).max(6),
-  ctas: z.array(z.string()).max(6),
-  tone: z.string(),
-  industry: z.string(),
-  observation: z.string().nullable(),
+  what_they_do: flexibleString,
+  target_audience: flexibleString,
+  services: flexibleStringArray(8),
+  usp: flexibleStringArray(6),
+  trust_signals: flexibleStringArray(6),
+  ctas: flexibleStringArray(6),
+  tone: flexibleString,
+  industry: flexibleString,
+  observation: z.preprocess(
+    (v) => (typeof v === "string" && v.trim() ? v.trim() : null),
+    z.string().nullable()
+  ),
 });
 
 export type WebsiteAnalysisResult = z.infer<typeof analysisSchema>;
@@ -83,17 +105,40 @@ export async function analyzeWebsiteText(
 // Email writing (better model; insights injected as steering, not template)
 // ---------------------------------------------------------------------------
 
+// strategy_tags are for learning only and are normalized in code below, so
+// the schema stays permissive — a formatting quirk there must never block an
+// otherwise-good email.
 const emailSchema = z.object({
   subject: z.string().min(3),
   body: z.string().min(40),
-  strategy_tags: z.object({
-    opener_style: z.string(),
-    length_bucket: z.enum(["short", "medium", "long"]),
-    observation_type: z.string(),
-  }),
+  strategy_tags: z.record(z.string(), z.unknown()).optional(),
 });
 
-export type GeneratedEmail = z.infer<typeof emailSchema>;
+export interface GeneratedEmail {
+  subject: string;
+  body: string;
+  strategy_tags: {
+    opener_style: string;
+    length_bucket: "short" | "medium" | "long";
+    observation_type: string;
+  };
+}
+
+function normalizeStrategyTags(
+  raw: Record<string, unknown> | undefined
+): GeneratedEmail["strategy_tags"] {
+  const tags = raw ?? {};
+  const bucket = tags.length_bucket;
+  return {
+    opener_style: typeof tags.opener_style === "string" ? tags.opener_style : "",
+    length_bucket:
+      bucket === "short" || bucket === "medium" || bucket === "long"
+        ? bucket
+        : "medium",
+    observation_type:
+      typeof tags.observation_type === "string" ? tags.observation_type : "",
+  };
+}
 
 const WRITER_SYSTEM = `Je schrijft outreach-e-mails namens Brand Nova. Brand Nova biedt een gratis Website Check aan; het ENIGE doel van elke mail is het bedrijf uitnodigen die gratis check te doen via de meegegeven link.
 
@@ -158,7 +203,12 @@ export async function writeOutreachEmail(input: WriterInput): Promise<GeneratedE
     .filter(Boolean)
     .join("\n\n");
 
-  return jsonCall(env.modelWriter, WRITER_SYSTEM, user, emailSchema, 0.8);
+  const parsed = await jsonCall(env.modelWriter, WRITER_SYSTEM, user, emailSchema, 0.8);
+  return {
+    subject: parsed.subject,
+    body: parsed.body,
+    strategy_tags: normalizeStrategyTags(parsed.strategy_tags),
+  };
 }
 
 // ---------------------------------------------------------------------------

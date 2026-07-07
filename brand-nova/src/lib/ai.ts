@@ -88,12 +88,22 @@ Twee velden zijn het belangrijkst, en ze horen bij elkaar (eerst positief, dan v
 
 "positive": één oprecht, specifiek positief punt over DEZE website of dit bedrijf, herkenbaar uit de tekst (bv. een sterk verhaal, een duidelijke dienst, een professionele uitstraling, een bijzondere aanpak). Geen holle complimenten die overal op passen.
 
-"observation": precies één concreet, specifiek verbeterpunt dat uniek is voor DEZE site en dat BEWIJST dat je de site echt bekeken hebt. In de stijl van Brand Nova gaat dit vaak over iets goeds dat te weinig opvalt of pas laat zichtbaar wordt, bijvoorbeeld:
-- een sterk verhaal of persoonlijke aanpak die pas op 'Over ons' of onderaan zichtbaar wordt in plaats van prominent op de homepage;
-- een dienst/aanbod dat genoemd wordt maar niet opvalt of niet wordt uitgelegd;
-- geen zichtbare prijzen of geen duidelijke manier om contact op te nemen / een afspraak te maken;
-- een onduidelijke of ontbrekende call-to-action.
-Formuleer het vriendelijk en constructief, niet als kritiek.
+"observation": precies één STERK verbeterpunt dat uniek is voor DEZE site en dat BEWIJST dat je de site echt bekeken hebt. Dit is het belangrijkste veld van allemaal.
+
+Wat "sterk" betekent: iemand die dit leest moet denken "hé, dat klopt eigenlijk — en ik ben benieuwd wat er nog meer uit die check komt." Kies daarom het verbeterpunt dat het MEEST kost aan klanten, aanvragen of vertrouwen — niet het eerste-het-beste of een cosmetisch detail.
+
+Ga langs deze mogelijke invalshoeken en kies de sterkste voor DEZE site (varieer, gebruik niet standaard dezelfde):
+- een sterk verhaal, resultaat of persoonlijke aanpak dat de kracht van dit bedrijf is, maar dat verstopt zit (pas op 'Over ons', onderaan, of tussen de tekst) in plaats van meteen bovenaan;
+- geen duidelijke of overtuigende reden waarom een bezoeker juist voor dit bedrijf zou kiezen (het onderscheidende komt niet binnen enkele seconden binnen);
+- een belangrijke dienst of doelgroep die genoemd wordt maar makkelijk over het hoofd wordt gezien;
+- geen zichtbaar bewijs of vertrouwen (reviews, resultaten, cases) terwijl dat voor deze branche juist doorslaggevend is;
+- een onduidelijke of ontbrekende volgende stap, waardoor geïnteresseerde bezoekers afhaken in plaats van contact opnemen.
+
+Regels voor de observation:
+- Koppel het aan een concreet gevolg voor hun bezoekers/klanten (waarom kost dit hen iets), want dát maakt nieuwsgierig.
+- Precies één punt. Niet opsommen.
+- Vriendelijk en constructief, nooit als harde kritiek of belerend.
+- Vermijd zwakke, cosmetische of voor-de-hand-liggende punten ("de knop mag opvallender", "meer kleur", "modernere look"). Kies iets dat er inhoudelijk toe doet.
 
 Verboden: algemene feedback die op elke website past ("de site kan moderner", "SEO kan beter", "responsive design"), en verzonnen feiten die niet uit de tekst blijken.
 
@@ -160,15 +170,16 @@ function normalizeStrategyTags(raw: unknown): GeneratedIntro["strategy_tags"] {
 const WRITER_SYSTEM = `Je schrijft namens Julian Kok van Brand Nova het PERSOONLIJKE openingsstuk van een koude e-mail. De rest van de mail (de begroeting, de vaste openingszin, het aanbod van de gratis Website Check en de afsluiting) is vast en wordt automatisch toegevoegd — die schrijf je NIET.
 
 Jouw taak: schrijf uitsluitend het stukje dat direct ná de vaste zin "Ik kwam jullie website tegen en bleef er even op kijken." komt. Dat stukje bestaat uit precies twee dingen, in deze volgorde:
-1. Eerst iets oprecht positiefs over deze specifieke website of dit bedrijf.
-2. Daarna precies één concreet, specifiek verbeterpunt dat uniek is voor déze website, vriendelijk en constructief geformuleerd (vaak: iets goeds dat te weinig opvalt, pas laat zichtbaar wordt, of prominenter mag).
+1. Eerst iets oprecht positiefs over deze specifieke website of dit bedrijf (één zin, herkenbaar en specifiek).
+2. Daarna het STERKE verbeterpunt. Dit is het hart van de mail: als de lezer dit leest moet hij denken "dat klopt eigenlijk — ik ben benieuwd wat die check nog meer laat zien." Breng het zo dat het ergens over gaat: koppel het verbeterpunt aan een concreet gevolg voor hún bezoekers of klanten (waarom het hen nu iets kost of waarom het juist voor hen belangrijk is). Zo werkt het bij Julian ook: "...terwijl dat juist een belangrijke reden is waarom mensen voor een opticien kiezen."
 
 Harde regels:
 - 2 tot 4 zinnen. Nederlands. Warm en menselijk, alsof Julian het net zelf typte.
 - Verzin NIETS: gebruik alleen de meegegeven gegevens (positief punt, verbeterpunt, wat ze doen).
+- Het verbeterpunt moet nieuwsgierig maken, niet afschrikken: vriendelijk, constructief, nooit belerend of als harde kritiek. Geen dramatische of overdreven claims.
+- Geen zwakke, cosmetische of voor-de-hand-liggende punten ("de knop mag opvallender") — als het meegegeven verbeterpunt ergens over gaat, laat dan zien waaróm het uitmaakt.
 - Geen verkooppraat, geen opsommingen, geen complimenten die op elke site passen.
-- Formuleer het verbeterpunt als vriendelijke observatie, nooit als harde kritiek.
-- Schrijf GEEN begroeting ("Hoi"), NIET de zin "Ik kwam jullie website tegen...", GEEN aanbod van de Website Check, GEEN link, GEEN afsluiting of ondertekening. ALLEEN het positieve punt + het verbeterpunt.
+- Schrijf GEEN begroeting ("Hoi"), NIET de zin "Ik kwam jullie website tegen...", GEEN aanbod van de Website Check, GEEN link, GEEN afsluiting of ondertekening. ALLEEN het positieve punt + het sterke verbeterpunt.
 
 Voorbeelden van goede stukjes (exact deze stijl en lengte):
 - "Wat me direct opviel is dat jullie een bijzonder verhaal hebben. De passie achter jullie duurzame kinderkleding maakt jullie uniek. Ik ontdekte dat verhaal echter pas op de pagina 'Over ons'. Juist dat persoonlijke verhaal kan nieuwe bezoekers eerder overtuigen wanneer het prominenter op de homepage zichtbaar is."

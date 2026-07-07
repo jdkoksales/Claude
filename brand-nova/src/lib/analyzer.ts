@@ -77,6 +77,43 @@ export async function processAnalysisBatch(limit: number): Promise<number> {
   return processed;
 }
 
+/**
+ * Ensures a company has a current analysis, running one on the spot if
+ * needed. Used by the preview flow; returns true when the lead ended up
+ * with a usable observation (status queued).
+ */
+export async function ensureAnalysisForCompany(companyId: string): Promise<boolean> {
+  const { data: existing } = await db()
+    .from("bn_website_analyses")
+    .select("status, improvement_observation, analysis_version")
+    .eq("company_id", companyId)
+    .maybeSingle();
+  if (
+    existing &&
+    existing.status === "done" &&
+    existing.improvement_observation &&
+    existing.analysis_version === ANALYSIS_VERSION
+  ) {
+    return true;
+  }
+  if (existing && ["unreachable", "no_observation"].includes(existing.status as string)) {
+    return false; // deliberate skip — don't retry in a preview
+  }
+  const { data: company } = await db()
+    .from("bn_companies")
+    .select("id, name, website_url")
+    .eq("id", companyId)
+    .maybeSingle();
+  if (!company) return false;
+  await analyzeCompany(company as unknown as PendingCompany);
+  const { data: after } = await db()
+    .from("bn_website_analyses")
+    .select("status, improvement_observation")
+    .eq("company_id", companyId)
+    .maybeSingle();
+  return after?.status === "done" && !!after.improvement_observation;
+}
+
 async function analyzeCompany(company: PendingCompany): Promise<void> {
   await logActivity("analyzing", `Website van ${company.name} analyseren…`, {
     companyId: company.id,

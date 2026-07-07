@@ -1,6 +1,7 @@
 import { db } from "./supabase";
 import { logActivity } from "./activity";
 import { writeOutreachEmail, type GeneratedEmail } from "./ai";
+import { getSettings } from "./settings";
 import { sendEmail } from "./resend";
 import {
   MAX_FOLLOWUP_OVERLAP,
@@ -311,6 +312,40 @@ function sendHourTag(settings: Settings, isoTime: string): string {
     hour12: false,
   }).format(new Date(isoTime));
   return `${hour}h`;
+}
+
+export interface EmailPreview {
+  company: string;
+  toEmail: string;
+  observation: string;
+  subject: string;
+  body: string;
+}
+
+/**
+ * Test mode: writes the exact first email the AI would send for this lead —
+ * same analysis, same insights, same guards — but sends nothing and leaves
+ * the lead untouched. Used to judge quality before going live.
+ */
+export async function previewFirstEmail(leadId: string): Promise<EmailPreview | null> {
+  const lead = await loadLead(leadId);
+  if (!lead?.analysis.improvement_observation) return null;
+  const settings = await getSettings();
+  const insights = await loadInsights();
+  const email = await generateGuardedEmail(lead, 0, [], settings, insights);
+  if (!email) return null;
+  await logActivity(
+    "writing",
+    `Proefmail geschreven voor ${lead.company.name} (testmodus — niets verstuurd).`,
+    { companyId: lead.company.id }
+  );
+  return {
+    company: lead.company.name,
+    toEmail: lead.company.email,
+    observation: lead.analysis.improvement_observation,
+    subject: email.subject,
+    body: email.body,
+  };
 }
 
 /**

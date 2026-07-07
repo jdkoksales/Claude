@@ -59,6 +59,11 @@ const flexibleStringArray = (max: number) =>
     return [];
   }, z.array(z.string()).max(max));
 
+const nullableString = z.preprocess(
+  (v) => (typeof v === "string" && v.trim() ? v.trim() : null),
+  z.string().nullable()
+);
+
 const analysisSchema = z.object({
   what_they_do: flexibleString,
   target_audience: flexibleString,
@@ -68,10 +73,9 @@ const analysisSchema = z.object({
   ctas: flexibleStringArray(6),
   tone: flexibleString,
   industry: flexibleString,
-  observation: z.preprocess(
-    (v) => (typeof v === "string" && v.trim() ? v.trim() : null),
-    z.string().nullable()
-  ),
+  positive: nullableString,
+  observation: nullableString,
+  contact_first_name: nullableString,
 });
 
 export type WebsiteAnalysisResult = z.infer<typeof analysisSchema>;
@@ -80,20 +84,22 @@ const ANALYSIS_SYSTEM = `Je analyseert de homepage-tekst van een bedrijfswebsite
 
 Extraheer uitsluitend wat LETTERLIJK uit de aangeleverde tekst blijkt. Verzin niets. Als iets niet uit de tekst blijkt, laat het veld leeg of de array leeg.
 
-Het veld "observation" is het belangrijkste: één concrete, specifieke observatie die BEWIJST dat je de site echt bekeken hebt en die een natuurlijke aanleiding vormt voor de gratis Website Check. Verwijs naar iets herkenbaars van DEZE site.
+Twee velden zijn het belangrijkst, en ze horen bij elkaar (eerst positief, dan verbeterpunt):
 
-Een goede observatie gaat over iets wat je op deze specifieke pagina wél of juist NIET ziet, bijvoorbeeld:
-- een dienst of aanbod dat genoemd wordt maar niet verder uitgelegd of moeilijk vindbaar is;
-- geen zichtbare prijzen, tarieven of pakketten terwijl bezoekers daar wel naar zoeken;
-- geen duidelijke manier om te reserveren, contact op te nemen of een offerte aan te vragen;
-- een homepage die veel over het bedrijf zelf vertelt maar weinig een bezoeker uitnodigt tot een volgende stap;
+"positive": één oprecht, specifiek positief punt over DEZE website of dit bedrijf, herkenbaar uit de tekst (bv. een sterk verhaal, een duidelijke dienst, een professionele uitstraling, een bijzondere aanpak). Geen holle complimenten die overal op passen.
+
+"observation": precies één concreet, specifiek verbeterpunt dat uniek is voor DEZE site en dat BEWIJST dat je de site echt bekeken hebt. In de stijl van Brand Nova gaat dit vaak over iets goeds dat te weinig opvalt of pas laat zichtbaar wordt, bijvoorbeeld:
+- een sterk verhaal of persoonlijke aanpak die pas op 'Over ons' of onderaan zichtbaar wordt in plaats van prominent op de homepage;
+- een dienst/aanbod dat genoemd wordt maar niet opvalt of niet wordt uitgelegd;
+- geen zichtbare prijzen of geen duidelijke manier om contact op te nemen / een afspraak te maken;
 - een onduidelijke of ontbrekende call-to-action.
+Formuleer het vriendelijk en constructief, niet als kritiek.
 
-Verwijs concreet naar wat het bedrijf doet (dat blijkt uit de tekst) zodat het persoonlijk is. Bijna elke kleine bedrijfssite heeft zo'n concrete verbeterkans — zoek er één.
+Verboden: algemene feedback die op elke website past ("de site kan moderner", "SEO kan beter", "responsive design"), en verzonnen feiten die niet uit de tekst blijken.
 
-Verboden: algemene feedback die op elke website past zonder iets specifieks van dit bedrijf te noemen ("de site kan moderner", "SEO kan beter", "responsive design"), complimenten, en verzonnen feiten over het bedrijf die niet uit de tekst blijken.
+"contact_first_name": de voornaam van de eigenaar/contactpersoon ALS die duidelijk zichtbaar op de site staat (bv. "Hoi, ik ben Hester" of een team met namen). Bij twijfel of als er geen duidelijke persoonsnaam is: null. Nooit gokken.
 
-Retourneer "observation": null ALLEEN als de aangeleverde tekst echt te leeg of onleesbaar is om er iets zinnigs over te zeggen. In vrijwel alle andere gevallen maak je een concrete observatie.
+Retourneer "positive" en "observation" alleen null als de tekst echt te leeg of onleesbaar is. In vrijwel alle andere gevallen vul je ze allebei.
 
 "industry" is één korte branche-aanduiding in het Nederlands (bv. "bouw", "horeca", "advocatuur").
 
@@ -106,7 +112,7 @@ export async function analyzeWebsiteText(
   return jsonCall(
     env.modelLight,
     ANALYSIS_SYSTEM,
-    `Bedrijf: ${companyName}\n\nHomepage-tekst:\n"""\n${homepageText}\n"""\n\nGeef JSON met velden: what_they_do, target_audience, services, usp, trust_signals, ctas, tone, industry, observation.`,
+    `Bedrijf: ${companyName}\n\nHomepage-tekst:\n"""\n${homepageText}\n"""\n\nGeef JSON met velden: what_they_do, target_audience, services, usp, trust_signals, ctas, tone, industry, positive, observation, contact_first_name.`,
     analysisSchema,
     0.2
   );
@@ -116,21 +122,17 @@ export async function analyzeWebsiteText(
 // Email writing (better model; insights injected as steering, not template)
 // ---------------------------------------------------------------------------
 
-// strategy_tags are for learning only and are normalized in code below, so
-// the schema stays permissive — a formatting quirk there must never block an
-// otherwise-good email.
-const emailSchema = z.object({
-  subject: z.string().min(3),
-  body: z.string().min(40),
-  // Accept anything the model puts here (object, string, null, missing) — it's
-  // normalized in code below. z.record would throw on a bare string and kill
-  // an otherwise-perfect email.
+// The AI writes ONLY the personal top block (positive + one improvement).
+// Greeting, opener, the Website Check offer and the closing are fixed proven
+// copy assembled in emailTemplate.ts. strategy_tags are learning metadata,
+// normalized in code so a formatting quirk can never block a good email.
+const introSchema = z.object({
+  intro: z.string().min(20),
   strategy_tags: z.unknown().optional(),
 });
 
-export interface GeneratedEmail {
-  subject: string;
-  body: string;
+export interface GeneratedIntro {
+  intro: string;
   strategy_tags: {
     opener_style: string;
     length_bucket: "short" | "medium" | "long";
@@ -138,7 +140,7 @@ export interface GeneratedEmail {
   };
 }
 
-function normalizeStrategyTags(raw: unknown): GeneratedEmail["strategy_tags"] {
+function normalizeStrategyTags(raw: unknown): GeneratedIntro["strategy_tags"] {
   const tags: Record<string, unknown> =
     raw && typeof raw === "object" && !Array.isArray(raw)
       ? (raw as Record<string, unknown>)
@@ -155,39 +157,42 @@ function normalizeStrategyTags(raw: unknown): GeneratedEmail["strategy_tags"] {
   };
 }
 
-const WRITER_SYSTEM = `Je schrijft outreach-e-mails namens Brand Nova. Brand Nova biedt een gratis Website Check aan; het ENIGE doel van elke mail is het bedrijf uitnodigen die gratis check te doen via de meegegeven link.
+const WRITER_SYSTEM = `Je schrijft namens Julian Kok van Brand Nova het PERSOONLIJKE openingsstuk van een koude e-mail. De rest van de mail (de begroeting, de vaste openingszin, het aanbod van de gratis Website Check en de afsluiting) is vast en wordt automatisch toegevoegd — die schrijf je NIET.
 
-Stijlregels (hard):
-- Schrijf in het Nederlands, alsof een mens het snel maar attent heeft getikt.
-- Klink nooit geautomatiseerd of als AI. Geen "Ik hoop dat deze mail u goed bereikt".
-- Geen nepcomplimenten, geen overdrijving, geen verkooppraat, verkoop géén websites.
-- Gebruik de meegegeven website-observatie als natuurlijke aanleiding — verwijs er concreet naar, bewijs dat je de site bekeken hebt.
-- Verzin NIETS over het bedrijf dat niet in de meegegeven gegevens staat.
-- Kort en luchtig. Eén vraag of uitnodiging, geen opsommingen met voordelen.
-- Toon: vriendelijk, professioneel, behulpzaam, nieuwsgierig, menselijk.
-- De Website Check-link moet één keer natuurlijk in de tekst staan (platte URL is prima).
-- Geen placeholders zoals [naam] — alles moet direct verzendbaar zijn.
-- Onderteken met de meegegeven afzendernaam.
+Jouw taak: schrijf uitsluitend het stukje dat direct ná de vaste zin "Ik kwam jullie website tegen en bleef er even op kijken." komt. Dat stukje bestaat uit precies twee dingen, in deze volgorde:
+1. Eerst iets oprecht positiefs over deze specifieke website of dit bedrijf.
+2. Daarna precies één concreet, specifiek verbeterpunt dat uniek is voor déze website, vriendelijk en constructief geformuleerd (vaak: iets goeds dat te weinig opvalt, pas laat zichtbaar wordt, of prominenter mag).
 
-Bij een follow-up: schrijf iets VOLLEDIG nieuws. Herhaal geen enkele zin, geen enkele formulering en niet dezelfde invalshoek als eerdere mails. Een follow-up is kort, licht en zonder druk.
+Harde regels:
+- 2 tot 4 zinnen. Nederlands. Warm en menselijk, alsof Julian het net zelf typte.
+- Verzin NIETS: gebruik alleen de meegegeven gegevens (positief punt, verbeterpunt, wat ze doen).
+- Geen verkooppraat, geen opsommingen, geen complimenten die op elke site passen.
+- Formuleer het verbeterpunt als vriendelijke observatie, nooit als harde kritiek.
+- Schrijf GEEN begroeting ("Hoi"), NIET de zin "Ik kwam jullie website tegen...", GEEN aanbod van de Website Check, GEEN link, GEEN afsluiting of ondertekening. ALLEEN het positieve punt + het verbeterpunt.
 
-strategy_tags beschrijft je eigen keuzes: opener_style (bv. "question", "observation", "context"), length_bucket, observation_type (bv. "missing_cta", "unclear_copy", "hidden_service", "trust_gap", "other").
+Voorbeelden van goede stukjes (exact deze stijl en lengte):
+- "Wat me direct opviel is dat jullie een bijzonder verhaal hebben. De passie achter jullie duurzame kinderkleding maakt jullie uniek. Ik ontdekte dat verhaal echter pas op de pagina 'Over ons'. Juist dat persoonlijke verhaal kan nieuwe bezoekers eerder overtuigen wanneer het prominenter op de homepage zichtbaar is."
+- "De website oogt professioneel en rustig. Ik merkte alleen dat jullie persoonlijke aanpak pas later duidelijk wordt, terwijl dat juist een belangrijke reden is waarom mensen voor een opticien kiezen."
+- "De diensten zijn direct duidelijk. Ik merkte alleen dat jouw persoonlijke verhaal pas verder op de pagina zichtbaar wordt, terwijl dat juist vertrouwen geeft aan ondernemers die een administratiekantoor zoeken."
 
-Antwoord uitsluitend met JSON: subject, body, strategy_tags.`;
+Bij een follow-up: schrijf een VOLLEDIG nieuw, kort en licht stukje met een andere invalshoek dan eerdere mails. Herhaal geen zinnen.
+
+strategy_tags beschrijft je eigen keuzes (alleen voor interne learning): opener_style, length_bucket (short/medium/long), observation_type (bv. "hidden_story", "hidden_service", "missing_cta", "unclear_copy", "trust_gap", "other").
+
+Antwoord uitsluitend met JSON: { "intro": "...", "strategy_tags": { "opener_style": "...", "length_bucket": "...", "observation_type": "..." } }.`;
 
 export interface WriterInput {
   companyName: string;
   whatTheyDo: string;
   tone: string;
+  positive: string;
   observation: string;
-  websiteCheckUrl: string;
-  fromName: string;
   step: number;
-  previousEmails: Array<{ subject: string; body: string }>;
+  previousIntros: string[];
   insights: Insight[];
 }
 
-export async function writeOutreachEmail(input: WriterInput): Promise<GeneratedEmail> {
+export async function writeIntro(input: WriterInput): Promise<GeneratedIntro> {
   const insightLines = input.insights
     .filter((i) => i.sample_size >= 5)
     .slice(0, 8)
@@ -197,31 +202,29 @@ export async function writeOutreachEmail(input: WriterInput): Promise<GeneratedE
     )
     .join("\n");
 
-  const previous = input.previousEmails
-    .map((e, i) => `--- Eerdere mail ${i + 1} ---\nOnderwerp: ${e.subject}\n${e.body}`)
+  const previous = input.previousIntros
+    .map((t, i) => `--- Eerder stukje ${i + 1} ---\n${t}`)
     .join("\n\n");
 
   const user = [
     `Bedrijf: ${input.companyName}`,
     `Wat ze doen: ${input.whatTheyDo}`,
     `Toon van hun site: ${input.tone}`,
-    `Concrete website-observatie (gebruik deze): ${input.observation}`,
-    `Website Check-link: ${input.websiteCheckUrl}`,
-    `Afzendernaam: ${input.fromName}`,
+    `Positief punt (gebruik dit als opening): ${input.positive}`,
+    `Verbeterpunt (gebruik dit, precies één): ${input.observation}`,
     input.step === 0
       ? `Dit is de EERSTE mail aan dit bedrijf.`
-      : `Dit is FOLLOW-UP nummer ${input.step}. Eerdere mails staan hieronder; schrijf iets volledig nieuws.\n\n${previous}`,
+      : `Dit is FOLLOW-UP nummer ${input.step}. Schrijf een volledig nieuw, kort en licht stukje met een andere invalshoek. Eerdere stukjes:\n\n${previous}`,
     insightLines
-      ? `Wat historisch het best werkt (richtinggevend, geen sjabloon — blijf gevarieerd):\n${insightLines}`
+      ? `Wat historisch het best werkt (richtinggevend, blijf gevarieerd):\n${insightLines}`
       : "",
   ]
     .filter(Boolean)
     .join("\n\n");
 
-  const parsed = await jsonCall(env.modelWriter, WRITER_SYSTEM, user, emailSchema, 0.8);
+  const parsed = await jsonCall(env.modelWriter, WRITER_SYSTEM, user, introSchema, 0.75);
   return {
-    subject: parsed.subject,
-    body: parsed.body,
+    intro: parsed.intro.trim(),
     strategy_tags: normalizeStrategyTags(parsed.strategy_tags),
   };
 }

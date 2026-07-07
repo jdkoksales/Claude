@@ -168,6 +168,8 @@ async function analyzeCompany(company: PendingCompany): Promise<void> {
         ctas: analysis.ctas,
         tone: analysis.tone,
         improvement_observation: observation,
+        positive: analysis.positive,
+        contact_first_name: analysis.contact_first_name,
         status: observation ? "done" : "no_observation",
       },
       { onConflict: "company_id" }

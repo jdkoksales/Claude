@@ -89,6 +89,8 @@ export interface WebsiteAnalysis {
   ctas: string[];
   tone: string | null;
   improvement_observation: string | null;
+  positive: string | null;
+  contact_first_name: string | null;
   analysis_version: number;
   status: "pending" | "done" | "failed" | "unreachable" | "no_observation";
 }

@@ -1,8 +1,9 @@
 import { db } from "./supabase";
 import { logActivity } from "./activity";
-import { writeOutreachEmail, type GeneratedEmail } from "./ai";
+import { writeIntro } from "./ai";
 import { getSettings } from "./settings";
 import { sendEmail } from "./resend";
+import { assembleFirstEmail, assembleFollowUp } from "./emailTemplate";
 import {
   MAX_FOLLOWUP_OVERLAP,
   textOverlap,
@@ -24,7 +25,16 @@ interface OutreachLead {
     what_they_do: string | null;
     tone: string | null;
     improvement_observation: string | null;
+    positive: string | null;
+    contact_first_name: string | null;
   };
+}
+
+interface BuiltEmail {
+  subject: string;
+  body: string;
+  intro: string;
+  strategy_tags: Record<string, string>;
 }
 
 const FOLLOWUP_STATUS: Record<number, LeadStatus> = {
@@ -49,7 +59,7 @@ async function loadLead(leadId: string): Promise<OutreachLead | null> {
     .select(
       `id, status, followups_sent,
        company:bn_companies(id, name, email, industry),
-       analysis:bn_companies(bn_website_analyses(what_they_do, tone, improvement_observation))`
+       analysis:bn_companies(bn_website_analyses(what_they_do, tone, improvement_observation, positive, contact_first_name))`
     )
     .eq("id", leadId)
     .single();
@@ -67,6 +77,8 @@ async function loadLead(leadId: string): Promise<OutreachLead | null> {
       what_they_do: null,
       tone: null,
       improvement_observation: null,
+      positive: null,
+      contact_first_name: null,
     },
   };
 }
@@ -90,61 +102,82 @@ async function releaseLead(leadId: string, toStatus: LeadStatus): Promise<void> 
   await db().from("bn_leads").update({ status: toStatus }).eq("id", leadId);
 }
 
-interface PreviousEmail {
-  subject: string;
-  body: string;
-}
-
-async function previousEmails(leadId: string): Promise<PreviousEmail[]> {
+/** Intro paragraphs from earlier emails in this sequence, oldest first. */
+async function previousIntros(leadId: string): Promise<string[]> {
   const { data } = await db()
     .from("bn_email_sequences")
-    .select("subject, body")
+    .select("strategy_tags")
     .eq("lead_id", leadId)
     .eq("status", "sent")
     .order("step", { ascending: true });
-  return (data ?? []) as PreviousEmail[];
+  return (data ?? [])
+    .map((r) => (r.strategy_tags as Record<string, unknown>)?.intro)
+    .filter((t): t is string => typeof t === "string");
 }
 
 /**
- * Generates an email with the deterministic guards applied: style validation
- * always, uniqueness-vs-previous-emails for follow-ups. One retry, then null
- * — a bad email is never sent.
+ * Generates an email: the AI writes only the personal intro (positive + one
+ * improvement), which is assembled with the fixed proven copy. Guards run on
+ * the AI-written intro — style validation always, uniqueness-vs-previous for
+ * follow-ups. One retry, then null; a bad email is never sent.
  */
 async function generateGuardedEmail(
   lead: OutreachLead,
   step: number,
-  previous: PreviousEmail[],
+  previousIntroTexts: string[],
   settings: Settings,
   insights: Insight[]
-): Promise<GeneratedEmail | null> {
+): Promise<BuiltEmail | null> {
+  const firstName = lead.analysis.contact_first_name;
   for (let attempt = 0; attempt < 2; attempt++) {
-    let email: GeneratedEmail;
+    let generated;
     try {
-      email = await writeOutreachEmail({
+      generated = await writeIntro({
         companyName: lead.company.name,
         whatTheyDo: lead.analysis.what_they_do ?? "",
         tone: lead.analysis.tone ?? "",
+        positive: lead.analysis.positive ?? "",
         observation: lead.analysis.improvement_observation ?? "",
-        websiteCheckUrl: settings.website_check_url,
-        fromName: settings.from_name,
         step,
-        previousEmails: previous,
+        previousIntros: previousIntroTexts,
         insights,
       });
     } catch (err) {
-      console.error(`email generation failed for ${lead.company.name}:`, err);
+      console.error(`intro generation failed for ${lead.company.name}:`, err);
       return null;
     }
 
-    const styleProblems = validateEmailStyle(email.subject, email.body);
-    const tooSimilar = previous.some(
-      (p) => textOverlap(email.body, p.body) > MAX_FOLLOWUP_OVERLAP
+    const { subject, body } =
+      step === 0
+        ? assembleFirstEmail({
+            firstName,
+            intro: generated.intro,
+            websiteCheckUrl: settings.website_check_url,
+          })
+        : assembleFollowUp({
+            firstName,
+            intro: generated.intro,
+            websiteCheckUrl: settings.website_check_url,
+            step,
+          });
+
+    // Validate the AI-written intro only — the fixed copy is trusted.
+    const styleProblems = validateEmailStyle(subject, generated.intro);
+    const tooSimilar = previousIntroTexts.some(
+      (prev) => textOverlap(generated.intro, prev) > MAX_FOLLOWUP_OVERLAP
     );
-    if (styleProblems.length === 0 && !tooSimilar) return email;
+    if (styleProblems.length === 0 && !tooSimilar) {
+      return {
+        subject,
+        body,
+        intro: generated.intro,
+        strategy_tags: generated.strategy_tags,
+      };
+    }
 
     console.warn(
       `guarded email rejected (attempt ${attempt + 1}) for ${lead.company.name}:`,
-      styleProblems.length > 0 ? styleProblems.join("; ") : "too similar to previous email"
+      styleProblems.length > 0 ? styleProblems.join("; ") : "too similar to previous intro"
     );
   }
   return null;
@@ -203,7 +236,7 @@ async function sendForLead(
     return false;
   }
 
-  const previous = step === 0 ? [] : await previousEmails(lead.id);
+  const previous = step === 0 ? [] : await previousIntros(lead.id);
 
   await logActivity(
     "writing",
@@ -238,7 +271,8 @@ async function sendForLead(
       subject: email.subject,
       body: email.body,
       observation_used: lead.analysis.improvement_observation,
-      strategy_tags: email.strategy_tags,
+      // Keep the intro in strategy_tags so follow-ups can avoid repeating it.
+      strategy_tags: { ...email.strategy_tags, intro: email.intro },
       status: "draft",
     })
     .select("id")
@@ -279,6 +313,7 @@ async function sendForLead(
       provider_message_id: result.messageId ?? null,
       strategy_tags: {
         ...email.strategy_tags,
+        intro: email.intro,
         send_hour: sendHourTag(settings, sentAt),
         step: String(step),
       },

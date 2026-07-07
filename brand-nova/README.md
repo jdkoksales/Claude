@@ -65,3 +65,4 @@ van prompts in code: observaties zonder verifieerbare bron worden weggegooid
 (lead wordt overgeslagen, nooit een generieke mail), follow-ups met te veel
 tekst-overlap worden niet verstuurd, auto-antwoorden kunnen alleen uit de
 door jou beheerde kennisbank putten, en uitschrijvingen zijn permanent.
+

@@ -60,6 +60,41 @@ const MANUAL_STATUSES: Array<{ value: string; label: string }> = [
   { value: "queued", label: "opnieuw in wachtrij" },
 ];
 
+interface ThreadEmail {
+  step: number;
+  subject: string;
+  body: string;
+  sent_at: string | null;
+  status: string;
+}
+
+interface ThreadReply {
+  from_email: string | null;
+  subject: string | null;
+  raw_body: string;
+  received_at: string;
+  classification: string | null;
+  auto_replied: boolean;
+  auto_reply_body: string | null;
+  needs_human: boolean;
+}
+
+interface Thread {
+  company: { name: string; domain: string; email: string };
+  emails: ThreadEmail[];
+  replies: ThreadReply[];
+}
+
+function fmt(iso: string | null): string {
+  if (!iso) return "";
+  return new Date(iso).toLocaleString("nl-NL", {
+    day: "numeric",
+    month: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
 export default function LeadsPage() {
   const [leads, setLeads] = useState<LeadRow[]>([]);
   const [total, setTotal] = useState(0);
@@ -67,6 +102,19 @@ export default function LeadsPage() {
   const [q, setQ] = useState("");
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(50);
+  const [thread, setThread] = useState<Thread | null>(null);
+  const [threadLoading, setThreadLoading] = useState(false);
+
+  async function openThread(id: string) {
+    setThreadLoading(true);
+    setThread({ company: { name: "…", domain: "", email: "" }, emails: [], replies: [] });
+    const res = await fetch(`/api/leads/${id}`);
+    if (res.ok) {
+      const data = await res.json();
+      setThread({ company: data.lead.company, emails: data.emails, replies: data.replies });
+    }
+    setThreadLoading(false);
+  }
 
   const load = useCallback(async () => {
     const params = new URLSearchParams();
@@ -146,9 +194,13 @@ export default function LeadsPage() {
                   className="border-b border-line/50 transition-colors hover:bg-panel-2/50"
                 >
                   <td className="px-4 py-3">
-                    <div className="font-medium text-ink">
+                    <button
+                      onClick={() => openThread(lead.id)}
+                      className="text-left font-medium text-ink transition-colors hover:text-nova"
+                      title="Bekijk verzonden mails en antwoorden"
+                    >
                       {lead.bn_companies.name}
-                    </div>
+                    </button>
                     <div className="text-xs text-ink-3">
                       {lead.bn_companies.domain} · {lead.bn_companies.email}
                     </div>
@@ -213,6 +265,96 @@ export default function LeadsPage() {
           </div>
         )}
       </div>
+
+      {thread && (
+        <div
+          className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-void/70 p-4 backdrop-blur-sm"
+          onClick={() => setThread(null)}
+        >
+          <div
+            className="glass my-8 w-full max-w-2xl p-6"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="mb-4 flex items-start justify-between gap-4">
+              <div>
+                <h2 className="text-lg font-semibold">{thread.company.name}</h2>
+                <p className="text-xs text-ink-3">
+                  {thread.company.domain} · {thread.company.email}
+                </p>
+              </div>
+              <button
+                onClick={() => setThread(null)}
+                className="rounded-full px-2 text-ink-3 hover:text-ink"
+              >
+                ✕
+              </button>
+            </div>
+
+            {threadLoading ? (
+              <div className="py-10 text-center">
+                <span className="dots text-nova">
+                  <span>●</span> <span>●</span> <span>●</span>
+                </span>
+              </div>
+            ) : thread.emails.length === 0 && thread.replies.length === 0 ? (
+              <p className="py-8 text-center text-sm text-ink-3">
+                Nog geen mails verstuurd aan dit bedrijf.
+              </p>
+            ) : (
+              <div className="space-y-3">
+                {thread.emails.map((email) => (
+                  <div
+                    key={`e${email.step}`}
+                    className="rounded-lg border border-line bg-panel-2/50 p-4"
+                  >
+                    <div className="mb-2 flex items-center justify-between text-xs text-ink-3">
+                      <span className="rounded-full bg-nova-soft/50 px-2 py-0.5 text-ink-2">
+                        {email.step === 0 ? "Eerste mail" : `Follow-up ${email.step}`}
+                        {email.status !== "sent" && ` · ${email.status}`}
+                      </span>
+                      <span>{fmt(email.sent_at)}</span>
+                    </div>
+                    <p className="mb-2 text-sm font-medium text-ink">
+                      {email.subject}
+                    </p>
+                    <p className="whitespace-pre-wrap text-sm leading-relaxed text-ink-2">
+                      {email.body}
+                    </p>
+                  </div>
+                ))}
+
+                {thread.replies.map((reply, i) => (
+                  <div
+                    key={`r${i}`}
+                    className="rounded-lg border border-warm/30 bg-warm/5 p-4"
+                  >
+                    <div className="mb-2 flex items-center justify-between text-xs text-ink-3">
+                      <span className="rounded-full bg-warm/20 px-2 py-0.5 text-warm">
+                        Antwoord{reply.classification ? ` · ${reply.classification.replace(/_/g, " ")}` : ""}
+                        {reply.needs_human ? " · wacht op jou" : ""}
+                      </span>
+                      <span>{fmt(reply.received_at)}</span>
+                    </div>
+                    <p className="whitespace-pre-wrap text-sm leading-relaxed text-ink-2">
+                      {reply.raw_body}
+                    </p>
+                    {reply.auto_replied && reply.auto_reply_body && (
+                      <div className="mt-3 rounded-lg border border-good/30 bg-good/5 p-3">
+                        <p className="mb-1 text-xs text-good">
+                          AI heeft automatisch geantwoord:
+                        </p>
+                        <p className="whitespace-pre-wrap text-sm leading-relaxed text-ink-2">
+                          {reply.auto_reply_body}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </Shell>
   );
 }

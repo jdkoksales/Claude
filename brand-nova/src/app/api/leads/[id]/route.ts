@@ -4,6 +4,44 @@ import { db } from "@/lib/supabase";
 import { logActivity } from "@/lib/activity";
 import { WARM_STATUSES, type LeadStatus } from "@/lib/types";
 
+/**
+ * Full conversation for one lead: the company, every email the AI sent
+ * (subject + body + when), and every reply. This is where the operator reads
+ * back exactly what went out — the emails aren't in their own mailbox because
+ * the AI sends via Resend, so the app is the record.
+ */
+export async function GET(
+  _request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id } = await params;
+  const { data: lead } = await db()
+    .from("bn_leads")
+    .select("id, status, followups_sent, warm_since, bn_companies(name, domain, email, website_url, industry)")
+    .eq("id", id)
+    .maybeSingle();
+  if (!lead) {
+    return NextResponse.json({ error: "lead not found" }, { status: 404 });
+  }
+  const [{ data: emails }, { data: replies }] = await Promise.all([
+    db()
+      .from("bn_email_sequences")
+      .select("step, subject, body, sent_at, status")
+      .eq("lead_id", id)
+      .order("step", { ascending: true }),
+    db()
+      .from("bn_replies")
+      .select("from_email, subject, raw_body, received_at, classification, classification_confidence, auto_replied, auto_reply_body, needs_human")
+      .eq("lead_id", id)
+      .order("received_at", { ascending: true }),
+  ]);
+  return NextResponse.json({
+    lead: { ...lead, company: lead.bn_companies },
+    emails: emails ?? [],
+    replies: replies ?? [],
+  });
+}
+
 const patchSchema = z.object({
   status: z.enum([
     "queued",

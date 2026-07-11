@@ -12,6 +12,7 @@ const PUBLIC_PATHS = [
   "/api/cron/tick",
   "/api/cron/daily",
   "/api/preview", // does its own auth: session cookie or operator key
+  "/api/test-send", // does its own auth: session cookie or operator key
 ];
 
 export async function middleware(request: NextRequest) {

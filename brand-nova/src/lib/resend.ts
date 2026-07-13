@@ -18,8 +18,9 @@ export interface SendResult {
 /**
  * Sends one outreach email via Resend. Plain text only — handwritten emails
  * don't come with HTML templates, and plain text performs better for cold
- * outreach. Every mail carries List-Unsubscribe headers plus a visible
- * opt-out line, which is both legally required and good for deliverability.
+ * outreach. Opt-out is provided via List-Unsubscribe headers only (Julian's
+ * call: no visible footer line in the body). The headers keep us compliant
+ * and give unhappy recipients a one-click alternative to hitting "spam".
  */
 export async function sendEmail(input: {
   to: string;
@@ -30,7 +31,7 @@ export async function sendEmail(input: {
   inReplyTo?: string;
 }): Promise<SendResult> {
   const optOut = unsubscribeUrl(input.to);
-  const text = `${input.body.trimEnd()}\n\n--\nLiever geen mail meer van ons? ${optOut}`;
+  const text = input.body.trimEnd();
   try {
     const { data, error } = await resend().emails.send({
       from: `${input.fromName} <${input.fromEmail}>`,

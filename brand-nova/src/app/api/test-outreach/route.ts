@@ -86,7 +86,7 @@ export async function GET(request: NextRequest) {
     insights: [],
   });
 
-  const { subject, body } = assembleFirstEmail({
+  const { subject, body, html } = assembleFirstEmail({
     firstName: analysis.contact_first_name,
     intro: intro.intro,
     websiteCheckUrl: settings.website_check_url,
@@ -97,6 +97,7 @@ export async function GET(request: NextRequest) {
     to: to.data,
     subject: testSubject,
     body,
+    html,
     fromName: settings.from_name,
     fromEmail: settings.from_email,
   });

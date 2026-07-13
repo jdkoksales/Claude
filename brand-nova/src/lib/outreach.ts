@@ -33,6 +33,7 @@ interface OutreachLead {
 interface BuiltEmail {
   subject: string;
   body: string;
+  html: string;
   intro: string;
   strategy_tags: Record<string, string>;
 }
@@ -147,7 +148,7 @@ async function generateGuardedEmail(
       return null;
     }
 
-    const { subject, body } =
+    const { subject, body, html } =
       step === 0
         ? assembleFirstEmail({
             firstName,
@@ -170,6 +171,7 @@ async function generateGuardedEmail(
       return {
         subject,
         body,
+        html,
         intro: generated.intro,
         strategy_tags: generated.strategy_tags,
       };
@@ -290,6 +292,7 @@ async function sendForLead(
     to: lead.company.email,
     subject: email.subject,
     body: email.body,
+    html: email.html,
     fromName: settings.from_name,
     fromEmail: settings.from_email,
   });

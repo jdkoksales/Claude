@@ -1,15 +1,34 @@
+import { env } from "./env";
+
 /**
  * Brand Nova's proven email structure, reverse-engineered from Julian's
  * hand-written winners. Only the personal top block (positive + one specific
  * improvement) is AI-generated; everything else here is fixed, proven copy.
  *
- * Subject and opener are constant; the bottom carries one strong, unchanging
- * offer of the free Website Check plus a human closing.
+ * Every email is built in two forms: a plain-text part (best for deliverability
+ * and text-only clients) and an HTML part carrying the branded signature.
  */
 
 const OPENER = "Ik kwam jullie website tegen en bleef er even op kijken.";
 
-const SIGNATURE = "Groet,\nJulian Kok\nBrand Nova";
+/** Signature details, shown in every outgoing email. */
+const SIG = {
+  name: "Julian Kok",
+  title: "Marketing Specialist",
+  email: "julian@brand-nova.nl",
+  phone: "+31 6 16036328",
+  website: "www.brand-nova.nl",
+  websiteUrl: "https://www.brand-nova.nl",
+  address: "Westerkade 16/4, Groningen",
+};
+
+/** Image files served from the app's /public/sig folder. */
+function photoUrl(): string {
+  return `${env.appUrl}/sig/julian.jpg`;
+}
+function logoUrl(): string {
+  return `${env.appUrl}/sig/brand-nova-logo.png`;
+}
 
 function greeting(firstName: string | null): string {
   return firstName ? `Hoi ${firstName},` : "Hoi,";
@@ -23,35 +42,138 @@ export function buildSubject(firstName: string | null): string {
     : base.charAt(0).toUpperCase() + base.slice(1);
 }
 
-/** The unchanging Website Check offer block. */
-function offerBlock(websiteCheckUrl: string): string {
+/** The unchanging Website Check offer block (plain text). */
+function offerBlock(websiteCheckUrl: string): string[] {
   return [
     "Daarom dacht ik dat je misschien iets hebt aan mijn gratis Website Check.",
     "Je voert alleen je website in en ontvangt direct 10 concrete verbeterpunten om meer uit je website te halen. Denk aan meer aanvragen, meer omzet of meer klanten.",
     websiteCheckUrl,
     "De Website Check is volledig gratis en vrijblijvend. Misschien bevestigt hij alleen dat alles al goed staat, maar vaak zitten er toch een paar praktische verbeterpunten tussen waar je direct iets mee kunt.",
-  ].join("\n\n");
+  ];
+}
+
+const REPLY_LINE =
+  "Mocht je er iets aan hebben, dan hoor ik dat natuurlijk graag. Je kunt gewoon op deze mail reageren.";
+
+// ---------------------------------------------------------------------------
+// Plain-text signature
+// ---------------------------------------------------------------------------
+
+function signatureText(): string {
+  return [
+    "Met vriendelijke groet,",
+    `${SIG.name} | ${SIG.title}`,
+    `E: ${SIG.email}`,
+    `T: ${SIG.phone}`,
+    `W: ${SIG.website}`,
+    SIG.address,
+    "Brand Nova",
+  ].join("\n");
+}
+
+// ---------------------------------------------------------------------------
+// HTML rendering (table-based + inline styles for email-client compatibility)
+// ---------------------------------------------------------------------------
+
+function escapeHtml(s: string): string {
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+/** Turns plain paragraphs into styled <p> blocks; linkifies bare URLs. */
+function paragraphsToHtml(paragraphs: string[]): string {
+  return paragraphs
+    .map((p) => {
+      const isUrl = /^https?:\/\/\S+$/.test(p.trim());
+      const content = isUrl
+        ? `<a href="${escapeHtml(p.trim())}" style="color:#4353c9;text-decoration:underline;">${escapeHtml(p.trim())}</a>`
+        : escapeHtml(p).replace(/\n/g, "<br>");
+      return `<p style="margin:0 0 16px;">${content}</p>`;
+    })
+    .join("");
+}
+
+function signatureHtml(): string {
+  return `
+<table cellpadding="0" cellspacing="0" border="0" style="margin-top:24px;font-family:Verdana,Arial,sans-serif;font-size:13px;color:#333333;line-height:1.5;">
+  <tr><td style="padding-bottom:10px;">Met vriendelijke groet,</td></tr>
+  <tr><td style="padding-bottom:12px;border-top:1px solid #dddddd;"></td></tr>
+  <tr>
+    <td style="padding-bottom:12px;">
+      <strong style="color:#111111;">${SIG.name}</strong>
+      <span style="color:#888888;"> | ${SIG.title}</span>
+    </td>
+  </tr>
+  <tr>
+    <td style="padding-bottom:14px;">
+      <img src="${photoUrl()}" width="90" height="90" alt="${SIG.name}"
+        style="display:block;border-radius:50%;width:90px;height:90px;object-fit:cover;">
+    </td>
+  </tr>
+  <tr>
+    <td style="padding-bottom:14px;font-size:13px;color:#333333;">
+      E: <a href="mailto:${SIG.email}" style="color:#b0197f;text-decoration:none;">${SIG.email}</a><br>
+      T: ${SIG.phone}<br>
+      W: <a href="${SIG.websiteUrl}" style="color:#b0197f;text-decoration:none;">${SIG.website}</a><br>
+      ${escapeHtml(SIG.address)}
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <img src="${logoUrl()}" width="150" alt="Brand Nova"
+        style="display:block;width:150px;height:auto;">
+    </td>
+  </tr>
+</table>`.trim();
+}
+
+function wrapHtml(bodyParagraphs: string[]): string {
+  return `<!doctype html>
+<html lang="nl"><body style="margin:0;padding:0;background:#ffffff;">
+<div style="max-width:600px;margin:0 auto;padding:16px;font-family:Verdana,Arial,sans-serif;font-size:14px;color:#222222;line-height:1.6;">
+${paragraphsToHtml(bodyParagraphs)}
+${signatureHtml()}
+</div>
+</body></html>`;
+}
+
+// ---------------------------------------------------------------------------
+// Assemblers
+// ---------------------------------------------------------------------------
+
+export interface AssembledEmail {
+  subject: string;
+  /** Plain-text part. */
+  body: string;
+  /** HTML part with the branded signature. */
+  html: string;
 }
 
 /**
- * Assembles a first-touch email from the AI-written intro plus the fixed
- * copy. `intro` is only the positive + one improvement point (no greeting,
- * no opener line, no offer).
+ * First-touch email: AI intro + fixed opener + offer + branded signature.
+ * `intro` is only the positive + one improvement point.
  */
 export function assembleFirstEmail(input: {
   firstName: string | null;
   intro: string;
   websiteCheckUrl: string;
-}): { subject: string; body: string } {
-  const body = [
+}): AssembledEmail {
+  const offer = offerBlock(input.websiteCheckUrl);
+  const paragraphs = [
     greeting(input.firstName),
     OPENER,
     input.intro.trim(),
-    offerBlock(input.websiteCheckUrl),
-    "Mocht je er iets aan hebben, dan hoor ik dat natuurlijk graag. Je kunt gewoon op deze mail reageren.",
-    SIGNATURE,
-  ].join("\n\n");
-  return { subject: buildSubject(input.firstName), body };
+    ...offer,
+    REPLY_LINE,
+  ];
+  const body = [...paragraphs, signatureText()].join("\n\n");
+  return {
+    subject: buildSubject(input.firstName),
+    body,
+    html: wrapHtml(paragraphs),
+  };
 }
 
 /**
@@ -63,15 +185,16 @@ export function assembleFollowUp(input: {
   intro: string;
   websiteCheckUrl: string;
   step: number;
-}): { subject: string; body: string } {
-  const body = [
+}): AssembledEmail {
+  const paragraphs = [
     greeting(input.firstName),
     input.intro.trim(),
     `Mocht je er iets mee willen: de gratis Website Check staat nog voor je klaar — ${input.websiteCheckUrl}`,
-    SIGNATURE,
-  ].join("\n\n");
+  ];
+  const body = [...paragraphs, signatureText()].join("\n\n");
   return {
-    subject: `Nog een gedachte over jullie website`,
+    subject: "Nog een gedachte over jullie website",
     body,
+    html: wrapHtml(paragraphs),
   };
 }

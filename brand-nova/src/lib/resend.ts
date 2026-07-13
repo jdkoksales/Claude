@@ -16,16 +16,18 @@ export interface SendResult {
 }
 
 /**
- * Sends one outreach email via Resend. Plain text only — handwritten emails
- * don't come with HTML templates, and plain text performs better for cold
- * outreach. Opt-out is provided via List-Unsubscribe headers only (Julian's
- * call: no visible footer line in the body). The headers keep us compliant
- * and give unhappy recipients a one-click alternative to hitting "spam".
+ * Sends one outreach email via Resend. Always includes a plain-text part
+ * (best for deliverability and text-only clients); when `html` is provided it
+ * is sent as the multipart alternative, which carries the branded signature.
+ * Opt-out is via List-Unsubscribe headers only (no visible footer line) — they
+ * keep us compliant and give unhappy recipients a one-click alternative to
+ * hitting "spam".
  */
 export async function sendEmail(input: {
   to: string;
   subject: string;
   body: string;
+  html?: string;
   fromName: string;
   fromEmail: string;
   inReplyTo?: string;
@@ -38,6 +40,7 @@ export async function sendEmail(input: {
       to: input.to,
       subject: input.subject,
       text,
+      ...(input.html ? { html: input.html } : {}),
       headers: {
         "List-Unsubscribe": `<${optOut}>`,
         "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",

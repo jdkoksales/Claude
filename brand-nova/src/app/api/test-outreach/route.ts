@@ -49,11 +49,13 @@ export async function GET(request: NextRequest) {
     );
   }
 
+  const dryRun = request.nextUrl.searchParams.get("dry") === "1";
+
   const page = await fetchHomepage(websiteUrlForDomain(domain));
   if (!page.ok) {
     return NextResponse.json(
-      { error: `website onbereikbaar: ${page.error}` },
-      { status: 502 }
+      { domain, ok: false, stage: "fetch", error: page.error },
+      { status: dryRun ? 200 : 502 }
     );
   }
 
@@ -67,12 +69,26 @@ export async function GET(request: NextRequest) {
   if (!observation || !analysis.positive) {
     return NextResponse.json(
       {
+        domain,
+        ok: false,
+        stage: "no_observation",
         error:
           "geen bruikbare observatie voor deze site — de AI zou deze lead in het echt overslaan",
         analysis,
       },
       { status: 200 }
     );
+  }
+
+  if (dryRun) {
+    return NextResponse.json({
+      domain,
+      ok: true,
+      stage: "analyzed",
+      companyName,
+      positive: analysis.positive,
+      observation,
+    });
   }
 
   const intro = await writeIntro({

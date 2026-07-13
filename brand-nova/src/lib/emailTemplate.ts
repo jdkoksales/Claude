@@ -1,5 +1,3 @@
-import { env } from "./env";
-
 /**
  * Brand Nova's proven email structure, reverse-engineered from Julian's
  * hand-written winners. Only the personal top block (positive + one specific
@@ -21,14 +19,6 @@ const SIG = {
   websiteUrl: "https://www.brand-nova.nl",
   address: "Westerkade 16/4, Groningen",
 };
-
-/** Image files served from the app's /public/sig folder. */
-function photoUrl(): string {
-  return `${env.appUrl}/sig/julian.jpg`;
-}
-function logoUrl(): string {
-  return `${env.appUrl}/sig/brand-nova-logo.png`;
-}
 
 function greeting(firstName: string | null): string {
   return firstName ? `Hoi ${firstName},` : "Hoi,";
@@ -107,23 +97,12 @@ function signatureHtml(): string {
     </td>
   </tr>
   <tr>
-    <td style="padding-bottom:14px;">
-      <img src="${photoUrl()}" width="90" height="90" alt="${SIG.name}"
-        style="display:block;border-radius:50%;width:90px;height:90px;object-fit:cover;">
-    </td>
-  </tr>
-  <tr>
-    <td style="padding-bottom:14px;font-size:13px;color:#333333;">
+    <td style="font-size:13px;color:#333333;">
       E: <a href="mailto:${SIG.email}" style="color:#b0197f;text-decoration:none;">${SIG.email}</a><br>
       T: ${SIG.phone}<br>
       W: <a href="${SIG.websiteUrl}" style="color:#b0197f;text-decoration:none;">${SIG.website}</a><br>
-      ${escapeHtml(SIG.address)}
-    </td>
-  </tr>
-  <tr>
-    <td>
-      <img src="${logoUrl()}" width="150" alt="Brand Nova"
-        style="display:block;width:150px;height:auto;">
+      ${escapeHtml(SIG.address)}<br>
+      Brand Nova
     </td>
   </tr>
 </table>`.trim();

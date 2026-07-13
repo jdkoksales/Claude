@@ -257,6 +257,26 @@ export default function SettingsPage() {
             </div>
           </div>
 
+          <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-line bg-panel-2/50 p-3">
+            <input
+              type="checkbox"
+              checked={settings.auto_reply_enabled}
+              onChange={(e) =>
+                setSettings({ ...settings, auto_reply_enabled: e.target.checked })
+              }
+              className="h-4 w-4 accent-[#7c8cff]"
+            />
+            <span className="text-sm">
+              <span className="font-medium text-ink">
+                Automatisch simpele vragen beantwoorden
+              </span>
+              <span className="block text-xs text-ink-3">
+                Uit = de AI classificeert reacties alleen; jij beantwoordt alles
+                zelf vanuit je eigen inbox.
+              </span>
+            </span>
+          </label>
+
           <div className="flex items-center gap-3 pt-2">
             <button
               onClick={save}

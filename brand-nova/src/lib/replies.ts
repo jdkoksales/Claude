@@ -213,7 +213,13 @@ export async function processInboundEmail(inbound: InboundEmail): Promise<void> 
   }
 
   // Auto-answer simple questions, grounded strictly in the FAQ table.
-  if (classified.classification === "question" && classified.questionSummary) {
+  // Hard-gated on a setting (default OFF): Julian answers replies himself
+  // for now — the AI only classifies.
+  if (
+    settings.auto_reply_enabled &&
+    classified.classification === "question" &&
+    classified.questionSummary
+  ) {
     const { data: faq } = await db()
       .from("bn_faq_entries")
       .select("question, answer");

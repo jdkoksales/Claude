@@ -19,6 +19,7 @@ const patchSchema = z
     max_followups: z.number().int().min(0).max(3),
     followup_delay_days: z.array(z.number().int().min(1).max(60)).max(3),
     auto_reply_confidence_threshold: z.number().min(0).max(1),
+    auto_reply_enabled: z.boolean(),
     paused: z.boolean(),
   })
   .partial();

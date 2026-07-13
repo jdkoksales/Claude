@@ -140,6 +140,7 @@ export interface Settings {
   max_followups: number;
   followup_delay_days: number[];
   auto_reply_confidence_threshold: number;
+  auto_reply_enabled: boolean;
   paused: boolean;
 }
 

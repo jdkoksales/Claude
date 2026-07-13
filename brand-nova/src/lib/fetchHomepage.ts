@@ -12,6 +12,25 @@ export interface HomepageResult {
   error?: string;
 }
 
+// Present as a real, current Chrome on Windows. Many sites (and the WAFs in
+// front of them) reject anything that looks like a bot with a 403, so an
+// honest "BrandNovaBot" UA gets blocked far more than a normal browser one.
+const BROWSER_HEADERS: Record<string, string> = {
+  "user-agent":
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
+  accept:
+    "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+  "accept-language": "nl-NL,nl;q=0.9,en;q=0.8",
+  "sec-ch-ua": '"Chromium";v="126", "Not.A/Brand";v="24", "Google Chrome";v="126"',
+  "sec-ch-ua-mobile": "?0",
+  "sec-ch-ua-platform": '"Windows"',
+  "sec-fetch-dest": "document",
+  "sec-fetch-mode": "navigate",
+  "sec-fetch-site": "none",
+  "sec-fetch-user": "?1",
+  "upgrade-insecure-requests": "1",
+};
+
 /**
  * Fetches a company homepage and extracts readable text, deterministically.
  * Bounded in time and size so a slow or hostile site can never stall the
@@ -25,12 +44,7 @@ export async function fetchHomepage(url: string): Promise<HomepageResult> {
     const res = await fetch(url, {
       signal: controller.signal,
       redirect: "follow",
-      headers: {
-        "user-agent":
-          "Mozilla/5.0 (compatible; BrandNovaBot/1.0; website analysis for outreach personalization)",
-        accept: "text/html,application/xhtml+xml",
-        "accept-language": "nl,en;q=0.8",
-      },
+      headers: BROWSER_HEADERS,
     });
     if (!res.ok) {
       return { ok: false, text: "", title: "", finalUrl: res.url, error: `HTTP ${res.status}` };
@@ -58,19 +72,35 @@ export async function fetchHomepage(url: string): Promise<HomepageResult> {
     }
 
     const $ = cheerio.load(html);
-    $("script, style, noscript, svg, iframe, template").remove();
+    // Pull metadata BEFORE stripping tags — og:/meta tags carry a usable
+    // summary even when a site renders its body with JavaScript.
     const title = $("title").first().text().trim();
-    const metaDescription = $('meta[name="description"]').attr("content")?.trim() ?? "";
+    const metaBits = [
+      $('meta[name="description"]').attr("content"),
+      $('meta[property="og:title"]').attr("content"),
+      $('meta[property="og:description"]').attr("content"),
+      $('meta[property="og:site_name"]').attr("content"),
+      $('meta[name="keywords"]').attr("content"),
+    ]
+      .map((v) => v?.trim())
+      .filter((v): v is string => !!v);
+
+    $("script, style, noscript, svg, iframe, template").remove();
 
     // Prefer main content containers; fall back to body.
     const root = $("main").length ? $("main") : $("body");
-    const text = root
-      .text()
-      .replace(/\s+/g, " ")
-      .trim()
+    const bodyText = root.text().replace(/\s+/g, " ").trim();
+
+    const combined = [title, ...metaBits, bodyText]
+      .filter(Boolean)
+      .join("\n")
+      .replace(/[ \t]+/g, " ")
       .slice(0, MAX_TEXT_CHARS);
 
-    if (text.length < 100) {
+    // Only give up when there is genuinely almost nothing to work with —
+    // title + meta + body together. A site that renders its body via JS but
+    // still ships a decent <title>/description is worth analyzing.
+    if (combined.replace(/\s/g, "").length < 60) {
       return {
         ok: false,
         text: "",
@@ -80,10 +110,6 @@ export async function fetchHomepage(url: string): Promise<HomepageResult> {
       };
     }
 
-    const combined = [title, metaDescription, text]
-      .filter(Boolean)
-      .join("\n")
-      .slice(0, MAX_TEXT_CHARS);
     return { ok: true, text: combined, title, finalUrl: res.url };
   } catch (err: unknown) {
     const message =

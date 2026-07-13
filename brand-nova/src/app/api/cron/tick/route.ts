@@ -13,7 +13,7 @@ export const maxDuration = 300;
  */
 export async function GET() {
   const { data: claimed, error } = await db().rpc("bn_claim_tick", {
-    min_interval_seconds: 240,
+    min_interval_seconds: 55,
   });
   if (error) {
     console.error("tick claim failed:", error.message);

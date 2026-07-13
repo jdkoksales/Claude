@@ -157,6 +157,9 @@ export default function SettingsPage() {
                 }
               >
                 <option value={0}>Automatisch (verspreid over de dag)</option>
+                <option value={1}>Elke minuut 1 mail (snel/test)</option>
+                <option value={2}>Elke 2 minuten 1 mail</option>
+                <option value={3}>Elke 3 minuten 1 mail</option>
                 <option value={5}>Elke 5 minuten 1 mail</option>
                 <option value={10}>Elke 10 minuten 1 mail</option>
                 <option value={15}>Elke 15 minuten 1 mail</option>

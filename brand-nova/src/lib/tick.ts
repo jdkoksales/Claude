@@ -10,8 +10,8 @@ import {
 } from "./sendWindow";
 import type { Settings } from "./types";
 
-/** How often Vercel Cron calls the tick, in minutes (see vercel.json). */
-export const TICK_MINUTES = 5;
+/** How often the heartbeat fires, in minutes (Supabase pg_cron, every minute). */
+export const TICK_MINUTES = 1;
 
 /** Websites analyzed per tick — bounds both runtime and OpenAI spend. */
 const ANALYZE_BATCH = 6;

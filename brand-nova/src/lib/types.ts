@@ -139,6 +139,8 @@ export interface Settings {
   daily_warm_lead_goal: number;
   max_followups: number;
   followup_delay_days: number[];
+  /** 0 = auto-spread across the window; >0 = at most 1 email per N minutes. */
+  send_interval_minutes: number;
   auto_reply_confidence_threshold: number;
   auto_reply_enabled: boolean;
   paused: boolean;

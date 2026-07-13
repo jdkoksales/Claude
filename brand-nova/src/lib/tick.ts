@@ -8,6 +8,7 @@ import {
   sendBudgetForTick,
   startOfLocalDayUtc,
 } from "./sendWindow";
+import type { Settings } from "./types";
 
 /** How often Vercel Cron calls the tick, in minutes (see vercel.json). */
 export const TICK_MINUTES = 5;
@@ -49,8 +50,8 @@ export async function runTick(): Promise<TickSummary> {
   const withinWindow = isWithinSendingWindow(settings);
   let sent = 0;
   if (withinWindow && settings.from_email && settings.website_check_url) {
-    const budget = sendBudgetForTick(settings, sentToday, TICK_MINUTES);
-    sent = await processSendQueue(budget, settings);
+    const budget = await sendBudget(settings, sentToday);
+    if (budget > 0) sent = await processSendQueue(budget, settings);
   } else if (withinWindow && (!settings.from_email || !settings.website_check_url)) {
     await logActivity(
       "waiting",
@@ -59,4 +60,29 @@ export async function runTick(): Promise<TickSummary> {
   }
 
   return { paused: false, analyzed, sent, sentToday: sentToday + sent, withinWindow };
+}
+
+/**
+ * How many emails this tick may send. In interval mode the AI sends at most
+ * one email per `send_interval_minutes` (paced by the time since the last
+ * email actually went out); otherwise it auto-spreads the daily cap evenly
+ * across the sending window. The daily cap always wins.
+ */
+async function sendBudget(settings: Settings, sentToday: number): Promise<number> {
+  if (settings.send_interval_minutes <= 0) {
+    return sendBudgetForTick(settings, sentToday, TICK_MINUTES);
+  }
+  if (settings.daily_send_cap - sentToday <= 0) return 0;
+  const { data: last } = await db()
+    .from("bn_email_sequences")
+    .select("sent_at")
+    .eq("status", "sent")
+    .order("sent_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  const lastMs = last?.sent_at ? new Date(last.sent_at as string).getTime() : 0;
+  const minutesSince = lastMs ? (Date.now() - lastMs) / 60000 : Infinity;
+  // A small slack absorbs tick jitter so e.g. a 5-min interval fires on a
+  // tick that lands at 4m55s rather than waiting a whole extra cycle.
+  return minutesSince >= settings.send_interval_minutes - 0.5 ? 1 : 0;
 }

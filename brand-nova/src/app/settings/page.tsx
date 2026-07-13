@@ -145,6 +145,27 @@ export default function SettingsPage() {
               />
             </div>
             <div>
+              <label className={label}>Verzendtempo</label>
+              <select
+                className={field}
+                value={settings.send_interval_minutes}
+                onChange={(e) =>
+                  setSettings({
+                    ...settings,
+                    send_interval_minutes: Number(e.target.value),
+                  })
+                }
+              >
+                <option value={0}>Automatisch (verspreid over de dag)</option>
+                <option value={5}>Elke 5 minuten 1 mail</option>
+                <option value={10}>Elke 10 minuten 1 mail</option>
+                <option value={15}>Elke 15 minuten 1 mail</option>
+                <option value={20}>Elke 20 minuten 1 mail</option>
+                <option value={30}>Elke 30 minuten 1 mail</option>
+                <option value={60}>Elk uur 1 mail</option>
+              </select>
+            </div>
+            <div>
               <label className={label}>Doel: warme leads per dag</label>
               <input
                 type="number"

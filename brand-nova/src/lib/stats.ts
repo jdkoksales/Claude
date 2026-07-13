@@ -18,6 +18,13 @@ export interface BriefingStats {
   needsAttention: number;
   currentTask: string | null;
   paused: boolean;
+  deliverability: {
+    sentLast7d: number;
+    bouncedLast7d: number;
+    complaintsLast7d: number;
+    /** Complaint rate as a percentage of sent, e.g. 0.3 = 0.3%. */
+    complaintRatePct: number;
+  };
 }
 
 /**
@@ -28,6 +35,7 @@ export interface BriefingStats {
 export async function getBriefingStats(): Promise<BriefingStats> {
   const settings = await getSettings();
   const since24h = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+  const since7d = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
   const dayStart = startOfLocalDayUtc(settings.sending_hours.tz);
   const client = db();
 
@@ -43,6 +51,9 @@ export async function getBriefingStats(): Promise<BriefingStats> {
     queue,
     attention,
     lastActivity,
+    sent7d,
+    bounced7d,
+    complaints7d,
   ] = await Promise.all([
     client
       .from("bn_website_analyses")
@@ -91,7 +102,24 @@ export async function getBriefingStats(): Promise<BriefingStats> {
       .order("occurred_at", { ascending: false })
       .limit(1)
       .maybeSingle(),
+    client
+      .from("bn_email_sequences")
+      .select("id", { count: "exact", head: true })
+      .eq("status", "sent")
+      .gte("sent_at", since7d),
+    client
+      .from("bn_leads")
+      .select("id", { count: "exact", head: true })
+      .eq("status", "bounced"),
+    client
+      .from("bn_unsubscribes")
+      .select("email", { count: "exact", head: true })
+      .eq("reason", "complaint")
+      .gte("unsubscribed_at", since7d),
   ]);
+
+  const sentLast7d = sent7d.count ?? 0;
+  const complaintsLast7d = complaints7d.count ?? 0;
 
   // Only present a task as "currently doing" if it's actually fresh —
   // the employee must never appear busy with something from hours ago.
@@ -117,6 +145,13 @@ export async function getBriefingStats(): Promise<BriefingStats> {
     needsAttention: attention.count ?? 0,
     currentTask,
     paused: settings.paused,
+    deliverability: {
+      sentLast7d,
+      bouncedLast7d: bounced7d.count ?? 0,
+      complaintsLast7d,
+      complaintRatePct:
+        sentLast7d > 0 ? (complaintsLast7d / sentLast7d) * 100 : 0,
+    },
   };
 }
 

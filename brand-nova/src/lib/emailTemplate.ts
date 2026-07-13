@@ -17,7 +17,7 @@ function greeting(firstName: string | null): string {
 
 /** Fixed subject line, optionally personalized with a visible first name. */
 export function buildSubject(firstName: string | null): string {
-  const base = "er viel me iets op aan jullie website 😊";
+  const base = "er viel me iets op aan jullie website";
   return firstName
     ? `${firstName}, ${base}`
     : base.charAt(0).toUpperCase() + base.slice(1);
@@ -71,7 +71,7 @@ export function assembleFollowUp(input: {
     SIGNATURE,
   ].join("\n\n");
   return {
-    subject: `Nog een gedachte over jullie website 😊`,
+    subject: `Nog een gedachte over jullie website`,
     body,
   };
 }

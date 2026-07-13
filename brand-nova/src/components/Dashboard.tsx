@@ -158,6 +158,76 @@ function AttentionList({ onHandled }: { onHandled: () => void }) {
 }
 
 // ---------------------------------------------------------------------------
+// Deliverability — the honest answer to "does this land in spam?": no one
+// (not even Gmail) tells a sender per-message inbox-vs-spam placement. The
+// real, measurable signal is the spam-complaint rate reported back through
+// Resend's provider feedback loop. Industry rule of thumb: keep it under
+// 0.1%; above 0.3% providers start throttling or blocking the domain.
+// ---------------------------------------------------------------------------
+
+function DeliverabilityCard({
+  deliverability,
+}: {
+  deliverability: BriefingStats["deliverability"];
+}) {
+  const { sentLast7d, bouncedLast7d, complaintsLast7d, complaintRatePct } =
+    deliverability;
+  const level =
+    complaintRatePct >= 0.3 ? "critical" : complaintRatePct >= 0.1 ? "warning" : "good";
+  const levelText = {
+    good: { label: "Gezond", className: "text-good" },
+    warning: { label: "Let op", className: "text-warm" },
+    critical: { label: "Risico", className: "text-warm" },
+  }[level];
+
+  return (
+    <section className="glass p-5">
+      <div className="mb-3 flex items-baseline justify-between">
+        <h2 className="text-sm font-medium text-ink-2">
+          Verzendgezondheid (laatste 7 dagen)
+        </h2>
+        <span className={`text-xs font-medium ${levelText.className}`}>
+          {levelText.label}
+        </span>
+      </div>
+      <div className="grid grid-cols-3 gap-4">
+        <div>
+          <p className="text-xs uppercase tracking-wider text-ink-3">Verstuurd</p>
+          <p className="mt-1 text-2xl font-semibold tabular-nums text-ink">
+            {sentLast7d}
+          </p>
+        </div>
+        <div>
+          <p className="text-xs uppercase tracking-wider text-ink-3">Bounces</p>
+          <p className="mt-1 text-2xl font-semibold tabular-nums text-ink">
+            {bouncedLast7d}
+          </p>
+        </div>
+        <div>
+          <p className="text-xs uppercase tracking-wider text-ink-3">
+            Als spam gemarkeerd
+          </p>
+          <p
+            className={`mt-1 text-2xl font-semibold tabular-nums ${
+              complaintsLast7d > 0 ? "text-warm" : "text-ink"
+            }`}
+          >
+            {complaintsLast7d}
+          </p>
+        </div>
+      </div>
+      <p className="mt-3 text-xs leading-relaxed text-ink-3">
+        Niemand — ook Gmail niet — laat zien of een individuele mail in de
+        inbox of spammap belandt. Dit is het enige harde signaal: hoeveel
+        ontvangers 'm actief als spam markeerden. Bij 0 is er niets aan de
+        hand; bij herhaalde klachten verlaag ik desgewenst het dagtempo
+        verder.
+      </p>
+    </section>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // The dashboard itself
 // ---------------------------------------------------------------------------
 
@@ -329,6 +399,10 @@ export default function Dashboard() {
           ))}
         </div>
       </section>
+
+      {stats.deliverability.sentLast7d > 0 && (
+        <DeliverabilityCard deliverability={stats.deliverability} />
+      )}
 
       <AttentionList onHandled={poll} />
 

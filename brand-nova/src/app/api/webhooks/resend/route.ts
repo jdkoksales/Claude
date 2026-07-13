@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Webhook } from "svix";
 import { env } from "@/lib/env";
-import { processBounce, processInboundEmail } from "@/lib/replies";
+import { processBounce, processComplaint, processInboundEmail } from "@/lib/replies";
 
 export const maxDuration = 60;
 
@@ -84,10 +84,14 @@ export async function POST(request: NextRequest) {
       }
       break;
     }
-    case "email.bounced":
-    case "email.complained": {
+    case "email.bounced": {
       const to = firstAddress(event.data.to ?? event.data.email?.to);
       if (to) await processBounce(to);
+      break;
+    }
+    case "email.complained": {
+      const to = firstAddress(event.data.to ?? event.data.email?.to);
+      if (to) await processComplaint(to);
       break;
     }
     default:

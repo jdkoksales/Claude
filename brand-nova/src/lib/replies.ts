@@ -268,7 +268,7 @@ export async function processInboundEmail(inbound: InboundEmail): Promise<void> 
   }
 }
 
-/** Handles Resend bounce/complaint events. */
+/** Handles a hard bounce (invalid/unreachable address). */
 export async function processBounce(toEmail: string): Promise<void> {
   const email = toEmail.toLowerCase();
   const { data: company } = await db()
@@ -288,6 +288,35 @@ export async function processBounce(toEmail: string): Promise<void> {
   await logActivity(
     "system",
     `E-mail aan ${company.name as string} is gebounced — contact gestopt.`,
+    { companyId: company.id as string }
+  );
+}
+
+/**
+ * Handles a spam complaint: the recipient's mail provider (Gmail, Outlook…)
+ * reported the message as spam via its feedback loop. This is the strongest
+ * deliverability signal there is — stronger than a bounce — and it directly
+ * hurts sender reputation, so treat it like a permanent unsubscribe and flag
+ * it distinctly so the dashboard can surface it.
+ */
+export async function processComplaint(toEmail: string): Promise<void> {
+  const email = toEmail.toLowerCase();
+  await db()
+    .from("bn_unsubscribes")
+    .upsert({ email, reason: "complaint" }, { onConflict: "email" });
+  const { data: company } = await db()
+    .from("bn_companies")
+    .select("id, name")
+    .eq("email", email)
+    .maybeSingle();
+  if (!company) return;
+  await db()
+    .from("bn_leads")
+    .update({ status: "unsubscribed", next_action_at: null })
+    .eq("company_id", company.id as string);
+  await logActivity(
+    "system",
+    `⚠️ ${company.name as string} heeft de e-mail als spam gemarkeerd — permanent gestopt.`,
     { companyId: company.id as string }
   );
 }

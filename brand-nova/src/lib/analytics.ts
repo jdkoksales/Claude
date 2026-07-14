@@ -168,7 +168,10 @@ export async function leadsForMetric(
     .from("bn_email_sequences")
     .select(
       "lead_id, status, sent_at, delivered_at, open_count, last_open_at, click_count, last_click_at, complained_at, bn_leads(status, bn_companies(id, name, email))"
-    );
+    )
+    // Analytics count only tracked sends — untracked warmup mails have no
+    // open/click data and would skew the drill-down lists too.
+    .eq("tracked", true);
 
   if (campaignId) q = q.eq("campaign_id", campaignId);
 

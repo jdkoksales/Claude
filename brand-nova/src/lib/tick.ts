@@ -1,6 +1,6 @@
 import { db } from "./supabase";
 import { logActivity } from "./activity";
-import { processAnalysisBatch } from "./analyzer";
+import { ensureQueuedLeads } from "./analyzer";
 import { processSendQueue, recoverStuckLeads } from "./outreach";
 import { getSettings } from "./settings";
 import {
@@ -13,8 +13,14 @@ import type { Settings } from "./types";
 /** How often the heartbeat fires, in minutes (Supabase pg_cron, every minute). */
 export const TICK_MINUTES = 1;
 
-/** Websites analyzed per tick — bounds both runtime and OpenAI spend. */
-const ANALYZE_BATCH = 6;
+/**
+ * Safety cap on how many websites a single tick may analyze while looking for
+ * one usable lead. Analysis is just-in-time (only to top up the small ready
+ * buffer), so this rarely binds; it just stops a tick from running dozens of
+ * analyses in a row when many sites in a row yield no observation — the search
+ * simply continues on the next tick.
+ */
+const MAX_ANALYZE_PER_TICK = 8;
 
 export interface TickSummary {
   paused: boolean;
@@ -37,8 +43,6 @@ export async function runTick(): Promise<TickSummary> {
 
   await recoverStuckLeads();
 
-  const analyzed = await processAnalysisBatch(ANALYZE_BATCH);
-
   const dayStart = startOfLocalDayUtc(settings.sending_hours.tz);
   const { count } = await db()
     .from("bn_email_sequences")
@@ -48,11 +52,18 @@ export async function runTick(): Promise<TickSummary> {
   const sentToday = count ?? 0;
 
   const withinWindow = isWithinSendingWindow(settings);
+  const configured = !!settings.from_email && !!settings.website_check_url;
+
+  let analyzed = 0;
   let sent = 0;
-  if (withinWindow && settings.from_email && settings.website_check_url) {
+  if (withinWindow && configured) {
     const budget = await sendBudget(settings, sentToday);
+    // Just-in-time: keep only a tiny buffer of ready leads ahead of the next
+    // send (one per email this tick may send, at least one), so the queue
+    // never balloons. Analysis stops the moment enough leads are ready.
+    analyzed = await ensureQueuedLeads(Math.max(1, budget), MAX_ANALYZE_PER_TICK);
     if (budget > 0) sent = await processSendQueue(budget, settings);
-  } else if (withinWindow && (!settings.from_email || !settings.website_check_url)) {
+  } else if (withinWindow && !configured) {
     await logActivity(
       "waiting",
       "Klaar om te versturen, maar het afzendadres of de Website Check-link is nog niet ingesteld — ik wacht op de configuratie."

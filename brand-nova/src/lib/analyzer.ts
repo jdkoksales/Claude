@@ -17,19 +17,13 @@ interface PendingCompany {
 }
 
 /**
- * Analyzes up to `limit` companies that don't have a current cached analysis.
+ * Gathers up to `limit` companies that need analysis, cheapest-first:
+ * never-analyzed companies, then failed (transient) rows, then stale ones.
  * Cache-first: a company with a `done` analysis at the current version inside
  * the TTL is never re-fetched and never costs another AI call.
- *
- * Guardrails (hard, not prompt-based):
- * - unreachable/thin sites → status `unreachable`, no email ever drafted
- * - model returns observation=null → status `no_observation`, lead skipped
- * - observation fails the grounding check against the real page text →
- *   discarded, treated as `no_observation` (we never "retry until it
- *   hallucinates something better")
  */
-export async function processAnalysisBatch(limit: number): Promise<number> {
-  // Companies with no analysis row yet.
+async function analysisCandidates(limit: number): Promise<PendingCompany[]> {
+  if (limit <= 0) return [];
   const { data: companies, error } = await db()
     .from("bn_companies")
     .select("id, name, website_url, bn_website_analyses(id)")
@@ -39,7 +33,6 @@ export async function processAnalysisBatch(limit: number): Promise<number> {
 
   const candidates: PendingCompany[] = (companies ?? []) as unknown as PendingCompany[];
 
-  // Retry failed analyses (transient AI/JSON errors) with remaining budget.
   if (candidates.length < limit) {
     const { data: failed } = await db()
       .from("bn_website_analyses")
@@ -52,7 +45,6 @@ export async function processAnalysisBatch(limit: number): Promise<number> {
     }
   }
 
-  // Also refresh stale analyses if there is budget left in this batch.
   if (candidates.length < limit) {
     const staleBefore = new Date(
       Date.now() - ANALYSIS_TTL_DAYS * 24 * 60 * 60 * 1000
@@ -68,13 +60,51 @@ export async function processAnalysisBatch(limit: number): Promise<number> {
       if (c) candidates.push(c);
     }
   }
+  return candidates;
+}
 
-  let processed = 0;
+/** Count of leads already analyzed and ready to be emailed. */
+async function queuedLeadCount(): Promise<number> {
+  const { count } = await db()
+    .from("bn_leads")
+    .select("id", { count: "exact", head: true })
+    .eq("status", "queued");
+  return count ?? 0;
+}
+
+/**
+ * Just-in-time analysis. Analyzes companies ONE AT A TIME, only until there
+ * are `target` leads ready to send (status `queued`), then stops — so the AI
+ * prepares exactly the lead(s) the next send needs instead of building a huge
+ * backlog. Because many sites yield no usable observation, it may analyze
+ * several companies to surface one good lead; `maxToAnalyze` bounds the work
+ * (and OpenAI spend) per tick, and it simply continues on the next tick.
+ *
+ * Guardrails (hard, not prompt-based):
+ * - unreachable/thin sites → status `unreachable`, no email ever drafted
+ * - model returns observation=null → status `no_observation`, lead skipped
+ * - observation fails the grounding check against the real page text →
+ *   discarded, treated as `no_observation` (we never "retry until it
+ *   hallucinates something better")
+ */
+export async function ensureQueuedLeads(
+  target: number,
+  maxToAnalyze: number
+): Promise<number> {
+  if (target <= 0 || maxToAnalyze <= 0) return 0;
+
+  let ready = await queuedLeadCount();
+  if (ready >= target) return 0;
+
+  const candidates = await analysisCandidates(maxToAnalyze);
+  let analyzed = 0;
   for (const company of candidates) {
-    await analyzeCompany(company);
-    processed++;
+    if (ready >= target) break;
+    const usable = await analyzeCompany(company);
+    analyzed++;
+    if (usable) ready++;
   }
-  return processed;
+  return analyzed;
 }
 
 /**
@@ -114,7 +144,7 @@ export async function ensureAnalysisForCompany(companyId: string): Promise<boole
   return after?.status === "done" && !!after.improvement_observation;
 }
 
-async function analyzeCompany(company: PendingCompany): Promise<void> {
+async function analyzeCompany(company: PendingCompany): Promise<boolean> {
   await logActivity("analyzing", `Website van ${company.name} analyseren…`, {
     companyId: company.id,
   });
@@ -130,7 +160,7 @@ async function analyzeCompany(company: PendingCompany): Promise<void> {
         { onConflict: "company_id" }
       );
     await markLeadSkipped(company.id, `website onbereikbaar (${page.error})`);
-    return;
+    return false;
   }
 
   let analysis;
@@ -144,7 +174,7 @@ async function analyzeCompany(company: PendingCompany): Promise<void> {
         { onConflict: "company_id" }
       );
     console.error(`analysis failed for ${company.name}:`, err);
-    return; // stays retryable: `failed` rows are not treated as cached
+    return false; // stays retryable: `failed` rows are not treated as cached
   }
 
   // Grounding guard: the observation must be traceable to the real page text.
@@ -194,12 +224,14 @@ async function analyzeCompany(company: PendingCompany): Promise<void> {
       `Analyse van ${company.name} afgerond — concrete invalshoek voor outreach gevonden.`,
       { companyId: company.id }
     );
-  } else {
-    await markLeadSkipped(
-      company.id,
-      "geen specifieke, verifieerbare website-observatie — ik weiger een generieke mail te sturen"
-    );
+    return true;
   }
+
+  await markLeadSkipped(
+    company.id,
+    "geen specifieke, verifieerbare website-observatie — ik weiger een generieke mail te sturen"
+  );
+  return false;
 }
 
 async function markLeadSkipped(companyId: string, reason: string): Promise<void> {

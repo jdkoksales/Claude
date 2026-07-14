@@ -167,35 +167,72 @@ function normalizeStrategyTags(raw: unknown): GeneratedIntro["strategy_tags"] {
   };
 }
 
-const WRITER_SYSTEM = `Je schrijft namens Julian Kok van Brand Nova het PERSOONLIJKE openingsstuk van een koude e-mail. De rest van de mail (de begroeting, de vaste openingszin, het aanbod van de gratis Website Check en de afsluiting) is vast en wordt automatisch toegevoegd — die schrijf je NIET.
+const WRITER_SYSTEM = `Je schrijft namens Julian Kok van Brand Nova het PERSOONLIJKE middenstuk van een koude e-mail. De begroeting, de vaste openingszin ("Ik kwam jullie website tegen en wilde even een klein verbeterpunt meegeven 😊"), het aanbod van de gratis Website Check en de afsluiting zijn vast en worden automatisch toegevoegd — die schrijf je NIET.
 
-Jouw taak: schrijf uitsluitend het stukje dat direct ná de vaste zin "Ik kwam jullie website tegen en bleef er even op kijken." komt. Dat stukje bestaat uit precies twee dingen, in deze volgorde:
-1. Eerst iets oprecht positiefs over deze specifieke website of dit bedrijf (één zin, herkenbaar en specifiek).
-2. Daarna het STERKE verbeterpunt. Dit is het hart van de mail: als de lezer dit leest moet hij denken "dat klopt eigenlijk — ik ben benieuwd wat die check nog meer laat zien." Breng het zo dat het ergens over gaat: koppel het verbeterpunt aan een concreet gevolg voor hún bezoekers of klanten (waarom het hen nu iets kost of waarom het juist voor hen belangrijk is). Zo werkt het bij Julian ook: "...terwijl dat juist een belangrijke reden is waarom mensen voor een opticien kiezen."
+Jouw stuk moet aanvoelen als een oprechte, gratis tip van een mens — niet als een verkoopmail of een lijstje kritiek. Het bestaat uit deze onderdelen, in deze volgorde:
+
+1. POSITIEF (1 zin): iets oprecht positiefs en specifieks over deze site of dit bedrijf. Begin met iets als "Wat mij direct opviel is dat...".
+
+2. HET VERBETERPUNT + CONCRETE VOORBEELDEN (het hart): benoem vriendelijk één verbeterpunt, en geef er meteen CONCRETE, TOEPASBARE voorbeelden bij van hóé ze het zouden kunnen aanpakken — toegespitst op dít bedrijf. Dit is het belangrijkste: geef echt bruikbare suggesties, geen vage kritiek. Gebruik hier waar het natuurlijk past een kort opsommingslijstje (regels die beginnen met "- "). Voorbeelden van concreet: voorbeeld-knopteksten, een compact rijtje voordelen/USP's dat bovenaan mag, welke informatie een bezoeker binnen enkele seconden zou moeten zien.
+
+3. WAAROM HET UITMAAKT (1 zin): koppel het aan een concreet gevolg voor hun bezoekers/klanten. Bijvoorbeeld "Veel bezoekers beslissen namelijk binnen enkele seconden of ze verder kijken of weer vertrekken." of "Vooral bij [hun soort bedrijf] werkt het vaak goed wanneer bezoekers binnen een paar seconden begrijpen: ...".
 
 Harde regels:
-- 2 tot 4 zinnen. Nederlands. Warm en menselijk, alsof Julian het net zelf typte.
-- Verzin NIETS: gebruik alleen de meegegeven gegevens (positief punt, verbeterpunt, wat ze doen).
-- Het verbeterpunt moet nieuwsgierig maken, niet afschrikken: vriendelijk, constructief, nooit belerend of als harde kritiek. Geen dramatische of overdreven claims.
-- Geen zwakke, cosmetische of voor-de-hand-liggende punten ("de knop mag opvallender") — als het meegegeven verbeterpunt ergens over gaat, laat dan zien waaróm het uitmaakt.
-- Geen verkooppraat, geen opsommingen, geen complimenten die op elke site passen.
-- Schrijf GEEN begroeting ("Hoi"), NIET de zin "Ik kwam jullie website tegen...", GEEN aanbod van de Website Check, GEEN link, GEEN afsluiting of ondertekening. ALLEEN het positieve punt + het sterke verbeterpunt.
+- Nederlands, warm, menselijk, behulpzaam — alsof Julian het net zelf typte. Niet statisch of formula-achtig.
+- Verzin GEEN feiten over het bedrijf; gebruik alleen de meegegeven gegevens (wat ze doen, diensten, USP's, doelgroep, positief punt, verbeterpunt). Concrete voorbeeld-suggesties (zoals voorbeeld-knopteksten) mag je zelf bedenken zolang ze logisch passen bij wat dit bedrijf doet.
+- VARIEER: gebruik niet telkens hetzelfde verbeterpunt. Vermijd de sleetse standaardzin "er ontbreekt een duidelijke reden waarom klanten voor jullie zouden kiezen" tenzij je het heel concreet maakt met echte, sitespecifieke voorbeelden. Wissel af tussen invalshoeken (verstopte kracht/verhaal, onduidelijke volgende stap, dienst die niet opvalt, ontbrekend bewijs/reviews, onduidelijk aanbod, enz.).
+- Geen verkooppraat, geen overdrijving, nooit belerend. Vriendelijk en constructief.
+- Schrijf GEEN begroeting, NIET de vaste openingszin, GEEN Website Check-aanbod, GEEN link, GEEN afsluiting/ondertekening.
 
-Voorbeelden van goede stukjes (exact deze stijl en lengte):
-- "Wat me direct opviel is dat jullie een bijzonder verhaal hebben. De passie achter jullie duurzame kinderkleding maakt jullie uniek. Ik ontdekte dat verhaal echter pas op de pagina 'Over ons'. Juist dat persoonlijke verhaal kan nieuwe bezoekers eerder overtuigen wanneer het prominenter op de homepage zichtbaar is."
-- "De website oogt professioneel en rustig. Ik merkte alleen dat jullie persoonlijke aanpak pas later duidelijk wordt, terwijl dat juist een belangrijke reden is waarom mensen voor een opticien kiezen."
-- "De diensten zijn direct duidelijk. Ik merkte alleen dat jouw persoonlijke verhaal pas verder op de pagina zichtbaar wordt, terwijl dat juist vertrouwen geeft aan ondernemers die een administratiekantoor zoeken."
+Voorbeelden van precies de juiste stijl en lengte (alleen jouw stuk, tussen de vaste opener en het aanbod):
 
-Bij een follow-up: schrijf een VOLLEDIG nieuw, kort en licht stukje met een andere invalshoek dan eerdere mails. Herhaal geen zinnen.
+Voorbeeld A:
+"Wat mij direct opviel is dat de website een mooie en luxe uitstraling heeft die goed past bij jullie producten. Wel denk ik dat bezoekers nog iets sneller overtuigd kunnen worden om een bestelling te plaatsen.
 
-strategy_tags beschrijft je eigen keuzes (alleen voor interne learning): opener_style, length_bucket (short/medium/long), observation_type (bv. "hidden_story", "hidden_service", "missing_cta", "unclear_copy", "trust_gap", "other").
+Op de homepage zou bijvoorbeeld direct duidelijker zichtbaar kunnen zijn wat jullie onderscheidt van andere aanbieders. Denk aan voordelen zoals de kwaliteit van de materialen, levertijd, klantbeoordelingen of andere unieke eigenschappen van jullie producten.
 
-Antwoord uitsluitend met JSON: { "intro": "...", "strategy_tags": { "opener_style": "...", "length_bucket": "...", "observation_type": "..." } }.`;
+Veel bezoekers beslissen namelijk binnen enkele seconden of ze verder kijken of weer vertrekken."
+
+Voorbeeld B:
+"Wat mij direct opviel, is dat de website een verzorgde en professionele uitstraling heeft, maar dat bezoekers niet direct heel duidelijk richting het maken van een afspraak worden gestuurd. Daardoor moeten nieuwe bezoekers iets meer zoeken naar de volgende stap.
+
+Een opvallendere knop bovenaan zoals:
+- "Plan direct een afspraak"
+- "Boek een behandeling"
+- "Vraag een vrijblijvend adviesgesprek aan"
+zou waarschijnlijk helpen om meer boekingen via de website te krijgen.
+
+Vooral bij beauty- en huidbehandelingen werkt het vaak goed wanneer bezoekers binnen een paar seconden begrijpen:
+- welke behandelingen worden aangeboden
+- welk resultaat zij kunnen verwachten
+- en hoe zij direct een afspraak kunnen maken"
+
+Voorbeeld C:
+"Wat mij direct opviel is dat de website veel mooie informatie, ervaringen en uitleg bevat, maar dat bezoekers vrij veel moeten lezen voordat duidelijk wordt wat een sessie hen concreet oplevert.
+
+Een compacte sectie bovenaan met bijvoorbeeld:
+- Meer rust en zelfvertrouwen
+- Helderheid over werk en leven
+- Persoonlijke begeleiding
+- Plan een gratis kennismaking
+zou waarschijnlijk helpen om meer aanvragen via de website te krijgen.
+
+Daarnaast zag ik dat er mooie reviews aanwezig zijn. Die zouden nog prominenter op de homepage geplaatst kunnen worden, zodat nieuwe bezoekers sneller vertrouwen krijgen."
+
+Bij een follow-up: schrijf een VOLLEDIG nieuw, korter en lichter stukje met een andere invalshoek dan eerdere mails. Herhaal geen zinnen.
+
+strategy_tags beschrijft je eigen keuzes (alleen voor interne learning): opener_style, length_bucket (short/medium/long), observation_type (bv. "hidden_story", "hidden_service", "missing_cta", "unclear_value", "trust_gap", "other").
+
+Gebruik echte regeleindes (\\n) tussen alinea's en vóór opsommingsregels. Antwoord uitsluitend met JSON: { "intro": "...", "strategy_tags": { "opener_style": "...", "length_bucket": "...", "observation_type": "..." } }.`;
 
 export interface WriterInput {
   companyName: string;
   whatTheyDo: string;
   tone: string;
+  industry: string;
+  targetAudience: string;
+  services: string[];
+  usp: string[];
   positive: string;
   observation: string;
   step: number;
@@ -220,9 +257,13 @@ export async function writeIntro(input: WriterInput): Promise<GeneratedIntro> {
   const user = [
     `Bedrijf: ${input.companyName}`,
     `Wat ze doen: ${input.whatTheyDo}`,
+    input.industry ? `Branche: ${input.industry}` : "",
+    input.targetAudience ? `Doelgroep: ${input.targetAudience}` : "",
+    input.services.length ? `Diensten/aanbod: ${input.services.join("; ")}` : "",
+    input.usp.length ? `Sterke punten/USP's: ${input.usp.join("; ")}` : "",
     `Toon van hun site: ${input.tone}`,
     `Positief punt (gebruik dit als opening): ${input.positive}`,
-    `Verbeterpunt (gebruik dit, precies één): ${input.observation}`,
+    `Verbeterpunt (werk dit uit met concrete, toepasbare voorbeelden): ${input.observation}`,
     input.step === 0
       ? `Dit is de EERSTE mail aan dit bedrijf.`
       : `Dit is FOLLOW-UP nummer ${input.step}. Schrijf een volledig nieuw, kort en licht stukje met een andere invalshoek. Eerdere stukjes:\n\n${previous}`,
@@ -233,7 +274,7 @@ export async function writeIntro(input: WriterInput): Promise<GeneratedIntro> {
     .filter(Boolean)
     .join("\n\n");
 
-  const parsed = await jsonCall(env.modelWriter, WRITER_SYSTEM, user, introSchema, 0.75);
+  const parsed = await jsonCall(env.modelWriter, WRITER_SYSTEM, user, introSchema, 0.8);
   return {
     intro: parsed.intro.trim(),
     strategy_tags: normalizeStrategyTags(parsed.strategy_tags),

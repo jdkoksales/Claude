@@ -27,6 +27,9 @@ interface OutreachLead {
     improvement_observation: string | null;
     positive: string | null;
     contact_first_name: string | null;
+    target_audience: string | null;
+    services: string[] | null;
+    usp: string[] | null;
   };
 }
 
@@ -60,7 +63,7 @@ async function loadLead(leadId: string): Promise<OutreachLead | null> {
     .select(
       `id, status, followups_sent,
        company:bn_companies(id, name, email, industry),
-       analysis:bn_companies(bn_website_analyses(what_they_do, tone, improvement_observation, positive, contact_first_name))`
+       analysis:bn_companies(bn_website_analyses(what_they_do, tone, improvement_observation, positive, contact_first_name, target_audience, services, usp))`
     )
     .eq("id", leadId)
     .single();
@@ -80,6 +83,9 @@ async function loadLead(leadId: string): Promise<OutreachLead | null> {
       improvement_observation: null,
       positive: null,
       contact_first_name: null,
+      target_audience: null,
+      services: null,
+      usp: null,
     },
   };
 }
@@ -139,6 +145,10 @@ async function generateGuardedEmail(
         tone: lead.analysis.tone ?? "",
         positive: lead.analysis.positive ?? "",
         observation: lead.analysis.improvement_observation ?? "",
+        industry: lead.company.industry ?? "",
+        targetAudience: lead.analysis.target_audience ?? "",
+        services: lead.analysis.services ?? [],
+        usp: lead.analysis.usp ?? [],
         step,
         previousIntros: previousIntroTexts,
         insights,

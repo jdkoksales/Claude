@@ -1,13 +1,15 @@
 /**
  * Brand Nova's proven email structure, reverse-engineered from Julian's
- * hand-written winners. Only the personal top block (positive + one specific
- * improvement) is AI-generated; everything else here is fixed, proven copy.
+ * hand-written winners. The AI writes the personal top block: a warm, specific
+ * mini-tip (positive + one improvement, WITH concrete examples of how to apply
+ * it and why it matters). Everything else here is fixed, proven copy.
  *
  * Every email is built in two forms: a plain-text part (best for deliverability
  * and text-only clients) and an HTML part carrying the branded signature.
  */
 
-const OPENER = "Ik kwam jullie website tegen en bleef er even op kijken.";
+const OPENER =
+  "Ik kwam jullie website tegen en wilde even een klein verbeterpunt meegeven 😊";
 
 /** Signature details, shown in every outgoing email. */
 const SIG = {
@@ -32,7 +34,7 @@ export function buildSubject(firstName: string | null): string {
     : base.charAt(0).toUpperCase() + base.slice(1);
 }
 
-/** The unchanging Website Check offer block (plain text). */
+/** The unchanging Website Check offer block (plain text paragraphs). */
 function offerBlock(websiteCheckUrl: string): string[] {
   return [
     "Daarom dacht ik dat je misschien iets hebt aan mijn gratis Website Check.",
@@ -44,10 +46,6 @@ function offerBlock(websiteCheckUrl: string): string[] {
 
 const REPLY_LINE =
   "Mocht je er iets aan hebben, dan hoor ik dat natuurlijk graag. Je kunt gewoon op deze mail reageren.";
-
-// ---------------------------------------------------------------------------
-// Plain-text signature
-// ---------------------------------------------------------------------------
 
 function signatureText(): string {
   return [
@@ -62,27 +60,66 @@ function signatureText(): string {
 }
 
 // ---------------------------------------------------------------------------
-// HTML rendering (table-based + inline styles for email-client compatibility)
+// HTML rendering (inline styles for email-client compatibility)
 // ---------------------------------------------------------------------------
 
 function escapeHtml(s: string): string {
-  return s
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
+  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
-/** Turns plain paragraphs into styled <p> blocks; linkifies bare URLs. */
-function paragraphsToHtml(paragraphs: string[]): string {
-  return paragraphs
-    .map((p) => {
-      const isUrl = /^https?:\/\/\S+$/.test(p.trim());
-      const content = isUrl
-        ? `<a href="${escapeHtml(p.trim())}" style="color:#4353c9;text-decoration:underline;">${escapeHtml(p.trim())}</a>`
-        : escapeHtml(p).replace(/\n/g, "<br>");
-      return `<p style="margin:0 0 16px;">${content}</p>`;
-    })
-    .join("");
+function para(text: string): string {
+  return `<p style="margin:0 0 16px;">${escapeHtml(text)}</p>`;
+}
+
+function urlPara(url: string): string {
+  const u = escapeHtml(url.trim());
+  return `<p style="margin:0 0 16px;"><a href="${u}" style="color:#4353c9;text-decoration:underline;">${u}</a></p>`;
+}
+
+/**
+ * Renders the AI intro, which may contain multiple paragraphs (blank-line
+ * separated) and bullet lists (lines starting with "-", "•" or "*").
+ */
+function richTextToHtml(text: string): string {
+  let html = "";
+  let paraLines: string[] = [];
+  let bulletLines: string[] = [];
+  const flushPara = () => {
+    if (paraLines.length) {
+      html += `<p style="margin:0 0 16px;">${paraLines.map(escapeHtml).join("<br>")}</p>`;
+      paraLines = [];
+    }
+  };
+  const flushBullets = () => {
+    if (bulletLines.length) {
+      html +=
+        `<ul style="margin:0 0 16px;padding-left:20px;">` +
+        bulletLines
+          .map((b) => `<li style="margin:0 0 4px;">${escapeHtml(b)}</li>`)
+          .join("") +
+        `</ul>`;
+      bulletLines = [];
+    }
+  };
+  for (const raw of text.split("\n")) {
+    const line = raw.trim();
+    if (!line) {
+      flushBullets();
+      flushPara();
+      continue;
+    }
+    const bullet = line.match(/^[-•*]\s+(.*)/);
+    if (bullet) {
+      flushPara();
+      bulletLines.push(bullet[1]);
+    } else {
+      flushBullets();
+      paraLines.push(line);
+    }
+  }
+  flushBullets();
+  flushPara();
+  return html;
 }
 
 function signatureHtml(): string {
@@ -108,11 +145,11 @@ function signatureHtml(): string {
 </table>`.trim();
 }
 
-function wrapHtml(bodyParagraphs: string[]): string {
+function wrapHtml(innerHtml: string): string {
   return `<!doctype html>
 <html lang="nl"><body style="margin:0;padding:0;background:#ffffff;">
 <div style="max-width:600px;margin:0 auto;padding:16px;font-family:Verdana,Arial,sans-serif;font-size:14px;color:#222222;line-height:1.6;">
-${paragraphsToHtml(bodyParagraphs)}
+${innerHtml}
 ${signatureHtml()}
 </div>
 </body></html>`;
@@ -131,8 +168,9 @@ export interface AssembledEmail {
 }
 
 /**
- * First-touch email: AI intro + fixed opener + offer + branded signature.
- * `intro` is only the positive + one improvement point.
+ * First-touch email: fixed opener + AI mini-tip + fixed Website Check offer
+ * + branded signature. `intro` is the AI's positive + improvement + concrete
+ * examples + why-it-matters (no greeting, no opener, no offer).
  */
 export function assembleFirstEmail(input: {
   firstName: string | null;
@@ -140,18 +178,25 @@ export function assembleFirstEmail(input: {
   websiteCheckUrl: string;
 }): AssembledEmail {
   const offer = offerBlock(input.websiteCheckUrl);
-  const paragraphs = [
+  const textBlocks = [
     greeting(input.firstName),
     OPENER,
     input.intro.trim(),
     ...offer,
     REPLY_LINE,
+    signatureText(),
   ];
-  const body = [...paragraphs, signatureText()].join("\n\n");
+  const html = wrapHtml(
+    para(greeting(input.firstName)) +
+      para(OPENER) +
+      richTextToHtml(input.intro) +
+      offer.map((o) => (/^https?:\/\//.test(o.trim()) ? urlPara(o) : para(o))).join("") +
+      para(REPLY_LINE)
+  );
   return {
     subject: buildSubject(input.firstName),
-    body,
-    html: wrapHtml(paragraphs),
+    body: textBlocks.join("\n\n"),
+    html,
   };
 }
 
@@ -165,15 +210,19 @@ export function assembleFollowUp(input: {
   websiteCheckUrl: string;
   step: number;
 }): AssembledEmail {
-  const paragraphs = [
+  const pointer = `Mocht je er iets mee willen: de gratis Website Check staat nog voor je klaar — ${input.websiteCheckUrl}`;
+  const textBlocks = [
     greeting(input.firstName),
     input.intro.trim(),
-    `Mocht je er iets mee willen: de gratis Website Check staat nog voor je klaar — ${input.websiteCheckUrl}`,
+    pointer,
+    signatureText(),
   ];
-  const body = [...paragraphs, signatureText()].join("\n\n");
+  const html = wrapHtml(
+    para(greeting(input.firstName)) + richTextToHtml(input.intro) + para(pointer)
+  );
   return {
     subject: "Nog een gedachte over jullie website",
-    body,
-    html: wrapHtml(paragraphs),
+    body: textBlocks.join("\n\n"),
+    html,
   };
 }

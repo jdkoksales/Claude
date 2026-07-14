@@ -69,11 +69,45 @@ export interface Company {
 export interface Lead {
   id: string;
   company_id: string;
+  campaign_id: string | null;
   status: LeadStatus;
   warm_since: string | null;
   next_action_at: string | null;
   followups_sent: number;
   created_at: string;
+}
+
+export type CampaignStatus = "draft" | "active" | "paused" | "completed";
+
+export interface Campaign {
+  id: string;
+  name: string;
+  description: string;
+  status: CampaignStatus;
+  tracking_enabled: boolean;
+  created_at: string;
+}
+
+export type EmailEventType =
+  | "sent"
+  | "delivered"
+  | "opened"
+  | "clicked"
+  | "bounced"
+  | "complained"
+  | "unsubscribed"
+  | "failed";
+
+export interface EmailEvent {
+  id: number;
+  email_sequence_id: string | null;
+  lead_id: string | null;
+  campaign_id: string | null;
+  type: EmailEventType;
+  url: string | null;
+  user_agent: string | null;
+  provider_event_id: string | null;
+  occurred_at: string;
 }
 
 export interface WebsiteAnalysis {
@@ -98,6 +132,7 @@ export interface WebsiteAnalysis {
 export interface EmailSequence {
   id: string;
   lead_id: string;
+  campaign_id: string | null;
   step: number;
   subject: string;
   body: string;
@@ -105,6 +140,17 @@ export interface EmailSequence {
   strategy_tags: Record<string, string>;
   sent_at: string | null;
   provider_message_id: string | null;
+  track_token: string;
+  tracked: boolean;
+  delivered_at: string | null;
+  first_open_at: string | null;
+  last_open_at: string | null;
+  open_count: number;
+  first_click_at: string | null;
+  last_click_at: string | null;
+  click_count: number;
+  clicked_url: string | null;
+  complained_at: string | null;
   status: "draft" | "sent" | "bounced" | "failed";
 }
 
@@ -163,7 +209,9 @@ export type ActivityType =
   | "warm_lead"
   | "import"
   | "system"
-  | "waiting";
+  | "waiting"
+  | "opened"
+  | "clicked";
 
 export interface ActivityEntry {
   id: number;

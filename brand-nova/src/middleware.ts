@@ -9,6 +9,7 @@ const PUBLIC_PATHS = [
   "/api/login",
   "/api/unsubscribe",
   "/api/webhooks/resend",
+  "/api/t", // open/click tracking pixels + redirects (public by design)
   "/api/cron/tick",
   "/api/cron/daily",
   "/api/preview", // does its own auth: session cookie or operator key

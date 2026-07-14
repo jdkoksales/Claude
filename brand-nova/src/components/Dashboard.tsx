@@ -54,6 +54,8 @@ const TYPE_STYLE: Record<ActivityType, { dot: string; label: string }> = {
   import: { dot: "bg-ink-3", label: "import" },
   system: { dot: "bg-ink-3", label: "systeem" },
   waiting: { dot: "bg-ink-3", label: "wachten" },
+  opened: { dot: "bg-nova", label: "geopend" },
+  clicked: { dot: "bg-good", label: "geklikt" },
 };
 
 function greeting(name: string): string {

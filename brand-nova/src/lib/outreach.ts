@@ -1,5 +1,7 @@
+import { randomUUID } from "node:crypto";
 import { db } from "./supabase";
 import { logActivity } from "./activity";
+import { recordEmailEvent } from "./events";
 import { writeIntro } from "./ai";
 import { getSettings } from "./settings";
 import { sendEmail } from "./resend";
@@ -15,6 +17,8 @@ interface OutreachLead {
   id: string;
   status: LeadStatus;
   followups_sent: number;
+  campaign_id: string | null;
+  tracking_enabled: boolean;
   company: {
     id: string;
     name: string;
@@ -61,7 +65,8 @@ async function loadLead(leadId: string): Promise<OutreachLead | null> {
   const { data } = await db()
     .from("bn_leads")
     .select(
-      `id, status, followups_sent,
+      `id, status, followups_sent, campaign_id,
+       campaign:bn_campaigns(tracking_enabled),
        company:bn_companies(id, name, email, industry),
        analysis:bn_companies(bn_website_analyses(what_they_do, tone, improvement_observation, positive, contact_first_name, target_audience, services, usp))`
     )
@@ -69,6 +74,7 @@ async function loadLead(leadId: string): Promise<OutreachLead | null> {
     .single();
   if (!data) return null;
   const company = data.company as unknown as OutreachLead["company"];
+  const campaign = data.campaign as unknown as { tracking_enabled: boolean } | null;
   const analysisWrap = data.analysis as unknown as {
     bn_website_analyses: OutreachLead["analysis"] | null;
   } | null;
@@ -76,6 +82,8 @@ async function loadLead(leadId: string): Promise<OutreachLead | null> {
     id: data.id as string,
     status: data.status as LeadStatus,
     followups_sent: data.followups_sent as number,
+    campaign_id: (data.campaign_id as string) ?? null,
+    tracking_enabled: campaign?.tracking_enabled ?? false,
     company,
     analysis: analysisWrap?.bn_website_analyses ?? {
       what_they_do: null,
@@ -133,7 +141,8 @@ async function generateGuardedEmail(
   step: number,
   previousIntroTexts: string[],
   settings: Settings,
-  insights: Insight[]
+  insights: Insight[],
+  trackToken: string | null
 ): Promise<BuiltEmail | null> {
   const firstName = lead.analysis.contact_first_name;
   for (let attempt = 0; attempt < 2; attempt++) {
@@ -164,12 +173,14 @@ async function generateGuardedEmail(
             firstName,
             intro: generated.intro,
             websiteCheckUrl: settings.website_check_url,
+            trackToken,
           })
         : assembleFollowUp({
             firstName,
             intro: generated.intro,
             websiteCheckUrl: settings.website_check_url,
             step,
+            trackToken,
           });
 
     // Validate the AI-written intro only — the fixed copy is trusted.
@@ -258,7 +269,20 @@ async function sendForLead(
     { companyId: lead.company.id }
   );
 
-  const email = await generateGuardedEmail(lead, step, previous, settings, insights);
+  // Tracking is per-campaign: pool leads (no campaign) send untracked, exactly
+  // as before, so warmup stays clean. A campaign with tracking on gets a pixel
+  // + click redirect keyed to this per-send token.
+  const tracked = !!lead.campaign_id && lead.tracking_enabled;
+  const trackToken = tracked ? randomUUID() : null;
+
+  const email = await generateGuardedEmail(
+    lead,
+    step,
+    previous,
+    settings,
+    insights,
+    trackToken
+  );
   if (!email) {
     if (step === 0) {
       // Retryable next tick; generation hiccups shouldn't burn a lead.
@@ -279,12 +303,15 @@ async function sendForLead(
     .from("bn_email_sequences")
     .insert({
       lead_id: lead.id,
+      campaign_id: lead.campaign_id,
       step,
       subject: email.subject,
       body: email.body,
       observation_used: lead.analysis.improvement_observation,
       // Keep the intro in strategy_tags so follow-ups can avoid repeating it.
       strategy_tags: { ...email.strategy_tags, intro: email.intro },
+      tracked,
+      ...(trackToken ? { track_token: trackToken } : {}),
       status: "draft",
     })
     .select("id")
@@ -333,6 +360,15 @@ async function sendForLead(
     })
     .eq("id", seqRow.id);
 
+  // Analytics timeline: the first event for this send.
+  await recordEmailEvent({
+    sequenceId: seqRow.id as string,
+    leadId: lead.id,
+    campaignId: lead.campaign_id,
+    type: "sent",
+    at: sentAt,
+  });
+
   const newStatus: LeadStatus = step === 0 ? "emailed" : FOLLOWUP_STATUS[step];
   await db()
     .from("bn_leads")
@@ -380,7 +416,7 @@ export async function previewFirstEmail(leadId: string): Promise<EmailPreview | 
   if (!lead?.analysis.improvement_observation) return null;
   const settings = await getSettings();
   const insights = await loadInsights();
-  const email = await generateGuardedEmail(lead, 0, [], settings, insights);
+  const email = await generateGuardedEmail(lead, 0, [], settings, insights, null);
   if (!email) return null;
   // Persist so results survive an HTTP timeout on a long preview run.
   await db().from("bn_email_previews").insert({

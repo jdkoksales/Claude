@@ -8,6 +8,8 @@
  * and text-only clients) and an HTML part carrying the branded signature.
  */
 
+import { openPixelUrl, clickRedirectUrl } from "./events";
+
 const OPENER =
   "Ik kwam jullie website tegen en wilde even een klein verbeterpunt meegeven 😊";
 
@@ -71,9 +73,10 @@ function para(text: string): string {
   return `<p style="margin:0 0 16px;">${escapeHtml(text)}</p>`;
 }
 
-function urlPara(url: string): string {
+function urlPara(url: string, href?: string): string {
   const u = escapeHtml(url.trim());
-  return `<p style="margin:0 0 16px;"><a href="${u}" style="color:#4353c9;text-decoration:underline;">${u}</a></p>`;
+  const target = escapeHtml((href ?? url).trim());
+  return `<p style="margin:0 0 16px;"><a href="${target}" style="color:#4353c9;text-decoration:underline;">${u}</a></p>`;
 }
 
 /**
@@ -145,12 +148,16 @@ function signatureHtml(): string {
 </table>`.trim();
 }
 
-function wrapHtml(innerHtml: string): string {
+function wrapHtml(innerHtml: string, trackToken?: string | null): string {
+  const pixel = trackToken
+    ? `<img src="${escapeHtml(openPixelUrl(trackToken))}" width="1" height="1" alt="" style="display:block;width:1px;height:1px;border:0;overflow:hidden;" />`
+    : "";
   return `<!doctype html>
 <html lang="nl"><body style="margin:0;padding:0;background:#ffffff;">
 <div style="max-width:600px;margin:0 auto;padding:16px;font-family:Verdana,Arial,sans-serif;font-size:14px;color:#222222;line-height:1.6;">
 ${innerHtml}
 ${signatureHtml()}
+${pixel}
 </div>
 </body></html>`;
 }
@@ -176,8 +183,10 @@ export function assembleFirstEmail(input: {
   firstName: string | null;
   intro: string;
   websiteCheckUrl: string;
+  trackToken?: string | null;
 }): AssembledEmail {
   const offer = offerBlock(input.websiteCheckUrl);
+  const clickHref = input.trackToken ? clickRedirectUrl(input.trackToken) : undefined;
   const textBlocks = [
     greeting(input.firstName),
     OPENER,
@@ -190,8 +199,11 @@ export function assembleFirstEmail(input: {
     para(greeting(input.firstName)) +
       para(OPENER) +
       richTextToHtml(input.intro) +
-      offer.map((o) => (/^https?:\/\//.test(o.trim()) ? urlPara(o) : para(o))).join("") +
-      para(REPLY_LINE)
+      offer
+        .map((o) => (/^https?:\/\//.test(o.trim()) ? urlPara(o, clickHref) : para(o)))
+        .join("") +
+      para(REPLY_LINE),
+    input.trackToken
   );
   return {
     subject: buildSubject(input.firstName),
@@ -209,8 +221,11 @@ export function assembleFollowUp(input: {
   intro: string;
   websiteCheckUrl: string;
   step: number;
+  trackToken?: string | null;
 }): AssembledEmail {
-  const pointer = `Mocht je er iets mee willen: de gratis Website Check staat nog voor je klaar — ${input.websiteCheckUrl}`;
+  const clickHref = input.trackToken ? clickRedirectUrl(input.trackToken) : undefined;
+  const pointerPrefix = "Mocht je er iets mee willen: de gratis Website Check staat nog voor je klaar — ";
+  const pointer = `${pointerPrefix}${input.websiteCheckUrl}`;
   const textBlocks = [
     greeting(input.firstName),
     input.intro.trim(),
@@ -218,7 +233,14 @@ export function assembleFollowUp(input: {
     signatureText(),
   ];
   const html = wrapHtml(
-    para(greeting(input.firstName)) + richTextToHtml(input.intro) + para(pointer)
+    para(greeting(input.firstName)) +
+      richTextToHtml(input.intro) +
+      `<p style="margin:0 0 16px;">${escapeHtml(pointerPrefix)}<a href="${escapeHtml(
+        clickHref ?? input.websiteCheckUrl
+      )}" style="color:#4353c9;text-decoration:underline;">${escapeHtml(
+        input.websiteCheckUrl
+      )}</a></p>`,
+    input.trackToken
   );
   return {
     subject: "Nog een gedachte over jullie website",

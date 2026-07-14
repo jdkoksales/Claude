@@ -94,8 +94,12 @@ export function validateEmailStyle(subject: string, body: string): string[] {
   if ((body.match(/!/g) ?? []).length > 2) {
     problems.push("too many exclamation marks");
   }
-  if (body.split(/\s+/).length > 220) {
-    problems.push("body too long (>220 words)");
+  // The intro carries a positive line, an improvement + a short bullet list of
+  // concrete examples and a why-it-matters line, so it runs longer than a bare
+  // paragraph. Keep a ceiling against rambling, but generous enough for the
+  // bullet style (it previously rejected valid webshop intros).
+  if (body.split(/\s+/).length > 320) {
+    problems.push("body too long (>320 words)");
   }
   if (subject.length > 70) {
     problems.push("subject too long (>70 chars)");

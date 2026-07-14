@@ -188,6 +188,7 @@ Harde regels:
 - Verzin GEEN feiten over het bedrijf; gebruik alleen de meegegeven gegevens (wat ze doen, diensten, USP's, doelgroep, positief punt, verbeterpunt). Concrete voorbeeld-suggesties (zoals voorbeeld-knopteksten) mag je zelf bedenken zolang ze logisch passen bij wat dit bedrijf doet.
 - VARIEER: gebruik niet telkens hetzelfde verbeterpunt. Vermijd de sleetse standaardzin "er ontbreekt een duidelijke reden waarom klanten voor jullie zouden kiezen" tenzij je het heel concreet maakt met echte, sitespecifieke voorbeelden. Wissel af tussen invalshoeken (verstopte kracht/verhaal, onduidelijke volgende stap, dienst die niet opvalt, ontbrekend bewijs/reviews, onduidelijk aanbod, enz.).
 - Geen verkooppraat, geen overdrijving, nooit belerend. Vriendelijk en constructief.
+- Gebruik GEEN promotionele of reclame-achtige woorden in je voorbeelden (zoals "korting", "aanbieding", "actie", "gratis", "sale", "nu bestellen"). Ook bij webshops: geef inhoudelijke, vertrouwenwekkende voorbeelden (bv. "Snelle levering", "Ruim assortiment", "Veilig betalen", "Klantbeoordeling 9,2") in plaats van kortingsteksten. Dit soort reclametaal komt als spam over.
 - Schrijf GEEN begroeting, NIET de vaste openingszin, GEEN Website Check-aanbod, GEEN link, GEEN afsluiting/ondertekening.
 
 Voorbeelden van precies de juiste stijl en lengte (alleen jouw stuk, tussen de vaste opener en het aanbod):

@@ -137,6 +137,13 @@ async function previousIntros(leadId: string): Promise<string[]> {
  * the AI-written intro — style validation always, uniqueness-vs-previous for
  * follow-ups. One retry, then null; a bad email is never sent.
  */
+interface GuardedResult {
+  email: BuiltEmail | null;
+  /** ok = sendable; error = generation threw (transient); quality = failed guards. */
+  reason: "ok" | "error" | "quality";
+  problems: string[];
+}
+
 async function generateGuardedEmail(
   lead: OutreachLead,
   step: number,
@@ -144,8 +151,9 @@ async function generateGuardedEmail(
   settings: Settings,
   insights: Insight[],
   trackToken: string | null
-): Promise<BuiltEmail | null> {
+): Promise<GuardedResult> {
   const firstName = lead.analysis.contact_first_name;
+  let lastProblems: string[] = [];
   for (let attempt = 0; attempt < 2; attempt++) {
     let generated;
     try {
@@ -165,7 +173,7 @@ async function generateGuardedEmail(
       });
     } catch (err) {
       console.error(`intro generation failed for ${lead.company.name}:`, err);
-      return null;
+      return { email: null, reason: "error", problems: [] };
     }
 
     const { subject, body, html } =
@@ -191,20 +199,25 @@ async function generateGuardedEmail(
     );
     if (styleProblems.length === 0 && !tooSimilar) {
       return {
-        subject,
-        body,
-        html,
-        intro: generated.intro,
-        strategy_tags: generated.strategy_tags,
+        email: {
+          subject,
+          body,
+          html,
+          intro: generated.intro,
+          strategy_tags: generated.strategy_tags,
+        },
+        reason: "ok",
+        problems: [],
       };
     }
 
+    lastProblems = styleProblems.length > 0 ? styleProblems : ["too similar to previous intro"];
     console.warn(
       `guarded email rejected (attempt ${attempt + 1}) for ${lead.company.name}:`,
-      styleProblems.length > 0 ? styleProblems.join("; ") : "too similar to previous intro"
+      lastProblems.join("; ")
     );
   }
-  return null;
+  return { email: null, reason: "quality", problems: lastProblems };
 }
 
 function nextActionAt(settings: Settings, followupIndex: number): string | null {
@@ -276,7 +289,7 @@ async function sendForLead(
   const tracked = !!lead.campaign_id && lead.tracking_enabled;
   const trackToken = tracked ? randomUUID() : null;
 
-  const email = await generateGuardedEmail(
+  const built = await generateGuardedEmail(
     lead,
     step,
     previous,
@@ -284,10 +297,21 @@ async function sendForLead(
     insights,
     trackToken
   );
+  const email = built.email;
   if (!email) {
-    if (step === 0) {
-      // Retryable next tick; generation hiccups shouldn't burn a lead.
+    if (step === 0 && built.reason === "error") {
+      // Transient generation hiccup (model/network) — retry next tick.
       await releaseLead(lead.id, claimedFrom);
+    } else if (step === 0) {
+      // Persistent quality failure: this lead can't get a compliant first
+      // email. Set it aside so a single poison lead never blocks the whole
+      // queue (it used to be re-queued and retried forever).
+      await releaseLead(lead.id, "skipped");
+      await logActivity(
+        "system",
+        `${lead.company.name} overgeslagen: geen e-mail die aan de kwaliteitslat voldoet (${built.problems.join("; ")}).`,
+        { companyId: lead.company.id }
+      );
     } else {
       // Spec: after one retry, skip the follow-up rather than send a bad one.
       await releaseLead(lead.id, "stopped");
@@ -417,7 +441,7 @@ export async function previewFirstEmail(leadId: string): Promise<EmailPreview | 
   if (!lead?.analysis.improvement_observation) return null;
   const settings = await getSettings();
   const insights = await loadInsights();
-  const email = await generateGuardedEmail(lead, 0, [], settings, insights, null);
+  const { email } = await generateGuardedEmail(lead, 0, [], settings, insights, null);
   if (!email) return null;
   // Persist so results survive an HTTP timeout on a long preview run.
   await db().from("bn_email_previews").insert({

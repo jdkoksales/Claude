@@ -5,7 +5,7 @@ import { fetchHomepage } from "./fetchHomepage";
 import { groundingScore, MIN_GROUNDING_SCORE } from "./textGuards";
 
 /** Bump to force re-analysis after prompt/model upgrades. */
-export const ANALYSIS_VERSION = 2;
+export const ANALYSIS_VERSION = 3;
 
 /** Cache TTL: an analysis older than this may be refreshed. */
 const ANALYSIS_TTL_DAYS = 90;

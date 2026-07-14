@@ -92,12 +92,18 @@ Twee velden zijn het belangrijkst, en ze horen bij elkaar (eerst positief, dan v
 
 Wat "sterk" betekent: iemand die dit leest moet denken "hé, dat klopt eigenlijk — en ik ben benieuwd wat er nog meer uit die check komt." Kies daarom het verbeterpunt dat het MEEST kost aan klanten, aanvragen of vertrouwen — niet het eerste-het-beste of een cosmetisch detail.
 
-Ga langs deze mogelijke invalshoeken en kies de sterkste voor DEZE site (varieer, gebruik niet standaard dezelfde):
-- een sterk verhaal, resultaat of persoonlijke aanpak dat de kracht van dit bedrijf is, maar dat verstopt zit (pas op 'Over ons', onderaan, of tussen de tekst) in plaats van meteen bovenaan;
-- geen duidelijke of overtuigende reden waarom een bezoeker juist voor dit bedrijf zou kiezen (het onderscheidende komt niet binnen enkele seconden binnen);
-- een belangrijke dienst of doelgroep die genoemd wordt maar makkelijk over het hoofd wordt gezien;
-- geen zichtbaar bewijs of vertrouwen (reviews, resultaten, cases) terwijl dat voor deze branche juist doorslaggevend is;
-- een onduidelijke of ontbrekende volgende stap, waardoor geïnteresseerde bezoekers afhaken in plaats van contact opnemen.
+Ga langs deze mogelijke invalshoeken en kies de sterkste voor DEZE site. VARIEER bewust — leun niet standaard op dezelfde invalshoek:
+A. een sterk verhaal, resultaat of persoonlijke aanpak dat de kracht van dit bedrijf is, maar dat verstopt zit (pas op 'Over ons', onderaan, of tussen de tekst) in plaats van meteen bovenaan;
+B. de sterke punten / USP's die dit bedrijf WEL heeft, maar die niet meteen bovenaan samen en overzichtelijk staan waardoor een bezoeker ze mist;
+C. een belangrijke dienst of doelgroep die genoemd wordt maar makkelijk over het hoofd wordt gezien;
+D. geen zichtbaar bewijs of vertrouwen (reviews, resultaten, cases) terwijl dat voor deze branche juist doorslaggevend is;
+E. een onduidelijke of ontbrekende volgende stap (call-to-action), waardoor geïnteresseerde bezoekers afhaken in plaats van contact opnemen of te boeken;
+F. veel tekst die bezoekers moeten doorlezen voordat duidelijk wordt wat een bezoek/dienst hen concreet oplevert.
+
+BELANGRIJK voor variatie en juistheid:
+- Gebruik de kale zin "er ontbreekt een duidelijke reden waarom klanten voor jullie zouden kiezen" NIET als standaard-observatie. Kies die invalshoek alleen als er echt géén onderscheidende punten, USP's of vertrouwenselementen op de site staan.
+- Staan er WEL USP's, sterke punten of vertrouwenselementen (zie de velden usp/trust_signals die je zelf extraheert)? Kies dan een andere invalshoek — bijna altijd B (ze staan er, maar niet overzichtelijk bovenaan), A (verstopte kracht), D of E. De observation gaat dan over presentatie/vindbaarheid, niet over "geen reden om te kiezen".
+- Wissel de invalshoek per site af; twee vergelijkbare sites horen niet automatisch dezelfde observatie te krijgen.
 
 Regels voor de observation:
 - Koppel het aan een concreet gevolg voor hun bezoekers/klanten (waarom kost dit hen iets), want dát maakt nieuwsgierig.

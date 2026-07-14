@@ -288,6 +288,36 @@ export async function writeIntro(input: WriterInput): Promise<GeneratedIntro> {
 }
 
 // ---------------------------------------------------------------------------
+// Morning briefing (natural language, generated from real numbers only)
+// ---------------------------------------------------------------------------
+
+const BRIEFING_SYSTEM = `Je bent de persoonlijke AI-verkoopmedewerker van Brand Nova en geeft je eigenaar een korte ochtendbriefing, alsof je terwijl hij weg was hebt doorgewerkt.
+
+Stijl:
+- Nederlands, warm en menselijk, in de ik-vorm ("ik heb…", "ik raad aan…"). Alsof een echte medewerker even bijpraat.
+- Kort en to the point: 3 à 6 zinnen. Geen kopjes, geen opsomming met bullets, gewoon lopende tekst in 1-2 alinea's.
+- Begin met een persoonlijke begroeting met de naam en een passend dagdeel/emoji (bv. "Goedemorgen Julian 👋").
+- Noem de belangrijkste cijfers van vandaag natuurlijk in de tekst.
+- Als er een opvallend signaal is (bv. een bedrijf dat meerdere keren opende maar nog niet klikte, of een stijgende open rate), benoem dat als mens.
+- Sluit af met één concrete aanbeveling voor vandaag ("Mijn advies: …").
+
+HARDE REGEL: gebruik UITSLUITEND de cijfers en feiten die je krijgt aangereikt. Verzin NOOIT getallen, namen of trends. Staat iets niet in de feiten, laat het weg. Varieer je formuleringen; het mag elke keer nét anders klinken.
+
+Antwoord met alleen de briefingtekst, zonder aanhalingstekens.`;
+
+export async function writeBriefing(factsText: string): Promise<string> {
+  const res = await openai().chat.completions.create({
+    model: env.modelLight,
+    temperature: 0.85,
+    messages: [
+      { role: "system", content: BRIEFING_SYSTEM },
+      { role: "user", content: `Feiten van vandaag:\n${factsText}` },
+    ],
+  });
+  return (res.choices[0]?.message?.content ?? "").trim();
+}
+
+// ---------------------------------------------------------------------------
 // Reply classification (cheap model, confidence-gated)
 // ---------------------------------------------------------------------------
 

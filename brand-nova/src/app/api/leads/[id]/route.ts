@@ -17,16 +17,20 @@ export async function GET(
   const { id } = await params;
   const { data: lead } = await db()
     .from("bn_leads")
-    .select("id, status, followups_sent, warm_since, bn_companies(name, domain, email, website_url, industry)")
+    .select(
+      "id, status, followups_sent, warm_since, campaign_id, created_at, bn_companies(name, domain, email, website_url, industry), bn_campaigns(id, name)"
+    )
     .eq("id", id)
     .maybeSingle();
   if (!lead) {
     return NextResponse.json({ error: "lead not found" }, { status: 404 });
   }
-  const [{ data: emails }, { data: replies }] = await Promise.all([
+  const [{ data: emails }, { data: replies }, { data: events }] = await Promise.all([
     db()
       .from("bn_email_sequences")
-      .select("step, subject, body, sent_at, status")
+      .select(
+        "step, subject, body, sent_at, status, tracked, delivered_at, open_count, first_open_at, last_open_at, click_count, last_click_at, clicked_url"
+      )
       .eq("lead_id", id)
       .order("step", { ascending: true }),
     db()
@@ -34,11 +38,17 @@ export async function GET(
       .select("from_email, subject, raw_body, received_at, classification, classification_confidence, auto_replied, auto_reply_body, needs_human")
       .eq("lead_id", id)
       .order("received_at", { ascending: true }),
+    db()
+      .from("bn_email_events")
+      .select("type, url, occurred_at")
+      .eq("lead_id", id)
+      .order("occurred_at", { ascending: true }),
   ]);
   return NextResponse.json({
-    lead: { ...lead, company: lead.bn_companies },
+    lead: { ...lead, company: lead.bn_companies, campaign: lead.bn_campaigns },
     emails: emails ?? [],
     replies: replies ?? [],
+    events: events ?? [],
   });
 }
 

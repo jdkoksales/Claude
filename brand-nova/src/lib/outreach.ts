@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto";
 import { db } from "./supabase";
 import { logActivity } from "./activity";
 import { recordEmailEvent } from "./events";
+import { activeCampaignIds } from "./analyzer";
 import { writeIntro } from "./ai";
 import { getSettings } from "./settings";
 import { sendEmail } from "./resend";
@@ -483,6 +484,12 @@ export async function processSendQueue(
   settings: Settings
 ): Promise<number> {
   if (budget <= 0) return 0;
+
+  // Sending happens only from active campaigns — the unassigned pool is a
+  // staging area and is never mailed until leads are assigned to a campaign.
+  const activeIds = await activeCampaignIds();
+  if (activeIds.length === 0) return 0;
+
   const insights = await loadInsights();
   let sent = 0;
 
@@ -490,6 +497,7 @@ export async function processSendQueue(
   const { data: dueLeads } = await db()
     .from("bn_leads")
     .select("id, status, followups_sent")
+    .in("campaign_id", activeIds)
     .in("status", ["emailed", "followup_1", "followup_2"])
     .lte("next_action_at", new Date().toISOString())
     .lt("followups_sent", settings.max_followups)
@@ -516,6 +524,7 @@ export async function processSendQueue(
       .from("bn_leads")
       .select("id")
       .eq("status", "queued")
+      .in("campaign_id", activeIds)
       .order("created_at", { ascending: true })
       .limit(remaining);
 

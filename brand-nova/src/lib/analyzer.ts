@@ -7,85 +7,71 @@ import { groundingScore, MIN_GROUNDING_SCORE } from "./textGuards";
 /** Bump to force re-analysis after prompt/model upgrades. */
 export const ANALYSIS_VERSION = 3;
 
-/** Cache TTL: an analysis older than this may be refreshed. */
-const ANALYSIS_TTL_DAYS = 90;
-
 interface PendingCompany {
   id: string;
   name: string;
   website_url: string;
 }
 
-/**
- * Gathers up to `limit` companies that need analysis, cheapest-first:
- * never-analyzed companies, then failed (transient) rows, then stale ones.
- * Cache-first: a company with a `done` analysis at the current version inside
- * the TTL is never re-fetched and never costs another AI call.
- */
-async function analysisCandidates(limit: number): Promise<PendingCompany[]> {
-  if (limit <= 0) return [];
-  const { data: companies, error } = await db()
-    .from("bn_companies")
-    .select("id, name, website_url, bn_website_analyses(id)")
-    .is("bn_website_analyses", null)
-    .limit(limit);
-  if (error) throw new Error(`analysis candidates query failed: ${error.message}`);
-
-  const candidates: PendingCompany[] = (companies ?? []) as unknown as PendingCompany[];
-
-  if (candidates.length < limit) {
-    const { data: failed } = await db()
-      .from("bn_website_analyses")
-      .select("company_id, bn_companies(id, name, website_url)")
-      .eq("status", "failed")
-      .limit(limit - candidates.length);
-    for (const row of failed ?? []) {
-      const c = row.bn_companies as unknown as PendingCompany | null;
-      if (c) candidates.push(c);
-    }
-  }
-
-  if (candidates.length < limit) {
-    const staleBefore = new Date(
-      Date.now() - ANALYSIS_TTL_DAYS * 24 * 60 * 60 * 1000
-    ).toISOString();
-    const { data: stale } = await db()
-      .from("bn_website_analyses")
-      .select("company_id, bn_companies(id, name, website_url)")
-      .or(`analysis_version.lt.${ANALYSIS_VERSION},fetched_at.lt.${staleBefore}`)
-      .eq("status", "done")
-      .limit(limit - candidates.length);
-    for (const row of stale ?? []) {
-      const c = row.bn_companies as unknown as PendingCompany | null;
-      if (c) candidates.push(c);
-    }
-  }
-  return candidates;
+/** Ids of campaigns that are currently sending. */
+export async function activeCampaignIds(): Promise<string[]> {
+  const { data } = await db().from("bn_campaigns").select("id").eq("status", "active");
+  return (data ?? []).map((r) => r.id as string);
 }
 
-/** Count of leads already analyzed and ready to be emailed. */
-async function queuedLeadCount(): Promise<number> {
+/**
+ * Companies still to analyze for the given active campaigns — i.e. leads that
+ * are assigned to one of those campaigns and haven't been analyzed yet
+ * (status 'new'). A 'new' lead is by definition one that hasn't been through
+ * analysis, so this is exactly the work-to-do set. Sending only happens from
+ * campaigns, so we never spend analysis on unassigned pool leads.
+ */
+async function analysisCandidates(
+  limit: number,
+  activeIds: string[]
+): Promise<PendingCompany[]> {
+  if (limit <= 0 || activeIds.length === 0) return [];
+  const { data, error } = await db()
+    .from("bn_leads")
+    .select("bn_companies(id, name, website_url)")
+    .in("campaign_id", activeIds)
+    .eq("status", "new")
+    .order("created_at", { ascending: true })
+    .limit(limit);
+  if (error) throw new Error(`analysis candidates query failed: ${error.message}`);
+  const out: PendingCompany[] = [];
+  for (const row of data ?? []) {
+    const c = row.bn_companies as unknown as PendingCompany | null;
+    if (c) out.push(c);
+  }
+  return out;
+}
+
+/** Leads analyzed and ready to send within the active campaigns. */
+async function queuedLeadCount(activeIds: string[]): Promise<number> {
+  if (activeIds.length === 0) return 0;
   const { count } = await db()
     .from("bn_leads")
     .select("id", { count: "exact", head: true })
-    .eq("status", "queued");
+    .eq("status", "queued")
+    .in("campaign_id", activeIds);
   return count ?? 0;
 }
 
 /**
- * Just-in-time analysis. Analyzes companies ONE AT A TIME, only until there
- * are `target` leads ready to send (status `queued`), then stops — so the AI
- * prepares exactly the lead(s) the next send needs instead of building a huge
- * backlog. Because many sites yield no usable observation, it may analyze
- * several companies to surface one good lead; `maxToAnalyze` bounds the work
- * (and OpenAI spend) per tick, and it simply continues on the next tick.
+ * Just-in-time analysis, scoped to active campaigns. Analyzes companies ONE AT
+ * A TIME, only until there are `target` leads ready to send (status `queued`)
+ * inside an active campaign, then stops — so the AI prepares exactly the
+ * lead(s) the next send needs instead of building a huge backlog, and never
+ * touches the unassigned pool. Because many sites yield no usable observation,
+ * it may analyze several companies to surface one good lead; `maxToAnalyze`
+ * bounds the work (and OpenAI spend) per tick, continuing next tick.
  *
  * Guardrails (hard, not prompt-based):
  * - unreachable/thin sites → status `unreachable`, no email ever drafted
  * - model returns observation=null → status `no_observation`, lead skipped
  * - observation fails the grounding check against the real page text →
- *   discarded, treated as `no_observation` (we never "retry until it
- *   hallucinates something better")
+ *   discarded, treated as `no_observation`.
  */
 export async function ensureQueuedLeads(
   target: number,
@@ -93,10 +79,13 @@ export async function ensureQueuedLeads(
 ): Promise<number> {
   if (target <= 0 || maxToAnalyze <= 0) return 0;
 
-  let ready = await queuedLeadCount();
+  const activeIds = await activeCampaignIds();
+  if (activeIds.length === 0) return 0;
+
+  let ready = await queuedLeadCount(activeIds);
   if (ready >= target) return 0;
 
-  const candidates = await analysisCandidates(maxToAnalyze);
+  const candidates = await analysisCandidates(maxToAnalyze, activeIds);
   let analyzed = 0;
   for (const company of candidates) {
     if (ready >= target) break;

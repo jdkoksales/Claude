@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { ActivityEntry, ActivityType } from "@/lib/types";
 import type { BriefingStats } from "@/lib/stats";
+import AnalyticsSection from "./analytics/AnalyticsSection";
 
 const POLL_MS = 4000;
 const MAX_FEED = 60;
@@ -236,8 +237,15 @@ function DeliverabilityCard({
 export default function Dashboard() {
   const [stats, setStats] = useState<BriefingStats | null>(null);
   const [feed, setFeed] = useState<ActivityEntry[]>([]);
+  const [briefing, setBriefing] = useState<string | null>(null);
   const lastIdRef = useRef<number | null>(null);
   const firstLoadRef = useRef(true);
+
+  useEffect(() => {
+    fetch("/api/briefing")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => d && setBriefing(d.text));
+  }, []);
 
   const poll = useCallback(async () => {
     const after = firstLoadRef.current ? "" : `?after=${lastIdRef.current ?? ""}`;
@@ -296,51 +304,27 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-5">
-      {/* Morning briefing — every number below is queried, never generated */}
+      {/* The AI's morning briefing — the first thing you read. Real numbers,
+          phrased by the model; falls back to a short greeting until it loads. */}
       <section className="glass relative overflow-hidden p-6 sm:p-8">
+        <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-nova/10 blur-3xl" />
         <div className="flex items-start justify-between gap-4">
-          <div>
-            <h1 className="text-xl font-semibold sm:text-2xl">
-              {greeting(stats.userName)}
-            </h1>
-            <p className="mt-3 max-w-xl text-sm leading-relaxed text-ink-2">
-              Terwijl je weg was heb ik{" "}
-              <strong className="text-ink">{stats.analyzedLast24h} websites</strong>{" "}
-              geanalyseerd en{" "}
-              <strong className="text-ink">
-                {stats.sentLast24h} persoonlijke e-mails
-              </strong>{" "}
-              verstuurd.
-              {stats.checksCompletedLast24h > 0 && (
-                <>
-                  {" "}
-                  <strong className="text-ink">
-                    {stats.checksCompletedLast24h} bedrijven
-                  </strong>{" "}
-                  deden de Website Check.
-                </>
-              )}
-              {stats.warmLeadsLast24h > 0 && (
-                <>
-                  {" "}
-                  Dat leverde{" "}
-                  <strong className="text-warm">
-                    {stats.warmLeadsLast24h} warme leads
-                  </strong>{" "}
-                  op
-                  {stats.meetingsLast24h > 0 && (
-                    <>
-                      , waarvan{" "}
-                      <strong className="text-warm">
-                        {stats.meetingsLast24h} met een afspraakverzoek
-                      </strong>
-                    </>
-                  )}
-                  .
-                </>
-              )}{" "}
-              Doel van vandaag: {stats.dailyGoal} nieuwe warme leads.
-            </p>
+          <div className="min-w-0 flex-1">
+            <div className="mb-3 flex items-center gap-2.5">
+              <span className={`orb ${stats.paused ? "paused" : ""}`} aria-hidden />
+              <span className="text-xs uppercase tracking-wider text-ink-3">
+                Briefing van je AI-medewerker
+              </span>
+            </div>
+            {briefing ? (
+              <p className="max-w-2xl whitespace-pre-line text-[15px] leading-relaxed text-ink">
+                {briefing}
+              </p>
+            ) : (
+              <h1 className="text-xl font-semibold sm:text-2xl">
+                {greeting(stats.userName)}
+              </h1>
+            )}
             {stats.currentTask && !stats.paused && (
               <p className="mt-4 flex items-center gap-2 text-sm">
                 <span className="scanning">{stats.currentTask}</span>
@@ -364,6 +348,9 @@ export default function Dashboard() {
           </button>
         </div>
       </section>
+
+      {/* The analytics dashboard proper — KPIs, charts, funnel. */}
+      <AnalyticsSection />
 
       {/* The one KPI, plus supporting signals (deliberately smaller) */}
       <section className="grid gap-4 sm:grid-cols-3">

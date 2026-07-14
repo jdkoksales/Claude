@@ -350,7 +350,7 @@ export default function Dashboard() {
       </section>
 
       {/* The analytics dashboard proper — KPIs, charts, funnel. */}
-      <AnalyticsSection />
+      <AnalyticsSection selectable />
 
       {/* The one KPI, plus supporting signals (deliberately smaller) */}
       <section className="grid gap-4 sm:grid-cols-3">

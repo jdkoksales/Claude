@@ -179,34 +179,79 @@ function Kpi({
 export default function AnalyticsSection({
   campaignId = null,
   scoped = false,
+  selectable = false,
 }: {
   campaignId?: string | null;
   scoped?: boolean;
+  /** Show a Totaal / per-campaign picker (dashboard only). */
+  selectable?: boolean;
 }) {
   const [data, setData] = useState<AnalyticsPayload | null>(null);
   const [drill, setDrill] = useState<DrillMetric | null>(null);
+  // The scope currently shown: null = Totaal. Fixed to campaignId when scoped.
+  const [scope, setScope] = useState<string | null>(campaignId);
+  const [options, setOptions] = useState<{ id: string; name: string }[]>([]);
+
+  // Populate the picker once (dashboard only).
+  useEffect(() => {
+    if (!selectable) return;
+    fetch("/api/campaigns")
+      .then((r) => (r.ok ? r.json() : { campaigns: [] }))
+      .then((d) =>
+        setOptions(
+          (d.campaigns ?? []).map((c: { campaignId: string; name: string }) => ({
+            id: c.campaignId,
+            name: c.name,
+          }))
+        )
+      );
+  }, [selectable]);
 
   const load = useCallback(async () => {
-    const url = campaignId ? `/api/analytics?campaign=${campaignId}` : "/api/analytics";
+    const url = scope ? `/api/analytics?campaign=${scope}` : "/api/analytics";
     const res = await fetch(url);
     if (!res.ok) return;
     const d = await res.json();
     // Campaign-scoped responses omit pool/campaigns; normalize.
     setData({ pool: 0, campaigns: [], ...d });
-  }, [campaignId]);
+  }, [scope]);
 
   useEffect(() => {
+    setData(null);
     load();
     const t = setInterval(load, 15000);
     return () => clearInterval(t);
   }, [load]);
 
+  const isTotal = scope === null;
+
+  const selector = selectable ? (
+    <div className="flex items-center gap-2">
+      <span className="text-xs uppercase tracking-wider text-ink-3">Weergave</span>
+      <select
+        value={scope ?? ""}
+        onChange={(e) => setScope(e.target.value || null)}
+        className="rounded-lg border border-line bg-panel-2 px-3 py-1.5 text-sm text-ink outline-none transition-colors focus:border-nova"
+      >
+        <option value="">Totaal (alle campagnes)</option>
+        {options.map((o) => (
+          <option key={o.id} value={o.id}>
+            {o.name}
+          </option>
+        ))}
+      </select>
+    </div>
+  ) : null;
+
   if (!data) {
     return (
-      <div className="glass flex h-40 items-center justify-center text-ink-3">
-        <span className="dots text-lg">
-          <span>●</span> <span>●</span> <span>●</span>
-        </span>
+      <div className="space-y-4">
+        {selector}
+        <div className="glass flex h-40 items-center justify-center text-ink-3">
+          <span className="dots text-lg">
+            <span>●</span> <span>●</span> <span>●</span>
+          </span>
+        </div>
       </div>
     );
   }
@@ -220,12 +265,26 @@ export default function AnalyticsSection({
 
   return (
     <div className="space-y-5">
+      {selector && (
+        <div className="flex items-center justify-between">
+          {selector}
+          {!isTotal && (
+            <Link
+              href={`/campaigns/${scope}`}
+              className="text-xs text-ink-3 hover:text-nova"
+            >
+              Open campagnepagina →
+            </Link>
+          )}
+        </div>
+      )}
+
       {/* KPI row */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-        {!scoped && (
+        {isTotal && (
           <Kpi label="Leads in pool" value={fmt(data.pool)} href="/campaigns" />
         )}
-        {!scoped && (
+        {isTotal && (
           <Kpi label="Actieve campagnes" value={fmt(activeCampaigns)} href="/campaigns" />
         )}
         <Kpi label="Verstuurd" value={fmt(a.sent)} onClick={() => setDrill("sent")} />
@@ -309,7 +368,7 @@ export default function AnalyticsSection({
       </section>
 
       {drill && (
-        <DrillModal metric={drill} campaignId={campaignId} onClose={() => setDrill(null)} />
+        <DrillModal metric={drill} campaignId={scope} onClose={() => setDrill(null)} />
       )}
     </div>
   );

@@ -259,7 +259,8 @@ async function sendForLead(
     .select("id")
     .eq("lead_id", lead.id)
     .eq("step", step)
-    .eq("status", "sent")
+    .not("sent_at", "is", null)
+    .limit(1)
     .maybeSingle();
   if (alreadySent) {
     await db()
@@ -485,7 +486,7 @@ export async function recoverStuckLeads(): Promise<void> {
       .from("bn_email_sequences")
       .select("step")
       .eq("lead_id", leadId)
-      .eq("status", "sent")
+      .not("sent_at", "is", null)
       .order("step", { ascending: false })
       .limit(1)
       .maybeSingle();

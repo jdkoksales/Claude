@@ -62,7 +62,7 @@ export async function getBriefingStats(): Promise<BriefingStats> {
     client
       .from("bn_email_sequences")
       .select("id", { count: "exact", head: true })
-      .eq("status", "sent")
+      .not("sent_at", "is", null)
       .gte("sent_at", since24h),
     client
       .from("bn_leads")
@@ -105,7 +105,7 @@ export async function getBriefingStats(): Promise<BriefingStats> {
     client
       .from("bn_email_sequences")
       .select("id", { count: "exact", head: true })
-      .eq("status", "sent")
+      .not("sent_at", "is", null)
       .gte("sent_at", since7d),
     client
       .from("bn_leads")

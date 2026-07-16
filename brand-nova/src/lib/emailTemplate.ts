@@ -8,7 +8,7 @@
  * and text-only clients) and an HTML part carrying the branded signature.
  */
 
-import { openPixelUrl, clickRedirectUrl } from "./events";
+import { openPixelUrl } from "./events";
 
 const OPENER =
   "Ik kwam jullie website tegen en wilde even een klein verbeterpunt meegeven 😊";
@@ -186,7 +186,11 @@ export function assembleFirstEmail(input: {
   trackToken?: string | null;
 }): AssembledEmail {
   const offer = offerBlock(input.websiteCheckUrl);
-  const clickHref = input.trackToken ? clickRedirectUrl(input.trackToken) : undefined;
+  // Deliverability: the visible Website Check link stays on the sender's own
+  // domain. Rewriting it to the app's vercel.app tracking redirect made the
+  // link domain mismatch the from-domain — a strong spam signal that tanked
+  // opens to zero on day 2. Click tracking resumes once a custom tracking
+  // domain (e.g. t.brand-nova.nl) exists; the open pixel below stays.
   const textBlocks = [
     greeting(input.firstName),
     OPENER,
@@ -199,9 +203,7 @@ export function assembleFirstEmail(input: {
     para(greeting(input.firstName)) +
       para(OPENER) +
       richTextToHtml(input.intro) +
-      offer
-        .map((o) => (/^https?:\/\//.test(o.trim()) ? urlPara(o, clickHref) : para(o)))
-        .join("") +
+      offer.map((o) => (/^https?:\/\//.test(o.trim()) ? urlPara(o) : para(o))).join("") +
       para(REPLY_LINE),
     input.trackToken
   );
@@ -223,7 +225,6 @@ export function assembleFollowUp(input: {
   step: number;
   trackToken?: string | null;
 }): AssembledEmail {
-  const clickHref = input.trackToken ? clickRedirectUrl(input.trackToken) : undefined;
   const pointerPrefix = "Mocht je er iets mee willen: de gratis Website Check staat nog voor je klaar — ";
   const pointer = `${pointerPrefix}${input.websiteCheckUrl}`;
   const textBlocks = [
@@ -236,7 +237,7 @@ export function assembleFollowUp(input: {
     para(greeting(input.firstName)) +
       richTextToHtml(input.intro) +
       `<p style="margin:0 0 16px;">${escapeHtml(pointerPrefix)}<a href="${escapeHtml(
-        clickHref ?? input.websiteCheckUrl
+        input.websiteCheckUrl
       )}" style="color:#4353c9;text-decoration:underline;">${escapeHtml(
         input.websiteCheckUrl
       )}</a></p>`,

@@ -44,10 +44,14 @@ export async function runTick(): Promise<TickSummary> {
   await recoverStuckLeads();
 
   const dayStart = startOfLocalDayUtc(settings.sending_hours.tz);
+  // Count everything that actually went out today, regardless of what happened
+  // to it afterwards: a mail that bounces flips to status 'bounced' but was
+  // still sent — filtering on status='sent' made the cap undercount by the
+  // day's bounces (observed: 106 sends on a cap of 100).
   const { count } = await db()
     .from("bn_email_sequences")
     .select("id", { count: "exact", head: true })
-    .eq("status", "sent")
+    .not("sent_at", "is", null)
     .gte("sent_at", dayStart);
   const sentToday = count ?? 0;
 
@@ -84,10 +88,11 @@ async function sendBudget(settings: Settings, sentToday: number): Promise<number
     return sendBudgetForTick(settings, sentToday, TICK_MINUTES);
   }
   if (settings.daily_send_cap - sentToday <= 0) return 0;
+  // Pace from the last mail that actually left, bounced-or-not.
   const { data: last } = await db()
     .from("bn_email_sequences")
     .select("sent_at")
-    .eq("status", "sent")
+    .not("sent_at", "is", null)
     .order("sent_at", { ascending: false })
     .limit(1)
     .maybeSingle();

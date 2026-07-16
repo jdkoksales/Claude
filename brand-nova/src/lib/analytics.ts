@@ -177,7 +177,7 @@ export async function leadsForMetric(
 
   switch (metric) {
     case "sent":
-      q = q.eq("status", "sent");
+      q = q.not("sent_at", "is", null);
       break;
     case "delivered":
       q = q.not("delivered_at", "is", null);

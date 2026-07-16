@@ -16,7 +16,8 @@ export async function GET(request: NextRequest) {
       "id, step, subject, body, sent_at, bn_leads(id, status, bn_companies(name, domain, email))",
       { count: "exact" }
     )
-    .eq("status", "sent")
+    // sent_at-based: a mail that later bounced still belongs in the archive.
+    .not("sent_at", "is", null)
     .order("sent_at", { ascending: false })
     .range(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE - 1);
   if (error) {

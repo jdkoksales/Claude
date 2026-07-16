@@ -284,6 +284,28 @@ export default function SettingsPage() {
           <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-line bg-panel-2/50 p-3">
             <input
               type="checkbox"
+              checked={settings.hot_alert_email}
+              onChange={(e) =>
+                setSettings({ ...settings, hot_alert_email: e.target.checked })
+              }
+              className="h-4 w-4 accent-[#7c8cff]"
+            />
+            <span className="text-sm">
+              <span className="font-medium text-ink">
+                🔥 Bel-nu-signaal per e-mail
+              </span>
+              <span className="block text-xs text-ink-3">
+                Opent of klikt een prospect, dan krijg je direct een mailtje in
+                je inbox (= pushmelding op je telefoon). Bellen binnen 5 minuten
+                maakt kwalificatie ~21× waarschijnlijker. Max 1 signaal per lead
+                per dag, alleen binnen je verzendvenster.
+              </span>
+            </span>
+          </label>
+
+          <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-line bg-panel-2/50 p-3">
+            <input
+              type="checkbox"
               checked={settings.auto_reply_enabled}
               onChange={(e) =>
                 setSettings({ ...settings, auto_reply_enabled: e.target.checked })

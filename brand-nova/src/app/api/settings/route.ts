@@ -21,6 +21,7 @@ const patchSchema = z
     send_interval_minutes: z.number().int().min(0).max(240),
     auto_reply_confidence_threshold: z.number().min(0).max(1),
     auto_reply_enabled: z.boolean(),
+    hot_alert_email: z.boolean(),
     paused: z.boolean(),
   })
   .partial();

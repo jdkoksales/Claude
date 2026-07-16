@@ -189,6 +189,8 @@ export interface Settings {
   send_interval_minutes: number;
   auto_reply_confidence_threshold: number;
   auto_reply_enabled: boolean;
+  /** Bel-nu-signaal: email the operator the moment a prospect opens/clicks. */
+  hot_alert_email: boolean;
   paused: boolean;
 }
 

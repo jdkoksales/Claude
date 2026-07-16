@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/supabase";
 import { recordEmailEvent } from "@/lib/events";
 import { logActivity } from "@/lib/activity";
+import { maybeSendHotAlert } from "@/lib/hotAlert";
 
 // A 1×1 transparent GIF — the classic open-tracking pixel.
 const PIXEL = Buffer.from(
@@ -62,6 +63,8 @@ export async function GET(
       again ? `${name} opende je e-mail opnieuw.` : `${name} opende je e-mail.`,
       { metadata: { kind: "open" } }
     );
+    // Bel-nu-signaal: ping the operator while the prospect is reading.
+    await maybeSendHotAlert(seq.lead_id as string, "opened");
   }
 
   return pixel();

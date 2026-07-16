@@ -3,6 +3,7 @@ import { db } from "@/lib/supabase";
 import { getSettings } from "@/lib/settings";
 import { recordEmailEvent } from "@/lib/events";
 import { logActivity } from "@/lib/activity";
+import { maybeSendHotAlert } from "@/lib/hotAlert";
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -59,6 +60,8 @@ export async function GET(
     await logActivity("clicked", `${name} klikte door naar de Website Check.`, {
       metadata: { kind: "click" },
     });
+    // A click is the hottest possible signal — ping the operator right away.
+    await maybeSendHotAlert(seq.lead_id as string, "clicked");
   }
 
   return NextResponse.redirect(destination, 302);

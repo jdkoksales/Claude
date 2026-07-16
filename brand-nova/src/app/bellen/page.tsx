@@ -81,7 +81,8 @@ export default function BellenPage() {
 
   useEffect(() => {
     load();
-    const t = setInterval(load, 30000);
+    // Fast poll: the Bel-nu-signaal is about minutes, not quarters of an hour.
+    const t = setInterval(load, 10000);
     return () => clearInterval(t);
   }, [load]);
 
@@ -129,6 +130,20 @@ export default function BellenPage() {
       else if (l.callStatus === "reached") c.reached++;
     }
     return c;
+  }, [leads]);
+
+  // 🔥 Nu actief: engaged within the last 30 minutes and still callable —
+  // these are the "call within 5 minutes" opportunities.
+  const hot = useMemo(() => {
+    const cutoff = Date.now() - 30 * 60 * 1000;
+    return (leads ?? []).filter((l) => {
+      if (l.callStatus === "done" || l.callStatus === "skip") return false;
+      const t = Math.max(
+        l.lastOpenAt ? new Date(l.lastOpenAt).getTime() : 0,
+        l.lastClickAt ? new Date(l.lastClickAt).getTime() : 0
+      );
+      return t >= cutoff;
+    });
   }, [leads]);
 
   const chip = (active: boolean) =>
@@ -197,6 +212,58 @@ export default function BellenPage() {
             </select>
           </div>
         </section>
+
+        {/* 🔥 Nu actief — prospects reading the mail right now */}
+        {hot.length > 0 && (
+          <section className="hot-glow rounded-[1.1rem] p-5">
+            <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold text-warm">
+              🔥 Nu actief — bel binnen 5 minuten
+              <span className="font-normal text-ink-3">
+                (contact binnen 5 min ≈ 21× meer kwalificaties)
+              </span>
+            </h2>
+            <ul className="space-y-2">
+              {hot.map((l) => (
+                <li
+                  key={l.leadId}
+                  className="flex flex-wrap items-center justify-between gap-3 rounded-lg bg-panel-2/70 px-4 py-3"
+                >
+                  <div className="min-w-0">
+                    <p className="font-medium text-ink">
+                      {l.company}
+                      <span className="ml-2 text-xs font-normal text-warm">
+                        {l.lastClickAt &&
+                        new Date(l.lastClickAt).getTime() >= Date.now() - 30 * 60 * 1000
+                          ? `klikte ${relative(l.lastClickAt)}`
+                          : `opende ${relative(l.lastOpenAt)}`}
+                      </span>
+                    </p>
+                    <p className="mt-0.5 text-xs text-ink-3">
+                      <a
+                        href={l.websiteUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-nova hover:underline"
+                      >
+                        {l.domain}
+                      </a>{" "}
+                      — zoek het nummer op en bel nu
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setOpen(l.leadId);
+                      setNote("");
+                    }}
+                    className="shrink-0 rounded-lg bg-warm px-4 py-2 text-xs font-semibold text-void transition-opacity hover:opacity-90"
+                  >
+                    📞 Log gesprek
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
 
         {/* The list */}
         {!filtered ? (

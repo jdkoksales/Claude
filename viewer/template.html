@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TapKaarten — 3D productviewer</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #ffffff;
+    --bg-soft: #f4f5f7;
+    --stage-a: #eef0f4;
+    --stage-b: #dfe3ea;
+    --text: #14161a;
+    --muted: #626a76;
+    --line: #e2e5ea;
+    --accent: #14161a;
+    --accent-text: #ffffff;
+    --chip: #ffffff;
+    --shadow: 0 1px 2px rgba(16,20,28,.06), 0 12px 32px rgba(16,20,28,.08);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0c0e12;
+      --bg-soft: #14171d;
+      --stage-a: #171b22;
+      --stage-b: #0d1015;
+      --text: #eef1f6;
+      --muted: #9aa3b1;
+      --line: #262b34;
+      --accent: #f2f4f8;
+      --accent-text: #12141a;
+      --chip: #1a1e26;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 16px 40px rgba(0,0,0,.45);
+    }
+  }
+  :root[data-theme="light"] {
+    color-scheme: light;
+    --bg: #ffffff; --bg-soft: #f4f5f7; --stage-a: #eef0f4; --stage-b: #dfe3ea;
+    --text: #14161a; --muted: #626a76; --line: #e2e5ea; --accent: #14161a;
+    --accent-text: #ffffff; --chip: #ffffff;
+    --shadow: 0 1px 2px rgba(16,20,28,.06), 0 12px 32px rgba(16,20,28,.08);
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #0c0e12; --bg-soft: #14171d; --stage-a: #171b22; --stage-b: #0d1015;
+    --text: #eef1f6; --muted: #9aa3b1; --line: #262b34; --accent: #f2f4f8;
+    --accent-text: #12141a; --chip: #1a1e26;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 16px 40px rgba(0,0,0,.45);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 400 16px/1.55 "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+          Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page { max-width: 1180px; margin: 0 auto; padding: 40px 24px 72px; }
+
+  .product {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr);
+    gap: 48px;
+    align-items: start;
+  }
+  @media (max-width: 900px) {
+    .product { grid-template-columns: 1fr; gap: 32px; }
+    .page { padding: 24px 18px 56px; }
+  }
+
+  /* ---- viewer ---- */
+  .viewer {
+    position: relative;
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    background: radial-gradient(120% 100% at 50% 0%, var(--stage-a), var(--stage-b));
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  .viewer.is-dropping { outline: 2px dashed var(--muted); outline-offset: -10px; }
+
+  #stage {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    cursor: grab;
+    display: block;
+  }
+  #stage.is-grabbing { cursor: grabbing; }
+  #stage canvas { display: block; width: 100% !important; height: 100% !important; }
+  @media (max-width: 900px) { #stage { aspect-ratio: 1 / 1.05; } }
+
+  .badge {
+    position: absolute; top: 14px; left: 14px;
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 6px 11px; border-radius: 999px;
+    background: var(--chip); border: 1px solid var(--line);
+    font-size: 12px; font-weight: 650; letter-spacing: .04em;
+    text-transform: uppercase; color: var(--muted);
+  }
+  .variant-tag {
+    position: absolute; top: 14px; right: 14px;
+    padding: 6px 12px; border-radius: 999px;
+    background: var(--chip); border: 1px solid var(--line);
+    font-size: 12px; font-weight: 650; color: var(--text);
+  }
+  .badge span.dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: #34a853; box-shadow: 0 0 0 3px rgba(52,168,83,.18);
+  }
+
+  .hint {
+    position: absolute; left: 50%; transform: translateX(-50%); bottom: 68px;
+    padding: 5px 12px; border-radius: 999px;
+    background: var(--chip); border: 1px solid var(--line);
+    font-size: 12.5px; color: var(--muted);
+    pointer-events: none; white-space: nowrap;
+  }
+
+  .controls {
+    position: absolute; left: 0; right: 0; bottom: 0;
+    display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+    padding: 12px 14px;
+    background: linear-gradient(to top, rgba(0,0,0,.06), transparent);
+  }
+  @media (prefers-color-scheme: dark) {
+    .controls { background: linear-gradient(to top, rgba(0,0,0,.28), transparent); }
+  }
+
+  #swatches { display: flex; gap: 7px; margin-right: 4px; }
+  .swatch {
+    width: 30px; height: 30px; padding: 0; border-radius: 50%;
+    background: var(--swatch);
+    border: 1px solid rgba(128,138,152,.5);
+    cursor: pointer; transition: transform .15s ease, box-shadow .15s ease;
+    flex: none;
+  }
+  .swatch:hover { transform: translateY(-1px); }
+  .swatch.is-active { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent); }
+
+  .btn {
+    appearance: none; cursor: pointer;
+    padding: 8px 13px; border-radius: 10px;
+    border: 1px solid var(--line); background: var(--chip); color: var(--text);
+    font: inherit; font-size: 13px; font-weight: 550;
+    transition: transform .15s ease, border-color .15s ease;
+  }
+  .btn:hover { transform: translateY(-1px); border-color: var(--muted); }
+  .btn:active { transform: translateY(0); }
+
+  /* ---- productinfo ---- */
+  .eyebrow {
+    font-size: 12px; font-weight: 700; letter-spacing: .12em;
+    text-transform: uppercase; color: var(--muted); margin: 4px 0 10px;
+  }
+  h1 { font-size: clamp(28px, 3.4vw, 40px); line-height: 1.12; margin: 0 0 12px; letter-spacing: -.02em; }
+  .rating { display: flex; align-items: center; gap: 9px; margin-bottom: 18px; color: var(--muted); font-size: 14px; }
+  .stars { color: #e0a92a; letter-spacing: 2px; font-size: 15px; }
+  .price { font-size: 26px; font-weight: 700; margin: 0 0 4px; }
+  .price small { font-size: 13px; font-weight: 500; color: var(--muted); }
+  .lead { color: var(--muted); margin: 16px 0 22px; }
+
+  .features { list-style: none; margin: 0 0 26px; padding: 0; display: grid; gap: 11px; }
+  .features li { display: flex; gap: 11px; align-items: flex-start; font-size: 15px; }
+  .features svg { flex: none; margin-top: 3px; color: #34a853; }
+
+  .cta { display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--accent); color: var(--accent-text);
+    border-color: var(--accent); padding: 13px 24px;
+    font-size: 15px; font-weight: 650; border-radius: 12px;
+  }
+  .btn-ghost { padding: 13px 20px; font-size: 15px; border-radius: 12px; }
+
+  .note {
+    margin-top: 26px; padding: 14px 16px; border-radius: 12px;
+    background: var(--bg-soft); border: 1px solid var(--line);
+    font-size: 13px; color: var(--muted);
+  }
+  .note strong { color: var(--text); font-weight: 600; }
+  kbd {
+    font: 600 11px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+    padding: 3px 5px; border-radius: 5px;
+    border: 1px solid var(--line); background: var(--chip); color: var(--text);
+  }
+
+  #fallback { padding: 40px; text-align: center; color: var(--muted); }
+</style>
+</head>
+<body>
+  <main class="page">
+    <div class="product">
+      <div class="viewer" id="viewer">
+        <div id="stage"></div>
+        <div id="fallback" hidden>
+          Je browser ondersteunt geen WebGL, waardoor de 3D-weergave niet kan laden.
+        </div>
+        <div class="badge"><span class="dot"></span> 3D — draai zelf</div>
+        <p class="hint">Sleep om te draaien · klik om om te draaien</p>
+        <div class="variant-tag" id="variant-name">Instagram</div>
+        <div class="controls">
+          <div id="swatches"></div>
+          <button class="btn" id="btn-flip" type="button">Omdraaien</button>
+          <button class="btn" id="btn-tap" type="button">Tik-effect</button>
+          <button class="btn" id="btn-art" type="button">Eigen ontwerp</button>
+          <button class="btn" id="btn-reset" type="button">Herstel</button>
+          <input id="file" type="file" accept="image/*" hidden>
+        </div>
+      </div>
+
+      <div class="info">
+        <p class="eyebrow">NFC-standaard</p>
+        <h1>TapKaarten NFC-tafelstandaard</h1>
+        <div class="rating">
+          <span class="stars">★★★★★</span>
+          <span>4,9 · 218 beoordelingen</span>
+        </div>
+        <p class="price">€ 34,95 <small>incl. btw</small></p>
+        <p class="lead">
+          Zet de standaard op je balie of tafel: één tik met de telefoon en je
+          klant staat direct op je Google-, Facebook- of Instagram-pagina. Geen
+          app nodig, en de QR-code werkt op elk toestel.
+        </p>
+        <ul class="features">
+          <li>
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            <span>NFC + QR-code, werkt op iOS en Android</span>
+          </li>
+          <li>
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            <span>Onbeperkt herprogrammeerbaar naar elke link</span>
+          </li>
+          <li>
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            <span>Stevig acrylaat met vaste voet, 100 × 150 mm</span>
+          </li>
+          <li>
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            <span>Voor 16:00 besteld, dezelfde dag verzonden</span>
+          </li>
+        </ul>
+        <div class="cta">
+          <button class="btn btn-primary" type="button">In winkelwagen</button>
+          <button class="btn btn-ghost" type="button">Gratis voorbeeld aanvragen</button>
+        </div>
+        <div class="note">
+          <strong>Demo:</strong> de standaard is volledig 3D en wordt in de browser
+          getekend — geen foto's, geen 3D-bestanden. Wissel met de bolletjes tussen
+          Instagram, Google en Facebook, of sleep je eigen ontwerp op de viewer om
+          het op de zichtbare kant te zetten.
+          Sneltoetsen: <kbd>F</kbd> omdraaien, <kbd>T</kbd> tik-effect.
+        </div>
+      </div>
+    </div>
+  </main>
+<script>
+__BUNDLE__
+</script>
+</body>
+</html>

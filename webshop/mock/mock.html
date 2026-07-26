@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TapKaarten — Meer reviews. Eén tik.</title>
+<style>
+  :root{
+    --ink:#0b0d10; --muted:#5b6472; --line:#e7e9ee;
+    --bg:#ffffff; --soft:#f6f7f9; --accent:#1a73e8; --gold:#f2b50f;
+    --green:#34a853; --radius:18px;
+    --shadow-sm:0 1px 2px rgba(11,13,16,.05),0 4px 14px rgba(11,13,16,.06);
+    --shadow-lg:0 2px 6px rgba(11,13,16,.07),0 24px 60px rgba(11,13,16,.14);
+  }
+  *{box-sizing:border-box;margin:0}
+  html{scroll-behavior:smooth}
+  body{font:400 17px/1.6 "Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased}
+  img{max-width:100%;display:block}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1240px;margin:0 auto;padding:0 28px}
+  h1,h2,h3{line-height:1.06;letter-spacing:-.025em;font-weight:750}
+  .eyebrow{font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+
+  /* announcement */
+  .bar{background:var(--ink);color:#fff;font-size:13.5px;font-weight:550;text-align:center;padding:9px 16px}
+  .bar .sep{opacity:.55;margin:0 12px}
+
+  /* header */
+  header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.82);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+  .nav{display:flex;align-items:center;gap:34px;height:64px}
+  .logo{font-size:21px;font-weight:800;letter-spacing:-.03em}
+  .logo em{font-style:normal;color:var(--accent)}
+  .nav nav{display:flex;gap:26px;font-size:14.5px;font-weight:550;color:var(--muted)}
+  .nav nav a:hover{color:var(--ink)}
+  .nav .cta-mini{margin-left:auto;display:flex;align-items:center;gap:16px}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;border-radius:999px;border:1.5px solid transparent;cursor:pointer;font:inherit;font-weight:650;transition:transform .18s ease,box-shadow .18s ease,background .18s ease}
+  .btn-s{padding:9px 18px;font-size:14px}
+  .btn-m{padding:14px 26px;font-size:15.5px}
+  .btn-l{padding:17px 34px;font-size:17px}
+  .btn-dark{background:var(--ink);color:#fff}
+  .btn-dark:hover{transform:translateY(-1px);box-shadow:0 10px 24px rgba(11,13,16,.22)}
+  .btn-ghost{border-color:var(--line);background:#fff;color:var(--ink)}
+  .btn-ghost:hover{border-color:var(--ink)}
+  .btn-blue{background:var(--accent);color:#fff}
+  .btn-blue:hover{transform:translateY(-1px);box-shadow:0 10px 26px rgba(26,115,232,.35)}
+
+  /* hero */
+  .hero{position:relative;overflow:hidden;background:#e9e4dc}
+  .hero img.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:86% 42%}
+  .hero .inner{position:relative;min-height:min(86vh,780px);display:flex;align-items:center;padding:90px 0}
+  .hero .copy{max-width:530px}
+  .hero .stars{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:600;color:#3d434c;margin-bottom:18px}
+  .hero .stars b{color:var(--gold);letter-spacing:2px;font-size:16px}
+  .hero h1{font-size:clamp(42px,5.6vw,74px);margin-bottom:20px}
+  .hero p.sub{font-size:clamp(17px,1.6vw,21px);color:#3d434c;max-width:46ch;margin-bottom:30px}
+  .hero .ctas{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:22px}
+  .hero .micro{display:flex;gap:18px;flex-wrap:wrap;font-size:13.5px;font-weight:600;color:#4a5058}
+  .hero .micro span{display:inline-flex;align-items:center;gap:7px}
+  .hero .micro svg{color:var(--green)}
+  .hero img.bg-mobile{display:none}
+  @media(max-width:860px){
+    .hero img.bg{display:none}
+    .hero{background:linear-gradient(#f2efe9,#e7e2da)}
+    .hero .inner{display:block;min-height:auto;padding:46px 0 0}
+    .hero .copy{max-width:none;padding-bottom:8px}
+    .hero img.bg-mobile{display:block;width:calc(100% + 56px);margin:18px -28px 0}
+  }
+  @media(max-width:860px){
+    .bar .sep,.bar .m2{display:none}
+    .bar{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .nav nav{display:none}
+  }
+
+  /* usp strip */
+  .usps{border-bottom:1px solid var(--line);background:#fff}
+  .usps .row{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;padding:26px 0}
+  .usp{display:flex;align-items:center;gap:13px;font-size:14.5px;font-weight:600}
+  .usp svg{flex:none;color:var(--accent)}
+  .usp small{display:block;font-weight:500;color:var(--muted);font-size:12.5px}
+  @media(max-width:860px){.usps .row{grid-template-columns:repeat(2,1fr)}}
+
+  section.block{padding:96px 0}
+  section.soft{background:var(--soft)}
+  .sec-head{max-width:640px;margin-bottom:52px}
+  .sec-head.center{margin-inline:auto;text-align:center}
+  .sec-head h2{font-size:clamp(30px,3.6vw,46px);margin:12px 0 14px}
+  .sec-head p{color:var(--muted);font-size:18px}
+
+  /* products */
+  .grid5{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  .pcard{position:relative;background:#fff;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;transition:transform .25s ease,box-shadow .25s ease}
+  .pcard:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg)}
+  .pcard .ph{background:#f1f2f5;aspect-ratio:1/1;overflow:hidden}
+  .pcard .ph img{width:100%;height:100%;object-fit:cover;transition:transform .4s ease}
+  .pcard:hover .ph img{transform:scale(1.045)}
+  .pcard .info{padding:20px 22px 24px}
+  .pcard h3{font-size:18px;margin-bottom:4px}
+  .pcard .sub{font-size:13.5px;color:var(--muted);margin-bottom:14px}
+  .pcard .rowb{display:flex;align-items:center;justify-content:space-between}
+  .pcard .price{font-size:19px;font-weight:750}
+  .pcard .price small{font-size:12px;color:var(--muted);font-weight:500;display:block}
+  .badge{position:absolute;top:14px;left:14px;background:var(--ink);color:#fff;font-size:12px;font-weight:700;padding:6px 12px;border-radius:999px;z-index:2}
+  .badge.blue{background:var(--accent)}
+  .grid5 .pcard:nth-child(4),.grid5 .pcard:nth-child(5){}
+  @media(max-width:960px){.grid5{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:560px){.grid5{grid-template-columns:1fr}}
+
+  /* steps */
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  .step{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:34px 30px}
+  .step .num{width:44px;height:44px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;font-weight:750;font-size:18px;margin-bottom:20px}
+  .step h3{font-size:20px;margin-bottom:10px}
+  .step p{color:var(--muted);font-size:15.5px}
+  @media(max-width:860px){.steps{grid-template-columns:1fr}}
+
+  /* dark stats */
+  .dark{background:var(--ink);color:#fff}
+  .dark .sec-head p{color:#a8b0bc}
+  .dark .eyebrow{color:#8b93a0}
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  .stat{border:1px solid rgba(255,255,255,.14);border-radius:var(--radius);padding:36px 32px}
+  .stat .big{font-size:clamp(40px,4.6vw,64px);font-weight:800;letter-spacing:-.03em;line-height:1;margin-bottom:12px}
+  .stat .big em{font-style:normal;color:var(--gold)}
+  .stat p{color:#a8b0bc;font-size:15px}
+  .dark .foot{margin-top:26px;font-size:12.5px;color:#6b7380}
+  @media(max-width:860px){.stats{grid-template-columns:1fr}}
+
+  /* quotes */
+  .quotes{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  .quote{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:30px 28px;display:flex;flex-direction:column;gap:14px}
+  .quote .qstars{color:var(--gold);letter-spacing:2px}
+  .quote p{font-size:15.5px}
+  .quote .who{margin-top:auto;font-size:13.5px;color:var(--muted);font-weight:600}
+  .placeholder{outline:2px dashed #cdd3dd;outline-offset:-8px;background:#fbfcfe}
+  @media(max-width:860px){.quotes{grid-template-columns:1fr}}
+
+  /* faq */
+  .faq{max-width:760px;margin:0 auto}
+  details{border-bottom:1px solid var(--line)}
+  summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:20px;padding:22px 4px;font-size:17px;font-weight:650}
+  summary::-webkit-details-marker{display:none}
+  summary .plus{flex:none;width:26px;height:26px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;font-weight:500;color:var(--muted);transition:transform .2s ease}
+  details[open] .plus{transform:rotate(45deg)}
+  details .a{padding:0 4px 24px;color:var(--muted);max-width:60ch}
+
+  /* guarantee */
+  .guarantee{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:24px;padding:52px 56px;box-shadow:var(--shadow-sm)}
+  .guarantee h2{font-size:clamp(26px,3vw,38px);margin-bottom:14px}
+  .guarantee p{color:var(--muted);margin-bottom:20px}
+  .pays{display:flex;gap:10px;flex-wrap:wrap}
+  .pay{border:1px solid var(--line);border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;color:#333a44;background:#fff}
+  .pay.ideal{color:#c06;}
+  .g-visual{text-align:center}
+  .g-visual .shield{width:120px;height:120px;margin:0 auto 18px;border-radius:50%;background:linear-gradient(135deg,#e8f1ff,#d7e7ff);display:grid;place-items:center;color:var(--accent)}
+  .g-visual b{font-size:18px}
+  @media(max-width:860px){.guarantee{grid-template-columns:1fr;padding:36px 28px}}
+
+  /* final cta */
+  .final{position:relative;overflow:hidden;background:var(--ink);color:#fff;text-align:center}
+  .final .inner{padding:110px 28px;position:relative}
+  .final h2{font-size:clamp(34px,5vw,60px);margin-bottom:16px}
+  .final p{color:#a8b0bc;font-size:19px;margin-bottom:34px}
+  .final img{position:absolute;right:-40px;bottom:0;width:420px;opacity:.9;display:none}
+
+  footer{background:#fff;border-top:1px solid var(--line);padding:40px 0;font-size:13.5px;color:var(--muted)}
+  .frow{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+
+<div class="bar"><span class="m">Voor 16:00 besteld, dezelfde dag verzonden</span><span class="sep">•</span><span class="m m2">Geen abonnement — eenmalig betalen</span><span class="sep">•</span><span class="m m2">14 dagen bedenktijd</span></div>
+
+<header>
+  <div class="wrap nav">
+    <a class="logo" href="#">TapKaarten<em>.</em></a>
+    <nav>
+      <a href="#producten">Producten</a>
+      <a href="#hoe">Zo werkt het</a>
+      <a href="#waarom">Waarom reviews</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <div class="cta-mini">
+      <a class="btn btn-s btn-dark" href="#producten">Shop nu</a>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <img class="bg" src="../dist/hero-desktop.png" alt="TapKaarten standaards op een balie">
+  <div class="wrap inner">
+    <div class="copy">
+      <div class="stars"><b>★★★★★</b> Gemaakt voor Nederlandse ondernemers</div>
+      <h1>Meer reviews.<br>Eén tik.</h1>
+      <p class="sub">Zet de standaard op je balie. Klanten tikken er hun telefoon tegenaan en staan direct op jouw Google-, Instagram- of Facebook-pagina. Geen app. Geen gedoe.</p>
+      <div class="ctas">
+        <a class="btn btn-l btn-dark" href="#producten">Shop de standaards — vanaf € 39,95</a>
+        <a class="btn btn-l btn-ghost" href="#hoe">Zo werkt het</a>
+      </div>
+      <div class="micro">
+        <span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Vandaag verzonden</span>
+        <span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>iDEAL &amp; Klarna</span>
+        <span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>14 dagen bedenktijd</span>
+      </div>
+      <img class="bg-mobile" src="../dist/hero-mobile.png" alt="TapKaarten standaards op een balie">
+    </div>
+  </div>
+</section>
+
+<div class="usps">
+  <div class="wrap row">
+    <div class="usp"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg><div>Direct resultaat<small>Klant tikt, review volgt</small></div></div>
+    <div class="usp"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="3"/><path d="M1 10h22"/></svg><div>Eenmalig betalen<small>Geen abonnement, ooit</small></div></div>
+    <div class="usp"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2.5"/><path d="M11 18h2"/></svg><div>Werkt op elke telefoon<small>iPhone &amp; Android, NFC + QR</small></div></div>
+    <div class="usp"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><div>14 dagen bedenktijd<small>Niet goed? Geld terug</small></div></div>
+  </div>
+</div>
+
+<section class="block" id="producten">
+  <div class="wrap">
+    <div class="sec-head center">
+      <div class="eyebrow">De collectie</div>
+      <h2>Kies je platform. Zet hem neer. Klaar.</h2>
+      <p>Elke standaard is vooraf gekoppeld aan jouw pagina en werkt direct uit de doos.</p>
+    </div>
+    <div class="grid5">
+      <article class="pcard">
+        <div class="badge">Bestseller</div>
+        <a href="#"><div class="ph"><img src="../dist/google-wit/tapkaarten-google-wit-1.png" alt="Google Review-standaard wit"></div></a>
+        <div class="info">
+          <h3>Google Review-standaard — wit</h3>
+          <div class="sub">Voor balie of tafel · 7,6 × 12,75 cm</div>
+          <div class="rowb"><div class="price">€ 39,95<small>incl. btw</small></div><a class="btn btn-s btn-blue" href="#">In winkelwagen</a></div>
+        </div>
+      </article>
+      <article class="pcard">
+        <a href="#"><div class="ph"><img src="../dist/google-zwart/tapkaarten-google-zwart-1.png" alt="Google Review-standaard zwart"></div></a>
+        <div class="info">
+          <h3>Google Review-standaard — zwart</h3>
+          <div class="sub">Voor balie of tafel · 7,6 × 12,75 cm</div>
+          <div class="rowb"><div class="price">€ 39,95<small>incl. btw</small></div><a class="btn btn-s btn-blue" href="#">In winkelwagen</a></div>
+        </div>
+      </article>
+      <article class="pcard">
+        <a href="#"><div class="ph"><img src="../dist/instagram/tapkaarten-instagram-1.png" alt="Instagram-standaard"></div></a>
+        <div class="info">
+          <h3>Instagram-standaard</h3>
+          <div class="sub">Meer volgers, zonder te vragen</div>
+          <div class="rowb"><div class="price">€ 39,95<small>incl. btw</small></div><a class="btn btn-s btn-blue" href="#">In winkelwagen</a></div>
+        </div>
+      </article>
+      <article class="pcard">
+        <a href="#"><div class="ph"><img src="../dist/facebook/tapkaarten-facebook-1.png" alt="Facebook-standaard"></div></a>
+        <div class="info">
+          <h3>Facebook-standaard</h3>
+          <div class="sub">Voor je community en events</div>
+          <div class="rowb"><div class="price">€ 39,95<small>incl. btw</small></div><a class="btn btn-s btn-blue" href="#">In winkelwagen</a></div>
+        </div>
+      </article>
+      <article class="pcard">
+        <div class="badge blue">Zelfklevend</div>
+        <a href="#"><div class="ph"><img src="../dist/sticker/tapkaarten-sticker-1.png" alt="Google Review-sticker"></div></a>
+        <div class="info">
+          <h3>Google Review-sticker</h3>
+          <div class="sub">Plak hem op de balie, tafel of deur</div>
+          <div class="rowb"><div class="price">€ 39,95<small>incl. btw</small></div><a class="btn btn-s btn-blue" href="#">In winkelwagen</a></div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="block soft" id="hoe">
+  <div class="wrap">
+    <div class="sec-head center">
+      <div class="eyebrow">Zo werkt het</div>
+      <h2>Van doos tot eerste review in 2 minuten</h2>
+      <p>Geen app voor jou. Geen app voor je klant. Geen abonnement.</p>
+    </div>
+    <div class="steps">
+      <div class="step"><div class="num">1</div><h3>Bestel je standaard</h3><p>Kies je platform en kleur. Voor 16:00 besteld, dezelfde dag verzonden.</p></div>
+      <div class="step"><div class="num">2</div><h3>Wij koppelen jouw pagina</h3><p>Geef je bedrijfsnaam door en wij programmeren de kaart naar jouw reviewpagina. Later wijzigen kan altijd, gratis.</p></div>
+      <div class="step"><div class="num">3</div><h3>Neerzetten en vergeten</h3><p>Op de balie of op tafel. Vanaf nu vraagt de standaard om reviews terwijl jij gewoon werkt.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="block dark" id="waarom">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow">Waarom dit werkt</div>
+      <h2>Je klanten kijken eerst naar je sterren</h2>
+      <p>Reviews bepalen wie er binnenkomt — en wie doorloopt naar de concurrent.</p>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="big">98<em>%</em></div><p>van de consumenten leest online reviews voordat ze een lokaal bedrijf bezoeken.</p></div>
+      <div class="stat"><div class="big">Hoger<em>.</em></div><p>Meer recente reviews wegen mee in je positie in Google Maps — precies waar klanten zoeken.</p></div>
+      <div class="stat"><div class="big">0<em> gedoe</em></div><p>Vragen om een review voelt ongemakkelijk. De standaard vraagt het voor je, elke dag opnieuw.</p></div>
+    </div>
+    <div class="foot">Bron: BrightLocal, Local Consumer Review Survey.</div>
+  </div>
+</section>
+
+<section class="block" id="reviews">
+  <div class="wrap">
+    <div class="sec-head center">
+      <div class="eyebrow">Ondernemers over TapKaarten</div>
+      <h2>Wat het oplevert</h2>
+    </div>
+    <div class="quotes">
+      <div class="quote placeholder"><div class="qstars">★★★★★</div><p>[PLAATSHOUDER — vervang door een echte klantquote zodra je eerste klanten hebt. Nepreviews zijn verboden én doorzichtig.]</p><div class="who">Naam — Zaak, plaats</div></div>
+      <div class="quote placeholder"><div class="qstars">★★★★★</div><p>[PLAATSHOUDER — vraag klanten om één zin over het resultaat: "we kregen X reviews in de eerste maand".]</p><div class="who">Naam — Zaak, plaats</div></div>
+      <div class="quote placeholder"><div class="qstars">★★★★★</div><p>[PLAATSHOUDER — heb je er maar twee, verwijder dit blok dan in de theme-editor.]</p><div class="who">Naam — Zaak, plaats</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="block soft" id="faq">
+  <div class="wrap">
+    <div class="sec-head center">
+      <div class="eyebrow">Alles wat je wilt weten</div>
+      <h2>Veelgestelde vragen</h2>
+    </div>
+    <div class="faq">
+      <details open><summary>Werkt dit op elke telefoon?<span class="plus">+</span></summary><div class="a">Ja. iPhones (vanaf iPhone 7) en Android-toestellen met NFC openen je pagina met één tik. Voor oudere toestellen staat er een QR-code op — die werkt altijd.</div></details>
+      <details><summary>Moet mijn klant een app downloaden?<span class="plus">+</span></summary><div class="a">Nee. De telefoon opent direct jouw review- of volgpagina in de browser. Er wordt niets geïnstalleerd en er worden geen gegevens opgeslagen.</div></details>
+      <details><summary>Zit er een abonnement aan vast?<span class="plus">+</span></summary><div class="a">Nee. Je betaalt eenmalig en de standaard blijft voor altijd werken. Geen maandkosten, geen verborgen kosten.</div></details>
+      <details><summary>Kan ik de link later aanpassen?<span class="plus">+</span></summary><div class="a">Ja, de NFC-chip is onbeperkt herprogrammeerbaar. Verhuis je of wil je naar een andere pagina verwijzen? Wij passen het gratis voor je aan.</div></details>
+      <details><summary>Hoe snel heb ik hem in huis?<span class="plus">+</span></summary><div class="a">Voor 16:00 besteld = dezelfde werkdag verzonden. Meestal heb je hem de volgende dag op de mat.</div></details>
+      <details><summary>Wat als het niet werkt of niet bevalt?<span class="plus">+</span></summary><div class="a">Je hebt 14 dagen bedenktijd. Werkt een kaart niet, dan sturen we direct een nieuwe of krijg je je geld terug. Zo simpel is het.</div></details>
+    </div>
+  </div>
+</section>
+
+<section class="block">
+  <div class="wrap">
+    <div class="guarantee">
+      <div>
+        <div class="eyebrow" style="margin-bottom:10px">Zonder risico proberen</div>
+        <h2>14 dagen bedenktijd.<br>Niet goed? Geld terug.</h2>
+        <p>Bestel vandaag, probeer hem twee weken op je balie. Bevalt het niet — om welke reden dan ook — dan stuur je hem terug en krijg je alles terug.</p>
+        <div class="pays">
+          <span class="pay ideal">iDEAL</span><span class="pay">Apple Pay</span><span class="pay">Klarna</span><span class="pay">Visa</span><span class="pay">Mastercard</span><span class="pay">PayPal</span>
+        </div>
+      </div>
+      <div class="g-visual">
+        <div class="shield"><svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg></div>
+        <b>Veilig betalen &amp; snel in huis</b>
+        <p style="color:var(--muted);font-size:14px;margin-top:6px">Verzonden met PostNL, netjes verpakt.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="final">
+  <div class="inner">
+    <h2>Zet hem vandaag nog op je balie.</h2>
+    <p>Morgen vraagt hij je eerste review — en daarna elke dag opnieuw.</p>
+    <a class="btn btn-l btn-blue" href="#producten">Shop de standaards — vanaf € 39,95</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap frow">
+    <div><b style="color:var(--ink)">TapKaarten.</b> — NFC-standaards &amp; kaarten</div>
+    <div>tapkaarten.nl · info@tapkaarten.nl · KvK · Privacy · Retourneren</div>
+  </div>
+</footer>
+
+</body>
+</html>

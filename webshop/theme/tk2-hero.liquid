@@ -1,0 +1,52 @@
+{{ 'tk2.css' | asset_url | stylesheet_tag }}
+<section class="tk2 tk2-hero">
+  {% if section.settings.image_desktop %}
+    <img class="bg" src="{{ section.settings.image_desktop | image_url: width: 2400 }}" width="2400" height="1350" alt="{{ section.settings.image_desktop.alt | default: shop.name }}" fetchpriority="high">
+  {% endif %}
+  <div class="wrap inner">
+    <div class="copy">
+      {% if section.settings.stars_text != blank %}
+        <div class="stars"><b>&#9733;&#9733;&#9733;&#9733;&#9733;</b> {{ section.settings.stars_text }}</div>
+      {% endif %}
+      <h1>{{ section.settings.heading }}</h1>
+      <p class="sub">{{ section.settings.subheading }}</p>
+      <div class="ctas">
+        {% if section.settings.cta_label != blank %}
+          <a class="btn btn-l btn-dark" href="{{ section.settings.cta_link }}">{{ section.settings.cta_label }}</a>
+        {% endif %}
+        {% if section.settings.cta2_label != blank %}
+          <a class="btn btn-l btn-ghost" href="{{ section.settings.cta2_link }}">{{ section.settings.cta2_label }}</a>
+        {% endif %}
+      </div>
+      <div class="micro">
+        {% for block in section.blocks %}
+          <span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>{{ block.settings.text }}</span>
+        {% endfor %}
+      </div>
+      {% if section.settings.image_mobile %}
+        <img class="bg-mobile" src="{{ section.settings.image_mobile | image_url: width: 1200 }}" width="1200" height="1400" alt="" loading="eager">
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% schema %}
+{
+  "name": "TK Hero (balie)",
+  "settings": [
+    { "type": "image_picker", "id": "image_desktop", "label": "Afbeelding (desktop, breed)" },
+    { "type": "image_picker", "id": "image_mobile", "label": "Afbeelding (mobiel, staand)" },
+    { "type": "text", "id": "stars_text", "label": "Regel boven de kop", "default": "Gemaakt voor Nederlandse ondernemers" },
+    { "type": "inline_richtext", "id": "heading", "label": "Kop", "default": "Meer reviews.<br>Eén tik." },
+    { "type": "textarea", "id": "subheading", "label": "Subkop", "default": "Zet de standaard op je balie. Klanten tikken er hun telefoon tegenaan en staan direct op jouw Google-, Instagram- of Facebook-pagina. Geen app. Geen gedoe." },
+    { "type": "text", "id": "cta_label", "label": "Primaire knop", "default": "Shop de standaards — vanaf € 39,95" },
+    { "type": "url", "id": "cta_link", "label": "Primaire link" },
+    { "type": "text", "id": "cta2_label", "label": "Secundaire knop", "default": "Zo werkt het" },
+    { "type": "url", "id": "cta2_link", "label": "Secundaire link" }
+  ],
+  "blocks": [
+    { "type": "usp", "name": "Micro-USP", "settings": [ { "type": "text", "id": "text", "label": "Tekst", "default": "Vandaag verzonden" } ] }
+  ],
+  "max_blocks": 4,
+  "presets": [ { "name": "TK Hero (balie)" } ]
+}
+{% endschema %}

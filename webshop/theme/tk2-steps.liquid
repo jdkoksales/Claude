@@ -1,0 +1,37 @@
+<section class="tk2 block soft" {% if section.settings.anchor != blank %}id="{{ section.settings.anchor }}"{% endif %}>
+  <div class="wrap">
+    <div class="sec-head center">
+      {% if section.settings.eyebrow != blank %}<div class="eyebrow">{{ section.settings.eyebrow }}</div>{% endif %}
+      <h2>{{ section.settings.heading }}</h2>
+      {% if section.settings.subheading != blank %}<p>{{ section.settings.subheading }}</p>{% endif %}
+    </div>
+    <div class="steps">
+      {% for block in section.blocks %}
+        <div class="step" {{ block.shopify_attributes }}>
+          <div class="num">{{ forloop.index }}</div>
+          <h3>{{ block.settings.title }}</h3>
+          <p>{{ block.settings.text }}</p>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% schema %}
+{
+  "name": "TK Stappen",
+  "settings": [
+    { "type": "text", "id": "anchor", "label": "Anker-id", "default": "hoe" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Zo werkt het" },
+    { "type": "text", "id": "heading", "label": "Kop", "default": "Van doos tot eerste review in 2 minuten" },
+    { "type": "text", "id": "subheading", "label": "Subkop", "default": "Geen app voor jou. Geen app voor je klant. Geen abonnement." }
+  ],
+  "blocks": [
+    { "type": "step", "name": "Stap", "settings": [
+      { "type": "text", "id": "title", "label": "Titel", "default": "Bestel je standaard" },
+      { "type": "textarea", "id": "text", "label": "Tekst", "default": "Kies je platform en kleur." }
+    ] }
+  ],
+  "max_blocks": 4,
+  "presets": [ { "name": "TK Stappen" } ]
+}
+{% endschema %}

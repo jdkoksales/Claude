@@ -1,0 +1,348 @@
+{
+  "sections": {
+    "tk2_hero": {
+      "type": "tk2-hero",
+      "blocks": {
+        "m1": {
+          "type": "usp",
+          "settings": {
+            "text": "Vandaag verzonden"
+          }
+        },
+        "m2": {
+          "type": "usp",
+          "settings": {
+            "text": "iDEAL & Klarna"
+          }
+        },
+        "m3": {
+          "type": "usp",
+          "settings": {
+            "text": "14 dagen bedenktijd"
+          }
+        }
+      },
+      "block_order": [
+        "m1",
+        "m2",
+        "m3"
+      ],
+      "settings": {
+        "image_desktop": "shopify://shop_images/tapkaarten-hero-desktop.png",
+        "image_mobile": "shopify://shop_images/tapkaarten-hero-mobile.png",
+        "stars_text": "Gemaakt voor Nederlandse ondernemers",
+        "heading": "Meer reviews.<br>Eén tik.",
+        "subheading": "Zet de standaard op je balie. Klanten tikken er hun telefoon tegenaan en staan direct op jouw Google-, Instagram- of Facebook-pagina. Geen app. Geen gedoe.",
+        "cta_label": "Shop de standaards — vanaf € 39,95",
+        "cta_link": "#producten",
+        "cta2_label": "Zo werkt het",
+        "cta2_link": "#hoe"
+      }
+    },
+    "tk2_usps": {
+      "type": "tk2-usps",
+      "blocks": {
+        "u1": {
+          "type": "usp",
+          "settings": {
+            "icon": "bolt",
+            "title": "Direct resultaat",
+            "subtitle": "Klant tikt, review volgt"
+          }
+        },
+        "u2": {
+          "type": "usp",
+          "settings": {
+            "icon": "card",
+            "title": "Eenmalig betalen",
+            "subtitle": "Geen abonnement, ooit"
+          }
+        },
+        "u3": {
+          "type": "usp",
+          "settings": {
+            "icon": "phone",
+            "title": "Werkt op elke telefoon",
+            "subtitle": "iPhone & Android, NFC + QR"
+          }
+        },
+        "u4": {
+          "type": "usp",
+          "settings": {
+            "icon": "shield",
+            "title": "14 dagen bedenktijd",
+            "subtitle": "Niet goed? Geld terug"
+          }
+        }
+      },
+      "block_order": [
+        "u1",
+        "u2",
+        "u3",
+        "u4"
+      ],
+      "settings": {}
+    },
+    "tk2_products": {
+      "type": "tk2-products",
+      "blocks": {
+        "p1": {
+          "type": "product",
+          "settings": {
+            "product": "tapkaarten-google-review-standaard",
+            "subtitle": "Voor balie of tafel · 7,6 × 12,75 cm",
+            "badge": "Bestseller",
+            "badge_style": ""
+          }
+        },
+        "p2": {
+          "type": "product",
+          "settings": {
+            "product": "tapkaarten-google-review-standaard-zwart",
+            "subtitle": "Voor balie of tafel · 7,6 × 12,75 cm",
+            "badge": "",
+            "badge_style": ""
+          }
+        },
+        "p3": {
+          "type": "product",
+          "settings": {
+            "product": "tapkaarten-instagram-standaard",
+            "subtitle": "Meer volgers, zonder te vragen",
+            "badge": "",
+            "badge_style": ""
+          }
+        },
+        "p4": {
+          "type": "product",
+          "settings": {
+            "product": "tapkaarten-facebook-standaard",
+            "subtitle": "Voor je community en events",
+            "badge": "",
+            "badge_style": ""
+          }
+        },
+        "p5": {
+          "type": "product",
+          "settings": {
+            "product": "tapkaarten-google-review-sticker",
+            "subtitle": "Plak hem op de balie, tafel of deur",
+            "badge": "Zelfklevend",
+            "badge_style": "blue"
+          }
+        }
+      },
+      "block_order": [
+        "p1",
+        "p2",
+        "p3",
+        "p4",
+        "p5"
+      ],
+      "settings": {
+        "anchor": "producten",
+        "eyebrow": "De collectie",
+        "heading": "Kies je platform. Zet hem neer. Klaar.",
+        "subheading": "Elke standaard is vooraf gekoppeld aan jouw pagina en werkt direct uit de doos."
+      }
+    },
+    "tk2_steps": {
+      "type": "tk2-steps",
+      "blocks": {
+        "s1": {
+          "type": "step",
+          "settings": {
+            "title": "Bestel je standaard",
+            "text": "Kies je platform en kleur. Voor 16:00 besteld, dezelfde dag verzonden."
+          }
+        },
+        "s2": {
+          "type": "step",
+          "settings": {
+            "title": "Wij koppelen jouw pagina",
+            "text": "Geef je bedrijfsnaam door en wij programmeren de kaart naar jouw reviewpagina. Later wijzigen kan altijd, gratis."
+          }
+        },
+        "s3": {
+          "type": "step",
+          "settings": {
+            "title": "Neerzetten en vergeten",
+            "text": "Op de balie of op tafel. Vanaf nu vraagt de standaard om reviews terwijl jij gewoon werkt."
+          }
+        }
+      },
+      "block_order": [
+        "s1",
+        "s2",
+        "s3"
+      ],
+      "settings": {
+        "anchor": "hoe",
+        "eyebrow": "Zo werkt het",
+        "heading": "Van doos tot eerste review in 2 minuten",
+        "subheading": "Geen app voor jou. Geen app voor je klant. Geen abonnement."
+      }
+    },
+    "tk2_stats": {
+      "type": "tk2-stats",
+      "blocks": {
+        "st1": {
+          "type": "stat",
+          "settings": {
+            "big": "98<em>%</em>",
+            "text": "van de consumenten leest online reviews voordat ze een lokaal bedrijf bezoeken."
+          }
+        },
+        "st2": {
+          "type": "stat",
+          "settings": {
+            "big": "Hoger<em>.</em>",
+            "text": "Meer recente reviews wegen mee in je positie in Google Maps — precies waar klanten zoeken."
+          }
+        },
+        "st3": {
+          "type": "stat",
+          "settings": {
+            "big": "0<em> gedoe</em>",
+            "text": "Vragen om een review voelt ongemakkelijk. De standaard vraagt het voor je, elke dag opnieuw."
+          }
+        }
+      },
+      "block_order": [
+        "st1",
+        "st2",
+        "st3"
+      ],
+      "settings": {
+        "anchor": "waarom",
+        "eyebrow": "Waarom dit werkt",
+        "heading": "Je klanten kijken eerst naar je sterren",
+        "subheading": "Reviews bepalen wie er binnenkomt — en wie doorloopt naar de concurrent.",
+        "source": "Bron: BrightLocal, Local Consumer Review Survey."
+      }
+    },
+    "tk2_quotes": {
+      "type": "tk2-quotes",
+      "blocks": {
+        "q1": {
+          "type": "quote",
+          "settings": {
+            "quote": "[PLAATSHOUDER — vervang door een echte klantquote zodra je eerste klanten hebt. Nepreviews zijn verboden én doorzichtig.]",
+            "who": "Naam — Zaak, plaats",
+            "rating": 5
+          }
+        },
+        "q2": {
+          "type": "quote",
+          "settings": {
+            "quote": "[PLAATSHOUDER — vraag klanten om één zin over het resultaat.]",
+            "who": "Naam — Zaak, plaats",
+            "rating": 5
+          }
+        },
+        "q3": {
+          "type": "quote",
+          "settings": {
+            "quote": "[PLAATSHOUDER — heb je er maar twee, verwijder dit blok dan in de theme-editor.]",
+            "who": "Naam — Zaak, plaats",
+            "rating": 5
+          }
+        }
+      },
+      "block_order": [
+        "q1",
+        "q2",
+        "q3"
+      ],
+      "settings": {
+        "anchor": "reviews",
+        "eyebrow": "Ondernemers over TapKaarten",
+        "heading": "Wat het oplevert"
+      }
+    },
+    "tk2_faq": {
+      "type": "tk2-faq",
+      "blocks": {
+        "f1": {
+          "type": "question",
+          "settings": {
+            "question": "Werkt dit op elke telefoon?",
+            "answer": "<p>Ja. iPhones (vanaf iPhone 7) en Android-toestellen met NFC openen je pagina met één tik. Voor oudere toestellen staat er een QR-code op — die werkt altijd.</p>"
+          }
+        },
+        "f2": {
+          "type": "question",
+          "settings": {
+            "question": "Moet mijn klant een app downloaden?",
+            "answer": "<p>Nee. De telefoon opent direct jouw review- of volgpagina in de browser. Er wordt niets geïnstalleerd en er worden geen gegevens opgeslagen.</p>"
+          }
+        },
+        "f3": {
+          "type": "question",
+          "settings": {
+            "question": "Zit er een abonnement aan vast?",
+            "answer": "<p>Nee. Je betaalt eenmalig en de standaard blijft voor altijd werken. Geen maandkosten, geen verborgen kosten.</p>"
+          }
+        },
+        "f4": {
+          "type": "question",
+          "settings": {
+            "question": "Kan ik de link later aanpassen?",
+            "answer": "<p>Ja, de NFC-chip is onbeperkt herprogrammeerbaar. Verhuis je of wil je naar een andere pagina verwijzen? Wij passen het gratis voor je aan.</p>"
+          }
+        },
+        "f5": {
+          "type": "question",
+          "settings": {
+            "question": "Hoe snel heb ik hem in huis?",
+            "answer": "<p>Voor 16:00 besteld = dezelfde werkdag verzonden. Meestal heb je hem de volgende dag op de mat.</p>"
+          }
+        },
+        "f6": {
+          "type": "question",
+          "settings": {
+            "question": "Wat als het niet werkt of niet bevalt?",
+            "answer": "<p>Je hebt 14 dagen bedenktijd. Werkt een kaart niet, dan sturen we direct een nieuwe of krijg je je geld terug. Zo simpel is het.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "f1",
+        "f2",
+        "f3",
+        "f4",
+        "f5",
+        "f6"
+      ],
+      "settings": {
+        "anchor": "faq",
+        "eyebrow": "Alles wat je wilt weten",
+        "heading": "Veelgestelde vragen"
+      }
+    },
+    "tk2_guarantee": {
+      "type": "tk2-guarantee",
+      "settings": {}
+    },
+    "tk2_final": {
+      "type": "tk2-final",
+      "settings": {
+        "heading": "Zet hem vandaag nog op je balie.",
+        "text": "Morgen vraagt hij je eerste review — en daarna elke dag opnieuw.",
+        "cta_label": "Shop de standaards — vanaf € 39,95",
+        "cta_link": "#producten"
+      }
+    }
+  },
+  "order": [
+    "tk2_hero",
+    "tk2_usps",
+    "tk2_products",
+    "tk2_steps",
+    "tk2_stats",
+    "tk2_quotes",
+    "tk2_faq",
+    "tk2_guarantee",
+    "tk2_final"
+  ]
+}

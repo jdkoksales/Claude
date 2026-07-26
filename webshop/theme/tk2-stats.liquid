@@ -1,0 +1,38 @@
+<section class="tk2 block dark" {% if section.settings.anchor != blank %}id="{{ section.settings.anchor }}"{% endif %}>
+  <div class="wrap">
+    <div class="sec-head">
+      {% if section.settings.eyebrow != blank %}<div class="eyebrow">{{ section.settings.eyebrow }}</div>{% endif %}
+      <h2>{{ section.settings.heading }}</h2>
+      {% if section.settings.subheading != blank %}<p>{{ section.settings.subheading }}</p>{% endif %}
+    </div>
+    <div class="stats">
+      {% for block in section.blocks %}
+        <div class="stat" {{ block.shopify_attributes }}>
+          <div class="big">{{ block.settings.big }}</div>
+          <p>{{ block.settings.text }}</p>
+        </div>
+      {% endfor %}
+    </div>
+    {% if section.settings.source != blank %}<div class="stats-foot">{{ section.settings.source }}</div>{% endif %}
+  </div>
+</section>
+{% schema %}
+{
+  "name": "TK Statistieken (donker)",
+  "settings": [
+    { "type": "text", "id": "anchor", "label": "Anker-id", "default": "waarom" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Waarom dit werkt" },
+    { "type": "text", "id": "heading", "label": "Kop", "default": "Je klanten kijken eerst naar je sterren" },
+    { "type": "text", "id": "subheading", "label": "Subkop", "default": "Reviews bepalen wie er binnenkomt — en wie doorloopt naar de concurrent." },
+    { "type": "text", "id": "source", "label": "Bronvermelding", "default": "Bron: BrightLocal, Local Consumer Review Survey." }
+  ],
+  "blocks": [
+    { "type": "stat", "name": "Statistiek", "settings": [
+      { "type": "inline_richtext", "id": "big", "label": "Groot cijfer (gebruik <em> voor accentkleur)", "default": "98<em>%</em>" },
+      { "type": "textarea", "id": "text", "label": "Tekst", "default": "van de consumenten leest online reviews voordat ze een lokaal bedrijf bezoeken." }
+    ] }
+  ],
+  "max_blocks": 3,
+  "presets": [ { "name": "TK Statistieken (donker)" } ]
+}
+{% endschema %}

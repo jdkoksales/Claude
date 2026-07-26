@@ -1,0 +1,21 @@
+<section class="tk2 tk2-final">
+  <div class="inner">
+    <h2>{{ section.settings.heading }}</h2>
+    <p>{{ section.settings.text }}</p>
+    {% if section.settings.cta_label != blank %}
+      <a class="btn btn-l btn-blue" href="{{ section.settings.cta_link }}">{{ section.settings.cta_label }}</a>
+    {% endif %}
+  </div>
+</section>
+{% schema %}
+{
+  "name": "TK Slot-CTA",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Kop", "default": "Zet hem vandaag nog op je balie." },
+    { "type": "text", "id": "text", "label": "Tekst", "default": "Morgen vraagt hij je eerste review — en daarna elke dag opnieuw." },
+    { "type": "text", "id": "cta_label", "label": "Knoptekst", "default": "Shop de standaards — vanaf € 39,95" },
+    { "type": "url", "id": "cta_link", "label": "Knoplink" }
+  ],
+  "presets": [ { "name": "TK Slot-CTA" } ]
+}
+{% endschema %}

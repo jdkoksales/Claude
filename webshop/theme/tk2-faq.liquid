@@ -1,0 +1,33 @@
+<section class="tk2 block soft" {% if section.settings.anchor != blank %}id="{{ section.settings.anchor }}"{% endif %}>
+  <div class="wrap">
+    <div class="sec-head center">
+      {% if section.settings.eyebrow != blank %}<div class="eyebrow">{{ section.settings.eyebrow }}</div>{% endif %}
+      <h2>{{ section.settings.heading }}</h2>
+    </div>
+    <div class="faq">
+      {% for block in section.blocks %}
+        <details {% if forloop.first %}open{% endif %} {{ block.shopify_attributes }}>
+          <summary>{{ block.settings.question }}<span class="plus">+</span></summary>
+          <div class="a">{{ block.settings.answer }}</div>
+        </details>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% schema %}
+{
+  "name": "TK FAQ",
+  "settings": [
+    { "type": "text", "id": "anchor", "label": "Anker-id", "default": "faq" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Alles wat je wilt weten" },
+    { "type": "text", "id": "heading", "label": "Kop", "default": "Veelgestelde vragen" }
+  ],
+  "blocks": [
+    { "type": "question", "name": "Vraag", "settings": [
+      { "type": "text", "id": "question", "label": "Vraag", "default": "Werkt dit op elke telefoon?" },
+      { "type": "richtext", "id": "answer", "label": "Antwoord", "default": "<p>Ja.</p>" }
+    ] }
+  ],
+  "presets": [ { "name": "TK FAQ" } ]
+}
+{% endschema %}

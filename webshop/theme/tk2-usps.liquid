@@ -1,0 +1,32 @@
+<div class="tk2 tk2-usps">
+  <div class="wrap row">
+    {% for block in section.blocks %}
+      <div class="usp" {{ block.shopify_attributes }}>
+        {% case block.settings.icon %}
+          {% when 'bolt' %}<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          {% when 'card' %}<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="3"/><path d="M1 10h22"/></svg>
+          {% when 'phone' %}<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2.5"/><path d="M11 18h2"/></svg>
+          {% else %}<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        {% endcase %}
+        <div>{{ block.settings.title }}<small>{{ block.settings.subtitle }}</small></div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% schema %}
+{
+  "name": "TK USP-balk",
+  "settings": [],
+  "blocks": [
+    { "type": "usp", "name": "USP", "settings": [
+      { "type": "select", "id": "icon", "label": "Icoon", "default": "bolt", "options": [
+        { "value": "bolt", "label": "Bliksem" }, { "value": "card", "label": "Betaalkaart" },
+        { "value": "phone", "label": "Telefoon" }, { "value": "shield", "label": "Schild" } ] },
+      { "type": "text", "id": "title", "label": "Titel", "default": "Direct resultaat" },
+      { "type": "text", "id": "subtitle", "label": "Subtitel", "default": "Klant tikt, review volgt" }
+    ] }
+  ],
+  "max_blocks": 4,
+  "presets": [ { "name": "TK USP-balk" } ]
+}
+{% endschema %}

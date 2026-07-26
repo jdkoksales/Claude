@@ -1,0 +1,140 @@
+/* TapKaarten premium homepage — design system voor de tk2-secties. */
+.tk2{
+  --ink:#0b0d10; --muted:#5b6472; --line:#e7e9ee;
+  --soft:#f6f7f9; --accent:#1a73e8; --gold:#f2b50f; --green:#34a853;
+  --radius:18px;
+  --shadow-sm:0 1px 2px rgba(11,13,16,.05),0 4px 14px rgba(11,13,16,.06);
+  --shadow-lg:0 2px 6px rgba(11,13,16,.07),0 24px 60px rgba(11,13,16,.14);
+  color:var(--ink);
+  font-size:17px; line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+.tk2 *{box-sizing:border-box;margin:0}
+.tk2 img{max-width:100%;display:block}
+.tk2 a{color:inherit;text-decoration:none}
+.tk2 .wrap{max-width:1240px;margin:0 auto;padding:0 28px}
+.tk2 h1,.tk2 h2,.tk2 h3{line-height:1.06;letter-spacing:-.025em;font-weight:750}
+.tk2 .eyebrow{font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+
+.tk2 .btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;border-radius:999px;border:1.5px solid transparent;cursor:pointer;font:inherit;font-weight:650;transition:transform .18s ease,box-shadow .18s ease,background .18s ease;text-align:center}
+.tk2 .btn-s{padding:9px 18px;font-size:14px}
+.tk2 .btn-l{padding:17px 34px;font-size:17px}
+.tk2 .btn-dark{background:var(--ink);color:#fff}
+.tk2 .btn-dark:hover{transform:translateY(-1px);box-shadow:0 10px 24px rgba(11,13,16,.22);color:#fff}
+.tk2 .btn-ghost{border-color:var(--line);background:#fff;color:var(--ink)}
+.tk2 .btn-ghost:hover{border-color:var(--ink)}
+.tk2 .btn-blue{background:var(--accent);color:#fff}
+.tk2 .btn-blue:hover{transform:translateY(-1px);box-shadow:0 10px 26px rgba(26,115,232,.35);color:#fff}
+
+.tk2.block{padding:96px 0}
+.tk2.soft{background:var(--soft)}
+.tk2 .sec-head{max-width:640px;margin-bottom:52px}
+.tk2 .sec-head.center{margin-inline:auto;text-align:center}
+.tk2 .sec-head h2{font-size:clamp(30px,3.6vw,46px);margin:12px 0 14px}
+.tk2 .sec-head p{color:var(--muted);font-size:18px}
+@media(max-width:860px){.tk2.block{padding:64px 0}}
+
+/* hero */
+.tk2-hero{position:relative;overflow:hidden;background:#e9e4dc}
+.tk2-hero .bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:86% 42%}
+.tk2-hero .inner{position:relative;min-height:min(86vh,780px);display:flex;align-items:center;padding:90px 0}
+.tk2-hero .copy{max-width:530px}
+.tk2-hero .stars{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:600;color:#3d434c;margin-bottom:18px}
+.tk2-hero .stars b{color:var(--gold);letter-spacing:2px;font-size:16px}
+.tk2-hero h1{font-size:clamp(42px,5.6vw,74px);margin-bottom:20px}
+.tk2-hero .sub{font-size:clamp(17px,1.6vw,21px);color:#3d434c;max-width:46ch;margin-bottom:30px}
+.tk2-hero .ctas{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:22px}
+.tk2-hero .micro{display:flex;gap:18px;flex-wrap:wrap;font-size:13.5px;font-weight:600;color:#4a5058}
+.tk2-hero .micro span{display:inline-flex;align-items:center;gap:7px}
+.tk2-hero .micro svg{color:var(--green)}
+.tk2-hero .bg-mobile{display:none}
+@media(max-width:860px){
+  .tk2-hero .bg{display:none}
+  .tk2-hero{background:linear-gradient(#f2efe9,#e7e2da)}
+  .tk2-hero .inner{display:block;min-height:auto;padding:46px 0 0}
+  .tk2-hero .copy{max-width:none;padding-bottom:8px}
+  .tk2-hero .bg-mobile{display:block;width:calc(100% + 56px);margin:18px -28px 0}
+}
+
+/* usp strip */
+.tk2-usps{border-bottom:1px solid var(--line);background:#fff}
+.tk2-usps .row{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;padding:26px 0}
+.tk2-usps .usp{display:flex;align-items:center;gap:13px;font-size:14.5px;font-weight:600}
+.tk2-usps .usp svg{flex:none;color:var(--accent)}
+.tk2-usps .usp small{display:block;font-weight:500;color:var(--muted);font-size:12.5px}
+@media(max-width:860px){.tk2-usps .row{grid-template-columns:repeat(2,1fr)}}
+
+/* producten */
+.tk2 .grid-products{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.tk2 .pcard{position:relative;background:#fff;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;transition:transform .25s ease,box-shadow .25s ease}
+.tk2 .pcard:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg)}
+.tk2 .pcard .ph{background:#f1f2f5;aspect-ratio:1/1;overflow:hidden}
+.tk2 .pcard .ph img{width:100%;height:100%;object-fit:cover;transition:transform .4s ease}
+.tk2 .pcard:hover .ph img{transform:scale(1.045)}
+.tk2 .pcard .info{padding:20px 22px 24px}
+.tk2 .pcard h3{font-size:18px;margin-bottom:4px}
+.tk2 .pcard .subline{font-size:13.5px;color:var(--muted);margin-bottom:14px}
+.tk2 .pcard .rowb{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.tk2 .pcard .price{font-size:19px;font-weight:750}
+.tk2 .pcard .price small{font-size:12px;color:var(--muted);font-weight:500;display:block}
+.tk2 .pbadge{position:absolute;top:14px;left:14px;background:var(--ink);color:#fff;font-size:12px;font-weight:700;padding:6px 12px;border-radius:999px;z-index:2}
+.tk2 .pbadge.blue{background:var(--accent)}
+@media(max-width:960px){.tk2 .grid-products{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.tk2 .grid-products{grid-template-columns:1fr}}
+
+/* stappen */
+.tk2 .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.tk2 .step{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:34px 30px}
+.tk2 .step .num{width:44px;height:44px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;font-weight:750;font-size:18px;margin-bottom:20px}
+.tk2 .step h3{font-size:20px;margin-bottom:10px}
+.tk2 .step p{color:var(--muted);font-size:15.5px}
+@media(max-width:860px){.tk2 .steps{grid-template-columns:1fr}}
+
+/* donkere statistieken */
+.tk2.dark{background:var(--ink);color:#fff}
+.tk2.dark .sec-head p{color:#a8b0bc}
+.tk2.dark .eyebrow{color:#8b93a0}
+.tk2 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.tk2 .stat{border:1px solid rgba(255,255,255,.14);border-radius:var(--radius);padding:36px 32px}
+.tk2 .stat .big{font-size:clamp(40px,4.6vw,64px);font-weight:800;letter-spacing:-.03em;line-height:1;margin-bottom:12px}
+.tk2 .stat .big em{font-style:normal;color:var(--gold)}
+.tk2 .stat p{color:#a8b0bc;font-size:15px}
+.tk2 .stats-foot{margin-top:26px;font-size:12.5px;color:#6b7380}
+@media(max-width:860px){.tk2 .stats{grid-template-columns:1fr}}
+
+/* quotes */
+.tk2 .quotes{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.tk2 .quote{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:30px 28px;display:flex;flex-direction:column;gap:14px}
+.tk2 .quote .qstars{color:var(--gold);letter-spacing:2px}
+.tk2 .quote p{font-size:15.5px}
+.tk2 .quote .who{margin-top:auto;font-size:13.5px;color:var(--muted);font-weight:600}
+.tk2 .quote.is-placeholder{outline:2px dashed #cdd3dd;outline-offset:-8px;background:#fbfcfe}
+@media(max-width:860px){.tk2 .quotes{grid-template-columns:1fr}}
+
+/* faq */
+.tk2 .faq{max-width:760px;margin:0 auto}
+.tk2 details{border-bottom:1px solid var(--line)}
+.tk2 summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:20px;padding:22px 4px;font-size:17px;font-weight:650}
+.tk2 summary::-webkit-details-marker{display:none}
+.tk2 summary .plus{flex:none;width:26px;height:26px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;font-weight:500;color:var(--muted);transition:transform .2s ease}
+.tk2 details[open] .plus{transform:rotate(45deg)}
+.tk2 details .a{padding:0 4px 24px;color:var(--muted);max-width:60ch}
+
+/* garantie */
+.tk2 .guarantee{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:24px;padding:52px 56px;box-shadow:var(--shadow-sm)}
+.tk2 .guarantee h2{font-size:clamp(26px,3vw,38px);margin-bottom:14px}
+.tk2 .guarantee .gtext{color:var(--muted);margin-bottom:20px}
+.tk2 .pays{display:flex;gap:10px;flex-wrap:wrap}
+.tk2 .pay{border:1px solid var(--line);border-radius:8px;padding:7px 13px;font-size:13px;font-weight:700;color:#333a44;background:#fff}
+.tk2 .g-visual{text-align:center}
+.tk2 .g-visual .shield{width:120px;height:120px;margin:0 auto 18px;border-radius:50%;background:linear-gradient(135deg,#e8f1ff,#d7e7ff);display:grid;place-items:center;color:var(--accent)}
+.tk2 .g-visual b{font-size:18px}
+.tk2 .g-visual .gsub{color:var(--muted);font-size:14px;margin-top:6px}
+@media(max-width:860px){.tk2 .guarantee{grid-template-columns:1fr;padding:36px 28px}}
+
+/* final cta */
+.tk2-final{background:var(--ink);color:#fff;text-align:center}
+.tk2-final .inner{padding:110px 28px}
+.tk2-final h2{font-size:clamp(34px,5vw,60px);margin-bottom:16px}
+.tk2-final p{color:#a8b0bc;font-size:19px;margin-bottom:34px}
+@media(max-width:860px){.tk2-final .inner{padding:72px 24px}}

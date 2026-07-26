@@ -1,0 +1,60 @@
+<section class="tk2 block" {% if section.settings.anchor != blank %}id="{{ section.settings.anchor }}"{% endif %}>
+  <div class="wrap">
+    <div class="sec-head center">
+      {% if section.settings.eyebrow != blank %}<div class="eyebrow">{{ section.settings.eyebrow }}</div>{% endif %}
+      <h2>{{ section.settings.heading }}</h2>
+      {% if section.settings.subheading != blank %}<p>{{ section.settings.subheading }}</p>{% endif %}
+    </div>
+    <div class="grid-products">
+      {% for block in section.blocks %}
+        {% assign product = block.settings.product %}
+        {% if product != blank %}
+        <article class="pcard" {{ block.shopify_attributes }}>
+          {% if block.settings.badge != blank %}
+            <div class="pbadge {{ block.settings.badge_style }}">{{ block.settings.badge }}</div>
+          {% endif %}
+          <a href="{{ product.url }}">
+            <div class="ph">
+              {% if product.featured_image %}
+                <img src="{{ product.featured_image | image_url: width: 800 }}" width="800" height="800" alt="{{ product.featured_image.alt | default: product.title }}" loading="lazy">
+              {% endif %}
+            </div>
+          </a>
+          <div class="info">
+            <h3><a href="{{ product.url }}">{{ product.title | remove: 'TapKaarten ' }}</a></h3>
+            {% if block.settings.subtitle != blank %}<div class="subline">{{ block.settings.subtitle }}</div>{% endif %}
+            <div class="rowb">
+              <div class="price">{{ product.price | money }}<small>incl. btw</small></div>
+              {% form 'product', product %}
+                <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+                <button type="submit" name="add" class="btn btn-s btn-blue">In winkelwagen</button>
+              {% endform %}
+            </div>
+          </div>
+        </article>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% schema %}
+{
+  "name": "TK Productgrid",
+  "settings": [
+    { "type": "text", "id": "anchor", "label": "Anker-id (voor knoppen)", "default": "producten" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "De collectie" },
+    { "type": "text", "id": "heading", "label": "Kop", "default": "Kies je platform. Zet hem neer. Klaar." },
+    { "type": "text", "id": "subheading", "label": "Subkop", "default": "Elke standaard is vooraf gekoppeld aan jouw pagina en werkt direct uit de doos." }
+  ],
+  "blocks": [
+    { "type": "product", "name": "Product", "settings": [
+      { "type": "product", "id": "product", "label": "Product" },
+      { "type": "text", "id": "subtitle", "label": "Subtitel" },
+      { "type": "text", "id": "badge", "label": "Badge (leeg = geen)" },
+      { "type": "select", "id": "badge_style", "label": "Badge-stijl", "default": "", "options": [
+        { "value": "", "label": "Zwart" }, { "value": "blue", "label": "Blauw" } ] }
+    ] }
+  ],
+  "presets": [ { "name": "TK Productgrid" } ]
+}
+{% endschema %}

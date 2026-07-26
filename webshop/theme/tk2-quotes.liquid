@@ -1,0 +1,40 @@
+<section class="tk2 block" {% if section.settings.anchor != blank %}id="{{ section.settings.anchor }}"{% endif %}>
+  <div class="wrap">
+    <div class="sec-head center">
+      {% if section.settings.eyebrow != blank %}<div class="eyebrow">{{ section.settings.eyebrow }}</div>{% endif %}
+      <h2>{{ section.settings.heading }}</h2>
+    </div>
+    <div class="quotes">
+      {% for block in section.blocks %}
+        {% assign is_ph = false %}
+        {% if block.settings.quote contains 'PLAATSHOUDER' %}{% assign is_ph = true %}{% endif %}
+        <div class="quote{% if is_ph %} is-placeholder{% endif %}" {{ block.shopify_attributes }}>
+          {% if block.settings.rating > 0 %}
+            <div class="qstars">{% for i in (1..block.settings.rating) %}&#9733;{% endfor %}</div>
+          {% endif %}
+          <p>{{ block.settings.quote }}</p>
+          {% if block.settings.who != blank %}<div class="who">{{ block.settings.who }}</div>{% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% schema %}
+{
+  "name": "TK Klantquotes",
+  "settings": [
+    { "type": "text", "id": "anchor", "label": "Anker-id", "default": "reviews" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Ondernemers over TapKaarten" },
+    { "type": "text", "id": "heading", "label": "Kop", "default": "Wat het oplevert" }
+  ],
+  "blocks": [
+    { "type": "quote", "name": "Quote", "settings": [
+      { "type": "textarea", "id": "quote", "label": "Quote (echte klant!)", "default": "[PLAATSHOUDER — vervang door een echte klantquote. Blokken met dit woord krijgen een stippellijn zodat je ze niet vergeet.]" },
+      { "type": "text", "id": "who", "label": "Naam — zaak, plaats" },
+      { "type": "range", "id": "rating", "label": "Sterren", "min": 0, "max": 5, "step": 1, "default": 5 }
+    ] }
+  ],
+  "max_blocks": 3,
+  "presets": [ { "name": "TK Klantquotes" } ]
+}
+{% endschema %}

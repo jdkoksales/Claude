@@ -1,0 +1,35 @@
+name: Productfoto's ophalen
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: claude/3d-product-animations-btyc7y
+
+      - name: Download productfoto's van Shopify CDN
+        run: |
+          mkdir -p productfotos
+          base="https://cdn.shopify.com/s/files/1/1025/4997/9513/files"
+          curl -fsSL -o "productfotos/facebookstandaart.avif" "$base/facebookstandaart.avif?v=1785091351"
+          curl -fsSL -o "productfotos/googlereviewstandaartzwartenwit2.jpg" "$base/googlereviewstandaartzwartenwit2.jpg?v=1785091351"
+          curl -fsSL -o "productfotos/Googlestandaartwit.avif" "$base/Googlestandaartwit.avif?v=1785091351"
+          curl -fsSL -o "productfotos/instagramstandaart.avif" "$base/instagramstandaart.avif?v=1785091351"
+          curl -fsSL -o "productfotos/stickerachter.jpg" "$base/stickerachter.jpg?v=1785091353"
+          curl -fsSL -o "productfotos/stickervoorkant.jpg" "$base/stickervoorkant.jpg?v=1785091353"
+          ls -la productfotos
+
+      - name: Commit en push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add productfotos
+          git commit -m "Voeg productfoto's toe vanaf Shopify CDN"
+          git push origin claude/3d-product-animations-btyc7y

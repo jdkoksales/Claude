@@ -2,3 +2,11 @@ node_modules/
 .env
 *.log
 data/
+
+# Agent-skills die per sessie geinstalleerd worden (npx skills add).
+# Code van derden die met volledige agent-rechten draait; hoort niet in de
+# geschiedenis van dit project. Wil je ze blijvend hebben, zet ze dan in de
+# omgevingsconfiguratie in plaats van hier.
+.agents/
+.claude/
+skills-lock.json

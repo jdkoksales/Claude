@@ -2,6 +2,9 @@ name: Productfoto's ophalen
 
 on:
   workflow_dispatch:
+  push:
+    branches: [claude/3d-product-animations-btyc7y]
+    paths: ['.github/workflows/fetch-fotos.yml']
 
 permissions:
   contents: write

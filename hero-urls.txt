@@ -1,3 +1,0 @@
-clone-hero-a.png|https://d8j0ntlcm91z4.cloudfront.net/user_3H2Nj30E5c9ly0JUatR4HpxuaNv/hf_20260727_065044_f6774409-a163-4688-bf59-76db5a64329a.png
-clone-hero-b.png|https://d8j0ntlcm91z4.cloudfront.net/user_3H2Nj30E5c9ly0JUatR4HpxuaNv/hf_20260727_065044_a925152c-b8a6-48a8-8dcb-a73e9b866c64.png
-clone-insta.png|https://d8j0ntlcm91z4.cloudfront.net/user_3H2Nj30E5c9ly0JUatR4HpxuaNv/hf_20260727_064557_3fa6aeca-72df-46f2-8e78-6080a14aa5ce.png

@@ -122,14 +122,14 @@ function shadowTexture() {
 }
 
 // yawDeg: 0 = frontaal. Levert een PNG-dataURL met studioachtergrond.
-window.renderVariant = (key, yawDeg, size) => {
+window.renderVariant = (key, yawDeg, size, bgHex) => {
   const r = renderer();
   r.setSize(size, size, false);
 
   const v = VARIANTS[key];
   const scene = new THREE.Scene();
   scene.environment = studioEnv(r);
-  scene.background = new THREE.Color(0xf1f2f5);
+  scene.background = new THREE.Color(bgHex === undefined ? 0xf1f2f5 : bgHex);
 
   const { face, rim } = makeMaterials(key);
   const product = buildProductMeshes(v, face, rim);

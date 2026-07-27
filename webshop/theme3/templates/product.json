@@ -1,0 +1,167 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "title": {
+          "type": "title",
+          "settings": { "title_size_desktop": 34, "title_size_mobile": 24 }
+        },
+        "price": {
+          "type": "price",
+          "settings": {
+            "price_color": "#1A202C",
+            "compare_price_color": "#B42318",
+            "price_size": 26,
+            "compare_price_size": 16,
+            "compare_price_position": "before",
+            "show_savings_badge": false,
+            "savings_badge_format": "percent",
+            "savings_badge_background": "#ffffff",
+            "savings_badge_text": "#B42318"
+          }
+        },
+        "sales_points": {
+          "type": "sales_points",
+          "settings": {
+            "text_color": "#1A202C",
+            "icon_size": 22,
+            "icon_1_url": "",
+            "text_1": "Geen app en geen abonnement — eenmalig betalen",
+            "icon_2_url": "",
+            "text_2": "Op werkdagen voor 16:00 besteld, dezelfde dag verzonden",
+            "icon_3_url": "",
+            "text_3": "14 dagen bedenktijd",
+            "placement": "info"
+          }
+        },
+        "quantity": {
+          "type": "quantity_selector",
+          "settings": {}
+        },
+        "buy": {
+          "type": "buy_buttons",
+          "settings": { "sticky_label": "" }
+        },
+        "description": {
+          "type": "description",
+          "settings": {
+            "display_style": "open",
+            "accordion_heading": "",
+            "accordion_open_by_default": false
+          }
+        },
+        "acc_werkt": {
+          "type": "accordion",
+          "settings": {
+            "heading": "Hoe werkt het?",
+            "content": "<p>Je klant houdt zijn telefoon tegen de kaart. De NFC-chip opent meteen jouw pagina — geen app, geen account, geen uitleg nodig. Werkt de NFC niet, dan scant hij de QR-code op de voorkant; dat werkt met elke camera-app.</p><p>Geef bij je bestelling door welke pagina de kaart moet openen, dan zetten wij die er vooraf op. Je pakt hem uit en zet hem neer. Later zelf veranderen kan onbeperkt met een gratis NFC-app.</p>",
+            "open_by_default": false
+          }
+        },
+        "acc_verzending": {
+          "type": "accordion",
+          "settings": {
+            "heading": "Verzending en retour",
+            "content": "<p>Nederland € 6,95, gratis vanaf € 55. België en de rest van de EU € 12,95, daarbuiten € 19,95. Op werkdagen voor 16:00 uur besteld gaat dezelfde dag op de post; in Nederland is dat doorgaans de volgende werkdag in huis.</p><p>Niet tevreden? Je hebt 14 dagen bedenktijd. Lees het volledige <a href=\"/pages/retourbeleid\">retourbeleid</a> of bekijk de <a href=\"/pages/verzending\">verzendinformatie</a>.</p>",
+            "open_by_default": false
+          }
+        },
+        "acc_specs": {
+          "type": "accordion",
+          "settings": {
+            "heading": "Specificaties",
+            "content": "<ul><li>Paneel 7,6 × 12,75 cm, voet 5 cm diep</li><li>Gebogen acrylaat met vaste voet</li><li>NFC-chip (NTAG) plus gedrukte QR-code</li><li>Werkt op iPhone (XR en nieuwer) en op vrijwel elke Android</li><li>Onbeperkt herprogrammeerbaar naar elke link</li><li>Gewicht circa 60 gram</li><li>Geen batterij, geen onderhoud, geen abonnement</li></ul>",
+            "open_by_default": false
+          }
+        },
+        "acc_vragen": {
+          "type": "accordion",
+          "settings": {
+            "heading": "Veelgestelde vragen",
+            "content": "<p><strong>Moet mijn klant een app installeren?</strong><br>Nee. De telefoon opent gewoon de webpagina.</p><p><strong>Kan ik de link later veranderen?</strong><br>Ja, onbeperkt, met een gratis NFC-app op je eigen telefoon.</p><p><strong>Mag ik klanten belonen voor een review?</strong><br>Nee. Dat is in strijd met de voorwaarden van Google en Meta en met de Nederlandse wet. Vragen mag wel — daar is dit product voor.</p><p>Meer vragen? Kijk bij de <a href=\"/pages/veelgestelde-vragen\">veelgestelde vragen</a>.</p>",
+            "open_by_default": false
+          }
+        }
+      },
+      "block_order": [
+        "title",
+        "price",
+        "sales_points",
+        "quantity",
+        "buy",
+        "description",
+        "acc_werkt",
+        "acc_verzending",
+        "acc_specs",
+        "acc_vragen"
+      ],
+      "settings": {
+        "gallery_layout": "carousel_bottom_thumbnails",
+        "mobile_gallery_mode": "floating_dots",
+        "gallery_media_fit": "contain",
+        "show_zoom_button": true,
+        "zoom_button_style": "icon",
+        "zoom_button_position": "bottom_right",
+        "desktop_info_width": 46,
+        "enable_sticky_info": true,
+        "enable_sticky_bar": true,
+        "show_related_products": true,
+        "related_heading": "Vaak samen besteld",
+        "related_count": 4
+      }
+    },
+    "hoe": {
+      "type": "tk3-howto",
+      "blocks": {
+        "s1": {
+          "type": "stap",
+          "settings": {
+            "asset": "stap-1",
+            "title": "Uitpakken en neerzetten",
+            "text": "Hij komt kant-en-klaar aan. Zet hem op de balie, het tafeltje of naast de pinautomaat."
+          }
+        },
+        "s2": {
+          "type": "stap",
+          "settings": {
+            "asset": "stap-2",
+            "title": "Je klant houdt zijn telefoon ertegenaan",
+            "text": "Eén tik. Geen app, geen account, geen uitleg nodig."
+          }
+        },
+        "s3": {
+          "type": "stap",
+          "settings": {
+            "asset": "stap-3",
+            "title": "Jouw pagina opent meteen",
+            "text": "De klant laat een review achter of drukt op volgen. Binnen tien seconden klaar."
+          }
+        }
+      },
+      "block_order": ["s1", "s2", "s3"],
+      "settings": {
+        "heading": "Zo werkt het.",
+        "sub": "Je hoeft niets te installeren en niets in te stellen. Uitpakken, neerzetten, klaar.",
+        "reassurance": "Geen app nodig|Werkt op iPhone en Android|Wij zetten jouw link er vooraf op|Ook een QR-code voor oudere telefoons",
+        "cta_text": "",
+        "cta_url": ""
+      }
+    },
+    "configurator": {
+      "type": "tk3-configurator",
+      "settings": {
+        "heading": "Meerdere plekken, meer momenten",
+        "sub": "Reken uit wat het oplevert als je op meer plekken in je zaak een kaart neerzet.",
+        "q1": "Hoeveel bezoekers ontvangt jouw bedrijf gemiddeld per dag?",
+        "q2": "Stel jouw TapKaart-pakket samen",
+        "results_intro": "Geschatte opbrengst per maand op basis van jouw gemiddelde aantal bezoekers per dag.",
+        "cta_heading": "Klaar om meer reviews en volgers te verzamelen?",
+        "cta_text": "Je gaat direct naar de kassa met precies de kaarten en aantallen die je hier hebt gekozen.",
+        "cta_button": "Bestel mijn TapKaarten",
+        "disclaimer": "De berekening is een indicatieve schatting op basis van gemiddelde conversiepercentages. Werkelijke aantallen hangen af van je zaak, je klanten en waar je de kaarten neerzet."
+      }
+    }
+  },
+  "order": ["main", "hoe", "configurator"]
+}

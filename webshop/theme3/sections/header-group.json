@@ -6,13 +6,15 @@
       "type": "tk3-header",
       "settings": {
         "menu": "main-menu",
-        "marquee_text": "Zomeractie — tot 20% korting!",
-        "marquee_emoji": "☀️",
-        "pill_text": "Nieuw!",
-        "pill_url": "/#producten",
-        "help_url": "/#specs"
+        "marquee_text": "Gratis verzending vanaf € 55",
+        "marquee_emoji": "📦",
+        "pill_text": "Hoe werkt het?",
+        "pill_url": "/#hoe-het-werkt",
+        "help_url": "/pages/veelgestelde-vragen"
       }
     }
   },
-  "order": ["tk3_header"]
+  "order": [
+    "tk3_header"
+  ]
 }

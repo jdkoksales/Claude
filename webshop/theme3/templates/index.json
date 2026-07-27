@@ -18,19 +18,19 @@
         "t1": {
           "type": "item",
           "settings": {
-            "text": "★ Uitstekend beoordeeld door ondernemers"
+            "text": "🚚 Gratis verzending vanaf € 55"
           }
         },
         "t2": {
           "type": "item",
           "settings": {
-            "text": "🛡️ 14 dagen bedenktijd"
+            "text": "⚡ Op werkdagen voor 16:00 besteld, vandaag verzonden"
           }
         },
         "t3": {
           "type": "item",
           "settings": {
-            "text": "🚚 Vandaag besteld, vandaag verzonden"
+            "text": "🛡️ 14 dagen bedenktijd"
           }
         },
         "t4": {
@@ -42,7 +42,7 @@
         "t5": {
           "type": "item",
           "settings": {
-            "text": "🇳🇱 Nederland"
+            "text": "🇳🇱 Verzonden vanuit Nederland"
           }
         }
       },
@@ -80,8 +80,8 @@
           "type": "branche",
           "settings": {
             "label": "Café",
-            "quote": "We vroegen er nooit om — dat voelde ongemakkelijk. Nu staat het bordje naast de kassa en vraagt het voor ons, elke dag opnieuw.",
-            "who": "Sanne de Wit, eigenaar · Koffiebar Noord · voorbeeldtekst",
+            "quote": "Naast de kassa of op de bar.",
+            "who": "Terwijl je klant pint of op zijn koffie wacht, heeft hij zijn telefoon al in zijn hand.",
             "asset": "cafe"
           }
         },
@@ -89,8 +89,8 @@
           "type": "branche",
           "settings": {
             "label": "Restaurant",
-            "quote": "Bij het afrekenen tikt bijna iedereen het even aan. In twee maanden gingen we van zestig naar ruim tweehonderd reviews.",
-            "who": "Marco Peters, gastheer · Restaurant De Werf · voorbeeldtekst",
+            "quote": "Op het rekeningschaaltje.",
+            "who": "Na een goed diner zijn mensen het meest bereid om iets aardigs te schrijven.",
             "asset": "restaurant"
           }
         },
@@ -98,8 +98,8 @@
           "type": "branche",
           "settings": {
             "label": "Kapper",
-            "quote": "Terwijl ik afreken tikt de klant het bordje aan. Het kost mij nul seconden en ik hoef er niks voor te zeggen.",
-            "who": "Yasmin El Amrani, eigenaar · Salon Yasmin · voorbeeldtekst",
+            "quote": "Bij het afrekenen, naast de pinautomaat.",
+            "who": "De klant heeft net in de spiegel gekeken en is tevreden. Eén tik en het staat online.",
             "asset": "kapper"
           }
         },
@@ -107,8 +107,8 @@
           "type": "branche",
           "settings": {
             "label": "Schoonheidssalon",
-            "quote": "Klanten zijn direct na een behandeling het meest enthousiast. Precies op dat moment staat het bordje er.",
-            "who": "Iris Bouma, huidtherapeut · Studio Iris · voorbeeldtekst",
+            "quote": "Op de balie bij het afrekenen.",
+            "who": "Direct na een behandeling is het enthousiasme het grootst.",
             "asset": "salon"
           }
         },
@@ -116,8 +116,8 @@
           "type": "branche",
           "settings": {
             "label": "Garage",
-            "quote": "Ik dacht dat onze klanten te oud waren voor NFC. Ze scannen gewoon de QR-code — geen enkele vraag over gehad.",
-            "who": "Ronald Vermeer, bedrijfsleider · Garage Vermeer · voorbeeldtekst",
+            "quote": "Op de servicebalie, bij de sleuteloverdracht.",
+            "who": "Werkt NFC niet op een ouder toestel? Dan scant je klant gewoon de QR-code.",
             "asset": "garage"
           }
         },
@@ -125,8 +125,8 @@
           "type": "branche",
           "settings": {
             "label": "Hotel",
-            "quote": "Op de balie bij het uitchecken. Gasten doen het terwijl ze staan te wachten op hun taxi.",
-            "who": "Petra Jansen, front office · Hotel Kaap Noord · voorbeeldtekst",
+            "quote": "Op de receptie bij het uitchecken.",
+            "who": "Gasten staan daar toch even te wachten op hun taxi of factuur.",
             "asset": "hotel"
           }
         },
@@ -134,8 +134,8 @@
           "type": "branche",
           "settings": {
             "label": "Tandarts",
-            "quote": "Geen apps en geen mailtjes achteraf. Eén tik in de wachtkamer en het is geregeld.",
-            "who": "Daan Kuiper, praktijkmanager · Tandartspraktijk Kuiper · voorbeeldtekst",
+            "quote": "In de wachtkamer of bij de balie.",
+            "who": "Geen mailtjes achteraf die niemand opent — gewoon één tik voor vertrek.",
             "asset": "tandarts"
           }
         },
@@ -143,8 +143,8 @@
           "type": "branche",
           "settings": {
             "label": "Winkel",
-            "quote": "Bij de kassa neergezet. Sinds die week komen er elke week reviews bij in plaats van elke maand een enkele.",
-            "who": "Lisa van Dam, eigenaar · Concept Store Lisa · voorbeeldtekst",
+            "quote": "Bij de kassa, op ooghoogte.",
+            "who": "Elke klant komt er langs. Dat is het hele idee.",
             "asset": "winkel"
           }
         },
@@ -152,8 +152,8 @@
           "type": "branche",
           "settings": {
             "label": "Foodtruck",
-            "quote": "Naast het luikje geplakt. Mensen staan toch te wachten op hun bestelling — dat is precies het moment.",
-            "who": "Tim Bakker, eigenaar · Foodtruck Tim's · voorbeeldtekst",
+            "quote": "Op de rand van het luikje.",
+            "who": "Mensen wachten toch even op hun bestelling.",
             "asset": "foodtruck"
           }
         }
@@ -170,7 +170,7 @@
         "b9"
       ],
       "settings": {
-        "heading": "Meer reviews, bezoek voor bezoek."
+        "heading": "Waar je hem het beste neerzet."
       }
     },
     "ontwerp": {
@@ -180,83 +180,6 @@
         "note": "Gebogen acrylaat met een vaste voet, 7,6 × 12,75 cm. Groot genoeg om op te vallen op de balie, klein genoeg om nergens in de weg te staan. Wit of mat zwart.",
         "btn_text": "Bekijk alle specificaties",
         "btn_url": "/#specs"
-      }
-    },
-    "video": {
-      "type": "tk3-video",
-      "blocks": {
-        "v1": {
-          "type": "video",
-          "settings": {
-            "caption": "Zaaknaam"
-          }
-        },
-        "v2": {
-          "type": "video",
-          "settings": {
-            "caption": "Zaaknaam"
-          }
-        },
-        "v3": {
-          "type": "video",
-          "settings": {
-            "caption": "Zaaknaam"
-          }
-        },
-        "v4": {
-          "type": "video",
-          "settings": {
-            "caption": "Zaaknaam"
-          }
-        }
-      },
-      "block_order": [
-        "v1",
-        "v2",
-        "v3",
-        "v4"
-      ],
-      "settings": {
-        "heading": "Zij vertellen het het best ❤️",
-        "sub": "Ondernemers die TapKaarten dagelijks gebruiken en zien hoe hun reviews vanzelf binnenkomen."
-      }
-    },
-    "pers": {
-      "type": "tk3-press",
-      "blocks": {
-        "p1": {
-          "type": "logo",
-          "settings": {
-            "name": "[Perslogo]"
-          }
-        },
-        "p2": {
-          "type": "logo",
-          "settings": {
-            "name": "[Perslogo]"
-          }
-        },
-        "p3": {
-          "type": "logo",
-          "settings": {
-            "name": "[Perslogo]"
-          }
-        },
-        "p4": {
-          "type": "logo",
-          "settings": {
-            "name": "[Perslogo]"
-          }
-        }
-      },
-      "block_order": [
-        "p1",
-        "p2",
-        "p3",
-        "p4"
-      ],
-      "settings": {
-        "quote": "[PLAATSHOUDER — pers- of partnercitaat zodra je dat hebt.]"
       }
     },
     "cijfers": {
@@ -303,59 +226,12 @@
         "source": "Bron: BrightLocal, Local Consumer Review Survey."
       }
     },
-    "reviews": {
-      "type": "tk3-reviews",
-      "blocks": {
-        "r1": {
-          "type": "review",
-          "settings": {
-            "stars": 5,
-            "text": "[PLAATSHOUDER — echte klantreactie]",
-            "source": "Zaaknaam — datum"
-          }
-        },
-        "r2": {
-          "type": "review",
-          "settings": {
-            "stars": 5,
-            "text": "[PLAATSHOUDER — echte klantreactie]",
-            "source": "Zaaknaam — datum"
-          }
-        },
-        "r3": {
-          "type": "review",
-          "settings": {
-            "stars": 5,
-            "text": "[PLAATSHOUDER — echte klantreactie]",
-            "source": "Zaaknaam — datum"
-          }
-        },
-        "r4": {
-          "type": "review",
-          "settings": {
-            "stars": 5,
-            "text": "[PLAATSHOUDER — echte klantreactie]",
-            "source": "Zaaknaam — datum"
-          }
-        }
-      },
-      "block_order": [
-        "r1",
-        "r2",
-        "r3",
-        "r4"
-      ],
-      "settings": {
-        "heading": "Wat ondernemers zeggen.",
-        "sub": "Echte reacties verschijnen hier zodra je eerste klanten geleverd zijn."
-      }
-    },
     "verhaal": {
       "type": "tk3-story",
       "settings": {
         "heading": "Het verhaal.",
         "sub": "Waarom we dit maken.",
-        "body": "<p>[PLAATSHOUDER — vertel hier in een paar alinea's waarom je TapKaarten bent begonnen. Wat viel je op bij ondernemers? Wat wilde je oplossen?]</p><p>[PLAATSHOUDER — tweede alinea. Wat maakt jullie aanpak anders? Waar sta je voor?]</p><p>[PLAATSHOUDER — afsluiter met een blik vooruit.]</p>"
+        "body": "<p>Vraag een ondernemer wat hij van online reviews vindt en je krijgt twee antwoorden tegelijk: dat ze belangrijk zijn, en dat hij er nooit om durft te vragen. Dat ongemak is precies het probleem. De klant is tevreden, staat af te rekenen, heeft zijn telefoon al in zijn hand — en er gebeurt niets.</p><p>Een TapKaart stelt die vraag voor je. Eén tik en je klant staat op je Google-, Instagram- of Facebookpagina. Jij hoeft niets te zeggen.</p><p>Wat we niet doen: reviews verkopen. Wij verkopen het moment waarop iemand er een kan achterlaten. Daarom staan er op deze site ook geen verzonnen klantverhalen en geen ‘nog 3 op voorraad’-meldingen. Staat er een cijfer, dan kunnen we uitleggen waar het vandaan komt.</p>"
       }
     },
     "specs": {
@@ -488,10 +364,7 @@
     "producten",
     "branches",
     "ontwerp",
-    "video",
-    "pers",
     "cijfers",
-    "reviews",
     "verhaal",
     "specs"
   ]

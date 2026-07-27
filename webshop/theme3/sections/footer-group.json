@@ -9,41 +9,48 @@
           "type": "column",
           "settings": {
             "heading": "TapKaarten",
-            "links": "Helpcentrum | /#specs\nContact | /pages/contact\nAlle producten | /collections/all"
+            "links": "Veelgestelde vragen | /pages/veelgestelde-vragen\nContact | /pages/contact\nOver TapKaarten | /pages/over-ons"
           }
         },
         "col2": {
           "type": "column",
           "settings": {
-            "heading": "Aanbod",
-            "links": "Alle producten | /collections/all\nZakelijk bestellen | /pages/contact\nWederverkoper worden | /pages/contact"
+            "heading": "Producten",
+            "links": "Alle producten | /collections/alle-tapkaarten\nGoogle Review-standaard | /products/tapkaarten-google-review-standaard\nGoogle Review-sticker | /products/tapkaarten-google-review-sticker"
           }
         },
         "col3": {
           "type": "column",
           "settings": {
-            "heading": "TapKaarten voor",
-            "links": "Horeca | /#branches\nKappers & salons | /#branches\nWinkels | /#branches"
+            "heading": "Bestellen",
+            "links": "Verzending | /pages/verzending\nRetourbeleid | /pages/retourbeleid\nBetaalmethodes | /pages/veelgestelde-vragen"
           }
         },
         "col4": {
           "type": "column",
           "settings": {
             "heading": "Juridisch",
-            "links": "Privacyverklaring | /policies/privacy-policy\nContact | /pages/contact"
+            "links": "Algemene voorwaarden | /pages/algemene-voorwaarden\nPrivacyverklaring | /policies/privacy-policy\nRetourbeleid | /pages/retourbeleid"
           }
         }
       },
-      "block_order": ["col1", "col2", "col3", "col4"],
+      "block_order": [
+        "col1",
+        "col2",
+        "col3",
+        "col4"
+      ],
       "settings": {
         "tagline": "Meer dan\neen kaartje.",
         "pay_title": "Veilig betalen",
         "pay_methods": "iDEAL, VISA, MC, AMEX, PayPal, Klarna, Apple Pay",
         "contact_title": "Vragen?",
-        "contact_text": "info@tapkaarten.nl",
-        "legal": "tapkaarten.nl · KvK 00000000"
+        "contact_text": "info@tapkaarten.nl · 06 16 03 63 28",
+        "legal": "Dingspil 13, 9302 ET Roden · KvK [VUL IN] · Btw [VUL IN]"
       }
     }
   },
-  "order": ["tk3_footer"]
+  "order": [
+    "tk3_footer"
+  ]
 }

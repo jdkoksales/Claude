@@ -132,13 +132,25 @@ jobs:
             const euro = (c) => '€ ' + (c / 100).toFixed(2).replace('.', ',');
             for (const q of [1, 2, 3, 4, 5]) {
               const r = await t.evaluate(async (aantal) => {
-                await fetch('/cart/clear.js', { method: 'POST' });
-                const add = await fetch('/cart/add.js', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ items: [{ id: 64057218662777, quantity: aantal }] }),
-                });
+                const wacht = (ms) => new Promise((res) => setTimeout(res, ms));
+                // Shopify knijpt de winkelwagen-API af; bij een 429 even wachten en opnieuw.
+                const post = async (url, body) => {
+                  for (let poging = 1; poging <= 5; poging++) {
+                    const res = await fetch(url, {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: body ? JSON.stringify(body) : undefined,
+                    });
+                    if (res.status !== 429) return res;
+                    await wacht(poging * 2500);
+                  }
+                  return { ok: false, status: 429 };
+                };
+                await post('/cart/clear.js');
+                await wacht(800);
+                const add = await post('/cart/add.js', { items: [{ id: 64057218662777, quantity: aantal }] });
                 if (!add.ok) return { fout: 'toevoegen mislukt ' + add.status };
+                await wacht(800);
                 const c = await fetch('/cart.js').then((x) => x.json());
                 const regel = c.items[0] || {};
                 const namen = []
@@ -152,6 +164,7 @@ jobs:
               log.push(
                 `staffel ${q}×: van ${euro(r.sub)} af ${euro(r.korting)} (${pct}%) => ${euro(r.tot)}  [${r.namen.join(' | ')}]`
               );
+              await t.waitForTimeout(2000);
             }
             await t.evaluate(() => fetch('/cart/clear.js', { method: 'POST' }));
             await ctx.close();

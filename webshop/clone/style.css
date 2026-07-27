@@ -60,7 +60,10 @@ h3{font-size:var(--fs-xl);font-weight:550;line-height:1.2;letter-spacing:-.05em}
 /* ---------- header ---------- */
 .hdr{position:sticky;top:0;z-index:60;background:rgba(255,255,255,.86);backdrop-filter:blur(16px)}
 .hdr .row{display:flex;align-items:center;gap:28px;height:74px}
-.brand{font-family:ui-monospace,"SFMono-Regular",Menlo,monospace;font-size:26px;font-weight:700;letter-spacing:.02em}
+/* logo: hoogte stuurt de schaal, verhouding b:h = 7,03 */
+.brand{display:flex;align-items:center;flex:0 0 auto}
+.brand img{display:block;height:25px;width:auto}
+footer .brand img{height:29px}
 .hdr nav{display:flex;align-items:center;gap:26px;margin:0 auto}
 .hdr nav a{font-size:var(--fs-sm);font-weight:600}
 .hdr .right{display:flex;align-items:center;gap:26px}
@@ -72,7 +75,7 @@ h3{font-size:var(--fs-xl);font-weight:550;line-height:1.2;letter-spacing:-.05em}
   .hdr .row{height:64px;gap:14px}
   .hdr .right{margin-left:auto;gap:16px}
   .burger{display:block}
-  .brand{font-size:22px}
+  .brand img{height:21px}
 }
 
 /* ---------- hero ---------- */

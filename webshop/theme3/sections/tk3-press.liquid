@@ -1,0 +1,46 @@
+{{ 'tk3.css' | asset_url | stylesheet_tag }}
+
+<div class="tk3">
+  <section class="blk">
+    <div class="wrap">
+      <div class="press">
+        {%- for block in section.blocks -%}
+          {%- if block.settings.logo -%}
+            <img src="{{ block.settings.logo | image_url: width: 300 }}" alt="{{ block.settings.name | escape }}" height="28" style="opacity:.5" {{ block.shopify_attributes }}>
+          {%- else -%}
+            <span {{ block.shopify_attributes }}>{{ block.settings.name }}</span>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+      {%- if section.settings.quote != blank -%}
+        <p class="pullquote">{{ section.settings.quote }}</p>
+      {%- endif -%}
+    </div>
+  </section>
+</div>
+
+{% schema %}
+{
+  "name": "TK3 pers",
+  "settings": [
+    { "type": "textarea", "id": "quote", "label": "Citaat", "default": "[PLAATSHOUDER — pers- of partnercitaat zodra je dat hebt.]" }
+  ],
+  "max_blocks": 8,
+  "blocks": [
+    {
+      "type": "logo",
+      "name": "Logo",
+      "settings": [
+        { "type": "image_picker", "id": "logo", "label": "Logo" },
+        { "type": "text", "id": "name", "label": "Naam (als er geen logo is)", "default": "[Perslogo]" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "TK3 pers",
+      "blocks": [{ "type": "logo" }, { "type": "logo" }, { "type": "logo" }, { "type": "logo" }]
+    }
+  ]
+}
+{% endschema %}

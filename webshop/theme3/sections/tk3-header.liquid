@@ -1,0 +1,66 @@
+{{ 'tk3.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'tk3.js' | asset_url }}" defer></script>
+
+<div class="tk3">
+  {%- if section.settings.marquee_text != blank -%}
+    <div class="marquee">
+      <div class="track">
+        {%- for i in (1..8) -%}
+          <span>{{ section.settings.marquee_text }}</span><span>{{ section.settings.marquee_emoji }}</span>
+        {%- endfor -%}
+      </div>
+    </div>
+  {%- endif -%}
+
+  <header class="hdr">
+    <div class="wrap row">
+      <a class="brand" href="{{ routes.root_url }}" aria-label="{{ shop.name }}">
+        {%- if section.settings.logo -%}
+          <img src="{{ section.settings.logo | image_url: width: 600 }}" alt="{{ shop.name }}" width="600" height="85">
+        {%- else -%}
+          <img src="{{ 'tk3-logo.svg' | asset_url }}" alt="{{ shop.name }}" width="600" height="85">
+        {%- endif -%}
+      </a>
+
+      <nav>
+        {%- for link in linklists[section.settings.menu].links limit: 3 -%}
+          <a href="{{ link.url }}">{{ link.title }}{% if link.links.size > 0 %} ⌄{% endif %}</a>
+        {%- else -%}
+          <a href="#producten">Producten</a>
+          <a href="#branches">TapKaarten voor</a>
+        {%- endfor -%}
+        {%- if section.settings.pill_text != blank -%}
+          <a class="pill-link" href="{{ section.settings.pill_url | default: '#producten' }}">{{ section.settings.pill_text }}</a>
+        {%- endif -%}
+      </nav>
+
+      <div class="right">
+        <a href="{{ routes.all_products_collection_url }}">Winkel</a>
+        <a href="{{ routes.account_url }}">Inloggen</a>
+        {%- if section.settings.help_url != blank -%}
+          <a href="{{ section.settings.help_url }}">Helpcentrum</a>
+        {%- endif -%}
+        <a href="{{ routes.cart_url }}" aria-label="Winkelwagen ({{ cart.item_count }})" style="display:flex;align-items:center;gap:6px">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          {%- if cart.item_count > 0 -%}<span style="font-size:14px;font-weight:700">{{ cart.item_count }}</span>{%- endif -%}
+        </a>
+        <svg class="burger" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </div>
+    </div>
+  </header>
+</div>
+
+{% schema %}
+{
+  "name": "TK3 header",
+  "settings": [
+    { "type": "image_picker", "id": "logo", "label": "Logo (leeg = ingebouwd tk3-logo)" },
+    { "type": "link_list", "id": "menu", "label": "Hoofdmenu", "default": "main-menu" },
+    { "type": "text", "id": "marquee_text", "label": "Loopbalk", "default": "Zomeractie — tot 20% korting!" },
+    { "type": "text", "id": "marquee_emoji", "label": "Loopbalk-emoji", "default": "☀️" },
+    { "type": "text", "id": "pill_text", "label": "Knop in menu", "default": "Nieuw!" },
+    { "type": "url", "id": "pill_url", "label": "Link van die knop" },
+    { "type": "url", "id": "help_url", "label": "Helpcentrum" }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,20 @@
+{{ 'tk3.css' | asset_url | stylesheet_tag }}
+
+<div class="tk3">
+  <section class="statement">
+    <div class="wrap">
+      <p><b>{{ section.settings.lead }}</b> {{ section.settings.rest }}</p>
+    </div>
+  </section>
+</div>
+
+{% schema %}
+{
+  "name": "TK3 statement",
+  "settings": [
+    { "type": "text", "id": "lead", "label": "Vette zin", "default": "Reviews bepalen wie er binnenkomt." },
+    { "type": "textarea", "id": "rest", "label": "Vervolg", "default": "98% van de consumenten leest ze voordat ze een lokale zaak bezoeken." }
+  ],
+  "presets": [{ "name": "TK3 statement" }]
+}
+{% endschema %}

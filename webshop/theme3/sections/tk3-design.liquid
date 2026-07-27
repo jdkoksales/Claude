@@ -1,0 +1,50 @@
+{{ 'tk3.css' | asset_url | stylesheet_tag }}
+
+<div class="tk3">
+  <section class="blk dark">
+    <div class="wrap">
+      <h2 class="sec-title center">{{ section.settings.heading }}</h2>
+      <div class="detail-grid">
+        {%- if section.settings.image_main -%}
+          <img src="{{ section.settings.image_main | image_url: width: 1400 }}" alt="" width="1400" height="784" loading="lazy">
+        {%- else -%}
+          <img src="{{ 'tk3-dark-1.jpg' | file_url }}" alt="" width="1100" height="616" loading="lazy">
+        {%- endif -%}
+        <div class="two">
+          {%- if section.settings.image_a -%}
+            <img src="{{ section.settings.image_a | image_url: width: 800 }}" alt="" width="800" height="800" loading="lazy">
+          {%- else -%}
+            <img src="{{ 'tk3-detail-1.jpg' | file_url }}" alt="" width="700" height="700" loading="lazy">
+          {%- endif -%}
+          {%- if section.settings.image_b -%}
+            <img src="{{ section.settings.image_b | image_url: width: 800 }}" alt="" width="800" height="800" loading="lazy">
+          {%- else -%}
+            <img src="{{ 'tk3-detail-2.jpg' | file_url }}" alt="" width="700" height="700" loading="lazy">
+          {%- endif -%}
+        </div>
+      </div>
+      <p class="note">{{ section.settings.note }}</p>
+      {%- if section.settings.btn_text != blank -%}
+        <a class="spec-btn" href="{{ section.settings.btn_url | default: '#specs' }}">{{ section.settings.btn_text }}
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+      {%- endif -%}
+    </div>
+  </section>
+</div>
+
+{% schema %}
+{
+  "name": "TK3 ontwerp (donker)",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Kop", "default": "Gemaakt om neergezet te worden." },
+    { "type": "image_picker", "id": "image_main", "label": "Grote foto" },
+    { "type": "image_picker", "id": "image_a", "label": "Detail links" },
+    { "type": "image_picker", "id": "image_b", "label": "Detail rechts" },
+    { "type": "textarea", "id": "note", "label": "Tekst", "default": "Gebogen acrylaat met een vaste voet, 7,6 × 12,75 cm. Groot genoeg om op te vallen op de balie, klein genoeg om nergens in de weg te staan. Wit of mat zwart." },
+    { "type": "text", "id": "btn_text", "label": "Knop", "default": "Bekijk alle specificaties" },
+    { "type": "url", "id": "btn_url", "label": "Knoplink" }
+  ],
+  "presets": [{ "name": "TK3 ontwerp (donker)" }]
+}
+{% endschema %}

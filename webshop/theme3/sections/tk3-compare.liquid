@@ -1,0 +1,92 @@
+{{ 'tk3.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign pa = all_products[section.settings.product_a]
+  assign pb = all_products[section.settings.product_b]
+-%}
+
+<div class="tk3">
+  <section class="blk" id="specs">
+    <div class="wrap">
+      <h2 class="sec-title center">{{ section.settings.heading }}</h2>
+      <div class="compare">
+        {%- for idx in (1..2) -%}
+          {%- if idx == 1 -%}{%- assign product = pa -%}{%- else -%}{%- assign product = pb -%}{%- endif -%}
+          <div class="col">
+            <div class="top">
+              {%- if product != blank and product.featured_media -%}
+                <img src="{{ product.featured_media | image_url: width: 700 }}" alt="{{ product.title | escape }}" width="700" height="700" loading="lazy">
+              {%- else -%}
+                <img src="{% if idx == 1 %}{{ 'tk3-prod-wit.jpg' | file_url }}{% else %}{{ 'tk3-prod-zwart.jpg' | file_url }}{% endif %}" alt="" width="700" height="700" loading="lazy">
+              {%- endif -%}
+              {%- if product != blank -%}
+                <div class="price">{{ product.price | money }}</div>
+                {%- form 'product', product -%}
+                  <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+                  <button class="btn-primary" style="margin-top:14px;border:0;cursor:pointer" type="submit"
+                    {% unless product.available %}disabled{% endunless %}>
+                    {% if product.available %}In winkelwagen{% else %}Uitverkocht{% endif %}
+                  </button>
+                {%- endform -%}
+              {%- else -%}
+                <div class="price">—</div>
+              {%- endif -%}
+            </div>
+            <dl>
+              {%- for block in section.blocks -%}
+                {%- if idx == 1 -%}
+                  {%- assign val = block.settings.value_a -%}
+                  {%- assign note = block.settings.note_a -%}
+                {%- else -%}
+                  {%- assign val = block.settings.value_b -%}
+                  {%- assign note = block.settings.note_b -%}
+                {%- endif -%}
+                <div class="r" {{ block.shopify_attributes }}>
+                  <dt>{{ block.settings.label }}</dt>
+                  <dd>{{ val }}{% if note != blank %}<small>{{ note }}</small>{% endif %}</dd>
+                </div>
+              {%- endfor -%}
+            </dl>
+          </div>
+        {%- endfor -%}
+      </div>
+    </div>
+  </section>
+</div>
+
+{% schema %}
+{
+  "name": "TK3 vergelijking",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Kop", "default": "Kies je uitvoering: wit of zwart." },
+    { "type": "product", "id": "product_a", "label": "Product links" },
+    { "type": "product", "id": "product_b", "label": "Product rechts" }
+  ],
+  "max_blocks": 10,
+  "blocks": [
+    {
+      "type": "row",
+      "name": "Regel",
+      "settings": [
+        { "type": "text", "id": "label", "label": "Kenmerk", "default": "Kleur" },
+        { "type": "text", "id": "value_a", "label": "Links", "default": "Wit" },
+        { "type": "text", "id": "note_a", "label": "Links — kleine tekst" },
+        { "type": "text", "id": "value_b", "label": "Rechts", "default": "Mat zwart" },
+        { "type": "text", "id": "note_b", "label": "Rechts — kleine tekst" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "TK3 vergelijking",
+      "blocks": [
+        { "type": "row", "settings": { "label": "Kleur", "value_a": "Wit", "value_b": "Mat zwart" } },
+        { "type": "row", "settings": { "label": "Afmetingen", "value_a": "7,6 × 12,75 cm", "note_a": "Voet 5 cm diep", "value_b": "7,6 × 12,75 cm", "note_b": "Voet 5 cm diep" } },
+        { "type": "row", "settings": { "label": "Materiaal", "value_a": "Gebogen acrylaat", "note_a": "Glanzend afgewerkt", "value_b": "Gebogen acrylaat", "note_b": "Glanzend afgewerkt" } },
+        { "type": "row", "settings": { "label": "Techniek", "value_a": "NFC + QR-code", "note_a": "iOS & Android", "value_b": "NFC + QR-code", "note_b": "iOS & Android" } },
+        { "type": "row", "settings": { "label": "Abonnement", "value_a": "Geen", "note_a": "Eenmalig betalen", "value_b": "Geen", "note_b": "Eenmalig betalen" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

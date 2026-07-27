@@ -1,0 +1,49 @@
+{
+  "type": "footer",
+  "name": "t:general.footer",
+  "sections": {
+    "tk3_footer": {
+      "type": "tk3-footer",
+      "blocks": {
+        "col1": {
+          "type": "column",
+          "settings": {
+            "heading": "TapKaarten",
+            "links": "Helpcentrum | /#specs\nContact | /pages/contact\nAlle producten | /collections/all"
+          }
+        },
+        "col2": {
+          "type": "column",
+          "settings": {
+            "heading": "Aanbod",
+            "links": "Alle producten | /collections/all\nZakelijk bestellen | /pages/contact\nWederverkoper worden | /pages/contact"
+          }
+        },
+        "col3": {
+          "type": "column",
+          "settings": {
+            "heading": "TapKaarten voor",
+            "links": "Horeca | /#branches\nKappers & salons | /#branches\nWinkels | /#branches"
+          }
+        },
+        "col4": {
+          "type": "column",
+          "settings": {
+            "heading": "Juridisch",
+            "links": "Algemene voorwaarden | /policies/terms-of-service\nPrivacyverklaring | /policies/privacy-policy\nRetourneren | /policies/refund-policy"
+          }
+        }
+      },
+      "block_order": ["col1", "col2", "col3", "col4"],
+      "settings": {
+        "tagline": "Meer dan\neen kaartje.",
+        "pay_title": "Veilig betalen",
+        "pay_methods": "iDEAL, VISA, MC, AMEX, PayPal, Klarna, Apple Pay",
+        "contact_title": "Vragen?",
+        "contact_text": "info@tapkaarten.nl",
+        "legal": "tapkaarten.nl · KvK 00000000"
+      }
+    }
+  },
+  "order": ["tk3_footer"]
+}

@@ -1,0 +1,63 @@
+{{ 'tk3.css' | asset_url | stylesheet_tag }}
+
+{%- assign rail_id = 'tk3-stats-' | append: section.id -%}
+
+<div class="tk3">
+  <section class="blk grey">
+    <div class="wrap">
+      <h2>{{ section.settings.heading }}</h2>
+      <h3 style="margin-bottom:42px">{{ section.settings.sub }}</h3>
+
+      <div class="rail" id="{{ rail_id }}">
+        {%- for block in section.blocks -%}
+          <div class="statcard" {{ block.shopify_attributes }}>
+            <div class="big">{{ block.settings.value }}</div>
+            <p>{{ block.settings.text }}</p>
+          </div>
+        {%- endfor -%}
+      </div>
+
+      <div class="arrows">
+        <button type="button" onclick="tk3ScrollRail('{{ rail_id }}',-1)" aria-label="Vorige">←</button>
+        <button type="button" onclick="tk3ScrollRail('{{ rail_id }}',1)" aria-label="Volgende">→</button>
+      </div>
+
+      {%- if section.settings.source != blank -%}
+        <p style="margin-top:26px;font-size:var(--fs-xs);color:var(--ink-48)">{{ section.settings.source }}</p>
+      {%- endif -%}
+    </div>
+  </section>
+</div>
+
+{% schema %}
+{
+  "name": "TK3 cijfers",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Kop", "default": "In cijfers." },
+    { "type": "text", "id": "sub", "label": "Onderkop", "default": "Waarom reviews je goedkoopste marketing zijn." },
+    { "type": "text", "id": "source", "label": "Bronvermelding", "default": "Bron: BrightLocal, Local Consumer Review Survey." }
+  ],
+  "max_blocks": 8,
+  "blocks": [
+    {
+      "type": "stat",
+      "name": "Cijfer",
+      "settings": [
+        { "type": "text", "id": "value", "label": "Getal", "default": "98%" },
+        { "type": "textarea", "id": "text", "label": "Toelichting", "default": "van de consumenten leest online reviews voordat ze een lokale zaak bezoeken." }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "TK3 cijfers",
+      "blocks": [
+        { "type": "stat", "settings": { "value": "98%", "text": "van de consumenten leest online reviews voordat ze een lokale zaak bezoeken." } },
+        { "type": "stat", "settings": { "value": "7,6 cm", "text": "breed en 12,75 cm hoog — past op elke balie en elk tafeltje." } },
+        { "type": "stat", "settings": { "value": "0", "text": "abonnementen. Je betaalt eenmalig en de standaard blijft werken." } },
+        { "type": "stat", "settings": { "value": "1 tik", "text": "is alles wat je klant hoeft te doen. Geen app, geen account." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

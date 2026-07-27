@@ -1,0 +1,90 @@
+{{ 'tk3.css' | asset_url | stylesheet_tag }}
+
+<div class="tk3">
+  <footer>
+    <div class="wrap">
+      <div class="f-top">
+        <div>
+          <div class="brand">
+            {%- if section.settings.logo -%}
+              <img src="{{ section.settings.logo | image_url: width: 600 }}" alt="{{ shop.name }}" width="600" height="85">
+            {%- else -%}
+              <img src="{{ 'tk3-logo.svg' | asset_url }}" alt="{{ shop.name }}" width="600" height="85">
+            {%- endif -%}
+          </div>
+          {%- if section.settings.tagline != blank -%}
+            <div class="tag">{{ section.settings.tagline | newline_to_br }}</div>
+          {%- endif -%}
+        </div>
+        <div>
+          <strong style="font-size:var(--fs-sm)">{{ section.settings.pay_title }}</strong>
+          <div class="pay">
+            {%- assign methods = section.settings.pay_methods | split: ',' -%}
+            {%- for m in methods -%}
+              <span>{{ m | strip }}</span>
+            {%- endfor -%}
+          </div>
+        </div>
+        <div>
+          <strong style="font-size:var(--fs-sm)">{{ section.settings.contact_title }}</strong>
+          <p style="font-size:var(--fs-sm);color:var(--ink-64);margin-top:8px">{{ section.settings.contact_text }}</p>
+        </div>
+      </div>
+
+      <div class="f-cols">
+        {%- for block in section.blocks -%}
+          <div {{ block.shopify_attributes }}>
+            <h4>{{ block.settings.heading }}</h4>
+            {%- assign menu = linklists[block.settings.menu] -%}
+            {%- if menu.links.size > 0 -%}
+              {%- for link in menu.links -%}
+                <a href="{{ link.url }}">{{ link.title }}</a>
+              {%- endfor -%}
+            {%- else -%}
+              {%- comment -%} terugval: één regel per link, "Label | /url" {%- endcomment -%}
+              {%- assign rows = block.settings.links | newline_to_br | split: '<br />' -%}
+              {%- for row in rows -%}
+                {%- assign parts = row | strip | split: '|' -%}
+                {%- if parts.size > 0 and parts.first != blank -%}
+                  <a href="{{ parts[1] | default: '#' | strip }}">{{ parts.first | strip }}</a>
+                {%- endif -%}
+              {%- endfor -%}
+            {%- endif -%}
+          </div>
+        {%- endfor -%}
+      </div>
+
+      <p class="f-legal">
+        &copy; {{ 'now' | date: '%Y' }} {{ shop.name }}
+        {%- if section.settings.legal != blank %} · {{ section.settings.legal }}{% endif -%}
+      </p>
+    </div>
+  </footer>
+</div>
+
+{% schema %}
+{
+  "name": "TK3 footer",
+  "settings": [
+    { "type": "image_picker", "id": "logo", "label": "Logo (leeg = ingebouwd tk3-logo)" },
+    { "type": "textarea", "id": "tagline", "label": "Slogan", "default": "Meer dan\neen kaartje." },
+    { "type": "text", "id": "pay_title", "label": "Kop betalen", "default": "Veilig betalen" },
+    { "type": "text", "id": "pay_methods", "label": "Betaalmethoden (komma's)", "default": "iDEAL, VISA, MC, AMEX, PayPal, Klarna, Apple Pay" },
+    { "type": "text", "id": "contact_title", "label": "Kop contact", "default": "Vragen?" },
+    { "type": "text", "id": "contact_text", "label": "Contact", "default": "info@tapkaarten.nl" },
+    { "type": "text", "id": "legal", "label": "Regel onderaan", "default": "tapkaarten.nl · KvK 00000000" }
+  ],
+  "max_blocks": 4,
+  "blocks": [
+    {
+      "type": "column",
+      "name": "Kolom",
+      "settings": [
+        { "type": "text", "id": "heading", "label": "Kop", "default": "TapKaarten" },
+        { "type": "link_list", "id": "menu", "label": "Menu (heeft voorrang)" },
+        { "type": "textarea", "id": "links", "label": "Of losse links — één per regel: Label | /url" }
+      ]
+    }
+  ]
+}
+{% endschema %}

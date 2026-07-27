@@ -1,0 +1,92 @@
+{{ 'tk3.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign coll = collections[section.settings.collection]
+  if coll == blank or coll.products_count == 0
+    assign coll = collections.all
+  endif
+  assign rail_id = 'tk3-rail-' | append: section.id
+-%}
+
+<div class="tk3">
+  <section class="blk" id="producten">
+    <div class="wrap">
+      <div class="prod-head">
+        <h2>{{ section.settings.heading }}</h2>
+        {%- if section.settings.link_text != blank -%}
+          <a href="{{ section.settings.link_url | default: '#specs' }}">{{ section.settings.link_text }} →</a>
+        {%- endif -%}
+      </div>
+
+      <div class="prod-rail" id="{{ rail_id }}" data-tk3-count>
+        {%- for product in coll.products limit: section.settings.count -%}
+          <a class="pcard" href="{{ product.url }}">
+            <div class="thumb">
+              {%- if product.featured_media -%}
+                <img src="{{ product.featured_media | image_url: width: 700 }}" alt="{{ product.featured_media.alt | escape }}" width="700" height="700" loading="lazy">
+              {%- endif -%}
+            </div>
+            <div class="body">
+              <span class="flag">{% if product.tags.size > 0 %}{{ product.tags.first }}{% else %}&nbsp;{% endif %}</span>
+              <div class="name">{{ product.title }}</div>
+              <div class="price">
+                {{ product.price | money }}
+                {%- if product.compare_at_price > product.price -%}
+                  <s style="color:var(--ink-36);font-weight:500;margin-left:8px">{{ product.compare_at_price | money }}</s>
+                {%- endif -%}
+              </div>
+            </div>
+          </a>
+        {%- else -%}
+          {%- comment -%}
+            Terugval zolang de producten nog op concept staan of nog in geen enkele
+            collectie zitten: dezelfde vijf kaarten met de renders uit het thema.
+          {%- endcomment -%}
+          {%- assign fb_img = 'tk3-prod-wit.jpg,tk3-prod-zwart.jpg,tk3-prod-insta.jpg,tk3-prod-fb.jpg,tk3-prod-sticker.jpg' | split: ',' -%}
+          {%- assign fb_name = 'Google Review-standaard — wit,Google Review-standaard — zwart,Instagram-standaard,Facebook-standaard,Google Review-sticker' | split: ',' -%}
+          {%- assign fb_flag = 'Bestseller, , , ,Zelfklevend' | split: ',' -%}
+          {%- for i in (0..4) -%}
+            <a class="pcard" href="{{ routes.all_products_collection_url }}">
+              <div class="thumb"><img src="{{ fb_img[i] | file_url }}" alt="{{ fb_name[i] }}" width="700" height="700" loading="lazy"></div>
+              <div class="body">
+                <span class="flag">{% if fb_flag[i] != ' ' %}{{ fb_flag[i] }}{% else %}&nbsp;{% endif %}</span>
+                <div class="name">{{ fb_name[i] }}</div>
+                <div class="price">{{ section.settings.fallback_price }}</div>
+              </div>
+            </a>
+          {%- endfor -%}
+        {%- endfor -%}
+      </div>
+
+      {%- liquid
+        assign total = coll.products.size
+        if total > section.settings.count
+          assign total = section.settings.count
+        endif
+        if total == 0
+          assign total = 5
+        endif
+      -%}
+      <div class="pager">
+        <button type="button" onclick="tk3PageRail('{{ rail_id }}',-1)" aria-label="Vorige">‹</button>
+        <span class="count" id="{{ rail_id }}-count">1/{{ total }}</span>
+        <button type="button" onclick="tk3PageRail('{{ rail_id }}',1)" aria-label="Volgende">›</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+{% schema %}
+{
+  "name": "TK3 productrij",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Kop", "default": "Alle TapKaarten." },
+    { "type": "collection", "id": "collection", "label": "Collectie (leeg = alle producten)" },
+    { "type": "range", "id": "count", "min": 3, "max": 12, "step": 1, "label": "Aantal kaarten", "default": 8 },
+    { "type": "text", "id": "link_text", "label": "Link rechtsboven", "default": "Bekijk alle specificaties" },
+    { "type": "url", "id": "link_url", "label": "Link" },
+    { "type": "text", "id": "fallback_price", "label": "Prijs in de terugvalkaarten", "default": "€ 39,95" }
+  ],
+  "presets": [{ "name": "TK3 productrij" }]
+}
+{% endschema %}

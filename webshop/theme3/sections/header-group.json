@@ -1,0 +1,18 @@
+{
+  "type": "header",
+  "name": "t:general.header",
+  "sections": {
+    "tk3_header": {
+      "type": "tk3-header",
+      "settings": {
+        "menu": "main-menu",
+        "marquee_text": "Zomeractie — tot 20% korting!",
+        "marquee_emoji": "☀️",
+        "pill_text": "Nieuw!",
+        "pill_url": "/#producten",
+        "help_url": "/#specs"
+      }
+    }
+  },
+  "order": ["tk3_header"]
+}

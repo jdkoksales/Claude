@@ -1,0 +1,71 @@
+{{ 'tk3.css' | asset_url | stylesheet_tag }}
+
+<div class="tk3">
+  <section class="blk grey" id="branches">
+    <div class="wrap" data-tk3-panes>
+      <h2 class="sec-title center">{{ section.settings.heading }}</h2>
+
+      <div class="tabbar">
+        <div class="seg tabs" role="tablist">
+          {%- for block in section.blocks -%}
+            <button type="button" role="tab" data-tk3-pane="{{ block.id }}"
+              aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+              {{ block.shopify_attributes }}>{{ block.settings.label }}</button>
+          {%- endfor -%}
+        </div>
+      </div>
+
+      {%- for block in section.blocks -%}
+        <div class="usecase" data-tk3-pane-id="{{ block.id }}"{% unless forloop.first %} hidden{% endunless %}>
+          {%- if block.settings.image -%}
+            <img src="{{ block.settings.image | image_url: width: 1200 }}" alt="{{ block.settings.image.alt | escape }}" width="1200" height="672" loading="lazy">
+          {%- else -%}
+            <img src="{{ 'tk3-cafe.jpg' | file_url }}" alt="{{ block.settings.label | escape }}" width="1200" height="672" loading="lazy">
+          {%- endif -%}
+          <div>
+            <blockquote>{{ block.settings.quote }}</blockquote>
+            <div class="who">{{ block.settings.who }}</div>
+          </div>
+        </div>
+      {%- endfor -%}
+    </div>
+  </section>
+</div>
+
+{% schema %}
+{
+  "name": "TK3 branches",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Kop", "default": "Meer reviews, bezoek voor bezoek." }
+  ],
+  "max_blocks": 12,
+  "blocks": [
+    {
+      "type": "branche",
+      "name": "Branche",
+      "settings": [
+        { "type": "text", "id": "label", "label": "Tabblad", "default": "Café" },
+        { "type": "image_picker", "id": "image", "label": "Foto" },
+        { "type": "textarea", "id": "quote", "label": "Quote", "default": "[PLAATSHOUDER — hier komt een echte quote van een klant.]" },
+        { "type": "textarea", "id": "who", "label": "Wie", "default": "Naam achternaam, Zaaknaam" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "TK3 branches",
+      "blocks": [
+        { "type": "branche", "settings": { "label": "Café" } },
+        { "type": "branche", "settings": { "label": "Restaurant" } },
+        { "type": "branche", "settings": { "label": "Kapper" } },
+        { "type": "branche", "settings": { "label": "Schoonheidssalon" } },
+        { "type": "branche", "settings": { "label": "Garage" } },
+        { "type": "branche", "settings": { "label": "Hotel" } },
+        { "type": "branche", "settings": { "label": "Tandarts" } },
+        { "type": "branche", "settings": { "label": "Winkel" } },
+        { "type": "branche", "settings": { "label": "Foodtruck" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

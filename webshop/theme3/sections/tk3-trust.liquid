@@ -1,0 +1,37 @@
+{{ 'tk3.css' | asset_url | stylesheet_tag }}
+
+<div class="tk3">
+  <div class="trust">
+    <div class="wrap row">
+      {%- for block in section.blocks -%}
+        <span {{ block.shopify_attributes }}>{{ block.settings.text }}</span>
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "TK3 vertrouwensbalk",
+  "max_blocks": 8,
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Punt",
+      "settings": [{ "type": "text", "id": "text", "label": "Tekst", "default": "🛡️ 14 dagen bedenktijd" }]
+    }
+  ],
+  "presets": [
+    {
+      "name": "TK3 vertrouwensbalk",
+      "blocks": [
+        { "type": "item", "settings": { "text": "★ Uitstekend beoordeeld door ondernemers" } },
+        { "type": "item", "settings": { "text": "🛡️ 14 dagen bedenktijd" } },
+        { "type": "item", "settings": { "text": "🚚 Vandaag besteld, vandaag verzonden" } },
+        { "type": "item", "settings": { "text": "🔁 Onbeperkt herprogrammeerbaar" } },
+        { "type": "item", "settings": { "text": "🇳🇱 Nederland" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -3,8 +3,8 @@
     "hero": {
       "type": "tk3-hero",
       "settings": {
-        "heading": "Verander bezoekers in reviews.",
-        "sub": "Eén tik met de telefoon en je klant staat op jouw reviewpagina. Het vraagt erom terwijl jij gewoon werkt.",
+        "heading": "Je beste marketing staat op de balie.",
+        "sub": "Eén tik met de telefoon en je klant staat op jouw Google-, Instagram- of Facebookpagina. Zonder dat jij erom hoeft te vragen.",
         "cta_text": "Kopen",
         "cta_url": "/#producten",
         "product_google": "tapkaarten-google-review-standaard",
@@ -422,6 +422,28 @@
         "product_a": "tapkaarten-google-review-standaard",
         "product_b": "tapkaarten-google-review-standaard-zwart"
       }
+    },
+    "calculator": {
+      "type": "tk3-calculator",
+      "settings": {
+        "heading": "Bekijk wat een Tapkaart jou oplevert",
+        "sub": "Bereken binnen enkele seconden hoeveel extra Google Reviews of social media volgers jouw winkel kan verzamelen.",
+        "q1": "Welke Tapkaart wil je gebruiken?",
+        "q2": "Hoeveel bezoekers ontvangt jouw winkel per maand?",
+        "checkout_share": "0.80",
+        "rate_google": "0.02",
+        "rate_instagram": "0.03",
+        "rate_facebook": "0.015",
+        "label_google": "Geschat aantal nieuwe reviews per maand",
+        "label_instagram": "Geschat aantal nieuwe Instagram-volgers per maand",
+        "label_facebook": "Geschat aantal nieuwe Facebook-volgers per maand",
+        "note": "Realistische schatting",
+        "cta_heading": "Klaar om meer klanten te overtuigen?",
+        "cta_text": "Een Tapkaart maakt het voor klanten eenvoudig om direct een review achter te laten of jouw bedrijf te volgen.",
+        "cta_button": "Bestel jouw Tapkaart",
+        "cta_url": "/#producten",
+        "disclaimer": "De berekening is een indicatieve schatting op basis van gemiddelde conversiepercentages."
+      }
     }
   },
   "order": [
@@ -430,6 +452,7 @@
     "statement",
     "producten",
     "branches",
+    "calculator",
     "ontwerp",
     "video",
     "pers",

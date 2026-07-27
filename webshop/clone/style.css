@@ -298,3 +298,72 @@ footer{background:linear-gradient(115deg,#fdfdfe,#fdf1f5);padding:88px 0 44px}
   .revcard{width:275px}
   .press{gap:30px;font-size:var(--fs-md)}
 }
+
+
+/* ---------- opbrengstcalculator ---------- */
+.calc{--accent:#4285F4;--accent-2:#34A853;--tint:rgba(66,133,244,.08)}
+.calc .shell{background:#fff;border:1px solid var(--line);border-radius:26px;
+  padding:46px 44px;box-shadow:0 24px 60px rgba(0,0,0,.05)}
+.calc .step{font-size:var(--fs-xs);font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--ink-36);margin-bottom:12px}
+.calc .q{font-size:var(--fs-xl);font-weight:600;letter-spacing:-.03em;margin-bottom:20px}
+.calc .block+.block{margin-top:40px}
+
+.calc .picks{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.calc .pick{border:1.5px solid var(--line);border-radius:18px;padding:22px 20px;text-align:left;
+  display:flex;align-items:center;gap:14px;background:#fff;width:100%;
+  transition:border-color .2s,box-shadow .2s,transform .2s,background .2s}
+.calc .pick:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(0,0,0,.07)}
+.calc .pick .ico{width:38px;height:38px;flex:0 0 38px;display:grid;place-items:center;
+  border-radius:11px;background:var(--grey-bg);transition:background .2s}
+.calc .pick .ico svg{filter:grayscale(1);opacity:.5;transition:filter .2s,opacity .2s}
+.calc .pick .nm{font-size:var(--fs-sm);font-weight:650;line-height:1.25}
+.calc .pick[aria-pressed="true"]{border-color:var(--accent);background:var(--tint)}
+.calc .pick[aria-pressed="true"] .ico{background:#fff}
+.calc .pick[aria-pressed="true"] .ico svg{filter:none;opacity:1}
+
+.calc .bignum{font-size:var(--fs-4xl);font-weight:700;letter-spacing:-.03em;line-height:1.05;
+  font-variant-numeric:tabular-nums}
+.calc .bignum small{font-size:var(--fs-lg);font-weight:600;color:var(--ink-48);margin-left:10px;
+  letter-spacing:-.01em}
+.calc input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:8px;margin-top:22px;
+  border-radius:9999px;background:var(--grey-bg);outline:none}
+.calc input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;
+  width:30px;height:30px;border-radius:50%;background:#fff;cursor:grab;
+  border:2px solid var(--accent);box-shadow:0 3px 10px rgba(0,0,0,.16);transition:transform .15s}
+.calc input[type=range]::-webkit-slider-thumb:active{cursor:grabbing;transform:scale(1.12)}
+.calc input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;background:#fff;
+  border:2px solid var(--accent);box-shadow:0 3px 10px rgba(0,0,0,.16);cursor:grab}
+.calc .ends{display:flex;justify-content:space-between;font-size:var(--fs-xs);
+  color:var(--ink-36);margin-top:10px;font-variant-numeric:tabular-nums}
+
+.calc .out{margin-top:40px;border-radius:22px;padding:38px 36px;text-align:center;
+  background:linear-gradient(135deg,var(--tint),rgba(0,0,0,.02));
+  border:1px solid var(--line);transition:background .35s}
+.calc .out .lbl{font-size:var(--fs-sm);color:var(--ink-64);font-weight:600}
+.calc .out .val{font-size:var(--fs-5xl);font-weight:750;letter-spacing:-.04em;line-height:1.02;
+  margin:8px 0 4px;color:var(--accent);font-variant-numeric:tabular-nums}
+.calc .out .note{font-size:var(--fs-xs);color:var(--ink-48)}
+.calc .split{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:26px}
+.calc .split>div{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+.calc .split .k{font-size:var(--fs-xs);color:var(--ink-48);font-weight:600}
+.calc .split .v{font-size:var(--fs-xl);font-weight:700;letter-spacing:-.02em;
+  font-variant-numeric:tabular-nums;margin-top:2px}
+
+.calc .cta{text-align:center;margin-top:40px}
+.calc .cta h3{margin-bottom:8px}
+.calc .cta p{font-size:var(--fs-sm);color:var(--ink-64);max-width:52ch;margin:0 auto 22px}
+.calc .fine{font-size:12.5px;color:var(--ink-36);text-align:center;margin-top:26px;line-height:1.5}
+
+@media(max-width:900px){
+  .calc .shell{padding:30px 20px;border-radius:20px}
+  .calc .picks{grid-template-columns:1fr}
+  .calc .pick{padding:16px 16px}
+  .calc .out{padding:28px 18px}
+  .calc .out .val{font-size:46px}
+  .calc .split{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){
+  .calc .pick,.calc .out,.calc input[type=range]::-webkit-slider-thumb{transition:none}
+  .calc .pick:hover{transform:none}
+}

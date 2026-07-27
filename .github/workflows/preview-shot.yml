@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches: [claude/3d-product-animations-btyc7y]
-    paths: ['.github/workflows/preview-shot.yml', 'preview/trigger.txt']
+    paths: ['.github/workflows/preview-shot.yml', 'preview/trigger.txt', 'webshop/theme3/**']
 
 permissions:
   contents: write

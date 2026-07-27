@@ -32,6 +32,7 @@
       "type": "tk3-products",
       "settings": {
         "heading": "Alle TapKaarten.",
+        "collection": "alle-tapkaarten",
         "count": 8,
         "link_text": "Bekijk alle specificaties",
         "link_url": "/#specs",

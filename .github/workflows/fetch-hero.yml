@@ -2,10 +2,9 @@ name: Hero-afbeeldingen ophalen
 
 on:
   workflow_dispatch:
-    inputs:
-      urls:
-        description: 'Regel per bestand: naam|url'
-        required: true
+  push:
+    branches: [claude/3d-product-animations-btyc7y]
+    paths: ['hero-urls.txt']
 
 permissions:
   contents: write
@@ -19,15 +18,13 @@ jobs:
           ref: claude/3d-product-animations-btyc7y
 
       - name: Download
-        env:
-          URLS: ${{ inputs.urls }}
         run: |
           mkdir -p hero-src
           while IFS='|' read -r name url; do
             [ -z "$name" ] && continue
             echo "-> $name"
             curl -fsSL -o "hero-src/$name" "$url"
-          done <<< "$URLS"
+          done < hero-urls.txt
           ls -la hero-src
 
       - name: Commit en push

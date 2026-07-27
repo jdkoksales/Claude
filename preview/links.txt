@@ -3,10 +3,10 @@
 /#branches
 /#specs
 /#hoe-het-werkt
-/collections/all
 /account
 /pages/veelgestelde-vragen
 /cart
+/collections/all
 /checkout
 /#producten
 /#calculator

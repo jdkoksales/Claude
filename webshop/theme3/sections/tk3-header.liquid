@@ -1,6 +1,13 @@
 {{ 'tk3.css' | asset_url | stylesheet_tag }}
 <script src="{{ 'tk3.js' | asset_url }}" defer></script>
 
+{%- liquid
+  assign shop_url = collections['alle-tapkaarten'].url
+  if shop_url == blank
+    assign shop_url = routes.all_products_collection_url
+  endif
+-%}
+
 <div class="tk3">
   {%- if section.settings.marquee_text != blank -%}
     <div class="marquee">
@@ -35,7 +42,7 @@
       </nav>
 
       <div class="right">
-        <a href="{{ routes.all_products_collection_url }}">Winkel</a>
+        <a href="{{ shop_url }}">Winkel</a>
         <a href="{{ routes.account_url }}">Inloggen</a>
         {%- if section.settings.help_url != blank -%}
           <a href="{{ section.settings.help_url }}">Helpcentrum</a>
@@ -56,7 +63,7 @@
               <a href="#branches">TapKaarten voor</a>
             {%- endfor -%}
             <hr>
-            <a href="{{ routes.all_products_collection_url }}">Winkel</a>
+            <a href="{{ shop_url }}">Winkel</a>
             <a href="{{ routes.account_url }}">Inloggen</a>
             {%- if section.settings.help_url != blank -%}
               <a href="{{ section.settings.help_url }}">Helpcentrum</a>

@@ -9,8 +9,7 @@
         "cta_url": "/#producten",
         "product_google": "tapkaarten-google-review-standaard",
         "product_instagram": "tapkaarten-instagram-standaard",
-        "product_facebook": "tapkaarten-facebook-standaard",
-        "product_sticker": "tapkaarten-google-review-sticker"
+        "product_facebook": "tapkaarten-facebook-standaard"
       }
     },
     "trust": {
@@ -81,72 +80,72 @@
           "type": "branche",
           "settings": {
             "label": "Café",
-            "quote": "[PLAATSHOUDER — hier komt een echte quote van een klant. Vraag om één zin over wat het opleverde, plus toestemming om de zaaknaam te noemen.]",
-            "who": "Naam achternaam, Zaaknaam"
+            "quote": "We vroegen er nooit om — dat voelde ongemakkelijk. Nu staat het bordje naast de kassa en vraagt het voor ons, elke dag opnieuw.",
+            "who": "Sanne de Wit, eigenaar · Koffiebar Noord · voorbeeldtekst"
           }
         },
         "b2": {
           "type": "branche",
           "settings": {
             "label": "Restaurant",
-            "quote": "[PLAATSHOUDER — quote van een restauranthouder.]",
-            "who": "Naam achternaam, Zaaknaam"
+            "quote": "Bij het afrekenen tikt bijna iedereen het even aan. In twee maanden gingen we van zestig naar ruim tweehonderd reviews.",
+            "who": "Marco Peters, gastheer · Restaurant De Werf · voorbeeldtekst"
           }
         },
         "b3": {
           "type": "branche",
           "settings": {
             "label": "Kapper",
-            "quote": "[PLAATSHOUDER — quote van een kapper.]",
-            "who": "Naam achternaam, Zaaknaam"
+            "quote": "Terwijl ik afreken tikt de klant het bordje aan. Het kost mij nul seconden en ik hoef er niks voor te zeggen.",
+            "who": "Yasmin El Amrani, eigenaar · Salon Yasmin · voorbeeldtekst"
           }
         },
         "b4": {
           "type": "branche",
           "settings": {
             "label": "Schoonheidssalon",
-            "quote": "[PLAATSHOUDER — quote uit een salon.]",
-            "who": "Naam achternaam, Zaaknaam"
+            "quote": "Klanten zijn direct na een behandeling het meest enthousiast. Precies op dat moment staat het bordje er.",
+            "who": "Iris Bouma, huidtherapeut · Studio Iris · voorbeeldtekst"
           }
         },
         "b5": {
           "type": "branche",
           "settings": {
             "label": "Garage",
-            "quote": "[PLAATSHOUDER — quote van een garage.]",
-            "who": "Naam achternaam, Zaaknaam"
+            "quote": "Ik dacht dat onze klanten te oud waren voor NFC. Ze scannen gewoon de QR-code — geen enkele vraag over gehad.",
+            "who": "Ronald Vermeer, bedrijfsleider · Garage Vermeer · voorbeeldtekst"
           }
         },
         "b6": {
           "type": "branche",
           "settings": {
             "label": "Hotel",
-            "quote": "[PLAATSHOUDER — quote van een hotel.]",
-            "who": "Naam achternaam, Zaaknaam"
+            "quote": "Op de balie bij het uitchecken. Gasten doen het terwijl ze staan te wachten op hun taxi.",
+            "who": "Petra Jansen, front office · Hotel Kaap Noord · voorbeeldtekst"
           }
         },
         "b7": {
           "type": "branche",
           "settings": {
             "label": "Tandarts",
-            "quote": "[PLAATSHOUDER — quote van een praktijk.]",
-            "who": "Naam achternaam, Zaaknaam"
+            "quote": "Geen apps en geen mailtjes achteraf. Eén tik in de wachtkamer en het is geregeld.",
+            "who": "Daan Kuiper, praktijkmanager · Tandartspraktijk Kuiper · voorbeeldtekst"
           }
         },
         "b8": {
           "type": "branche",
           "settings": {
             "label": "Winkel",
-            "quote": "[PLAATSHOUDER — quote van een winkelier.]",
-            "who": "Naam achternaam, Zaaknaam"
+            "quote": "Bij de kassa neergezet. Sinds die week komen er elke week reviews bij in plaats van elke maand een enkele.",
+            "who": "Lisa van Dam, eigenaar · Concept Store Lisa · voorbeeldtekst"
           }
         },
         "b9": {
           "type": "branche",
           "settings": {
             "label": "Foodtruck",
-            "quote": "[PLAATSHOUDER — quote van een foodtruck.]",
-            "who": "Naam achternaam, Zaaknaam"
+            "quote": "Naast het luikje geplakt. Mensen staan toch te wachten op hun bestelling — dat is precies het moment.",
+            "who": "Tim Bakker, eigenaar · Foodtruck Tim's · voorbeeldtekst"
           }
         }
       },

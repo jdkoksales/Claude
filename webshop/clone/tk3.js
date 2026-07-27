@@ -36,13 +36,11 @@
     if (hero.dataset.tk3Bound) return;
     hero.dataset.tk3Bound = '1';
 
-    var colorSeg = hero.querySelector('[data-tk3-colors]');
     var buy = hero.querySelector('[data-tk3-buy]');
     var plat = 'google';
-    var col = 'wit';
 
     function apply() {
-      var key = plat === 'google' ? 'google-' + col : plat;
+      var key = plat === 'google' ? 'google-wit' : plat;
       var found = false;
       hero.querySelectorAll('[data-shot]').forEach(function (img) {
         var on = img.getAttribute('data-shot') === key;
@@ -55,10 +53,6 @@
         if (first) first.classList.add('on');
       }
       hero.style.background = GRAD[key] || GRAD['google-wit'];
-      if (colorSeg) {
-        if (plat === 'google') colorSeg.removeAttribute('data-tk3-disabled');
-        else colorSeg.setAttribute('data-tk3-disabled', '');
-      }
       var btn = hero.querySelector('[data-plat="' + plat + '"]');
       if (buy && btn && btn.getAttribute('data-url')) buy.href = btn.getAttribute('data-url');
     }
@@ -66,10 +60,6 @@
     hero.querySelectorAll('[data-plat]').forEach(function (b) {
       b.addEventListener('click', function () { plat = b.getAttribute('data-plat'); apply(); });
     });
-    hero.querySelectorAll('[data-color]').forEach(function (b) {
-      b.addEventListener('click', function () { col = b.getAttribute('data-color'); apply(); });
-    });
-
     apply();
   }
 

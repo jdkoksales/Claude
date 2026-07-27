@@ -117,6 +117,9 @@ footer .brand img{height:29px}
 .seg.tabs button{border-radius:12.75px;padding:11px 21px}
 .hero .controls{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;align-items:center}
 .seg[data-tk3-disabled]{opacity:.35;pointer-events:none}
+/* platformkeuze: het gekozen logo in kleur, de rest grijs */
+.hero .seg button svg{filter:grayscale(1);opacity:.45;transition:filter .2s,opacity .2s}
+.hero .seg button[aria-selected="true"] svg{filter:none;opacity:1}
 .buy{background:rgba(26,26,26,.1);border-radius:9999px;padding:11px 20px;font-size:var(--fs-sm);
   font-weight:750;display:inline-flex;align-items:center;gap:9px;transition:background .18s}
 .buy:hover{background:rgba(26,26,26,.18)}

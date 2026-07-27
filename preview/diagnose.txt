@@ -2,20 +2,20 @@ innerWidth 1440
 doc.scrollWidth 1440
 body.width 1440
 main left=0 width=1440 pad=0px/0px mar=0px/0px bor=0px/0px box=border-box disp=block max=none
-footer left=10 width=1420 pad=0px/0px mar=0px/0px bor=0px/0px box=border-box disp=block max=none
-.shopify-section left=0 width=1440 pad=0px/0px mar=0px/0px bor=0px/0px box=border-box disp=grid max=none
-.tk3 left=10 width=1420 pad=0px/0px mar=0px/0px bor=0px/0px box=border-box disp=block max=none
-.marquee left=10 width=1420 pad=0px/0px mar=0px/0px bor=0px/0px box=border-box disp=block max=none
+footer left=0 width=1440 pad=0px/0px mar=0px/0px bor=0px/0px box=border-box disp=block max=none
+.shopify-section left=0 width=1440 pad=0px/0px mar=0px/0px bor=0px/0px box=border-box disp=block max=none
+.tk3 left=0 width=1440 pad=0px/0px mar=0px/0px bor=0px/0px box=border-box disp=block max=none
+.marquee left=0 width=1440 pad=0px/0px mar=0px/0px bor=0px/0px box=border-box disp=block max=none
 --- breder dan viewport:
-DIV.track w=2800 right=2810
-SPAN. w=286 right=1696
-SPAN. w=64 right=1760
-SPAN. w=286 right=2046
-SPAN. w=64 right=2110
-SPAN. w=286 right=2396
-SPAN. w=64 right=2460
-SPAN. w=286 right=2746
-SPAN. w=64 right=2810
+DIV.track w=2800 right=2800
+SPAN. w=286 right=1686
+SPAN. w=64 right=1750
+SPAN. w=286 right=2036
+SPAN. w=64 right=2100
+SPAN. w=286 right=2386
+SPAN. w=64 right=2450
+SPAN. w=286 right=2736
+SPAN. w=64 right=2800
 DIV.cart-drawer__panel w=440 right=1880
 DIV.cart-drawer__header w=440 right=1880
 DIV.cart-drawer__header-main w=400 right=1860

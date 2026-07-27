@@ -44,7 +44,25 @@
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
           {%- if cart.item_count > 0 -%}<span style="font-size:14px;font-weight:700">{{ cart.item_count }}</span>{%- endif -%}
         </a>
-        <svg class="burger" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+        <details class="mobmenu">
+          <summary aria-label="Menu">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+          </summary>
+          <div class="sheet">
+            {%- for link in linklists[section.settings.menu].links -%}
+              <a href="{{ link.url }}">{{ link.title }}</a>
+            {%- else -%}
+              <a href="#producten">Producten</a>
+              <a href="#branches">TapKaarten voor</a>
+            {%- endfor -%}
+            <hr>
+            <a href="{{ routes.all_products_collection_url }}">Winkel</a>
+            <a href="{{ routes.account_url }}">Inloggen</a>
+            {%- if section.settings.help_url != blank -%}
+              <a href="{{ section.settings.help_url }}">Helpcentrum</a>
+            {%- endif -%}
+          </div>
+        </details>
       </div>
     </div>
   </header>

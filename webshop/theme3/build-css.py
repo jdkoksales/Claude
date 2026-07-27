@@ -19,7 +19,10 @@ UNIVERSAL = {"*", "*,*::before,*::after"}
 #  - overflow-x:clip houdt de horizontale rails binnen boord zonder sticky te slopen
 TAIL = ("html{scroll-behavior:smooth}\n"
         "html,body{overflow-x:clip}\n"
-        ".tk3 [hidden]{display:none!important}\n")
+        ".tk3 [hidden]{display:none!important}\n"
+        # Concept zet 10px zijmarge op elke .shopify-section; onze secties zijn
+        # full-bleed en moeten die kwijt.
+        ".shopify-section:has(>.tk3){padding-left:0;padding-right:0;margin-left:0;margin-right:0;max-width:none}\n")
 KEYFRAMES = {"slide": "tk3slide", "float": "tk3float"}
 
 

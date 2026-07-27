@@ -8,9 +8,8 @@
 /cart
 /collections/all
 /checkout
-/#producten
-/#calculator
 /products/tapkaarten-google-review-standaard
+/#calculator
 /products/tapkaarten-google-review-standaard-zwart
 /products/tapkaarten-instagram-standaard
 /products/tapkaarten-facebook-standaard

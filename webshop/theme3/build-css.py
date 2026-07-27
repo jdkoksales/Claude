@@ -42,7 +42,9 @@ TAIL = ("html{scroll-behavior:smooth}\n"
         ".page-section__content.rte td,.page-section__content.rte th{padding:.6em .2em;border-bottom:1px solid rgba(0,0,0,.08);text-align:left;vertical-align:top}\n"
         ".page-section__content.rte tr:last-child td{border-bottom:0}\n"
         # Veld op de productpagina waarin de klant zijn eigen link kwijt kan.
-        ".tk3-linkveld{margin:0 0 14px}\n"
+        # het thema zet de koopknoppen op één rij; het veld moet daar bovenop
+        ".product-info__buy-buttons{flex-wrap:wrap}\n"
+        ".tk3-linkveld{flex:1 0 100%;width:100%;margin:0 0 14px}\n"
         ".tk3-linkveld label{display:block;font-size:14px;font-weight:600;letter-spacing:-.01em;margin-bottom:6px}\n"
         ".tk3-linkveld input{width:100%;padding:12px 14px;font:inherit;font-size:15px;"
         "border:1px solid rgba(0,0,0,.16);border-radius:10px;background:#fff;color:inherit}\n"

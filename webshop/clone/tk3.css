@@ -18,7 +18,8 @@ html,body{overflow-x:clip}
 .page-section__content.rte table{width:100%;border-collapse:collapse;margin:0 0 1.4em}
 .page-section__content.rte td,.page-section__content.rte th{padding:.6em .2em;border-bottom:1px solid rgba(0,0,0,.08);text-align:left;vertical-align:top}
 .page-section__content.rte tr:last-child td{border-bottom:0}
-.tk3-linkveld{margin:0 0 14px}
+.product-info__buy-buttons{flex-wrap:wrap}
+.tk3-linkveld{flex:1 0 100%;width:100%;margin:0 0 14px}
 .tk3-linkveld label{display:block;font-size:14px;font-weight:600;letter-spacing:-.01em;margin-bottom:6px}
 .tk3-linkveld input{width:100%;padding:12px 14px;font:inherit;font-size:15px;border:1px solid rgba(0,0,0,.16);border-radius:10px;background:#fff;color:inherit}
 .tk3-linkveld input::placeholder{color:rgba(0,0,0,.34)}

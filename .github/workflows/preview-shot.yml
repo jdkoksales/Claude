@@ -24,64 +24,73 @@ jobs:
       - name: Playwright installeren
         run: npm i -D playwright && npx playwright install --with-deps chromium
 
-      - name: Preview vastleggen
+      - name: Preview vastleggen en links controleren
         run: |
           mkdir -p preview
           cat > shot.mjs <<'JS'
           import { chromium } from 'playwright';
-          const URL = 'https://ikep5e-3q.myshopify.com/?preview_theme_id=196665213305';
+          import fs from 'fs';
+
+          const BASE = 'https://ikep5e-3q.myshopify.com';
+          const PV = '?preview_theme_id=196665213305';
+          const PAGES = [
+            ['home', '/'],
+            ['product', '/products/tapkaarten-google-review-standaard'],
+            ['collectie', '/collections/alle-tapkaarten'],
+            ['winkelwagen', '/cart'],
+            ['verzending', '/pages/verzending'],
+          ];
+
           const b = await chromium.launch();
-          for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'mobiel']]) {
-            const p = await b.newPage({ viewport: { width: w, height: h }, deviceScaleFactor: 1 });
-            const resp = await p.goto(URL, { waitUntil: 'networkidle', timeout: 90000 });
-            console.log(tag, 'status', resp && resp.status());
-            await p.addStyleTag({ content: '*{animation:none!important;transition:none!important}' });
-            await p.waitForTimeout(2000);
-            await p.screenshot({ path: `preview/${tag}-boven.png` });
-            // lui geladen beelden wakker maken voor de volledige opname
-            await p.evaluate(async () => {
-              document.querySelectorAll('img[loading="lazy"]').forEach(i => i.loading = 'eager');
-              const step = window.innerHeight;
-              for (let y = 0; y < document.body.scrollHeight; y += step) {
-                window.scrollTo(0, y);
-                await new Promise(r => setTimeout(r, 200));
-              }
-              window.scrollTo(0, 0);
-            });
-            await p.waitForLoadState('networkidle').catch(() => {});
-            await p.waitForTimeout(1500);
-            await p.screenshot({ path: `preview/${tag}-volledig.png`, fullPage: true });
-            if (tag === 'desktop') {
-              const fs = await import('fs');
-              fs.writeFileSync('preview/pagina.html', await p.content());
-              const diag = await p.evaluate(() => {
-                const out = [];
-                const iw = window.innerWidth;
-                out.push('innerWidth ' + iw);
-                out.push('doc.scrollWidth ' + document.documentElement.scrollWidth);
-                out.push('body.width ' + document.body.getBoundingClientRect().width);
-                for (const sel of ['main', 'footer', '.shopify-section', '.tk3', '.marquee']) {
-                  const el = document.querySelector(sel);
-                  if (el) {
-                    const r = el.getBoundingClientRect();
-                    const cs = getComputedStyle(el);
-                    out.push(`${sel} left=${r.left} width=${r.width} pad=${cs.paddingLeft}/${cs.paddingRight} mar=${cs.marginLeft}/${cs.marginRight} bor=${cs.borderLeftWidth}/${cs.borderRightWidth} box=${cs.boxSizing} disp=${cs.display} max=${cs.maxWidth}`);
-                  }
-                }
-                out.push('--- breder dan viewport:');
-                document.querySelectorAll('body *').forEach(el => {
-                  const r = el.getBoundingClientRect();
-                  if (r.width > iw + 1 || r.right > iw + 1) {
-                    out.push(`${el.tagName}.${el.className}`.slice(0, 90) + ` w=${Math.round(r.width)} right=${Math.round(r.right)}`);
-                  }
-                });
-                return out.join('\n');
+          const log = [];
+          const errors = [];
+
+          for (const [name, path] of PAGES) {
+            for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'mobiel']]) {
+              const p = await b.newPage({ viewport: { width: w, height: h } });
+              p.on('pageerror', (e) => errors.push(`${name}/${tag} JS: ${e.message}`));
+              p.on('response', (r) => {
+                if (r.status() >= 400) errors.push(`${name}/${tag} ${r.status()} ${r.url().slice(0, 120)}`);
               });
-              fs.writeFileSync('preview/diagnose.txt', diag);
+              const resp = await p.goto(BASE + path + PV, { waitUntil: 'networkidle', timeout: 90000 }).catch(() => null);
+              log.push(`${name} ${tag} status=${resp ? resp.status() : 'FOUT'}`);
+              await p.addStyleTag({ content: '*{animation:none!important;transition:none!important}' });
+              await p.evaluate(async () => {
+                document.querySelectorAll('img[loading="lazy"]').forEach((i) => (i.loading = 'eager'));
+                for (let y = 0; y < document.body.scrollHeight; y += window.innerHeight) {
+                  window.scrollTo(0, y);
+                  await new Promise((r) => setTimeout(r, 150));
+                }
+                window.scrollTo(0, 0);
+              });
+              await p.waitForTimeout(1200);
+              await p.screenshot({ path: `preview/${name}-${tag}.png`, fullPage: tag === 'desktop' });
+              if (tag === 'desktop' && name === 'home') {
+                // alle interne links verzamelen en stuk voor stuk controleren
+                const links = await p.$$eval('a[href]', (as) =>
+                  [...new Set(as.map((a) => a.getAttribute('href')).filter((h) => h && h.startsWith('/')))]
+                );
+                fs.writeFileSync('preview/links.txt', links.join('\n'));
+              }
+              await p.close();
             }
-            await p.close();
           }
+
+          // linkcontrole
+          const links = fs.readFileSync('preview/links.txt', 'utf8').split('\n').filter(Boolean);
+          const p = await b.newPage();
+          for (const href of links) {
+            if (href.startsWith('/#')) continue;
+            const r = await p.goto(BASE + href + PV, { waitUntil: 'domcontentloaded', timeout: 45000 }).catch(() => null);
+            const code = r ? r.status() : 'FOUT';
+            log.push(`link ${code} ${href}`);
+          }
+          await p.close();
           await b.close();
+
+          fs.writeFileSync('preview/controle.txt',
+            log.join('\n') + '\n\n--- fouten ---\n' + [...new Set(errors)].join('\n'));
+          console.log(log.join('\n'));
           JS
           node shot.mjs
           ls -la preview

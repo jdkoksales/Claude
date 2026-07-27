@@ -23,6 +23,11 @@ verzending desktop status=200
   omschr Verzendkosten Nederland € 6,95 — gratis vanaf € 55 België en de rest van de EU € 12,95 Bui
   og     tk3-social.jpg?v=169197354925792053761785174942
 verzending mobiel status=200
+contact desktop status=200
+  titel  Contact – TapKaarten
+  omschr -
+  og     tk3-social.jpg?v=169197354925792053761785174942
+contact mobiel status=200
 link 200 /
 link 200 /collections/alle-tapkaarten
 link 200 /account
@@ -43,13 +48,15 @@ link 200 /pages/algemene-voorwaarden
 link 200 /policies/privacy-policy
 
 --- fouten ---
-home/desktop 403 https://shop.app/pay/hop?analytics_trace_id=b4fd1193-3955-49d5-b815-2fcd827fa1c4&target_origin=https%3A%2F%2Ftapkaarten.
-home/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=7511be10-e637-427c-b47d-b996e92e791e&target_origin=https%3A%2F%2Ftapkaarten.
-product/desktop 403 https://shop.app/pay/hop?analytics_trace_id=d9624862-b9fb-4ca4-b686-dd81085741f0&target_origin=https%3A%2F%2Ftapkaarten.
-product/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=9bf597b1-f224-42b8-8c18-833e68401f61&target_origin=https%3A%2F%2Ftapkaarten.
-collectie/desktop 403 https://shop.app/pay/hop?analytics_trace_id=f776832e-dba2-4660-9bae-3b75ab538be7&target_origin=https%3A%2F%2Ftapkaarten.
-collectie/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=be15b79f-c374-4e13-ba24-188a01da471d&target_origin=https%3A%2F%2Ftapkaarten.
-winkelwagen/desktop 403 https://shop.app/pay/hop?analytics_trace_id=7680000a-dfc4-48e5-abf0-af164dd54731&target_origin=https%3A%2F%2Ftapkaarten.
-winkelwagen/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=cd37d9da-c8d2-4161-810a-7e67e02db35b&target_origin=https%3A%2F%2Ftapkaarten.
-verzending/desktop 403 https://shop.app/pay/hop?analytics_trace_id=b1a498ce-cf03-4852-bc32-84c5081a3912&target_origin=https%3A%2F%2Ftapkaarten.
-verzending/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=bb236465-e109-495e-a2ac-96fb9f03cbda&target_origin=https%3A%2F%2Ftapkaarten.
+home/desktop 403 https://shop.app/pay/hop?analytics_trace_id=b71b4578-42d7-42c8-a168-5ecfe1210b36&target_origin=https%3A%2F%2Ftapkaarten.
+home/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=f103e83d-286f-44f7-820c-4f4954151373&target_origin=https%3A%2F%2Ftapkaarten.
+product/desktop 403 https://shop.app/pay/hop?analytics_trace_id=d26052df-fa21-465f-9633-338e052f5c18&target_origin=https%3A%2F%2Ftapkaarten.
+product/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=93bf28bf-6647-4671-aaa5-82b53d92b6aa&target_origin=https%3A%2F%2Ftapkaarten.
+collectie/desktop 403 https://shop.app/pay/hop?analytics_trace_id=59ab4bb5-6b29-4447-b304-d0ea037757c6&target_origin=https%3A%2F%2Ftapkaarten.
+collectie/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=e6459f74-6677-40f7-9ea8-1484eb14954e&target_origin=https%3A%2F%2Ftapkaarten.
+winkelwagen/desktop 403 https://shop.app/pay/hop?analytics_trace_id=002c160b-a483-40b6-9dec-a33cc130f71a&target_origin=https%3A%2F%2Ftapkaarten.
+winkelwagen/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=400c405a-5b7b-42ee-869e-4c6c8f8b35d2&target_origin=https%3A%2F%2Ftapkaarten.
+verzending/desktop 403 https://shop.app/pay/hop?analytics_trace_id=adc008d8-bd46-437c-aa68-fb889e6eff83&target_origin=https%3A%2F%2Ftapkaarten.
+verzending/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=bbbc7354-26ff-416f-b34a-b47d33df289a&target_origin=https%3A%2F%2Ftapkaarten.
+contact/desktop 403 https://shop.app/pay/hop?analytics_trace_id=913a614a-0c5b-4131-ad3c-dbfa6936fdf3&target_origin=https%3A%2F%2Ftapkaarten.
+contact/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=31dfe080-40e0-4fdf-9a16-adef63529e76&target_origin=https%3A%2F%2Ftapkaarten.

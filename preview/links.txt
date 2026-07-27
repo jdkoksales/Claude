@@ -10,10 +10,13 @@
 /checkout
 /#producten
 /#calculator
+/products/tapkaarten-google-review-standaard
+/products/tapkaarten-google-review-standaard-zwart
+/products/tapkaarten-instagram-standaard
+/products/tapkaarten-facebook-standaard
+/products/tapkaarten-google-review-sticker
 /pages/contact
 /pages/over-ons
-/products/tapkaarten-google-review-standaard
-/products/tapkaarten-google-review-sticker
 /pages/verzending
 /pages/retourbeleid
 /pages/algemene-voorwaarden

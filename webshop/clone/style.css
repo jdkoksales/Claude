@@ -507,20 +507,29 @@ footer{background:linear-gradient(115deg,#fdfdfe,#fdf1f5);padding:88px 0 44px}
   h2{font-size:26px}
   .sec-sub{font-size:var(--fs-md)}
 
-  /* Configurator: twee ruime tegels lezen beter dan drie smalle. */
+  /* Configurator: op een telefoon leest een rijtje beter dan een raster.
+     Vijf producten in twee kolommen laat er bovendien altijd één alleen achter. */
   .cfg-main{padding:22px 14px}
   .cfg-block+.cfg-block{margin-top:28px}
-  .cfg-cards{grid-template-columns:repeat(2,1fr);gap:9px}
-  .cfg-card{padding:12px 9px}
-  .cfg-name{font-size:13px;min-height:2.6em}
   .cfg-q{font-size:var(--fs-md);margin-bottom:13px}
   .cfg-bignum{font-size:var(--fs-2xl)}
 
-  /* De presets op één regel die je opzij schuift, in plaats van een rafelige afbreking. */
-  .cfg-presets{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;
-    margin-left:-14px;margin-right:-14px;padding:2px 14px 4px;scroll-padding-left:14px}
-  .cfg-presets::-webkit-scrollbar{display:none}
-  .cfg-preset{flex:0 0 auto}
+  .cfg-cards{grid-template-columns:1fr;gap:8px}
+  .cfg-card{display:grid;grid-template-columns:54px 1fr auto;grid-template-areas:
+      "foto naam teller" "foto tip tip";
+    align-items:center;column-gap:12px;row-gap:4px;text-align:left;padding:10px 12px;border-radius:14px}
+  .cfg-card:hover{transform:none}
+  .cfg-thumb{grid-area:foto;width:54px;height:54px;margin-bottom:0;border-radius:10px}
+  .cfg-name{grid-area:naam;font-size:13.5px;min-height:0}
+  .cfg-stepper{grid-area:teller;margin-top:0}
+  .cfg-hint{grid-area:tip;margin-top:0;font-size:11.5px}
+  .cfg-warn{grid-area:tip;margin-top:0}
+
+  /* Presets als drie gelijke knoppen; de toelichting past er op deze breedte niet bij. */
+  .cfg-presets{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+  .cfg-preset{padding:10px 8px;text-align:center;border-radius:11px}
+  .cfg-preset strong{font-size:12.5px;line-height:1.25}
+  .cfg-preset span{display:none}
 
   /* Schuifbalk: 8px is met een duim niet te raken. */
   .cfg-main input[type=range]{height:14px;margin-top:18px}

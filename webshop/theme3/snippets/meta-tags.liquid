@@ -8,6 +8,21 @@
   assign og_type = 'website'
   assign og_description = page_description | default: shop.description | default: shop.name
 
+  comment
+    De voorpagina erft alleen de winkelnaam. Dat is een lege plek in Google en
+    op WhatsApp, dus geven we haar hier een eigen titel en omschrijving.
+  endcomment
+  assign home_title = 'TapKaarten — NFC-bordjes voor meer Google-reviews en volgers'
+  assign home_description = 'Zet een TapKaart op je balie: één tik met de telefoon en je klant staat op jouw Google-, Instagram- of Facebookpagina. Geen app, geen abonnement, € 39,95.'
+  if request.page_type == 'index'
+    if page_title == blank or page_title == shop.name
+      assign og_title = home_title
+    endif
+    if page_description == blank
+      assign og_description = home_description
+    endif
+  endif
+
   if request.page_type == 'product'
     assign og_type = 'product'
   elsif request.page_type == 'article'
@@ -81,7 +96,7 @@
 <meta name="twitter:description" content="{{ og_description | escape }}">
 
 <title>
-  {{ page_title }}
+  {%- if request.page_type == 'index' -%}{{ og_title }}{%- else -%}{{ page_title }}{%- endif -%}
   {%- if current_tags %} &ndash; {{ current_tags | join: ', ' }}{% endif -%}
   {%- if current_page != 1 %} &ndash; pagina {{ current_page }}{% endif -%}
   {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
@@ -89,6 +104,8 @@
 
 <link rel="canonical" href="{{ canonical_url }}">
 
-{% if page_description %}
+{% if page_description != blank %}
   <meta name="description" content="{{ page_description | escape }}">
+{% elsif request.page_type == 'index' %}
+  <meta name="description" content="{{ home_description | escape }}">
 {% endif %}

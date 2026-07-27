@@ -1,0 +1,83 @@
+{{ 'tk3.css' | asset_url | stylesheet_tag }}
+
+<div class="tk3">
+  <section class="blk howto" id="hoe-het-werkt">
+    <div class="wrap">
+      <h2 class="sec-title center">{{ section.settings.heading }}</h2>
+      {%- if section.settings.sub != blank -%}
+        <p class="sec-sub center">{{ section.settings.sub }}</p>
+      {%- endif -%}
+
+      <ol class="howto-steps">
+        {%- for block in section.blocks -%}
+          <li {{ block.shopify_attributes }}>
+            <div class="howto-shot">
+              <span class="howto-num">{{ forloop.index }}</span>
+              {%- if block.settings.image -%}
+                <img src="{{ block.settings.image | image_url: width: 800 }}"
+                  alt="{{ block.settings.title | escape }}" width="800" height="800" loading="lazy">
+              {%- else -%}
+                {%- assign key = block.settings.asset | default: 'stap-1' | strip -%}
+                <img src="{{ 'tk3-howto-' | append: key | append: '.jpg' | asset_url }}"
+                  alt="{{ block.settings.title | escape }}" width="800" height="800" loading="lazy">
+              {%- endif -%}
+            </div>
+            <h3>{{ block.settings.title }}</h3>
+            <p>{{ block.settings.text }}</p>
+          </li>
+        {%- endfor -%}
+      </ol>
+
+      {%- if section.settings.reassurance != blank -%}
+        <div class="howto-facts">
+          {%- assign facts = section.settings.reassurance | split: '|' -%}
+          {%- for fact in facts -%}
+            <span>{{ fact | strip }}</span>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+
+      {%- if section.settings.cta_text != blank -%}
+        <div class="howto-cta">
+          <a class="btn-primary" href="{{ section.settings.cta_url | default: '#calculator' }}">{{ section.settings.cta_text }}</a>
+        </div>
+      {%- endif -%}
+    </div>
+  </section>
+</div>
+
+{% schema %}
+{
+  "name": "TK3 hoe het werkt",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Kop", "default": "Zo werkt het." },
+    { "type": "textarea", "id": "sub", "label": "Onderkop", "default": "Je hoeft niets te installeren en niets in te stellen. Uitpakken, neerzetten, klaar." },
+    { "type": "text", "id": "reassurance", "label": "Feiten (gescheiden met |)", "default": "Geen app nodig|Werkt op iPhone en Android|Wij zetten jouw link er vooraf op|Ook een QR-code voor oudere telefoons" },
+    { "type": "text", "id": "cta_text", "label": "Knop", "default": "Bereken wat het jou oplevert" },
+    { "type": "url", "id": "cta_url", "label": "Knoplink" }
+  ],
+  "max_blocks": 4,
+  "blocks": [
+    {
+      "type": "stap",
+      "name": "Stap",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Eigen foto (heeft voorrang)" },
+        { "type": "text", "id": "asset", "label": "Ingebouwde foto", "info": "stap-1, stap-2 of stap-3", "default": "stap-1" },
+        { "type": "text", "id": "title", "label": "Titel", "default": "Uitpakken en neerzetten" },
+        { "type": "textarea", "id": "text", "label": "Tekst", "default": "Hij komt kant-en-klaar aan." }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "TK3 hoe het werkt",
+      "blocks": [
+        { "type": "stap", "settings": { "asset": "stap-1", "title": "Uitpakken en neerzetten", "text": "Hij komt kant-en-klaar aan. Zet hem op de balie, het tafeltje of naast de pinautomaat." } },
+        { "type": "stap", "settings": { "asset": "stap-2", "title": "Je klant houdt zijn telefoon ertegenaan", "text": "Eén tik. Geen app, geen account, geen uitleg nodig." } },
+        { "type": "stap", "settings": { "asset": "stap-3", "title": "Jouw pagina opent meteen", "text": "De klant laat een review achter of drukt op volgen. Binnen tien seconden klaar." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

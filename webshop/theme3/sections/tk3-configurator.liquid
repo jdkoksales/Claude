@@ -1,0 +1,83 @@
+{{ 'tk3.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'tk3-configurator.js' | asset_url }}" defer></script>
+
+{%- comment -%}
+  Alle Shopify-gegevens komen hier server-side vandaan: variant-ID, actuele
+  prijs, voorraadstatus en de productfoto. De configurator zelf houdt geen
+  prijzen bij en doet geen extra API-verzoek.
+{%- endcomment -%}
+
+{%- liquid
+  assign handles = 'tapkaarten-google-review-standaard,tapkaarten-google-review-sticker,tapkaarten-instagram-standaard,tapkaarten-facebook-standaard' | split: ','
+-%}
+
+<div class="tk3">
+  <section class="blk grey cfg" id="calculator">
+    <div class="wrap">
+      <h2 class="sec-title center">{{ section.settings.heading }}</h2>
+      {%- if section.settings.sub != blank -%}
+        <p class="sec-sub center" style="margin-bottom:44px">{{ section.settings.sub }}</p>
+      {%- endif -%}
+
+      <div class="cfg-root" data-tk3-configurator>
+        <script type="application/json">
+          {
+            "currency": {{ cart.currency.iso_code | json }},
+            "pricesIncludeVat": {{ cart.taxes_included | default: false | json }},
+            "labels": {
+              "slider": {{ section.settings.q1 | json }},
+              "selector": {{ section.settings.q2 | json }},
+              "resultsIntro": {{ section.settings.results_intro | json }},
+              "ctaHeading": {{ section.settings.cta_heading | json }},
+              "ctaText": {{ section.settings.cta_text | json }},
+              "ctaButton": {{ section.settings.cta_button | json }}
+            },
+            "products": [
+              {%- assign sep = '' -%}
+              {%- for handle in handles -%}
+                {%- assign product = all_products[handle] -%}
+                {%- if product != blank and product.id -%}
+                  {{ sep }}{
+                    "handle": {{ product.handle | json }},
+                    "title": {{ product.title | json }},
+                    "variantId": {{ product.selected_or_first_available_variant.id | default: product.variants.first.id }},
+                    "price": {{ product.price }},
+                    "available": {{ product.available | json }},
+                    "url": {{ product.url | json }},
+                    "image": {%- if product.featured_media -%}{{ product.featured_media | image_url: width: 320 | json }}{%- else -%}null{%- endif -%}
+                  }
+                  {%- assign sep = ',' -%}
+                {%- endif -%}
+              {%- endfor -%}
+            ]
+          }
+        </script>
+        <noscript>
+          <p>Zet JavaScript aan om de calculator te gebruiken, of
+            <a href="{{ routes.all_products_collection_url }}">bekijk de producten</a>.</p>
+        </noscript>
+      </div>
+
+      <p class="cfg-fine">{{ section.settings.disclaimer }}</p>
+    </div>
+  </section>
+</div>
+
+{% schema %}
+{
+  "name": "TK3 configurator",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Kop", "default": "Bekijk wat TapKaarten jouw bedrijf kunnen opleveren" },
+    { "type": "textarea", "id": "sub", "label": "Onderkop", "default": "Bereken binnen enkele seconden hoeveel extra Google Reviews en social media volgers jouw bedrijf iedere maand kan verzamelen." },
+    { "type": "text", "id": "q1", "label": "Vraag 1", "default": "Hoeveel bezoekers ontvangt jouw bedrijf gemiddeld per dag?" },
+    { "type": "text", "id": "q2", "label": "Vraag 2", "default": "Stel jouw TapKaart-pakket samen" },
+    { "type": "textarea", "id": "results_intro", "label": "Regel boven de resultaten", "default": "Geschatte opbrengst per maand op basis van jouw gemiddelde aantal bezoekers per dag." },
+    { "type": "header", "content": "Oproep tot actie" },
+    { "type": "text", "id": "cta_heading", "label": "Kop", "default": "Klaar om meer reviews en volgers te verzamelen?" },
+    { "type": "textarea", "id": "cta_text", "label": "Tekst", "default": "Je gaat direct naar de kassa met precies de kaarten en aantallen die je hier hebt gekozen." },
+    { "type": "text", "id": "cta_button", "label": "Knop", "default": "Bestel mijn TapKaarten" },
+    { "type": "textarea", "id": "disclaimer", "label": "Disclaimer", "default": "De berekening is een indicatieve schatting op basis van gemiddelde conversiepercentages. Werkelijke aantallen hangen af van je zaak, je klanten en waar je de kaarten neerzet." }
+  ],
+  "presets": [{ "name": "TK3 configurator" }]
+}
+{% endschema %}

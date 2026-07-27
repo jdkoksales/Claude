@@ -423,36 +423,70 @@
         "product_b": "tapkaarten-google-review-standaard-zwart"
       }
     },
-    "calculator": {
-      "type": "tk3-calculator",
+    "hoe": {
+      "type": "tk3-howto",
+      "blocks": {
+        "s1": {
+          "type": "stap",
+          "settings": {
+            "asset": "stap-1",
+            "title": "Uitpakken en neerzetten",
+            "text": "Hij komt kant-en-klaar aan. Zet hem op de balie, het tafeltje of naast de pinautomaat."
+          }
+        },
+        "s2": {
+          "type": "stap",
+          "settings": {
+            "asset": "stap-2",
+            "title": "Je klant houdt zijn telefoon ertegenaan",
+            "text": "Eén tik. Geen app, geen account, geen uitleg nodig."
+          }
+        },
+        "s3": {
+          "type": "stap",
+          "settings": {
+            "asset": "stap-3",
+            "title": "Jouw pagina opent meteen",
+            "text": "De klant laat een review achter of drukt op volgen. Binnen tien seconden klaar."
+          }
+        }
+      },
+      "block_order": [
+        "s1",
+        "s2",
+        "s3"
+      ],
       "settings": {
-        "heading": "Bekijk wat een Tapkaart jou oplevert",
-        "sub": "Bereken binnen enkele seconden hoeveel extra Google Reviews of social media volgers jouw winkel kan verzamelen.",
-        "q1": "Welke Tapkaart wil je gebruiken?",
-        "q2": "Hoeveel bezoekers ontvangt jouw winkel per maand?",
-        "checkout_share": "0.80",
-        "rate_google": "0.02",
-        "rate_instagram": "0.03",
-        "rate_facebook": "0.015",
-        "label_google": "Geschat aantal nieuwe reviews per maand",
-        "label_instagram": "Geschat aantal nieuwe Instagram-volgers per maand",
-        "label_facebook": "Geschat aantal nieuwe Facebook-volgers per maand",
-        "note": "Realistische schatting",
-        "cta_heading": "Klaar om meer klanten te overtuigen?",
-        "cta_text": "Een Tapkaart maakt het voor klanten eenvoudig om direct een review achter te laten of jouw bedrijf te volgen.",
-        "cta_button": "Bestel jouw Tapkaart",
-        "cta_url": "/#producten",
-        "disclaimer": "De berekening is een indicatieve schatting op basis van gemiddelde conversiepercentages."
+        "heading": "Zo werkt het.",
+        "sub": "Je hoeft niets te installeren en niets in te stellen. Uitpakken, neerzetten, klaar.",
+        "reassurance": "Geen app nodig|Werkt op iPhone en Android|Wij zetten jouw link er vooraf op|Ook een QR-code voor oudere telefoons",
+        "cta_text": "Bereken wat het jou oplevert",
+        "cta_url": "/#calculator"
+      }
+    },
+    "configurator": {
+      "type": "tk3-configurator",
+      "settings": {
+        "heading": "Bekijk wat TapKaarten jouw bedrijf kunnen opleveren",
+        "sub": "Bereken binnen enkele seconden hoeveel extra Google Reviews en social media volgers jouw bedrijf iedere maand kan verzamelen.",
+        "q1": "Hoeveel bezoekers ontvangt jouw bedrijf gemiddeld per dag?",
+        "q2": "Stel jouw TapKaart-pakket samen",
+        "results_intro": "Geschatte opbrengst per maand op basis van jouw gemiddelde aantal bezoekers per dag.",
+        "cta_heading": "Klaar om meer reviews en volgers te verzamelen?",
+        "cta_text": "Je gaat direct naar de kassa met precies de kaarten en aantallen die je hier hebt gekozen.",
+        "cta_button": "Bestel mijn TapKaarten",
+        "disclaimer": "De berekening is een indicatieve schatting op basis van gemiddelde conversiepercentages. Werkelijke aantallen hangen af van je zaak, je klanten en waar je de kaarten neerzet."
       }
     }
   },
   "order": [
     "hero",
     "trust",
+    "hoe",
+    "configurator",
     "statement",
     "producten",
     "branches",
-    "calculator",
     "ontwerp",
     "video",
     "pers",

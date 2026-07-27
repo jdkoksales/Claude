@@ -3,9 +3,9 @@ doc.scrollWidth 1440
 body.width 1440
 main left=0 width=1440 pad=0px/0px max=none
 footer left=10 width=1420 pad=0px/0px max=none
+.shopify-section left=0 width=1440 pad=0px/0px max=none
 .tk3 left=10 width=1420 pad=0px/0px max=none
 .marquee left=10 width=1420 pad=0px/0px max=none
-.hdr left=10 width=1420 pad=0px/0px max=none
 --- breder dan viewport:
 DIV.track w=2800 right=2810
 SPAN. w=286 right=1696

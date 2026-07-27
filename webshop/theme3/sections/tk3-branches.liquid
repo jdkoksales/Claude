@@ -20,7 +20,13 @@
           {%- if block.settings.image -%}
             <img src="{{ block.settings.image | image_url: width: 1200 }}" alt="{{ block.settings.image.alt | escape }}" width="1200" height="672" loading="lazy">
           {%- else -%}
-            <img src="{{ 'tk3-cafe.jpg' | asset_url }}" alt="{{ block.settings.label | escape }}" width="1200" height="672" loading="lazy">
+            {%- comment -%}
+              Ingebouwde branchefoto; `asset` is de sleutel achter tk3-branche-.
+              Staat er niets, dan valt hij terug op het café.
+            {%- endcomment -%}
+            {%- assign key = block.settings.asset | default: 'cafe' | strip -%}
+            <img src="{{ 'tk3-branche-' | append: key | append: '.jpg' | asset_url }}"
+              alt="{{ block.settings.label | escape }}" width="1000" height="1000" loading="lazy">
           {%- endif -%}
           <div>
             <blockquote>{{ block.settings.quote }}</blockquote>
@@ -45,7 +51,8 @@
       "name": "Branche",
       "settings": [
         { "type": "text", "id": "label", "label": "Tabblad", "default": "Café" },
-        { "type": "image_picker", "id": "image", "label": "Foto" },
+        { "type": "image_picker", "id": "image", "label": "Eigen foto (heeft voorrang)" },
+        { "type": "text", "id": "asset", "label": "Ingebouwde foto", "info": "cafe, restaurant, kapper, salon, garage, hotel, tandarts, winkel, foodtruck", "default": "cafe" },
         { "type": "textarea", "id": "quote", "label": "Quote", "default": "[PLAATSHOUDER — hier komt een echte quote van een klant.]" },
         { "type": "textarea", "id": "who", "label": "Wie", "default": "Naam achternaam, Zaaknaam" }
       ]

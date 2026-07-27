@@ -81,7 +81,8 @@
           "settings": {
             "label": "Café",
             "quote": "We vroegen er nooit om — dat voelde ongemakkelijk. Nu staat het bordje naast de kassa en vraagt het voor ons, elke dag opnieuw.",
-            "who": "Sanne de Wit, eigenaar · Koffiebar Noord · voorbeeldtekst"
+            "who": "Sanne de Wit, eigenaar · Koffiebar Noord · voorbeeldtekst",
+            "asset": "cafe"
           }
         },
         "b2": {
@@ -89,7 +90,8 @@
           "settings": {
             "label": "Restaurant",
             "quote": "Bij het afrekenen tikt bijna iedereen het even aan. In twee maanden gingen we van zestig naar ruim tweehonderd reviews.",
-            "who": "Marco Peters, gastheer · Restaurant De Werf · voorbeeldtekst"
+            "who": "Marco Peters, gastheer · Restaurant De Werf · voorbeeldtekst",
+            "asset": "restaurant"
           }
         },
         "b3": {
@@ -97,7 +99,8 @@
           "settings": {
             "label": "Kapper",
             "quote": "Terwijl ik afreken tikt de klant het bordje aan. Het kost mij nul seconden en ik hoef er niks voor te zeggen.",
-            "who": "Yasmin El Amrani, eigenaar · Salon Yasmin · voorbeeldtekst"
+            "who": "Yasmin El Amrani, eigenaar · Salon Yasmin · voorbeeldtekst",
+            "asset": "kapper"
           }
         },
         "b4": {
@@ -105,7 +108,8 @@
           "settings": {
             "label": "Schoonheidssalon",
             "quote": "Klanten zijn direct na een behandeling het meest enthousiast. Precies op dat moment staat het bordje er.",
-            "who": "Iris Bouma, huidtherapeut · Studio Iris · voorbeeldtekst"
+            "who": "Iris Bouma, huidtherapeut · Studio Iris · voorbeeldtekst",
+            "asset": "salon"
           }
         },
         "b5": {
@@ -113,7 +117,8 @@
           "settings": {
             "label": "Garage",
             "quote": "Ik dacht dat onze klanten te oud waren voor NFC. Ze scannen gewoon de QR-code — geen enkele vraag over gehad.",
-            "who": "Ronald Vermeer, bedrijfsleider · Garage Vermeer · voorbeeldtekst"
+            "who": "Ronald Vermeer, bedrijfsleider · Garage Vermeer · voorbeeldtekst",
+            "asset": "garage"
           }
         },
         "b6": {
@@ -121,7 +126,8 @@
           "settings": {
             "label": "Hotel",
             "quote": "Op de balie bij het uitchecken. Gasten doen het terwijl ze staan te wachten op hun taxi.",
-            "who": "Petra Jansen, front office · Hotel Kaap Noord · voorbeeldtekst"
+            "who": "Petra Jansen, front office · Hotel Kaap Noord · voorbeeldtekst",
+            "asset": "hotel"
           }
         },
         "b7": {
@@ -129,7 +135,8 @@
           "settings": {
             "label": "Tandarts",
             "quote": "Geen apps en geen mailtjes achteraf. Eén tik in de wachtkamer en het is geregeld.",
-            "who": "Daan Kuiper, praktijkmanager · Tandartspraktijk Kuiper · voorbeeldtekst"
+            "who": "Daan Kuiper, praktijkmanager · Tandartspraktijk Kuiper · voorbeeldtekst",
+            "asset": "tandarts"
           }
         },
         "b8": {
@@ -137,7 +144,8 @@
           "settings": {
             "label": "Winkel",
             "quote": "Bij de kassa neergezet. Sinds die week komen er elke week reviews bij in plaats van elke maand een enkele.",
-            "who": "Lisa van Dam, eigenaar · Concept Store Lisa · voorbeeldtekst"
+            "who": "Lisa van Dam, eigenaar · Concept Store Lisa · voorbeeldtekst",
+            "asset": "winkel"
           }
         },
         "b9": {
@@ -145,7 +153,8 @@
           "settings": {
             "label": "Foodtruck",
             "quote": "Naast het luikje geplakt. Mensen staan toch te wachten op hun bestelling — dat is precies het moment.",
-            "who": "Tim Bakker, eigenaar · Foodtruck Tim's · voorbeeldtekst"
+            "who": "Tim Bakker, eigenaar · Foodtruck Tim's · voorbeeldtekst",
+            "asset": "foodtruck"
           }
         }
       },

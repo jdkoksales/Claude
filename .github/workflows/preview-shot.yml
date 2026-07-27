@@ -83,8 +83,8 @@ jobs:
                   });
                   return { scrollW: doc.scrollWidth, clientW: doc.clientWidth, te: [...new Set(te)].slice(0, 8) };
                 });
-                if (breed.scrollW > breed.clientW + 1) {
-                  log.push(`  BREEDTE ${breed.scrollW} > ${breed.clientW}`);
+                if (breed.te.length) {
+                  log.push(`  BREEDTE scroll=${breed.scrollW} client=${breed.clientW}`);
                   breed.te.forEach((x) => log.push(`    steekt uit: ${x}`));
                 }
                 // te kleine raakvlakken opsporen

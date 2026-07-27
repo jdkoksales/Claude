@@ -39,6 +39,7 @@ jobs:
             ['collectie', '/collections/alle-tapkaarten'],
             ['winkelwagen', '/cart'],
             ['verzending', '/pages/verzending'],
+            ['contact', '/pages/contact'],
           ];
 
           const b = await chromium.launch();

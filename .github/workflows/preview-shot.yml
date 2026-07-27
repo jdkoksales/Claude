@@ -99,10 +99,17 @@ jobs:
           try {
             const t = await b.newPage({ viewport: { width: 1440, height: 900 } });
             const prod = BASE + '/products/tapkaarten-google-review-standaard' + PV;
-            for (const [naam, waarde] of [['met link', 'https://g.page/r/voorbeeld'], ['zonder link', '']]) {
+            for (const [naam, waarde] of [['zonder link', ''], ['met link', 'https://g.page/r/voorbeeld']]) {
               await t.goto(BASE + '/cart/clear' + PV, { waitUntil: 'domcontentloaded' }).catch(() => {});
-              await t.goto(prod, { waitUntil: 'domcontentloaded', timeout: 60000 });
-              await t.waitForSelector('[data-add-to-cart]', { timeout: 30000 });
+              for (let poging = 1; poging <= 3; poging++) {
+                await t.goto(prod, { waitUntil: 'domcontentloaded', timeout: 60000 }).catch(() => {});
+                const ok = await t
+                  .waitForSelector('[data-add-to-cart]', { timeout: 30000 })
+                  .then(() => true)
+                  .catch(() => false);
+                if (ok) break;
+                if (poging === 3) throw new Error('knop niet gevonden op de productpagina');
+              }
               if (waarde) await t.fill('[data-tk3-linkveld]', waarde);
               await t.click('[data-add-to-cart]');
               await t.waitForTimeout(3000);

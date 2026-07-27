@@ -97,10 +97,11 @@ jobs:
 
           // echte bestelproef: product in de winkelwagen leggen, mét en zonder link
           try {
-            const t = await b.newPage({ viewport: { width: 1440, height: 900 } });
             const prod = BASE + '/products/tapkaarten-google-review-standaard' + PV;
             for (const [naam, waarde] of [['zonder link', ''], ['met link', 'https://g.page/r/voorbeeld']]) {
-              await t.goto(BASE + '/cart/clear' + PV, { waitUntil: 'domcontentloaded' }).catch(() => {});
+              // elke proef in een eigen context, anders werkt de winkelwagen van de vorige ronde door
+              const ctx = await b.newContext({ viewport: { width: 1440, height: 900 } });
+              const t = await ctx.newPage();
               for (let poging = 1; poging <= 3; poging++) {
                 await t.goto(prod, { waitUntil: 'domcontentloaded', timeout: 60000 }).catch(() => {});
                 const ok = await t
@@ -117,9 +118,8 @@ jobs:
               const it = cart.items && cart.items[0];
               const props = it ? JSON.stringify(it.properties || {}) : 'GEEN REGEL';
               log.push(`winkelwagenproef ${naam}: ${it ? it.quantity + '×' : ''} ${it ? it.title : ''} props=${props}`);
+              await ctx.close();
             }
-            await t.goto(BASE + '/cart/clear' + PV, { waitUntil: 'domcontentloaded' }).catch(() => {});
-            await t.close();
           } catch (e) {
             log.push('winkelwagenproef MISLUKT: ' + e.message.split('\n')[0]);
           }

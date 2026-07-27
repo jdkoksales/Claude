@@ -95,7 +95,7 @@ jobs:
             }
           }
 
-          // echte bestelproef: product in de winkelwagen leggen, mét en zonder link
+          // echte bestelproef: linkveld plus de staffelkorting bij 1 t/m 5 stuks
           try {
             const prod = BASE + '/products/tapkaarten-google-review-standaard' + PV;
             for (const [naam, waarde] of [['zonder link', ''], ['met link', 'https://g.page/r/voorbeeld']]) {
@@ -122,6 +122,41 @@ jobs:
             }
           } catch (e) {
             log.push('winkelwagenproef MISLUKT: ' + e.message.split('\n')[0]);
+          }
+
+          // staffelkorting: klopt het bedrag bij elk aantal?
+          try {
+            const ctx = await b.newContext();
+            const t = await ctx.newPage();
+            await t.goto(BASE + '/cart' + PV, { waitUntil: 'domcontentloaded', timeout: 60000 });
+            const euro = (c) => '€ ' + (c / 100).toFixed(2).replace('.', ',');
+            for (const q of [1, 2, 3, 4, 5]) {
+              const r = await t.evaluate(async (aantal) => {
+                await fetch('/cart/clear.js', { method: 'POST' });
+                const add = await fetch('/cart/add.js', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ items: [{ id: 64057218662777, quantity: aantal }] }),
+                });
+                if (!add.ok) return { fout: 'toevoegen mislukt ' + add.status };
+                const c = await fetch('/cart.js').then((x) => x.json());
+                const regel = c.items[0] || {};
+                const namen = []
+                  .concat(regel.line_level_discount_allocations || [], c.cart_level_discount_applications || [])
+                  .map((d) => (d.discount_application ? d.discount_application.title : d.title))
+                  .filter(Boolean);
+                return { sub: c.original_total_price, korting: c.total_discount, tot: c.total_price, namen: namen };
+              }, q);
+              if (r.fout) { log.push(`staffel ${q}×: ${r.fout}`); continue; }
+              const pct = r.sub ? Math.round((r.korting / r.sub) * 100) : 0;
+              log.push(
+                `staffel ${q}×: van ${euro(r.sub)} af ${euro(r.korting)} (${pct}%) => ${euro(r.tot)}  [${r.namen.join(' | ')}]`
+              );
+            }
+            await t.evaluate(() => fetch('/cart/clear.js', { method: 'POST' }));
+            await ctx.close();
+          } catch (e) {
+            log.push('staffelproef MISLUKT: ' + e.message.split('\n')[0]);
           }
 
           // linkcontrole

@@ -24,7 +24,23 @@ TAIL = ("html{scroll-behavior:smooth}\n"
         # full-bleed en moeten die kwijt.
         ".shopify-section:has(>.tk3){display:block!important;padding:0!important;margin:0!important;border:0!important;max-width:none!important;width:auto!important}\n"
         # het thema legt ook op de sectie-inhoud zelf een zijmarge
-        ".shopify-section>.tk3{margin-left:0!important;margin-right:0!important;border:0!important;max-width:none!important;width:auto!important}\n")
+        ".shopify-section>.tk3{margin-left:0!important;margin-right:0!important;border:0!important;max-width:none!important;width:auto!important}\n"
+        # De losse pagina's (verzending, retour, voorwaarden) draaien op de
+        # sectie van het thema zelf. Die geeft koppen geen ruimte en tabellen
+        # geen lijnen, waardoor lange teksten als één blok aanvoelen.
+        ".page-section__inner{max-width:760px;margin-left:auto;margin-right:auto}\n"
+        ".page-section__title{margin-bottom:.5em;letter-spacing:-.02em}\n"
+        ".page-section__content.rte{line-height:1.65}\n"
+        ".page-section__content.rte h2{font-size:1.35rem;font-weight:600;letter-spacing:-.01em;margin:2.1em 0 .5em}\n"
+        ".page-section__content.rte h2:first-child{margin-top:0}\n"
+        ".page-section__content.rte h3{font-size:1.06rem;font-weight:600;margin:1.7em 0 .4em}\n"
+        ".page-section__content.rte p,.page-section__content.rte ul,.page-section__content.rte ol{margin:0 0 1em}\n"
+        ".page-section__content.rte ul,.page-section__content.rte ol{padding-left:1.2em}\n"
+        ".page-section__content.rte li{margin-bottom:.35em}\n"
+        ".page-section__content.rte a{text-decoration:underline;text-underline-offset:2px}\n"
+        ".page-section__content.rte table{width:100%;border-collapse:collapse;margin:0 0 1.4em}\n"
+        ".page-section__content.rte td,.page-section__content.rte th{padding:.6em .2em;border-bottom:1px solid rgba(0,0,0,.08);text-align:left;vertical-align:top}\n"
+        ".page-section__content.rte tr:last-child td{border-bottom:0}\n")
 KEYFRAMES = {"slide": "tk3slide", "float": "tk3float"}
 
 

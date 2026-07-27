@@ -105,10 +105,7 @@
         "zoom_button_position": "bottom_right",
         "desktop_info_width": 46,
         "enable_sticky_info": true,
-        "enable_sticky_bar": true,
-        "show_related_products": true,
-        "related_heading": "Vaak samen besteld",
-        "related_count": 4
+        "enable_sticky_bar": true
       }
     },
     "hoe": {

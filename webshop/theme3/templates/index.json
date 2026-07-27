@@ -343,8 +343,8 @@
     "configurator": {
       "type": "tk3-configurator",
       "settings": {
-        "heading": "Bekijk wat TapKaarten jouw bedrijf kunnen opleveren",
-        "sub": "Bereken binnen enkele seconden hoeveel extra Google Reviews en social media volgers jouw bedrijf iedere maand kan verzamelen.",
+        "heading": "Reken uit wat het jouw zaak oplevert.",
+        "sub": "Schuif naar het aantal bezoekers dat je per dag ontvangt en zie hoeveel reviews en volgers dat per maand kan schelen.",
         "q1": "Hoeveel bezoekers ontvangt jouw bedrijf gemiddeld per dag?",
         "q2": "Stel jouw TapKaart-pakket samen",
         "results_intro": "Geschatte opbrengst per maand op basis van jouw gemiddelde aantal bezoekers per dag.",

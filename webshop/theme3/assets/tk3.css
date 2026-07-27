@@ -5,6 +5,19 @@ html,body{overflow-x:clip}
 .tk3 [hidden]{display:none!important}
 .shopify-section:has(>.tk3){display:block!important;padding:0!important;margin:0!important;border:0!important;max-width:none!important;width:auto!important}
 .shopify-section>.tk3{margin-left:0!important;margin-right:0!important;border:0!important;max-width:none!important;width:auto!important}
+.page-section__inner{max-width:760px;margin-left:auto;margin-right:auto}
+.page-section__title{margin-bottom:.5em;letter-spacing:-.02em}
+.page-section__content.rte{line-height:1.65}
+.page-section__content.rte h2{font-size:1.35rem;font-weight:600;letter-spacing:-.01em;margin:2.1em 0 .5em}
+.page-section__content.rte h2:first-child{margin-top:0}
+.page-section__content.rte h3{font-size:1.06rem;font-weight:600;margin:1.7em 0 .4em}
+.page-section__content.rte p,.page-section__content.rte ul,.page-section__content.rte ol{margin:0 0 1em}
+.page-section__content.rte ul,.page-section__content.rte ol{padding-left:1.2em}
+.page-section__content.rte li{margin-bottom:.35em}
+.page-section__content.rte a{text-decoration:underline;text-underline-offset:2px}
+.page-section__content.rte table{width:100%;border-collapse:collapse;margin:0 0 1.4em}
+.page-section__content.rte td,.page-section__content.rte th{padding:.6em .2em;border-bottom:1px solid rgba(0,0,0,.08);text-align:left;vertical-align:top}
+.page-section__content.rte tr:last-child td{border-bottom:0}
 .tk3{
   --ink:#1A202C;              
   --ink-64:rgba(0,0,0,.64);

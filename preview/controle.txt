@@ -1,6 +1,6 @@
 home desktop status=200
-  titel  TapKaarten
-  omschr -
+  titel  TapKaarten — NFC-bordjes voor meer Google-reviews en volgers
+  omschr Zet een TapKaart op je balie: één tik met de telefoon en je klant staat op jouw Google-, I
   og     tk3-social.jpg?v=169197354925792053761785174942
 home mobiel status=200
 product desktop status=200
@@ -43,13 +43,13 @@ link 200 /pages/algemene-voorwaarden
 link 200 /policies/privacy-policy
 
 --- fouten ---
-home/desktop 403 https://shop.app/pay/hop?analytics_trace_id=36c1aa89-5b6f-4f0f-9a34-ccfe8126f5c5&target_origin=https%3A%2F%2Ftapkaarten.
-home/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=ee8ac156-5afb-4b94-ab27-51405f9d5e5c&target_origin=https%3A%2F%2Ftapkaarten.
-product/desktop 403 https://shop.app/pay/hop?analytics_trace_id=ae94edd0-9d56-4cc6-85e9-39768ae96f45&target_origin=https%3A%2F%2Ftapkaarten.
-product/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=6991bcff-012a-4d14-a9a3-f9c0da80ba2e&target_origin=https%3A%2F%2Ftapkaarten.
-collectie/desktop 403 https://shop.app/pay/hop?analytics_trace_id=04af509f-ea94-4e38-b3fb-22343138ea0d&target_origin=https%3A%2F%2Ftapkaarten.
-collectie/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=a9c470e8-18ac-4399-9a4c-09b5bfe1ebda&target_origin=https%3A%2F%2Ftapkaarten.
-winkelwagen/desktop 403 https://shop.app/pay/hop?analytics_trace_id=a879da70-edae-48c9-b09b-be2040f0d1e8&target_origin=https%3A%2F%2Ftapkaarten.
-winkelwagen/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=fb16c64b-2d77-4dc6-8dd3-118176d4244d&target_origin=https%3A%2F%2Ftapkaarten.
-verzending/desktop 403 https://shop.app/pay/hop?analytics_trace_id=0c1da767-74bb-4712-aaa9-0ba0aa57a27a&target_origin=https%3A%2F%2Ftapkaarten.
-verzending/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=828b4f4c-11dc-4766-b362-ffe48b2b1c92&target_origin=https%3A%2F%2Ftapkaarten.
+home/desktop 403 https://shop.app/pay/hop?analytics_trace_id=b4fd1193-3955-49d5-b815-2fcd827fa1c4&target_origin=https%3A%2F%2Ftapkaarten.
+home/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=7511be10-e637-427c-b47d-b996e92e791e&target_origin=https%3A%2F%2Ftapkaarten.
+product/desktop 403 https://shop.app/pay/hop?analytics_trace_id=d9624862-b9fb-4ca4-b686-dd81085741f0&target_origin=https%3A%2F%2Ftapkaarten.
+product/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=9bf597b1-f224-42b8-8c18-833e68401f61&target_origin=https%3A%2F%2Ftapkaarten.
+collectie/desktop 403 https://shop.app/pay/hop?analytics_trace_id=f776832e-dba2-4660-9bae-3b75ab538be7&target_origin=https%3A%2F%2Ftapkaarten.
+collectie/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=be15b79f-c374-4e13-ba24-188a01da471d&target_origin=https%3A%2F%2Ftapkaarten.
+winkelwagen/desktop 403 https://shop.app/pay/hop?analytics_trace_id=7680000a-dfc4-48e5-abf0-af164dd54731&target_origin=https%3A%2F%2Ftapkaarten.
+winkelwagen/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=cd37d9da-c8d2-4161-810a-7e67e02db35b&target_origin=https%3A%2F%2Ftapkaarten.
+verzending/desktop 403 https://shop.app/pay/hop?analytics_trace_id=b1a498ce-cf03-4852-bc32-84c5081a3912&target_origin=https%3A%2F%2Ftapkaarten.
+verzending/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=bb236465-e109-495e-a2ac-96fb9f03cbda&target_origin=https%3A%2F%2Ftapkaarten.

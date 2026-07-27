@@ -25,6 +25,18 @@ html,body{overflow-x:clip}
 .tk3-linkveld input::placeholder{color:rgba(0,0,0,.34)}
 .tk3-linkveld input:focus{outline:2px solid rgba(0,0,0,.55);outline-offset:1px;border-color:transparent}
 .tk3-linkveld small{display:block;margin-top:6px;font-size:12.5px;line-height:1.45;color:rgba(0,0,0,.55)}
+.tk3-staffel{flex:1 0 100%;width:100%;margin:0 0 18px}
+.tk3-staffel-kop{font-size:14px;font-weight:600;letter-spacing:-.01em;margin-bottom:8px}
+.tk3-staffel-rij{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.tk3-trede{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 4px;font:inherit;text-align:center;cursor:pointer;background:#fff;color:inherit;border:1px solid rgba(0,0,0,.14);border-radius:10px;transition:border-color .12s,box-shadow .12s}
+.tk3-trede:hover{border-color:rgba(0,0,0,.38)}
+.tk3-trede.is-actief{border-color:rgba(0,0,0,.85);box-shadow:0 0 0 1px rgba(0,0,0,.85) inset}
+.tk3-trede-aantal{font-size:12px;font-weight:600;letter-spacing:-.01em}
+.tk3-trede-pct{font-size:13px;font-weight:700;letter-spacing:-.02em;color:#136C34}
+.tk3-trede:first-child .tk3-trede-pct{color:rgba(0,0,0,.36);font-weight:600}
+.tk3-trede-prijs{font-size:11.5px;color:rgba(0,0,0,.5)}
+.tk3-staffel small{display:block;margin-top:8px;font-size:12.5px;line-height:1.45;color:rgba(0,0,0,.55)}
+@media(max-width:420px){.tk3-staffel-rij{grid-template-columns:repeat(2,1fr)}}
 .tk3{
   --ink:#1A202C;              
   --ink-64:rgba(0,0,0,.64);
@@ -365,6 +377,12 @@ html,body{overflow-x:clip}
 .tk3 .cfg-summary{padding:0 4px}
 .tk3 .cfg-summary-line{font-size:12.5px;color:var(--ink-48);line-height:1.45}
 .tk3 .cfg-summary-total{font-size:12.5px;color:var(--ink-64);font-weight:650;margin-top:4px}
+.tk3 .cfg-summary-total s{color:var(--ink-36);font-weight:500;margin-right:2px}
+.tk3 .cfg-tier-badge{display:inline-block;margin-left:4px;padding:1px 7px;border-radius:999px;
+  background:#E7F6EC;color:#136C34;font-weight:650;font-size:11.5px;letter-spacing:-.01em;
+  vertical-align:1px}
+.tk3 .cfg-summary-nudge{margin-top:6px;font-size:12.5px;line-height:1.45;font-weight:600;
+  color:#8A5A12}
 .tk3 .cfg-fine{font-size:12.5px;color:var(--ink-36);text-align:center;margin-top:26px;line-height:1.5;
   max-width:70ch;margin-left:auto;margin-right:auto}
 @media(max-width:1040px){.tk3 .cfg-layout{grid-template-columns:1fr}.tk3 .cfg-side{position:static}.tk3 .cfg-out-rows{grid-template-columns:repeat(3,1fr);display:grid;gap:16px}}

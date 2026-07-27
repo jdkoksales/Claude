@@ -6,7 +6,7 @@
  * en producten staan in config/calculatorConfig.ts.
  */
 import type { CartLine, CartTotals, Product, Quantities, ShopifyProduct } from './types';
-import { PRODUCTS, SLIDER, VAT_RATE } from './config/calculatorConfig';
+import { PRODUCTS, SLIDER, VAT_RATE, VOLUME_TIERS } from './config/calculatorConfig';
 import { calculate, marginalGain } from './utils/calc';
 import { setCurrency } from './utils/format';
 import { VisitorSlider } from './components/VisitorSlider';
@@ -39,19 +39,43 @@ function readMount(root: HTMLElement): Mount | null {
   }
 }
 
+/** Hoogste staffel die bij dit aantal hoort, plus de eerstvolgende. */
+function tiersFor(itemCount: number): Pick<CartTotals, 'tierPercentage' | 'nextTier'> {
+  const gesorteerd = [...VOLUME_TIERS].sort((a, b) => a.minQuantity - b.minQuantity);
+  let tierPercentage = 0;
+  let nextTier: CartTotals['nextTier'] = null;
+  for (const tier of gesorteerd) {
+    if (itemCount >= tier.minQuantity) {
+      tierPercentage = tier.percentage;
+    } else if (!nextTier) {
+      nextTier = { itemsNeeded: tier.minQuantity - itemCount, percentage: tier.percentage };
+    }
+  }
+  return { tierPercentage, nextTier };
+}
+
 function totalsFor(products: Product[], quantities: Quantities, pricesIncludeVat: boolean): CartTotals {
   const lines: CartLine[] = products
     .filter((p) => (quantities[p.id] || 0) > 0)
     .map((p) => ({ product: p, quantity: quantities[p.id] }));
 
-  const total = lines.reduce((sum, l) => sum + (l.product.shop?.price || 0) * l.quantity, 0);
+  const itemCount = lines.reduce((sum, l) => sum + l.quantity, 0);
+  const bruto = lines.reduce((sum, l) => sum + (l.product.shop?.price || 0) * l.quantity, 0);
+  const { tierPercentage, nextTier } = tiersFor(itemCount);
+  // Shopify rondt de korting op de hele order af; hier doen we hetzelfde.
+  const discount = Math.round(bruto * tierPercentage);
+  const total = bruto - discount;
   const excludingVat = pricesIncludeVat ? Math.round(total / (1 + VAT_RATE)) : total;
   return {
     lines,
-    itemCount: lines.reduce((sum, l) => sum + l.quantity, 0),
+    itemCount,
     total: pricesIncludeVat ? total : Math.round(total * (1 + VAT_RATE)),
     vat: pricesIncludeVat ? total - excludingVat : Math.round(total * VAT_RATE),
     excludingVat,
+    totalBeforeDiscount: pricesIncludeVat ? bruto : Math.round(bruto * (1 + VAT_RATE)),
+    discount: pricesIncludeVat ? discount : Math.round(discount * (1 + VAT_RATE)),
+    tierPercentage,
+    nextTier,
   };
 }
 

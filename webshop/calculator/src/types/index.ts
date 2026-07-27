@@ -67,6 +67,14 @@ export interface CartTotals {
   total: number;
   vat: number;
   excludingVat: number;
+  /** Totaal vóór staffelkorting, in centen. */
+  totalBeforeDiscount: number;
+  /** Bedrag dat de staffelkorting scheelt, in centen. */
+  discount: number;
+  /** Actief staffelpercentage (0 = geen). */
+  tierPercentage: number;
+  /** Volgende staffel als die binnen bereik is. */
+  nextTier: { itemsNeeded: number; percentage: number } | null;
 }
 
 export type Quantities = Record<string, number>;

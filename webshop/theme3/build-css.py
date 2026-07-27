@@ -50,7 +50,22 @@ TAIL = ("html{scroll-behavior:smooth}\n"
         "border:1px solid rgba(0,0,0,.16);border-radius:10px;background:#fff;color:inherit}\n"
         ".tk3-linkveld input::placeholder{color:rgba(0,0,0,.34)}\n"
         ".tk3-linkveld input:focus{outline:2px solid rgba(0,0,0,.55);outline-offset:1px;border-color:transparent}\n"
-        ".tk3-linkveld small{display:block;margin-top:6px;font-size:12.5px;line-height:1.45;color:rgba(0,0,0,.55)}\n")
+        ".tk3-linkveld small{display:block;margin-top:6px;font-size:12.5px;line-height:1.45;color:rgba(0,0,0,.55)}\n"
+        # Staffelkorting op de productpagina.
+        ".tk3-staffel{flex:1 0 100%;width:100%;margin:0 0 18px}\n"
+        ".tk3-staffel-kop{font-size:14px;font-weight:600;letter-spacing:-.01em;margin-bottom:8px}\n"
+        ".tk3-staffel-rij{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}\n"
+        ".tk3-trede{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 4px;"
+        "font:inherit;text-align:center;cursor:pointer;background:#fff;color:inherit;"
+        "border:1px solid rgba(0,0,0,.14);border-radius:10px;transition:border-color .12s,box-shadow .12s}\n"
+        ".tk3-trede:hover{border-color:rgba(0,0,0,.38)}\n"
+        ".tk3-trede.is-actief{border-color:rgba(0,0,0,.85);box-shadow:0 0 0 1px rgba(0,0,0,.85) inset}\n"
+        ".tk3-trede-aantal{font-size:12px;font-weight:600;letter-spacing:-.01em}\n"
+        ".tk3-trede-pct{font-size:13px;font-weight:700;letter-spacing:-.02em;color:#136C34}\n"
+        ".tk3-trede:first-child .tk3-trede-pct{color:rgba(0,0,0,.36);font-weight:600}\n"
+        ".tk3-trede-prijs{font-size:11.5px;color:rgba(0,0,0,.5)}\n"
+        ".tk3-staffel small{display:block;margin-top:8px;font-size:12.5px;line-height:1.45;color:rgba(0,0,0,.55)}\n"
+        "@media(max-width:420px){.tk3-staffel-rij{grid-template-columns:repeat(2,1fr)}}\n")
 KEYFRAMES = {"slide": "tk3slide", "float": "tk3float"}
 
 

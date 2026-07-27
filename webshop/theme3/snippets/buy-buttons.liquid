@@ -2,6 +2,38 @@
   <input type="hidden" name="id" value="{{ current_variant.id }}" data-variant-id-input>
 
   {%- comment -%}
+    Staffelkorting. De percentages hieronder moeten gelijk lopen met de drie
+    automatische kortingen in Shopify; die doen het echte rekenwerk in de
+    winkelwagen. Klikken op een trede vult het aantal alvast in.
+  {%- endcomment -%}
+  {%- assign eenheid = current_variant.price -%}
+  <div class="tk3-staffel" data-tk3-staffel>
+    <div class="tk3-staffel-kop">Meer kaarten, meer korting</div>
+    <div class="tk3-staffel-rij">
+      {%- assign treden = '1,2,3,4' | split: ',' -%}
+      {%- for trede in treden -%}
+        {%- assign aantal = trede | plus: 0 -%}
+        {%- case aantal -%}
+          {%- when 2 -%}{%- assign pct = 10 -%}
+          {%- when 3 -%}{%- assign pct = 15 -%}
+          {%- when 4 -%}{%- assign pct = 20 -%}
+          {%- else -%}{%- assign pct = 0 -%}
+        {%- endcase -%}
+        {%- assign bruto = eenheid | times: aantal -%}
+        {%- assign af = bruto | times: pct | divided_by: 100 -%}
+        {%- assign netto = bruto | minus: af -%}
+        <button type="button" class="tk3-trede" data-tk3-trede="{{ aantal }}"
+          aria-label="{{ aantal }} kaarten kiezen{% if pct > 0 %}, {{ pct }} procent korting{% endif %}">
+          <span class="tk3-trede-aantal">{{ aantal }}{% if aantal == 4 %}+{% endif %} {% if aantal == 1 %}kaart{% else %}kaarten{% endif %}</span>
+          <span class="tk3-trede-pct">{% if pct > 0 %}−{{ pct }}%{% else %}basis{% endif %}</span>
+          <span class="tk3-trede-prijs">{{ netto | money }}</span>
+        </button>
+      {%- endfor -%}
+    </div>
+    <small>Wordt automatisch verrekend in de winkelwagen — je hoeft geen code in te vullen. Geldt over alle TapKaarten samen, ook als je verschillende soorten kiest.</small>
+  </div>
+
+  {%- comment -%}
     Zonder dit veld weet de winkel na een bestelling niet welke pagina de kaart
     moet openen en moet er alsnog gemaild worden. Het is bewust optioneel: wie
     het overslaat krijgt gewoon een mailtje.
@@ -75,6 +107,43 @@
         }, 0);
       }
     };
+
+    // Klikken op een trede vult het aantal in en markeert de actieve trede.
+    var aantalVeld = function (el) {
+      var form = el.closest('form');
+      return (form || document).querySelector('input[name="quantity"]');
+    };
+
+    var markeer = function () {
+      document.querySelectorAll('[data-tk3-staffel]').forEach(function (blok) {
+        var veld = aantalVeld(blok);
+        var nu = veld ? parseInt(veld.value, 10) || 1 : 1;
+        blok.querySelectorAll('[data-tk3-trede]').forEach(function (trede) {
+          var n = parseInt(trede.getAttribute('data-tk3-trede'), 10);
+          // de hoogste trede die je al haalt, is de trede die je krijgt
+          var actief = nu >= n && (n === 4 || nu < n + 1);
+          trede.classList.toggle('is-actief', actief);
+        });
+      });
+    };
+
+    document.addEventListener('click', function (e) {
+      var trede = e.target && e.target.closest && e.target.closest('[data-tk3-trede]');
+      if (!trede) return;
+      var veld = aantalVeld(trede);
+      if (!veld) return;
+      veld.value = trede.getAttribute('data-tk3-trede');
+      veld.dispatchEvent(new Event('input', { bubbles: true }));
+      veld.dispatchEvent(new Event('change', { bubbles: true }));
+      markeer();
+    });
+    document.addEventListener('input', function (e) {
+      if (e.target && e.target.name === 'quantity') markeer();
+    });
+    document.addEventListener('change', function (e) {
+      if (e.target && e.target.name === 'quantity') markeer();
+    });
+    markeer();
 
     document.addEventListener('submit', leegUit, true);
     document.addEventListener(

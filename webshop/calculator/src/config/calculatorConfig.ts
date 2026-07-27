@@ -112,3 +112,15 @@ export const CATEGORY_LABELS: Record<Category, { title: string; unit: string; ac
   instagram: { title: 'Geschatte nieuwe Instagram-volgers', unit: 'per maand', accent: '#D62976' },
   facebook: { title: 'Geschatte nieuwe Facebook-volgers', unit: 'per maand', accent: '#1877F2' },
 };
+
+/**
+ * Staffelkorting. Deze percentages moeten gelijk lopen met de automatische
+ * kortingen in Shopify — die doen het echte rekenwerk bij het afrekenen,
+ * hier tonen we alleen wat de klant kan verwachten. Wijzig je er één,
+ * wijzig dan ook de ander.
+ */
+export const VOLUME_TIERS: { minQuantity: number; percentage: number }[] = [
+  { minQuantity: 2, percentage: 0.1 },
+  { minQuantity: 3, percentage: 0.15 },
+  { minQuantity: 4, percentage: 0.2 },
+];

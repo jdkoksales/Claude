@@ -1,0 +1,39 @@
+name: Branchefoto's ophalen
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [claude/3d-product-animations-btyc7y]
+    paths: ['branche-urls.json']
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: claude/3d-product-animations-btyc7y
+
+      - name: Downloaden
+        run: |
+          mkdir -p webshop/branche
+          python3 - <<'PY'
+          import json, urllib.request, os
+          urls = json.load(open('branche-urls.json'))
+          for name, url in urls.items():
+              out = f'webshop/branche/{name}.png'
+              urllib.request.urlretrieve(url, out)
+              print(name, os.path.getsize(out) // 1024, 'KB')
+          PY
+          ls -la webshop/branche
+
+      - name: Terugcommitten
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add webshop/branche
+          git commit -m "Branchefoto's opgehaald" || echo "niets gewijzigd"
+          git push

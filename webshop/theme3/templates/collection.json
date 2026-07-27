@@ -1,0 +1,53 @@
+{
+  "sections": {
+    "main": {
+      "type": "collection",
+      "settings": {
+        "show_title": true,
+        "show_description": true,
+        "show_product_count": false,
+        "show_sort": false,
+        "show_filters": false,
+        "products_per_page": 20
+      }
+    },
+    "hoe": {
+      "type": "tk3-howto",
+      "blocks": {
+        "s1": {
+          "type": "stap",
+          "settings": {
+            "asset": "stap-1",
+            "title": "Uitpakken en neerzetten",
+            "text": "Hij komt kant-en-klaar aan. Zet hem op de balie, het tafeltje of naast de pinautomaat."
+          }
+        },
+        "s2": {
+          "type": "stap",
+          "settings": {
+            "asset": "stap-2",
+            "title": "Je klant houdt zijn telefoon ertegenaan",
+            "text": "Eén tik. Geen app, geen account, geen uitleg nodig."
+          }
+        },
+        "s3": {
+          "type": "stap",
+          "settings": {
+            "asset": "stap-3",
+            "title": "Jouw pagina opent meteen",
+            "text": "De klant laat een review achter of drukt op volgen. Binnen tien seconden klaar."
+          }
+        }
+      },
+      "block_order": ["s1", "s2", "s3"],
+      "settings": {
+        "heading": "Zo werkt het.",
+        "sub": "Je hoeft niets te installeren en niets in te stellen. Uitpakken, neerzetten, klaar.",
+        "reassurance": "Geen app nodig|Werkt op iPhone en Android|Wij zetten jouw link er vooraf op|Ook een QR-code voor oudere telefoons",
+        "cta_text": "",
+        "cta_url": ""
+      }
+    }
+  },
+  "order": ["main", "hoe"]
+}

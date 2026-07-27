@@ -1,0 +1,21 @@
+{
+  "sections": {
+    "contact_form": {
+      "type": "contact-form",
+      "settings": {
+        "subheading": "Contact",
+        "heading": "Stel je vraag",
+        "intro_text": "<p>Twijfel je welke kaart bij jouw zaak past, of wil je meer dan tien stuks? Stuur een bericht — we antwoorden op werkdagen meestal dezelfde dag.</p>",
+        "layout": "two-column",
+        "info_heading": "Rechtstreeks contact",
+        "info_text": "<p>E-mail: <a href=\"mailto:info@tapkaarten.nl\">info@tapkaarten.nl</a><br>Telefoon: <a href=\"tel:+31616036328\">06 16 03 63 28</a></p><p>TapKaarten<br>Dingspil 13<br>9302 ET Roden<br>Nederland</p><p>Vermeld bij een vraag over je bestelling even je bestelnummer, dan kunnen we het meteen opzoeken.</p>",
+        "hours": "Maandag t/m vrijdag, 9:00 – 17:00",
+        "show_phone_field": true,
+        "textarea_rows": 6,
+        "button_label": "Versturen",
+        "button_style": "primary"
+      }
+    }
+  },
+  "order": ["contact_form"]
+}

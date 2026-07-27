@@ -4,6 +4,7 @@ html{scroll-behavior:smooth}
 html,body{overflow-x:clip}
 .tk3 [hidden]{display:none!important}
 .shopify-section:has(>.tk3){padding:0!important;margin:0!important;max-width:none!important;width:auto!important}
+.shopify-section>.tk3{margin-left:0!important;margin-right:0!important;max-width:none!important;width:auto!important}
 .tk3{
   --ink:#1A202C;              
   --ink-64:rgba(0,0,0,.64);

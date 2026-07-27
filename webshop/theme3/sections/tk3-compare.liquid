@@ -29,7 +29,9 @@
                   </button>
                 {%- endform -%}
               {%- else -%}
-                <div class="price">—</div>
+                {%- comment -%} product staat nog op concept of is niet gekozen {%- endcomment -%}
+                <div class="price">{{ section.settings.fallback_price }}</div>
+                <a class="btn-primary" style="margin-top:14px" href="{{ routes.all_products_collection_url }}">Bekijk in de winkel</a>
               {%- endif -%}
             </div>
             <dl>
@@ -60,7 +62,8 @@
   "settings": [
     { "type": "text", "id": "heading", "label": "Kop", "default": "Kies je uitvoering: wit of zwart." },
     { "type": "product", "id": "product_a", "label": "Product links" },
-    { "type": "product", "id": "product_b", "label": "Product rechts" }
+    { "type": "product", "id": "product_b", "label": "Product rechts" },
+    { "type": "text", "id": "fallback_price", "label": "Prijs zolang het product op concept staat", "default": "€ 39,95" }
   ],
   "max_blocks": 10,
   "blocks": [

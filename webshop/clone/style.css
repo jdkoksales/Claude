@@ -193,14 +193,15 @@ section.dark .note{margin-top:34px;color:rgba(255,255,255,.62);max-width:62ch}
 
 /* ---------- verhaal ---------- */
 .story{display:grid;grid-template-columns:1fr 1.2fr;background:#fff;border-radius:20px;overflow:hidden}
-.story img{width:100%;height:100%;object-fit:cover;min-height:420px}
+.story>img{width:100%;height:100%;object-fit:cover;min-height:420px}
+.story .sig img{height:26px;width:auto;min-height:0;object-fit:contain;display:block}
 .story .txt{padding:56px 54px}
 .story .txt h2{margin-bottom:4px}
 .story .txt h3{color:var(--ink-48);margin-bottom:26px}
 .story .txt p{margin-bottom:16px;color:var(--ink-64)}
 .story .sig{font-family:ui-monospace,Menlo,monospace;font-weight:700;font-size:22px;margin-top:26px}
 @media(max-width:900px){.story{grid-template-columns:1fr}.story .txt{padding:32px 26px}
-  .story img{min-height:260px}}
+  .story>img{min-height:260px}}
 
 /* ---------- vergelijking ---------- */
 .compare{display:grid;grid-template-columns:1fr 1fr;gap:26px;margin-top:48px}

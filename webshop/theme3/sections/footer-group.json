@@ -30,7 +30,7 @@
           "type": "column",
           "settings": {
             "heading": "Juridisch",
-            "links": "Algemene voorwaarden | /policies/terms-of-service\nPrivacyverklaring | /policies/privacy-policy\nRetourneren | /policies/refund-policy"
+            "links": "Privacyverklaring | /policies/privacy-policy\nContact | /pages/contact"
           }
         }
       },

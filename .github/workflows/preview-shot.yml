@@ -54,6 +54,30 @@ jobs:
             if (tag === 'desktop') {
               const fs = await import('fs');
               fs.writeFileSync('preview/pagina.html', await p.content());
+              const diag = await p.evaluate(() => {
+                const out = [];
+                const iw = window.innerWidth;
+                out.push('innerWidth ' + iw);
+                out.push('doc.scrollWidth ' + document.documentElement.scrollWidth);
+                out.push('body.width ' + document.body.getBoundingClientRect().width);
+                for (const sel of ['main', 'footer', '.tk3', '.marquee', '.hdr']) {
+                  const el = document.querySelector(sel);
+                  if (el) {
+                    const r = el.getBoundingClientRect();
+                    const cs = getComputedStyle(el);
+                    out.push(`${sel} left=${r.left} width=${r.width} pad=${cs.paddingLeft}/${cs.paddingRight} max=${cs.maxWidth}`);
+                  }
+                }
+                out.push('--- breder dan viewport:');
+                document.querySelectorAll('body *').forEach(el => {
+                  const r = el.getBoundingClientRect();
+                  if (r.width > iw + 1 || r.right > iw + 1) {
+                    out.push(`${el.tagName}.${el.className}`.slice(0, 90) + ` w=${Math.round(r.width)} right=${Math.round(r.right)}`);
+                  }
+                });
+                return out.join('\n');
+              });
+              fs.writeFileSync('preview/diagnose.txt', diag);
             }
             await p.close();
           }

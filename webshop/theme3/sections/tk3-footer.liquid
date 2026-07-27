@@ -18,11 +18,21 @@
         </div>
         <div>
           <strong style="font-size:var(--fs-sm)">{{ section.settings.pay_title }}</strong>
+          {%- comment -%}
+            De echte betaalmethodes van de winkel, niet een handmatig lijstje —
+            zo staat er nooit een logo dat in de kassa niet blijkt te bestaan.
+          {%- endcomment -%}
           <div class="pay">
-            {%- assign methods = section.settings.pay_methods | split: ',' -%}
-            {%- for m in methods -%}
-              <span>{{ m | strip }}</span>
-            {%- endfor -%}
+            {%- if shop.enabled_payment_types.size > 0 -%}
+              {%- for type in shop.enabled_payment_types -%}
+                {{ type | payment_type_svg_tag: class: 'pay-svg' }}
+              {%- endfor -%}
+            {%- else -%}
+              {%- assign methods = section.settings.pay_methods | split: ',' -%}
+              {%- for m in methods -%}
+                <span>{{ m | strip }}</span>
+              {%- endfor -%}
+            {%- endif -%}
           </div>
         </div>
         <div>

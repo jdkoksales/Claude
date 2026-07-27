@@ -1,12 +1,27 @@
 home desktop status=200
+  titel  TapKaarten
+  omschr -
+  og     tk3-social.jpg?v=169197354925792053761785174942
 home mobiel status=200
 product desktop status=200
+  titel  Google Review-standaard wit — NFC bordje voor meer reviews – TapKaarten
+  omschr Zet hem op de balie: één tik met de telefoon en je klant staat op jouw Google-reviewpagina
+  og     tapkaarten-google-wit-1.png?v=1785095945
 product mobiel status=200
 collectie desktop status=200
+  titel  Alle TapKaarten — NFC-bordjes voor reviews en volgers
+  omschr Vijf NFC-kaarten voor op de balie: Google-reviews in wit of zwart, Instagram, Facebook en 
+  og     tk3-social.jpg?v=169197354925792053761785174942
 collectie mobiel status=200
 winkelwagen desktop status=200
+  titel  Je winkelwagen – TapKaarten
+  omschr -
+  og     tk3-social.jpg?v=169197354925792053761785174942
 winkelwagen mobiel status=200
 verzending desktop status=200
+  titel  Verzending – TapKaarten
+  omschr Verzendkosten Nederland € 6,95 — gratis vanaf € 55 België en de rest van de EU € 12,95 Bui
+  og     tk3-social.jpg?v=169197354925792053761785174942
 verzending mobiel status=200
 link 200 /
 link 200 /collections/alle-tapkaarten
@@ -28,13 +43,13 @@ link 200 /pages/algemene-voorwaarden
 link 200 /policies/privacy-policy
 
 --- fouten ---
-home/desktop 403 https://shop.app/pay/hop?analytics_trace_id=3466e7c6-5e11-4889-9da9-3cb7b2d1962d&target_origin=https%3A%2F%2Ftapkaarten.
-home/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=253505a8-a632-4464-b3a5-de11eeb47a34&target_origin=https%3A%2F%2Ftapkaarten.
-product/desktop 403 https://shop.app/pay/hop?analytics_trace_id=1ed29ec7-a7fe-4149-8ce6-194ab762a8f6&target_origin=https%3A%2F%2Ftapkaarten.
-product/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=c72cd3b4-a3eb-4bf5-a39b-fee1ae8c7aa1&target_origin=https%3A%2F%2Ftapkaarten.
-collectie/desktop 403 https://shop.app/pay/hop?analytics_trace_id=8f9a73cc-ee77-465d-808d-338db5db4521&target_origin=https%3A%2F%2Ftapkaarten.
-collectie/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=7480d24a-f1b0-4321-8c59-11dd14127fca&target_origin=https%3A%2F%2Ftapkaarten.
-winkelwagen/desktop 403 https://shop.app/pay/hop?analytics_trace_id=4c2f2747-b99a-492c-aff8-24c2ecbb9c9e&target_origin=https%3A%2F%2Ftapkaarten.
-winkelwagen/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=d44e551b-c833-4cbd-9155-6d4a60cdbcde&target_origin=https%3A%2F%2Ftapkaarten.
-verzending/desktop 403 https://shop.app/pay/hop?analytics_trace_id=7aead99c-ba23-4129-af08-a88dbace243b&target_origin=https%3A%2F%2Ftapkaarten.
-verzending/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=56d200ff-6c0b-43fe-b91e-5a45ab5de7e6&target_origin=https%3A%2F%2Ftapkaarten.
+home/desktop 403 https://shop.app/pay/hop?analytics_trace_id=36c1aa89-5b6f-4f0f-9a34-ccfe8126f5c5&target_origin=https%3A%2F%2Ftapkaarten.
+home/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=ee8ac156-5afb-4b94-ab27-51405f9d5e5c&target_origin=https%3A%2F%2Ftapkaarten.
+product/desktop 403 https://shop.app/pay/hop?analytics_trace_id=ae94edd0-9d56-4cc6-85e9-39768ae96f45&target_origin=https%3A%2F%2Ftapkaarten.
+product/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=6991bcff-012a-4d14-a9a3-f9c0da80ba2e&target_origin=https%3A%2F%2Ftapkaarten.
+collectie/desktop 403 https://shop.app/pay/hop?analytics_trace_id=04af509f-ea94-4e38-b3fb-22343138ea0d&target_origin=https%3A%2F%2Ftapkaarten.
+collectie/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=a9c470e8-18ac-4399-9a4c-09b5bfe1ebda&target_origin=https%3A%2F%2Ftapkaarten.
+winkelwagen/desktop 403 https://shop.app/pay/hop?analytics_trace_id=a879da70-edae-48c9-b09b-be2040f0d1e8&target_origin=https%3A%2F%2Ftapkaarten.
+winkelwagen/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=fb16c64b-2d77-4dc6-8dd3-118176d4244d&target_origin=https%3A%2F%2Ftapkaarten.
+verzending/desktop 403 https://shop.app/pay/hop?analytics_trace_id=0c1da767-74bb-4712-aaa9-0ba0aa57a27a&target_origin=https%3A%2F%2Ftapkaarten.
+verzending/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=828b4f4c-11dc-4766-b362-ffe48b2b1c92&target_origin=https%3A%2F%2Ftapkaarten.

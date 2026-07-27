@@ -7,7 +7,7 @@
         {%- if section.settings.image -%}
           <img src="{{ section.settings.image | image_url: width: 1000 }}" alt="{{ section.settings.image.alt | escape }}" width="1000" height="1000" loading="lazy">
         {%- else -%}
-          <img src="{{ 'tk3-story.jpg' | file_url }}" alt="{{ shop.name }}" width="1000" height="1000" loading="lazy">
+          <img src="{{ 'tk3-story.jpg' | asset_url }}" alt="{{ shop.name }}" width="1000" height="1000" loading="lazy">
         {%- endif -%}
         <div class="txt">
           <h2>{{ section.settings.heading }}</h2>

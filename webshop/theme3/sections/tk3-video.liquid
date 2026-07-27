@@ -16,7 +16,7 @@
             {%- if block.settings.image -%}
               <img src="{{ block.settings.image | image_url: width: 640 }}" alt="" width="640" height="800" loading="lazy">
             {%- else -%}
-              <img src="{{ 'tk3-ph-1.jpg' | file_url }}" alt="" width="640" height="800" loading="lazy">
+              <img src="{{ 'tk3-ph-1.jpg' | asset_url }}" alt="" width="640" height="800" loading="lazy">
             {%- endif -%}
             <div class="play">▶</div>
             <div class="cap">{{ block.settings.caption }}</div>

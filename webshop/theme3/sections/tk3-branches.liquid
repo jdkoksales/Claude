@@ -20,7 +20,7 @@
           {%- if block.settings.image -%}
             <img src="{{ block.settings.image | image_url: width: 1200 }}" alt="{{ block.settings.image.alt | escape }}" width="1200" height="672" loading="lazy">
           {%- else -%}
-            <img src="{{ 'tk3-cafe.jpg' | file_url }}" alt="{{ block.settings.label | escape }}" width="1200" height="672" loading="lazy">
+            <img src="{{ 'tk3-cafe.jpg' | asset_url }}" alt="{{ block.settings.label | escape }}" width="1200" height="672" loading="lazy">
           {%- endif -%}
           <div>
             <blockquote>{{ block.settings.quote }}</blockquote>

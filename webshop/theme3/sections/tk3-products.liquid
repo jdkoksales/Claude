@@ -47,7 +47,7 @@
           {%- assign fb_flag = 'Bestseller, , , ,Zelfklevend' | split: ',' -%}
           {%- for i in (0..4) -%}
             <a class="pcard" href="{{ routes.all_products_collection_url }}">
-              <div class="thumb"><img src="{{ fb_img[i] | file_url }}" alt="{{ fb_name[i] }}" width="700" height="700" loading="lazy"></div>
+              <div class="thumb"><img src="{{ fb_img[i] | asset_url }}" alt="{{ fb_name[i] }}" width="700" height="700" loading="lazy"></div>
               <div class="body">
                 <span class="flag">{% if fb_flag[i] != ' ' %}{{ fb_flag[i] }}{% else %}&nbsp;{% endif %}</span>
                 <div class="name">{{ fb_name[i] }}</div>

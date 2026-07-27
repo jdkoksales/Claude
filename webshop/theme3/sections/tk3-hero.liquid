@@ -41,7 +41,7 @@
       {%- if section.settings.image -%}
         <img class="shot" src="{{ section.settings.image | image_url: width: 2000 }}" alt="{{ section.settings.image.alt | escape }}" width="2000" height="849">
       {%- else -%}
-        <img class="shot" src="{{ 'tk3-hero.jpg' | file_url }}" alt="{{ section.settings.heading | escape }}" width="1584" height="672">
+        <img class="shot" src="{{ 'tk3-hero.jpg' | asset_url }}" alt="{{ section.settings.heading | escape }}" width="1584" height="672">
       {%- endif -%}
     </div>
   </section>

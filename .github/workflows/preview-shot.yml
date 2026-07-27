@@ -129,30 +129,29 @@ jobs:
             const ctx = await b.newContext();
             const t = await ctx.newPage();
             await t.goto(BASE + '/cart' + PV, { waitUntil: 'domcontentloaded', timeout: 60000 });
+            await t.waitForTimeout(15000); // de winkelwagen-API even met rust laten
             const euro = (c) => '€ ' + (c / 100).toFixed(2).replace('.', ',');
             for (const q of [1, 2, 3, 4, 5]) {
               const r = await t.evaluate(async (aantal) => {
                 const wacht = (ms) => new Promise((res) => setTimeout(res, ms));
-                // Shopify knijpt de winkelwagen-API af; bij een 429 even wachten en opnieuw.
+                // Shopify knijpt de winkelwagen-API af; bij een 429 wachten en opnieuw.
                 const post = async (url, body) => {
-                  for (let poging = 1; poging <= 5; poging++) {
+                  for (let poging = 1; poging <= 6; poging++) {
                     const res = await fetch(url, {
                       method: 'POST',
                       headers: { 'Content-Type': 'application/json' },
-                      body: body ? JSON.stringify(body) : undefined,
+                      body: JSON.stringify(body),
                     });
                     if (res.status !== 429) return res;
-                    await wacht(poging * 2500);
+                    await wacht(poging * 5000);
                   }
                   return { ok: false, status: 429 };
                 };
-                await post('/cart/clear.js');
-                await wacht(800);
-                const add = await post('/cart/add.js', { items: [{ id: 64057218662777, quantity: aantal }] });
-                if (!add.ok) return { fout: 'toevoegen mislukt ' + add.status };
-                await wacht(800);
-                const c = await fetch('/cart.js').then((x) => x.json());
-                const regel = c.items[0] || {};
+                // update.js zet het aantal absoluut, dus geen clear + add nodig
+                const up = await post('/cart/update.js', { updates: { 64057218662777: aantal } });
+                if (!up.ok) return { fout: 'aantal zetten mislukt ' + up.status };
+                const c = await up.json();
+                const regel = (c.items || []).find((i) => i.variant_id === 64057218662777) || {};
                 const namen = []
                   .concat(regel.line_level_discount_allocations || [], c.cart_level_discount_applications || [])
                   .map((d) => (d.discount_application ? d.discount_application.title : d.title))
@@ -164,9 +163,13 @@ jobs:
               log.push(
                 `staffel ${q}×: van ${euro(r.sub)} af ${euro(r.korting)} (${pct}%) => ${euro(r.tot)}  [${r.namen.join(' | ')}]`
               );
-              await t.waitForTimeout(2000);
+              await t.waitForTimeout(4000);
             }
-            await t.evaluate(() => fetch('/cart/clear.js', { method: 'POST' }));
+            await t.evaluate(() => fetch('/cart/update.js', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ updates: { 64057218662777: 0 } }),
+            }));
             await ctx.close();
           } catch (e) {
             log.push('staffelproef MISLUKT: ' + e.message.split('\n')[0]);

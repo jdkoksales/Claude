@@ -1,3 +1,0 @@
-hero-cafe-4k.png|https://d8j0ntlcm91z4.cloudfront.net/user_3H2Nj30E5c9ly0JUatR4HpxuaNv/hf_20260727_060711_2de1658c-1845-4dc2-be9f-cde17f9c94ae.png
-hero-dark-4k.png|https://d8j0ntlcm91z4.cloudfront.net/user_3H2Nj30E5c9ly0JUatR4HpxuaNv/hf_20260727_060719_bfba894b-5756-477d-93de-84c38633a8ea.png
-hero-cafe-mobile.png|https://d8j0ntlcm91z4.cloudfront.net/user_3H2Nj30E5c9ly0JUatR4HpxuaNv/hf_20260727_060736_ccc6612b-165c-41d2-af85-c157347a7a3c.png

@@ -35,25 +35,38 @@
 @media(max-width:860px){.tk2.block{padding:64px 0}}
 
 /* hero */
-.tk2-hero{position:relative;overflow:hidden;background:#e9e4dc}
-.tk2-hero .bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:86% 42%}
-.tk2-hero .inner{position:relative;min-height:min(86vh,780px);display:flex;align-items:center;padding:90px 0}
-.tk2-hero .copy{max-width:530px}
-.tk2-hero .stars{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:600;color:#3d434c;margin-bottom:18px}
-.tk2-hero .stars b{color:var(--gold);letter-spacing:2px;font-size:16px}
-.tk2-hero h1{font-size:clamp(42px,5.6vw,74px);margin-bottom:20px}
-.tk2-hero .sub{font-size:clamp(17px,1.6vw,21px);color:#3d434c;max-width:46ch;margin-bottom:30px}
-.tk2-hero .ctas{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:22px}
-.tk2-hero .micro{display:flex;gap:18px;flex-wrap:wrap;font-size:13.5px;font-weight:600;color:#4a5058}
+.tk2-hero{position:relative;overflow:hidden;background:#0b0d10;isolation:isolate}
+.tk2-hero .bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:62% 50%;z-index:-2}
+.tk2-hero::before{content:"";position:absolute;inset:0;z-index:-1;
+  background:linear-gradient(100deg,rgba(6,8,11,.92) 0%,rgba(6,8,11,.86) 26%,rgba(6,8,11,.62) 46%,rgba(6,8,11,.18) 66%,rgba(6,8,11,0) 82%)}
+.tk2-hero .inner{position:relative;min-height:min(88vh,820px);display:flex;align-items:center;padding:96px 0}
+.tk2-hero .copy{max-width:560px;color:#fff}
+.tk2-hero .stars{display:flex;align-items:center;gap:11px;font-size:14px;font-weight:600;color:rgba(255,255,255,.82);margin-bottom:20px}
+.tk2-hero .stars b{color:#f2b50f;letter-spacing:2px;font-size:16px}
+.tk2-hero h1{font-size:clamp(44px,5.8vw,78px);margin-bottom:22px;color:#fff;text-wrap:balance}
+.tk2-hero .sub{font-size:clamp(17px,1.6vw,21px);color:rgba(255,255,255,.8);max-width:46ch;margin-bottom:34px}
+.tk2-hero .ctas{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:26px}
+.tk2-hero .btn-dark{background:#fff;color:#0b0d10}
+.tk2-hero .btn-dark:hover{background:#fff;color:#0b0d10;transform:translateY(-1px);box-shadow:0 12px 30px rgba(0,0,0,.4)}
+.tk2-hero .btn-ghost{background:transparent;border-color:rgba(255,255,255,.4);color:#fff}
+.tk2-hero .btn-ghost:hover{border-color:#fff;background:rgba(255,255,255,.08);color:#fff}
+.tk2-hero .micro{display:flex;gap:20px;flex-wrap:wrap;font-size:13.5px;font-weight:600;color:rgba(255,255,255,.78)}
 .tk2-hero .micro span{display:inline-flex;align-items:center;gap:7px}
-.tk2-hero .micro svg{color:var(--green)}
+.tk2-hero .micro svg{color:#5ed17f}
 .tk2-hero .bg-mobile{display:none}
 @media(max-width:860px){
+  /* Mobiel: donker tekstblok boven, foto eronder in volle breedte. */
   .tk2-hero .bg{display:none}
-  .tk2-hero{background:linear-gradient(#f2efe9,#e7e2da)}
-  .tk2-hero .inner{display:block;min-height:auto;padding:46px 0 0}
-  .tk2-hero .copy{max-width:none;padding-bottom:8px}
-  .tk2-hero .bg-mobile{display:block;width:calc(100% + 56px);margin:18px -28px 0}
+  .tk2-hero::before{display:none}
+  .tk2-hero .inner{display:block;min-height:auto;padding:34px 0 0}
+  .tk2-hero .copy{max-width:none}
+  .tk2-hero .stars{margin-bottom:14px}
+  .tk2-hero h1{font-size:clamp(36px,9.4vw,48px);margin-bottom:14px}
+  .tk2-hero .sub{font-size:16.5px;margin-bottom:22px}
+  .tk2-hero .ctas{flex-direction:column;align-items:stretch;gap:10px;margin-bottom:18px}
+  .tk2-hero .btn-l{padding:15px 24px;font-size:16px}
+  .tk2-hero .micro{gap:8px 18px;margin-bottom:26px}
+  .tk2-hero .bg-mobile{display:block;width:calc(100% + 56px);margin:0 -28px;aspect-ratio:4/4.3;object-fit:cover;object-position:50% 78%}
 }
 
 /* usp strip */

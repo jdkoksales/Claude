@@ -65,7 +65,43 @@ jobs:
                 window.scrollTo(0, 0);
               });
               await p.waitForTimeout(1200);
-              await p.screenshot({ path: `preview/${name}-${tag}.png`, fullPage: tag === 'desktop' });
+              await p.screenshot({ path: `preview/${name}-${tag}.png`, fullPage: true });
+              if (tag === 'mobiel') {
+                const breed = await p.evaluate(() => {
+                  const doc = document.documentElement;
+                  const te = [];
+                  document.querySelectorAll('body *').forEach((el) => {
+                    const r = el.getBoundingClientRect();
+                    if (r.width > 0 && (r.right > doc.clientWidth + 1 || r.left < -1)) {
+                      const sel =
+                        el.tagName.toLowerCase() +
+                        (el.className && typeof el.className === 'string'
+                          ? '.' + el.className.trim().split(/\s+/).slice(0, 2).join('.')
+                          : '');
+                      te.push(`${sel} ${Math.round(r.left)}..${Math.round(r.right)}`);
+                    }
+                  });
+                  return { scrollW: doc.scrollWidth, clientW: doc.clientWidth, te: [...new Set(te)].slice(0, 8) };
+                });
+                if (breed.scrollW > breed.clientW + 1) {
+                  log.push(`  BREEDTE ${breed.scrollW} > ${breed.clientW}`);
+                  breed.te.forEach((x) => log.push(`    steekt uit: ${x}`));
+                }
+                // te kleine raakvlakken opsporen
+                const klein = await p.$$eval('a, button, input, select, [role="button"]', (els) =>
+                  els
+                    .filter((el) => {
+                      const r = el.getBoundingClientRect();
+                      return r.width > 0 && r.height > 0 && (r.height < 34 || r.width < 34);
+                    })
+                    .map((el) => {
+                      const r = el.getBoundingClientRect();
+                      return `${el.tagName.toLowerCase()}${el.className && typeof el.className === 'string' ? '.' + el.className.trim().split(/\s+/)[0] : ''} ${Math.round(r.width)}x${Math.round(r.height)}`;
+                    })
+                );
+                const uniek = [...new Set(klein)];
+                if (uniek.length) log.push(`  KLEINE KNOPPEN ${uniek.slice(0, 8).join(', ')}`);
+              }
               if (tag === 'desktop') {
                 const meta = await p.evaluate(() => ({
                   t: document.title,

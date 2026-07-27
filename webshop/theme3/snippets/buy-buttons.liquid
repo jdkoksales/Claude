@@ -29,9 +29,7 @@
         {%- assign netto = bruto | minus: af -%}
         <button type="button" class="tk3-trede" data-tk3-trede="{{ aantal }}"
           aria-label="{{ aantal }} kaarten kiezen{% if pct > 0 %}, {{ pct }} procent korting{% endif %}">
-          <span class="tk3-trede-aantal">
-            {%- if aantal == 1 -%}1 kaart{%- elsif aantal == 4 -%}4+ kaarten{%- else -%}{{ aantal }} kaarten{%- endif -%}
-          </span>
+          <span class="tk3-trede-aantal"><b>{% if aantal == 4 %}4+{% else %}{{ aantal }}{% endif %}</b> {% if aantal == 1 %}kaart{% else %}kaarten{% endif %}</span>
           <span class="tk3-trede-pct">{% if pct > 0 %}−{{ pct }}%{% else %}basis{% endif %}</span>
           <span class="tk3-trede-prijs">{{ netto | money }}</span>
         </button>

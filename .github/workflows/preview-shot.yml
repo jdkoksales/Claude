@@ -65,6 +65,16 @@ jobs:
               });
               await p.waitForTimeout(1200);
               await p.screenshot({ path: `preview/${name}-${tag}.png`, fullPage: tag === 'desktop' });
+              if (tag === 'desktop') {
+                const meta = await p.evaluate(() => ({
+                  t: document.title,
+                  d: document.querySelector('meta[name="description"]')?.content || '-',
+                  og: document.querySelector('meta[property="og:image"]')?.content || '-',
+                }));
+                log.push(`  titel  ${meta.t}`);
+                log.push(`  omschr ${meta.d.slice(0, 90)}`);
+                log.push(`  og     ${meta.og.split('/').pop().slice(0, 60)}`);
+              }
               if (tag === 'desktop' && name === 'verzending') {
                 // structuur van een gewone pagina, om de typografie gericht te kunnen bijstellen
                 const html = await p.evaluate(() => {

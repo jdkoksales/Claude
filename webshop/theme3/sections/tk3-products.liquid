@@ -1,10 +1,12 @@
 {{ 'tk3.css' | asset_url | stylesheet_tag }}
 
 {%- liquid
+  comment
+    Geen terugval op collections.all: die bevat ook losse fotoproducten. Levert
+    de gekozen collectie niets zichtbaars op, dan pakt de lus hieronder de
+    vaste kaarten.
+  endcomment
   assign coll = collections[section.settings.collection]
-  if coll == blank or coll.products_count == 0
-    assign coll = collections.all
-  endif
   assign rail_id = 'tk3-rail-' | append: section.id
 -%}
 

@@ -14,8 +14,12 @@ DST = "/home/user/Claude/webshop/theme3/assets/tk3.css"
 ROOTS = {":root", "html", "body", "html,body", "body,html"}
 # de universele reset moet ook op de wrapper zelf landen
 UNIVERSAL = {"*", "*,*::before,*::after"}
-# scroll-behavior hoort op het document, niet op een div
-TAIL = "html{scroll-behavior:smooth}\n"
+# Regels die niet onder .tk3 kunnen wonen, plus twee correcties voor het thema:
+#  - [hidden] verliest het van display:grid op .usecase, dus forceren
+#  - overflow-x:clip houdt de horizontale rails binnen boord zonder sticky te slopen
+TAIL = ("html{scroll-behavior:smooth}\n"
+        "html,body{overflow-x:clip}\n"
+        ".tk3 [hidden]{display:none!important}\n")
 KEYFRAMES = {"slide": "tk3slide", "float": "tk3float"}
 
 

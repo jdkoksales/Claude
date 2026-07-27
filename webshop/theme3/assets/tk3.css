@@ -1,6 +1,8 @@
 /* tk3 — gegenereerd uit webshop/clone/style.css door build-css.py.
    Niet met de hand aanpassen: pas de bron aan en draai het script. */
 html{scroll-behavior:smooth}
+html,body{overflow-x:clip}
+.tk3 [hidden]{display:none!important}
 .tk3{
   --ink:#1A202C;              
   --ink-64:rgba(0,0,0,.64);

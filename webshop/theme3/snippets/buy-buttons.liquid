@@ -19,12 +19,19 @@
           {%- when 4 -%}{%- assign pct = 20 -%}
           {%- else -%}{%- assign pct = 0 -%}
         {%- endcase -%}
+        {%- comment -%}
+          Shopify rekent de korting per stuk en rondt daarbij naar beneden af.
+          Zelfde volgorde aanhouden, anders scheelt het hier een cent met de kassa.
+        {%- endcomment -%}
         {%- assign bruto = eenheid | times: aantal -%}
-        {%- assign af = bruto | times: pct | divided_by: 100 -%}
+        {%- assign af_stuk = eenheid | times: pct | divided_by: 100 -%}
+        {%- assign af = af_stuk | times: aantal -%}
         {%- assign netto = bruto | minus: af -%}
         <button type="button" class="tk3-trede" data-tk3-trede="{{ aantal }}"
           aria-label="{{ aantal }} kaarten kiezen{% if pct > 0 %}, {{ pct }} procent korting{% endif %}">
-          <span class="tk3-trede-aantal">{{ aantal }}{% if aantal == 4 %}+{% endif %} {% if aantal == 1 %}kaart{% else %}kaarten{% endif %}</span>
+          <span class="tk3-trede-aantal">
+            {%- if aantal == 1 -%}1 kaart{%- elsif aantal == 4 -%}4+ kaarten{%- else -%}{{ aantal }} kaarten{%- endif -%}
+          </span>
           <span class="tk3-trede-pct">{% if pct > 0 %}−{{ pct }}%{% else %}basis{% endif %}</span>
           <span class="tk3-trede-prijs">{{ netto | money }}</span>
         </button>

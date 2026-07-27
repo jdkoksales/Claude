@@ -62,8 +62,12 @@ function totalsFor(products: Product[], quantities: Quantities, pricesIncludeVat
   const itemCount = lines.reduce((sum, l) => sum + l.quantity, 0);
   const bruto = lines.reduce((sum, l) => sum + (l.product.shop?.price || 0) * l.quantity, 0);
   const { tierPercentage, nextTier } = tiersFor(itemCount);
-  // Shopify rondt de korting op de hele order af; hier doen we hetzelfde.
-  const discount = Math.round(bruto * tierPercentage);
+  // Shopify rekent de korting per stuk en rondt naar beneden af. Zelfde volgorde
+  // aanhouden, anders wijkt dit bedrag een cent af van wat de kassa laat zien.
+  const discount = lines.reduce(
+    (sum, l) => sum + Math.floor((l.product.shop?.price || 0) * tierPercentage) * l.quantity,
+    0
+  );
   const total = bruto - discount;
   const excludingVat = pricesIncludeVat ? Math.round(total / (1 + VAT_RATE)) : total;
   return {

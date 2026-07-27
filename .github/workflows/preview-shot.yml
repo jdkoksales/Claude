@@ -1,0 +1,60 @@
+name: Themapreview screenshotten
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [claude/3d-product-animations-btyc7y]
+    paths: ['.github/workflows/preview-shot.yml', 'preview/trigger.txt']
+
+permissions:
+  contents: write
+
+jobs:
+  shot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: claude/3d-product-animations-btyc7y
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Playwright installeren
+        run: npm i -D playwright && npx playwright install --with-deps chromium
+
+      - name: Preview vastleggen
+        run: |
+          mkdir -p preview
+          cat > shot.mjs <<'JS'
+          import { chromium } from 'playwright';
+          const URL = 'https://ikep5e-3q.myshopify.com/?preview_theme_id=196665213305';
+          const b = await chromium.launch();
+          for (const [w, h, tag] of [[1440, 900, 'desktop'], [390, 844, 'mobiel']]) {
+            const p = await b.newPage({ viewport: { width: w, height: h }, deviceScaleFactor: 1 });
+            const resp = await p.goto(URL, { waitUntil: 'networkidle', timeout: 90000 });
+            console.log(tag, 'status', resp && resp.status());
+            await p.addStyleTag({ content: '*{animation:none!important;transition:none!important}' });
+            await p.waitForTimeout(2500);
+            await p.screenshot({ path: `preview/${tag}-boven.png` });
+            await p.screenshot({ path: `preview/${tag}-volledig.png`, fullPage: true });
+            if (tag === 'desktop') {
+              const html = await p.content();
+              require('fs');
+            }
+            await p.close();
+          }
+          await b.close();
+          JS
+          node shot.mjs
+          curl -sSL "https://ikep5e-3q.myshopify.com/?preview_theme_id=196665213305" -o preview/pagina.html || true
+          ls -la preview
+
+      - name: Terugcommitten
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add preview
+          git commit -m "Preview-screenshots van het tk3-thema" || echo "niets gewijzigd"
+          git push

@@ -19,6 +19,15 @@ export const PRODUCTS: ProductConfig[] = [
     badge: 'Meest gekozen',
   },
   {
+    id: 'google-zwart',
+    handle: 'tapkaarten-google-review-standaard-zwart',
+    title: 'Google Review-standaard — zwart',
+    blurb: 'Zelfde kaart, matzwart. Voor een donker interieur.',
+    category: 'google',
+    exposure: { steps: [1.0, 0.6, 0.4], tail: 0.25 },
+    accent: '#1A202C',
+  },
+  {
     id: 'google-sticker',
     handle: 'tapkaarten-google-review-sticker',
     title: 'Google Review-sticker',

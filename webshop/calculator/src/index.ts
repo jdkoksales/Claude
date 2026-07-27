@@ -118,8 +118,8 @@ function mount(root: HTMLElement): void {
   const side = document.createElement('div');
   side.className = 'cfg-side';
 
-  main.append(slider, selector.el, results.el);
-  side.append(summary.el, checkout.el);
+  main.append(slider, selector.el);
+  side.append(results.el, checkout.el, summary.el);
   layout.append(main, side);
   root.append(layout);
 

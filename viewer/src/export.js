@@ -264,6 +264,7 @@ window.renderHero = (items, width, height, cam = {}, opts = {}) => {
     scene.add(backdrop);
   }
 
+  const drawCounter = opts.counter !== false;
   const counterTop = new THREE.Mesh(
     new THREE.BoxGeometry(26, 0.28, 7),
     new THREE.MeshPhysicalMaterial({
@@ -276,13 +277,13 @@ window.renderHero = (items, width, height, cam = {}, opts = {}) => {
     })
   );
   counterTop.position.set(0, -0.14, 0);
-  scene.add(counterTop);
+  if (drawCounter) scene.add(counterTop);
   const counterFront = new THREE.Mesh(
     new THREE.BoxGeometry(26, 5, 6.6),
     new THREE.MeshPhysicalMaterial({ color: opts.plinth ?? 0x2a2c30, roughness: 0.6, metalness: 0 })
   );
   counterFront.position.set(0, -2.79, -0.2);
-  scene.add(counterFront);
+  if (drawCounter) scene.add(counterFront);
 
   for (const item of items) {
     const v = VARIANTS[item.key];
@@ -292,15 +293,18 @@ window.renderHero = (items, width, height, cam = {}, opts = {}) => {
     product.group.rotation.y = ((item.yawDeg || 0) * Math.PI) / 180;
     scene.add(product.group);
 
-    const shadow = new THREE.Mesh(
-      new THREE.PlaneGeometry(1, 1),
-      new THREE.MeshBasicMaterial({ map: shadowTexture(), transparent: true, depthWrite: false, opacity: 0.55 })
-    );
-    shadow.rotation.x = -Math.PI / 2;
-    shadow.position.set(item.x, 0.006, item.z + 0.1);
-    const d = v.kind === 'sticker' ? 0.4 : 1.0;
-    shadow.scale.set(product.width * 1.9, d * 2.2, 1);
-    scene.add(shadow);
+    // Zonder balie geen slagschaduw: die wordt in de montage zelf gezet.
+    if (drawCounter) {
+      const shadow = new THREE.Mesh(
+        new THREE.PlaneGeometry(1, 1),
+        new THREE.MeshBasicMaterial({ map: shadowTexture(), transparent: true, depthWrite: false, opacity: 0.55 })
+      );
+      shadow.rotation.x = -Math.PI / 2;
+      shadow.position.set(item.x, 0.006, item.z + 0.1);
+      const d = v.kind === 'sticker' ? 0.4 : 1.0;
+      shadow.scale.set(product.width * 1.9, d * 2.2, 1);
+      scene.add(shadow);
+    }
   }
 
   const key1 = new THREE.DirectionalLight(0xfff3e0, 1.3);

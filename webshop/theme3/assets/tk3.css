@@ -77,9 +77,7 @@ html,body{overflow-x:clip}
 .tk3 .hero h1{max-width:768px;margin:0 auto 16px}
 .tk3 .hero .sub{font-size:var(--fs-lg);color:var(--ink-64);max-width:56ch;margin:0 auto 24px}
 .tk3 .hero .shots{display:grid;width:min(100%,1500px);margin:8px auto 0}
-.tk3 .hero .shots img{grid-area:1/1;width:100%;opacity:0;transition:opacity .3s ease;
-  -webkit-mask-image:linear-gradient(to right,transparent 0,#000 7%,#000 93%,transparent 100%);
-  mask-image:linear-gradient(to right,transparent 0,#000 7%,#000 93%,transparent 100%)}
+.tk3 .hero .shots img{grid-area:1/1;width:100%;opacity:0;transition:opacity .3s ease}
 .tk3 .hero .shots img.on{opacity:1}
 @media(prefers-reduced-motion:reduce){.tk3 .hero .shots img{transition:none}}
 .tk3 .hero .hearts{height:26px;position:relative}

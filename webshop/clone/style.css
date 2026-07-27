@@ -97,9 +97,7 @@ footer .brand img{height:29px}
 /* De foto draagt zelf hetzelfde verloop; de mask laat de bovenrand
    naadloos in de sectieachtergrond oplossen. */
 .hero .shots{display:grid;width:min(100%,1500px);margin:8px auto 0}
-.hero .shots img{grid-area:1/1;width:100%;opacity:0;transition:opacity .3s ease;
-  -webkit-mask-image:linear-gradient(to right,transparent 0,#000 7%,#000 93%,transparent 100%);
-  mask-image:linear-gradient(to right,transparent 0,#000 7%,#000 93%,transparent 100%)}
+.hero .shots img{grid-area:1/1;width:100%;opacity:0;transition:opacity .3s ease}
 .hero .shots img.on{opacity:1}
 @media(prefers-reduced-motion:reduce){.hero .shots img{transition:none}}
 .hero .hearts{height:26px;position:relative}

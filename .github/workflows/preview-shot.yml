@@ -65,7 +65,7 @@ jobs:
                   if (el) {
                     const r = el.getBoundingClientRect();
                     const cs = getComputedStyle(el);
-                    out.push(`${sel} left=${r.left} width=${r.width} pad=${cs.paddingLeft}/${cs.paddingRight} max=${cs.maxWidth}`);
+                    out.push(`${sel} left=${r.left} width=${r.width} pad=${cs.paddingLeft}/${cs.paddingRight} mar=${cs.marginLeft}/${cs.marginRight} bor=${cs.borderLeftWidth}/${cs.borderRightWidth} box=${cs.boxSizing} disp=${cs.display} max=${cs.maxWidth}`);
                   }
                 }
                 out.push('--- breder dan viewport:');

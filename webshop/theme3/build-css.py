@@ -22,9 +22,9 @@ TAIL = ("html{scroll-behavior:smooth}\n"
         ".tk3 [hidden]{display:none!important}\n"
         # Concept zet 10px zijmarge op elke .shopify-section; onze secties zijn
         # full-bleed en moeten die kwijt.
-        ".shopify-section:has(>.tk3){padding:0!important;margin:0!important;max-width:none!important;width:auto!important}\n"
+        ".shopify-section:has(>.tk3){padding:0!important;margin:0!important;border:0!important;max-width:none!important;width:auto!important}\n"
         # het thema legt ook op de sectie-inhoud zelf een zijmarge
-        ".shopify-section>.tk3{margin-left:0!important;margin-right:0!important;max-width:none!important;width:auto!important}\n")
+        ".shopify-section>.tk3{margin-left:0!important;margin-right:0!important;border:0!important;max-width:none!important;width:auto!important}\n")
 KEYFRAMES = {"slide": "tk3slide", "float": "tk3float"}
 
 

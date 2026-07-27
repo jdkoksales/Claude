@@ -6,19 +6,54 @@
         "heading": "Verander bezoekers in reviews.",
         "sub": "Eén tik met de telefoon en je klant staat op jouw reviewpagina. Het vraagt erom terwijl jij gewoon werkt.",
         "cta_text": "Kopen",
-        "cta_url": "/#producten"
+        "cta_url": "/#producten",
+        "product_google": "tapkaarten-google-review-standaard",
+        "product_instagram": "tapkaarten-instagram-standaard",
+        "product_facebook": "tapkaarten-facebook-standaard",
+        "product_sticker": "tapkaarten-google-review-sticker"
       }
     },
     "trust": {
       "type": "tk3-trust",
       "blocks": {
-        "t1": { "type": "item", "settings": { "text": "★ Uitstekend beoordeeld door ondernemers" } },
-        "t2": { "type": "item", "settings": { "text": "🛡️ 14 dagen bedenktijd" } },
-        "t3": { "type": "item", "settings": { "text": "🚚 Vandaag besteld, vandaag verzonden" } },
-        "t4": { "type": "item", "settings": { "text": "🔁 Onbeperkt herprogrammeerbaar" } },
-        "t5": { "type": "item", "settings": { "text": "🇳🇱 Nederland" } }
+        "t1": {
+          "type": "item",
+          "settings": {
+            "text": "★ Uitstekend beoordeeld door ondernemers"
+          }
+        },
+        "t2": {
+          "type": "item",
+          "settings": {
+            "text": "🛡️ 14 dagen bedenktijd"
+          }
+        },
+        "t3": {
+          "type": "item",
+          "settings": {
+            "text": "🚚 Vandaag besteld, vandaag verzonden"
+          }
+        },
+        "t4": {
+          "type": "item",
+          "settings": {
+            "text": "🔁 Onbeperkt herprogrammeerbaar"
+          }
+        },
+        "t5": {
+          "type": "item",
+          "settings": {
+            "text": "🇳🇱 Nederland"
+          }
+        }
       },
-      "block_order": ["t1", "t2", "t3", "t4", "t5"],
+      "block_order": [
+        "t1",
+        "t2",
+        "t3",
+        "t4",
+        "t5"
+      ],
       "settings": {}
     },
     "statement": {
@@ -42,18 +77,93 @@
     "branches": {
       "type": "tk3-branches",
       "blocks": {
-        "b1": { "type": "branche", "settings": { "label": "Café", "quote": "[PLAATSHOUDER — hier komt een echte quote van een klant. Vraag om één zin over wat het opleverde, plus toestemming om de zaaknaam te noemen.]", "who": "Naam achternaam, Zaaknaam" } },
-        "b2": { "type": "branche", "settings": { "label": "Restaurant", "quote": "[PLAATSHOUDER — quote van een restauranthouder.]", "who": "Naam achternaam, Zaaknaam" } },
-        "b3": { "type": "branche", "settings": { "label": "Kapper", "quote": "[PLAATSHOUDER — quote van een kapper.]", "who": "Naam achternaam, Zaaknaam" } },
-        "b4": { "type": "branche", "settings": { "label": "Schoonheidssalon", "quote": "[PLAATSHOUDER — quote uit een salon.]", "who": "Naam achternaam, Zaaknaam" } },
-        "b5": { "type": "branche", "settings": { "label": "Garage", "quote": "[PLAATSHOUDER — quote van een garage.]", "who": "Naam achternaam, Zaaknaam" } },
-        "b6": { "type": "branche", "settings": { "label": "Hotel", "quote": "[PLAATSHOUDER — quote van een hotel.]", "who": "Naam achternaam, Zaaknaam" } },
-        "b7": { "type": "branche", "settings": { "label": "Tandarts", "quote": "[PLAATSHOUDER — quote van een praktijk.]", "who": "Naam achternaam, Zaaknaam" } },
-        "b8": { "type": "branche", "settings": { "label": "Winkel", "quote": "[PLAATSHOUDER — quote van een winkelier.]", "who": "Naam achternaam, Zaaknaam" } },
-        "b9": { "type": "branche", "settings": { "label": "Foodtruck", "quote": "[PLAATSHOUDER — quote van een foodtruck.]", "who": "Naam achternaam, Zaaknaam" } }
+        "b1": {
+          "type": "branche",
+          "settings": {
+            "label": "Café",
+            "quote": "[PLAATSHOUDER — hier komt een echte quote van een klant. Vraag om één zin over wat het opleverde, plus toestemming om de zaaknaam te noemen.]",
+            "who": "Naam achternaam, Zaaknaam"
+          }
+        },
+        "b2": {
+          "type": "branche",
+          "settings": {
+            "label": "Restaurant",
+            "quote": "[PLAATSHOUDER — quote van een restauranthouder.]",
+            "who": "Naam achternaam, Zaaknaam"
+          }
+        },
+        "b3": {
+          "type": "branche",
+          "settings": {
+            "label": "Kapper",
+            "quote": "[PLAATSHOUDER — quote van een kapper.]",
+            "who": "Naam achternaam, Zaaknaam"
+          }
+        },
+        "b4": {
+          "type": "branche",
+          "settings": {
+            "label": "Schoonheidssalon",
+            "quote": "[PLAATSHOUDER — quote uit een salon.]",
+            "who": "Naam achternaam, Zaaknaam"
+          }
+        },
+        "b5": {
+          "type": "branche",
+          "settings": {
+            "label": "Garage",
+            "quote": "[PLAATSHOUDER — quote van een garage.]",
+            "who": "Naam achternaam, Zaaknaam"
+          }
+        },
+        "b6": {
+          "type": "branche",
+          "settings": {
+            "label": "Hotel",
+            "quote": "[PLAATSHOUDER — quote van een hotel.]",
+            "who": "Naam achternaam, Zaaknaam"
+          }
+        },
+        "b7": {
+          "type": "branche",
+          "settings": {
+            "label": "Tandarts",
+            "quote": "[PLAATSHOUDER — quote van een praktijk.]",
+            "who": "Naam achternaam, Zaaknaam"
+          }
+        },
+        "b8": {
+          "type": "branche",
+          "settings": {
+            "label": "Winkel",
+            "quote": "[PLAATSHOUDER — quote van een winkelier.]",
+            "who": "Naam achternaam, Zaaknaam"
+          }
+        },
+        "b9": {
+          "type": "branche",
+          "settings": {
+            "label": "Foodtruck",
+            "quote": "[PLAATSHOUDER — quote van een foodtruck.]",
+            "who": "Naam achternaam, Zaaknaam"
+          }
+        }
       },
-      "block_order": ["b1", "b2", "b3", "b4", "b5", "b6", "b7", "b8", "b9"],
-      "settings": { "heading": "Meer reviews, bezoek voor bezoek." }
+      "block_order": [
+        "b1",
+        "b2",
+        "b3",
+        "b4",
+        "b5",
+        "b6",
+        "b7",
+        "b8",
+        "b9"
+      ],
+      "settings": {
+        "heading": "Meer reviews, bezoek voor bezoek."
+      }
     },
     "ontwerp": {
       "type": "tk3-design",
@@ -67,12 +177,37 @@
     "video": {
       "type": "tk3-video",
       "blocks": {
-        "v1": { "type": "video", "settings": { "caption": "Zaaknaam" } },
-        "v2": { "type": "video", "settings": { "caption": "Zaaknaam" } },
-        "v3": { "type": "video", "settings": { "caption": "Zaaknaam" } },
-        "v4": { "type": "video", "settings": { "caption": "Zaaknaam" } }
+        "v1": {
+          "type": "video",
+          "settings": {
+            "caption": "Zaaknaam"
+          }
+        },
+        "v2": {
+          "type": "video",
+          "settings": {
+            "caption": "Zaaknaam"
+          }
+        },
+        "v3": {
+          "type": "video",
+          "settings": {
+            "caption": "Zaaknaam"
+          }
+        },
+        "v4": {
+          "type": "video",
+          "settings": {
+            "caption": "Zaaknaam"
+          }
+        }
       },
-      "block_order": ["v1", "v2", "v3", "v4"],
+      "block_order": [
+        "v1",
+        "v2",
+        "v3",
+        "v4"
+      ],
       "settings": {
         "heading": "Zij vertellen het het best ❤️",
         "sub": "Ondernemers die TapKaarten dagelijks gebruiken en zien hoe hun reviews vanzelf binnenkomen."
@@ -81,23 +216,79 @@
     "pers": {
       "type": "tk3-press",
       "blocks": {
-        "p1": { "type": "logo", "settings": { "name": "[Perslogo]" } },
-        "p2": { "type": "logo", "settings": { "name": "[Perslogo]" } },
-        "p3": { "type": "logo", "settings": { "name": "[Perslogo]" } },
-        "p4": { "type": "logo", "settings": { "name": "[Perslogo]" } }
+        "p1": {
+          "type": "logo",
+          "settings": {
+            "name": "[Perslogo]"
+          }
+        },
+        "p2": {
+          "type": "logo",
+          "settings": {
+            "name": "[Perslogo]"
+          }
+        },
+        "p3": {
+          "type": "logo",
+          "settings": {
+            "name": "[Perslogo]"
+          }
+        },
+        "p4": {
+          "type": "logo",
+          "settings": {
+            "name": "[Perslogo]"
+          }
+        }
       },
-      "block_order": ["p1", "p2", "p3", "p4"],
-      "settings": { "quote": "[PLAATSHOUDER — pers- of partnercitaat zodra je dat hebt.]" }
+      "block_order": [
+        "p1",
+        "p2",
+        "p3",
+        "p4"
+      ],
+      "settings": {
+        "quote": "[PLAATSHOUDER — pers- of partnercitaat zodra je dat hebt.]"
+      }
     },
     "cijfers": {
       "type": "tk3-stats",
       "blocks": {
-        "s1": { "type": "stat", "settings": { "value": "98%", "text": "van de consumenten leest online reviews voordat ze een lokale zaak bezoeken." } },
-        "s2": { "type": "stat", "settings": { "value": "7,6 cm", "text": "breed en 12,75 cm hoog — past op elke balie en elk tafeltje." } },
-        "s3": { "type": "stat", "settings": { "value": "0", "text": "abonnementen. Je betaalt eenmalig en de standaard blijft werken." } },
-        "s4": { "type": "stat", "settings": { "value": "1 tik", "text": "is alles wat je klant hoeft te doen. Geen app, geen account." } }
+        "s1": {
+          "type": "stat",
+          "settings": {
+            "value": "98%",
+            "text": "van de consumenten leest online reviews voordat ze een lokale zaak bezoeken."
+          }
+        },
+        "s2": {
+          "type": "stat",
+          "settings": {
+            "value": "7,6 cm",
+            "text": "breed en 12,75 cm hoog — past op elke balie en elk tafeltje."
+          }
+        },
+        "s3": {
+          "type": "stat",
+          "settings": {
+            "value": "0",
+            "text": "abonnementen. Je betaalt eenmalig en de standaard blijft werken."
+          }
+        },
+        "s4": {
+          "type": "stat",
+          "settings": {
+            "value": "1 tik",
+            "text": "is alles wat je klant hoeft te doen. Geen app, geen account."
+          }
+        }
       },
-      "block_order": ["s1", "s2", "s3", "s4"],
+      "block_order": [
+        "s1",
+        "s2",
+        "s3",
+        "s4"
+      ],
       "settings": {
         "heading": "In cijfers.",
         "sub": "Waarom reviews je goedkoopste marketing zijn.",
@@ -107,12 +298,45 @@
     "reviews": {
       "type": "tk3-reviews",
       "blocks": {
-        "r1": { "type": "review", "settings": { "stars": 5, "text": "[PLAATSHOUDER — echte klantreactie]", "source": "Zaaknaam — datum" } },
-        "r2": { "type": "review", "settings": { "stars": 5, "text": "[PLAATSHOUDER — echte klantreactie]", "source": "Zaaknaam — datum" } },
-        "r3": { "type": "review", "settings": { "stars": 5, "text": "[PLAATSHOUDER — echte klantreactie]", "source": "Zaaknaam — datum" } },
-        "r4": { "type": "review", "settings": { "stars": 5, "text": "[PLAATSHOUDER — echte klantreactie]", "source": "Zaaknaam — datum" } }
+        "r1": {
+          "type": "review",
+          "settings": {
+            "stars": 5,
+            "text": "[PLAATSHOUDER — echte klantreactie]",
+            "source": "Zaaknaam — datum"
+          }
+        },
+        "r2": {
+          "type": "review",
+          "settings": {
+            "stars": 5,
+            "text": "[PLAATSHOUDER — echte klantreactie]",
+            "source": "Zaaknaam — datum"
+          }
+        },
+        "r3": {
+          "type": "review",
+          "settings": {
+            "stars": 5,
+            "text": "[PLAATSHOUDER — echte klantreactie]",
+            "source": "Zaaknaam — datum"
+          }
+        },
+        "r4": {
+          "type": "review",
+          "settings": {
+            "stars": 5,
+            "text": "[PLAATSHOUDER — echte klantreactie]",
+            "source": "Zaaknaam — datum"
+          }
+        }
       },
-      "block_order": ["r1", "r2", "r3", "r4"],
+      "block_order": [
+        "r1",
+        "r2",
+        "r3",
+        "r4"
+      ],
       "settings": {
         "heading": "Wat ondernemers zeggen.",
         "sub": "Echte reacties verschijnen hier zodra je eerste klanten geleverd zijn."
@@ -129,13 +353,62 @@
     "specs": {
       "type": "tk3-compare",
       "blocks": {
-        "c1": { "type": "row", "settings": { "label": "Kleur", "value_a": "Wit", "value_b": "Mat zwart" } },
-        "c2": { "type": "row", "settings": { "label": "Afmetingen", "value_a": "7,6 × 12,75 cm", "note_a": "Voet 5 cm diep", "value_b": "7,6 × 12,75 cm", "note_b": "Voet 5 cm diep" } },
-        "c3": { "type": "row", "settings": { "label": "Materiaal", "value_a": "Gebogen acrylaat", "note_a": "Glanzend afgewerkt", "value_b": "Gebogen acrylaat", "note_b": "Glanzend afgewerkt" } },
-        "c4": { "type": "row", "settings": { "label": "Techniek", "value_a": "NFC + QR-code", "note_a": "iOS & Android", "value_b": "NFC + QR-code", "note_b": "iOS & Android" } },
-        "c5": { "type": "row", "settings": { "label": "Abonnement", "value_a": "Geen", "note_a": "Eenmalig betalen", "value_b": "Geen", "note_b": "Eenmalig betalen" } }
+        "c1": {
+          "type": "row",
+          "settings": {
+            "label": "Kleur",
+            "value_a": "Wit",
+            "value_b": "Mat zwart"
+          }
+        },
+        "c2": {
+          "type": "row",
+          "settings": {
+            "label": "Afmetingen",
+            "value_a": "7,6 × 12,75 cm",
+            "note_a": "Voet 5 cm diep",
+            "value_b": "7,6 × 12,75 cm",
+            "note_b": "Voet 5 cm diep"
+          }
+        },
+        "c3": {
+          "type": "row",
+          "settings": {
+            "label": "Materiaal",
+            "value_a": "Gebogen acrylaat",
+            "note_a": "Glanzend afgewerkt",
+            "value_b": "Gebogen acrylaat",
+            "note_b": "Glanzend afgewerkt"
+          }
+        },
+        "c4": {
+          "type": "row",
+          "settings": {
+            "label": "Techniek",
+            "value_a": "NFC + QR-code",
+            "note_a": "iOS & Android",
+            "value_b": "NFC + QR-code",
+            "note_b": "iOS & Android"
+          }
+        },
+        "c5": {
+          "type": "row",
+          "settings": {
+            "label": "Abonnement",
+            "value_a": "Geen",
+            "note_a": "Eenmalig betalen",
+            "value_b": "Geen",
+            "note_b": "Eenmalig betalen"
+          }
+        }
       },
-      "block_order": ["c1", "c2", "c3", "c4", "c5"],
+      "block_order": [
+        "c1",
+        "c2",
+        "c3",
+        "c4",
+        "c5"
+      ],
       "settings": {
         "heading": "Kies je uitvoering: wit of zwart.",
         "product_a": "tapkaarten-google-review-standaard",

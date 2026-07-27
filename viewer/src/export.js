@@ -246,19 +246,23 @@ function backdropTexture() {
 // items: [{key, x, z, yawDeg}] — posities op het balieblad in scene-units.
 // cam: {px,py,pz,lx,ly} bepaalt kadrering; standaard producten rechts,
 // lege balie links voor de hero-tekst.
-window.renderHero = (items, width, height, cam = {}) => {
+window.renderHero = (items, width, height, cam = {}, opts = {}) => {
   const r = renderer();
   r.setSize(width, height, false);
 
   const scene = new THREE.Scene();
   scene.environment = studioEnv(r);
 
-  const backdrop = new THREE.Mesh(
-    new THREE.PlaneGeometry(30, 14),
-    new THREE.MeshBasicMaterial({ map: backdropTexture() })
-  );
-  backdrop.position.set(0, 4, -6.5);
-  scene.add(backdrop);
+  // Zonder achterwand blijft de achtergrond doorzichtig, zodat de sectie-
+  // gradient van de pagina er doorheen komt (zoals de referentie).
+  if (opts.backdrop !== false) {
+    const backdrop = new THREE.Mesh(
+      new THREE.PlaneGeometry(30, 14),
+      new THREE.MeshBasicMaterial({ map: backdropTexture() })
+    );
+    backdrop.position.set(0, 4, -6.5);
+    scene.add(backdrop);
+  }
 
   const counterTop = new THREE.Mesh(
     new THREE.BoxGeometry(26, 0.28, 7),
@@ -275,7 +279,7 @@ window.renderHero = (items, width, height, cam = {}) => {
   scene.add(counterTop);
   const counterFront = new THREE.Mesh(
     new THREE.BoxGeometry(26, 5, 6.6),
-    new THREE.MeshPhysicalMaterial({ color: 0x2a2c30, roughness: 0.6, metalness: 0 })
+    new THREE.MeshPhysicalMaterial({ color: opts.plinth ?? 0x2a2c30, roughness: 0.6, metalness: 0 })
   );
   counterFront.position.set(0, -2.79, -0.2);
   scene.add(counterFront);

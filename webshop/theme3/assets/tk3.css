@@ -45,15 +45,15 @@ html,body{overflow-x:clip}
 .tk3 h2{font-size:var(--fs-3xl);font-weight:600;line-height:1.2;letter-spacing:-.05em}
 .tk3 h3{font-size:var(--fs-xl);font-weight:550;line-height:1.2;letter-spacing:-.05em}
 .tk3 .lead{font-size:var(--fs-lg);color:var(--ink-64);line-height:1.55}
-.tk3 .marquee{background:var(--amber);overflow:hidden;white-space:nowrap;padding:9px 0}
+.tk3 .marquee{background:var(--amber);overflow:hidden;white-space:nowrap;padding:7px 0}
 .tk3 .marquee .track{display:inline-flex;gap:0;animation:tk3slide 26s linear infinite;will-change:transform}
 .tk3 .marquee span{font-size:var(--fs-sm);font-weight:600;color:#1A202C;padding:0 22px}
 @keyframes tk3slide{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 @media(prefers-reduced-motion:reduce){.tk3 .marquee .track{animation:none}}
 .tk3 .hdr{position:sticky;top:0;z-index:60;background:rgba(255,255,255,.86);backdrop-filter:blur(16px)}
-.tk3 .hdr .row{display:flex;align-items:center;gap:28px;height:74px}
+.tk3 .hdr .row{display:flex;align-items:center;gap:28px;height:64px}
 .tk3 .brand{display:flex;align-items:center;flex:0 0 auto}
-.tk3 .brand img{display:block;height:25px;width:auto}
+.tk3 .brand img{display:block;height:22px;width:auto}
 .tk3 footer .brand img{height:29px}
 .tk3 .hdr nav{display:flex;align-items:center;gap:26px;margin:0 auto}
 .tk3 .hdr nav a{font-size:var(--fs-sm);font-weight:600}
@@ -73,12 +73,15 @@ html,body{overflow-x:clip}
 @media(max-width:900px){.tk3 .hdr nav,.tk3 .hdr .right a{display:none}.tk3 .hdr .row{height:64px;gap:14px}.tk3 .hdr .right{margin-left:auto;gap:16px}.tk3 .mobmenu{display:block}.tk3 .brand img{height:21px}}
 .tk3 .hero{position:relative;text-align:center;overflow:hidden;
   background:linear-gradient(112deg,#fbfbfc 0%,#fcf6f8 48%,#fbecf0 100%)}
-.tk3 .hero .inner{padding:92px 0 0;position:relative;z-index:2}
-.tk3 .hero h1{max-width:768px;margin:0 auto 20px}
-.tk3 .hero .sub{font-size:var(--fs-lg);color:var(--ink-64);max-width:56ch;margin:0 auto 30px}
-.tk3 .hero .shot{width:100%;margin-top:-3%;
-  -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 20%);
-  mask-image:linear-gradient(to bottom,transparent 0,#000 20%)}
+.tk3 .hero .inner{padding:56px 0 0;position:relative;z-index:2}
+.tk3 .hero h1{max-width:768px;margin:0 auto 16px}
+.tk3 .hero .sub{font-size:var(--fs-lg);color:var(--ink-64);max-width:56ch;margin:0 auto 24px}
+.tk3 .hero .shots{display:grid;width:min(100%,1500px);margin:8px auto 0}
+.tk3 .hero .shots img{grid-area:1/1;width:100%;opacity:0;transition:opacity .3s ease;
+  -webkit-mask-image:linear-gradient(to right,transparent 0,#000 7%,#000 93%,transparent 100%);
+  mask-image:linear-gradient(to right,transparent 0,#000 7%,#000 93%,transparent 100%)}
+.tk3 .hero .shots img.on{opacity:1}
+@media(prefers-reduced-motion:reduce){.tk3 .hero .shots img{transition:none}}
 .tk3 .hero .hearts{height:26px;position:relative}
 .tk3 .hero .hearts i{position:absolute;left:50%;font-style:normal;font-size:15px;opacity:0;
   animation:tk3float 3.4s ease-in-out infinite}
@@ -93,6 +96,7 @@ html,body{overflow-x:clip}
 .tk3 .seg.tabs{border-radius:14px;padding:4px}
 .tk3 .seg.tabs button{border-radius:12.75px;padding:11px 21px}
 .tk3 .hero .controls{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;align-items:center}
+.tk3 .seg[data-tk3-disabled]{opacity:.35;pointer-events:none}
 .tk3 .buy{background:rgba(26,26,26,.1);border-radius:9999px;padding:11px 20px;font-size:var(--fs-sm);
   font-weight:750;display:inline-flex;align-items:center;gap:9px;transition:background .18s}
 .tk3 .buy:hover{background:rgba(26,26,26,.18)}

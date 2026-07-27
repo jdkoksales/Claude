@@ -51,7 +51,7 @@ h3{font-size:var(--fs-xl);font-weight:550;line-height:1.2;letter-spacing:-.05em}
 .lead{font-size:var(--fs-lg);color:var(--ink-64);line-height:1.55}
 
 /* ---------- marquee ---------- */
-.marquee{background:var(--amber);overflow:hidden;white-space:nowrap;padding:9px 0}
+.marquee{background:var(--amber);overflow:hidden;white-space:nowrap;padding:7px 0}
 .marquee .track{display:inline-flex;gap:0;animation:slide 26s linear infinite;will-change:transform}
 .marquee span{font-size:var(--fs-sm);font-weight:600;color:#1A202C;padding:0 22px}
 @keyframes slide{from{transform:translateX(0)}to{transform:translateX(-50%)}}
@@ -59,10 +59,10 @@ h3{font-size:var(--fs-xl);font-weight:550;line-height:1.2;letter-spacing:-.05em}
 
 /* ---------- header ---------- */
 .hdr{position:sticky;top:0;z-index:60;background:rgba(255,255,255,.86);backdrop-filter:blur(16px)}
-.hdr .row{display:flex;align-items:center;gap:28px;height:74px}
+.hdr .row{display:flex;align-items:center;gap:28px;height:64px}
 /* logo: hoogte stuurt de schaal, verhouding b:h = 7,03 */
 .brand{display:flex;align-items:center;flex:0 0 auto}
-.brand img{display:block;height:25px;width:auto}
+.brand img{display:block;height:22px;width:auto}
 footer .brand img{height:29px}
 .hdr nav{display:flex;align-items:center;gap:26px;margin:0 auto}
 .hdr nav a{font-size:var(--fs-sm);font-weight:600}
@@ -91,14 +91,17 @@ footer .brand img{height:29px}
 /* ---------- hero ---------- */
 .hero{position:relative;text-align:center;overflow:hidden;
   background:linear-gradient(112deg,#fbfbfc 0%,#fcf6f8 48%,#fbecf0 100%)}
-.hero .inner{padding:92px 0 0;position:relative;z-index:2}
-.hero h1{max-width:768px;margin:0 auto 20px}
-.hero .sub{font-size:var(--fs-lg);color:var(--ink-64);max-width:56ch;margin:0 auto 30px}
+.hero .inner{padding:56px 0 0;position:relative;z-index:2}
+.hero h1{max-width:768px;margin:0 auto 16px}
+.hero .sub{font-size:var(--fs-lg);color:var(--ink-64);max-width:56ch;margin:0 auto 24px}
 /* De foto draagt zelf hetzelfde verloop; de mask laat de bovenrand
    naadloos in de sectieachtergrond oplossen. */
-.hero .shot{width:100%;margin-top:-3%;
-  -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 20%);
-  mask-image:linear-gradient(to bottom,transparent 0,#000 20%)}
+.hero .shots{display:grid;width:min(100%,1500px);margin:8px auto 0}
+.hero .shots img{grid-area:1/1;width:100%;opacity:0;transition:opacity .3s ease;
+  -webkit-mask-image:linear-gradient(to right,transparent 0,#000 7%,#000 93%,transparent 100%);
+  mask-image:linear-gradient(to right,transparent 0,#000 7%,#000 93%,transparent 100%)}
+.hero .shots img.on{opacity:1}
+@media(prefers-reduced-motion:reduce){.hero .shots img{transition:none}}
 .hero .hearts{height:26px;position:relative}
 .hero .hearts i{position:absolute;left:50%;font-style:normal;font-size:15px;opacity:0;
   animation:float 3.4s ease-in-out infinite}
@@ -115,6 +118,7 @@ footer .brand img{height:29px}
 .seg.tabs{border-radius:14px;padding:4px}
 .seg.tabs button{border-radius:12.75px;padding:11px 21px}
 .hero .controls{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;align-items:center}
+.seg[data-tk3-disabled]{opacity:.35;pointer-events:none}
 .buy{background:rgba(26,26,26,.1);border-radius:9999px;padding:11px 20px;font-size:var(--fs-sm);
   font-weight:750;display:inline-flex;align-items:center;gap:9px;transition:background .18s}
 .buy:hover{background:rgba(26,26,26,.18)}

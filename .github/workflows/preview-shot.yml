@@ -60,7 +60,7 @@ jobs:
                 out.push('innerWidth ' + iw);
                 out.push('doc.scrollWidth ' + document.documentElement.scrollWidth);
                 out.push('body.width ' + document.body.getBoundingClientRect().width);
-                for (const sel of ['main', 'footer', '.tk3', '.marquee', '.hdr']) {
+                for (const sel of ['main', 'footer', '.shopify-section', '.tk3', '.marquee']) {
                   const el = document.querySelector(sel);
                   if (el) {
                     const r = el.getBoundingClientRect();

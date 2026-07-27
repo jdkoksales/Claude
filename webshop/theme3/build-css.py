@@ -65,7 +65,10 @@ TAIL = ("html{scroll-behavior:smooth}\n"
         ".tk3-trede:first-child .tk3-trede-pct{color:rgba(0,0,0,.36);font-weight:600}\n"
         ".tk3-trede-prijs{font-size:11.5px;color:rgba(0,0,0,.5)}\n"
         ".tk3-staffel small{display:block;margin-top:8px;font-size:12.5px;line-height:1.45;color:rgba(0,0,0,.55)}\n"
-        "@media(max-width:420px){.tk3-staffel-rij{grid-template-columns:repeat(2,1fr)}}\n")
+        "@media(max-width:560px){.tk3-staffel-rij{grid-template-columns:repeat(2,1fr)}}\n"
+        # De koopkolom van het thema is op een telefoon smal; het linkveld en
+        # de staffel moeten daar niet in de verdrukking komen.
+        "@media(max-width:560px){.tk3-staffel-kop{font-size:13.5px}.tk3-trede{padding:11px 6px}.tk3-trede-aantal{font-size:12.5px}.tk3-trede-pct{font-size:14px}.tk3-linkveld input{padding:13px 14px;font-size:16px}.tk3-staffel small,.tk3-linkveld small{font-size:12px}}\n")
 KEYFRAMES = {"slide": "tk3slide", "float": "tk3float"}
 
 

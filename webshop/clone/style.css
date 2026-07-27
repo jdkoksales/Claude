@@ -496,3 +496,62 @@ footer{background:linear-gradient(115deg,#fdfdfe,#fdf1f5);padding:88px 0 44px}
   .howto-steps{grid-template-columns:1fr;gap:26px;margin-top:36px}
   .howto-shot{aspect-ratio:16/10}
 }
+/* ---------- mobiel: telefoonformaat (waarden gemeten op 390px) ---------- */
+@media(max-width:560px){
+  /* Ruimte tussen secties: 78px boven én onder is op een telefoon een half scherm leeg. */
+  section.blk{padding:56px 0}
+  .statement{padding:72px 0}
+  .statement p{font-size:25px;max-width:100%}
+  footer{padding:56px 0 36px}
+  h1{font-size:33px}
+  h2{font-size:26px}
+  .sec-sub{font-size:var(--fs-md)}
+
+  /* Configurator: twee ruime tegels lezen beter dan drie smalle. */
+  .cfg-main{padding:22px 14px}
+  .cfg-block+.cfg-block{margin-top:28px}
+  .cfg-cards{grid-template-columns:repeat(2,1fr);gap:9px}
+  .cfg-card{padding:12px 9px}
+  .cfg-name{font-size:13px;min-height:2.6em}
+  .cfg-q{font-size:var(--fs-md);margin-bottom:13px}
+  .cfg-bignum{font-size:var(--fs-2xl)}
+
+  /* De presets op één regel die je opzij schuift, in plaats van een rafelige afbreking. */
+  .cfg-presets{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;
+    margin-left:-14px;margin-right:-14px;padding:2px 14px 4px;scroll-padding-left:14px}
+  .cfg-presets::-webkit-scrollbar{display:none}
+  .cfg-preset{flex:0 0 auto}
+
+  /* Schuifbalk: 8px is met een duim niet te raken. */
+  .cfg-main input[type=range]{height:14px;margin-top:18px}
+  .cfg-main input[type=range]::-webkit-slider-thumb{width:34px;height:34px}
+  .cfg-main input[type=range]::-moz-range-thumb{width:30px;height:30px}
+  .cfg-ends{font-size:12.5px;margin-top:11px}
+
+  .cfg-out{padding:22px 17px}
+  .cfg-out-rows{gap:14px}
+  .cfg-out-val{font-size:46px}
+  .cfg-cta{padding:19px 17px}
+  .cfg-fine{margin-top:20px}
+
+  /* Plusjes en minnetjes moeten met een duim te raken zijn. */
+  .cfg-stepper button{width:34px;height:34px;font-size:18px}
+  .cfg-stepper{padding:3px;gap:3px}
+
+
+  /* Voettekstlinks uit elkaar, anders tik je de verkeerde. */
+  .f-cols a{padding:10px 0}
+  .f-cols{gap:14px 18px;margin-top:32px;padding-top:28px}
+
+  /* Tabs en platformknoppen groter aanraakvlak. */
+  .seg button,.seg.tabs button{padding:12px 18px}
+  .buy{padding:13px 22px}
+  .howto-facts{gap:8px;margin-top:32px}
+  .howto-facts span{padding:10px 15px}
+}
+
+/* Op de smalste toestellen mag de zijmarge iets kleiner. */
+@media(max-width:400px){
+  :root{--gut:18px}
+  .cfg-presets{margin-left:-14px;margin-right:-14px}
+}

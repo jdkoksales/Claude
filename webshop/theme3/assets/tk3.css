@@ -36,7 +36,8 @@ html,body{overflow-x:clip}
 .tk3-trede:first-child .tk3-trede-pct{color:rgba(0,0,0,.36);font-weight:600}
 .tk3-trede-prijs{font-size:11.5px;color:rgba(0,0,0,.5)}
 .tk3-staffel small{display:block;margin-top:8px;font-size:12.5px;line-height:1.45;color:rgba(0,0,0,.55)}
-@media(max-width:420px){.tk3-staffel-rij{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.tk3-staffel-rij{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.tk3-staffel-kop{font-size:13.5px}.tk3-trede{padding:11px 6px}.tk3-trede-aantal{font-size:12.5px}.tk3-trede-pct{font-size:14px}.tk3-linkveld input{padding:13px 14px;font-size:16px}.tk3-staffel small,.tk3-linkveld small{font-size:12px}}
 .tk3{
   --ink:#1A202C;              
   --ink-64:rgba(0,0,0,.64);
@@ -405,3 +406,6 @@ html,body{overflow-x:clip}
 .tk3 .howto-facts span::before{content:'✓';margin-right:8px;font-weight:800}
 .tk3 .howto-cta{text-align:center;margin-top:34px}
 @media(max-width:900px){.tk3 .howto-steps{grid-template-columns:1fr;gap:26px;margin-top:36px}.tk3 .howto-shot{aspect-ratio:16/10}}
+@media(max-width:560px){.tk3 section.blk{padding:56px 0}.tk3 .statement{padding:72px 0}.tk3 .statement p{font-size:25px;max-width:100%}.tk3 footer{padding:56px 0 36px}.tk3 h1{font-size:33px}.tk3 h2{font-size:26px}.tk3 .sec-sub{font-size:var(--fs-md)}.tk3 .cfg-main{padding:22px 14px}.tk3 .cfg-block+.cfg-block{margin-top:28px}.tk3 .cfg-cards{grid-template-columns:repeat(2,1fr);gap:9px}.tk3 .cfg-card{padding:12px 9px}.tk3 .cfg-name{font-size:13px;min-height:2.6em}.tk3 .cfg-q{font-size:var(--fs-md);margin-bottom:13px}.tk3 .cfg-bignum{font-size:var(--fs-2xl)}.tk3 .cfg-presets{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;
+    margin-left:-14px;margin-right:-14px;padding:2px 14px 4px;scroll-padding-left:14px}.tk3 .cfg-presets::-webkit-scrollbar{display:none}.tk3 .cfg-preset{flex:0 0 auto}.tk3 .cfg-main input[type=range]{height:14px;margin-top:18px}.tk3 .cfg-main input[type=range]::-webkit-slider-thumb{width:34px;height:34px}.tk3 .cfg-main input[type=range]::-moz-range-thumb{width:30px;height:30px}.tk3 .cfg-ends{font-size:12.5px;margin-top:11px}.tk3 .cfg-out{padding:22px 17px}.tk3 .cfg-out-rows{gap:14px}.tk3 .cfg-out-val{font-size:46px}.tk3 .cfg-cta{padding:19px 17px}.tk3 .cfg-fine{margin-top:20px}.tk3 .cfg-stepper button{width:34px;height:34px;font-size:18px}.tk3 .cfg-stepper{padding:3px;gap:3px}.tk3 .f-cols a{padding:10px 0}.tk3 .f-cols{gap:14px 18px;margin-top:32px;padding-top:28px}.tk3 .seg button,.tk3 .seg.tabs button{padding:12px 18px}.tk3 .buy{padding:13px 22px}.tk3 .howto-facts{gap:8px;margin-top:32px}.tk3 .howto-facts span{padding:10px 15px}}
+@media(max-width:400px){.tk3{--gut:18px}.tk3 .cfg-presets{margin-left:-14px;margin-right:-14px}}

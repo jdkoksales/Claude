@@ -1,0 +1,97 @@
+GEVONDEN: 15 punten
+ - home: oningevuld veld
+ - collectie: oningevuld veld
+ - google-wit: oningevuld veld
+ - google-zwart: oningevuld veld
+ - instagram: oningevuld veld
+ - facebook: oningevuld veld
+ - sticker: oningevuld veld
+ - winkelwagen: oningevuld veld
+ - verzending: oningevuld veld
+ - retour: oningevuld veld
+ - voorwaarden: oningevuld veld
+ - vragen: oningevuld veld
+ - over: oningevuld veld
+ - contact: oningevuld veld
+ - privacy: oningevuld veld
+
+== home (/) status=200
+   titel: TapKaarten — NFC-bordjes voor meer Google-reviews en volgers
+   prijzen op de pagina: €0,00  € 49,95  € 34,95  €49,95  €34,95  €29,95  €19,95
+   !! oningevuld veld: "...beleid © 2026 TapKaarten · Dingspil 13, 9302 ET Roden · KvK [VUL IN] · Btw [VUL IN]..."
+   afbeeldingen zonder alt-tekst: 7 van 33
+
+== collectie (/collections/alle-tapkaarten) status=200
+   titel: Alle TapKaarten — NFC-bordjes voor reviews en volgers
+   prijzen op de pagina: €0,00  €34,95  €49,95  €19,95  €29,95
+   !! oningevuld veld: "...beleid © 2026 TapKaarten · Dingspil 13, 9302 ET Roden · KvK [VUL IN] · Btw [VUL IN]..."
+
+== google-wit (/products/tapkaarten-google-review-standaard) status=200
+   titel: Google Review-standaard wit — NFC bordje voor meer reviews – TapKaarten
+   prijzen op de pagina: €0,00  € 49,95  € 34,95  €34,95  €62,92  €89,13  €111,84  € 6,95  € 12,95  € 19,95
+   !! oningevuld veld: "...beleid © 2026 TapKaarten · Dingspil 13, 9302 ET Roden · KvK [VUL IN] · Btw [VUL IN]..."
+   afbeeldingen zonder alt-tekst: 7 van 20
+
+== google-zwart (/products/tapkaarten-google-review-standaard-zwart) status=200
+   titel: Google Review-standaard zwart — NFC bordje voor meer reviews – TapKaarten
+   prijzen op de pagina: €0,00  € 49,95  € 34,95  €34,95  €62,92  €89,13  €111,84  € 6,95  € 12,95  € 19,95
+   !! oningevuld veld: "...beleid © 2026 TapKaarten · Dingspil 13, 9302 ET Roden · KvK [VUL IN] · Btw [VUL IN]..."
+   afbeeldingen zonder alt-tekst: 7 van 20
+
+== instagram (/products/tapkaarten-instagram-standaard) status=200
+   titel: Instagram-standaard — NFC bordje voor meer volgers – TapKaarten
+   prijzen op de pagina: €0,00  € 49,95  € 34,95  €34,95  €62,92  €89,13  €111,84  € 6,95  € 12,95  € 19,95
+   !! oningevuld veld: "...beleid © 2026 TapKaarten · Dingspil 13, 9302 ET Roden · KvK [VUL IN] · Btw [VUL IN]..."
+   afbeeldingen zonder alt-tekst: 7 van 20
+
+== facebook (/products/tapkaarten-facebook-standaard) status=200
+   titel: Facebook-standaard — NFC bordje voor meer volgers – TapKaarten
+   prijzen op de pagina: €0,00  € 49,95  € 34,95  €34,95  €62,92  €89,13  €111,84  € 6,95  € 12,95  € 19,95
+   !! oningevuld veld: "...beleid © 2026 TapKaarten · Dingspil 13, 9302 ET Roden · KvK [VUL IN] · Btw [VUL IN]..."
+   afbeeldingen zonder alt-tekst: 7 van 20
+
+== sticker (/products/tapkaarten-google-review-sticker) status=200
+   titel: Google Review-sticker — zelfklevende NFC-sticker – TapKaarten
+   prijzen op de pagina: €0,00  € 29,95  € 19,95  €19,95  €35,92  €50,88  €63,84  € 6,95  € 12,95  € 49,95  € 34,95
+   !! oningevuld veld: "...beleid © 2026 TapKaarten · Dingspil 13, 9302 ET Roden · KvK [VUL IN] · Btw [VUL IN]..."
+   afbeeldingen zonder alt-tekst: 7 van 20
+
+== winkelwagen (/cart) status=200
+   titel: Je winkelwagen – TapKaarten
+   prijzen op de pagina: €0,00
+   !! oningevuld veld: "...beleid © 2026 TapKaarten · Dingspil 13, 9302 ET Roden · KvK [VUL IN] · Btw [VUL IN]..."
+
+== verzending (/pages/verzending) status=200
+   titel: Verzending – TapKaarten
+   prijzen op de pagina: €0,00  € 6,95  € 12,95  € 19,95
+   !! oningevuld veld: "...beleid © 2026 TapKaarten · Dingspil 13, 9302 ET Roden · KvK [VUL IN] · Btw [VUL IN]..."
+
+== retour (/pages/retourbeleid) status=200
+   titel: Retourbeleid – TapKaarten
+   prijzen op de pagina: €0,00
+   !! oningevuld veld: "...beleid © 2026 TapKaarten · Dingspil 13, 9302 ET Roden · KvK [VUL IN] · Btw [VUL IN]..."
+
+== voorwaarden (/pages/algemene-voorwaarden) status=200
+   titel: Algemene voorwaarden – TapKaarten
+   prijzen op de pagina: €0,00
+   !! oningevuld veld: "...: info@tapkaarten.nl · Telefoon: 06 16 03 63 28 KvK-nummer: [VUL IN] · Btw-identificatienummer: [VUL IN] 2. Waarop deze voorwaarde..."
+
+== vragen (/pages/veelgestelde-vragen) status=200
+   titel: Veelgestelde vragen – TapKaarten
+   prijzen op de pagina: €0,00
+   !! oningevuld veld: "...beleid © 2026 TapKaarten · Dingspil 13, 9302 ET Roden · KvK [VUL IN] · Btw [VUL IN]..."
+
+== over (/pages/over-ons) status=200
+   titel: Over TapKaarten
+   prijzen op de pagina: €0,00
+   !! oningevuld veld: "...beleid © 2026 TapKaarten · Dingspil 13, 9302 ET Roden · KvK [VUL IN] · Btw [VUL IN]..."
+
+== contact (/pages/contact) status=200
+   titel: Contact – TapKaarten
+   prijzen op de pagina: €0,00
+   !! oningevuld veld: "...beleid © 2026 TapKaarten · Dingspil 13, 9302 ET Roden · KvK [VUL IN] · Btw [VUL IN]..."
+
+== privacy (/policies/privacy-policy) status=200
+   titel: Privacybeleid – TapKaarten
+   prijzen op de pagina: €0,00
+   !! oningevuld veld: "...beleid © 2026 TapKaarten · Dingspil 13, 9302 ET Roden · KvK [VUL IN] · Btw [VUL IN]..."

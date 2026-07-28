@@ -233,6 +233,39 @@ jobs:
               return rij.join('  ');
             });
             log.push(`schuifbalk ${uit}`);
+
+            // presets, kleurkeuze en de staffelregel in het uitkomstpaneel
+            const keuze = await t.evaluate(async () => {
+              const wacht = (ms) => new Promise((r) => setTimeout(r, ms));
+              const lees = () => ({
+                regel: document.querySelector('.cfg-summary-line').textContent.trim(),
+                totaal: document.querySelector('.cfg-summary-total').textContent.trim(),
+                staffel: (document.querySelector('.cfg-out-staffel') || {}).textContent || '-',
+                boost: [...document.querySelectorAll('.cfg-out-boost')]
+                  .filter((b) => !b.hidden)
+                  .map((b) => b.textContent.trim())
+                  .join(' '),
+              });
+              const knoppen = [...document.querySelectorAll('.cfg-preset')];
+              const uit = [];
+              for (const knop of knoppen) {
+                knop.click();
+                await wacht(1100);
+                const r = lees();
+                uit.push(`[${knop.querySelector('strong').textContent}] ${r.regel} | ${r.totaal} | ${r.staffel} | boost ${r.boost || '-'}`);
+              }
+              // kleur omzetten naar zwart en kijken of dat doorkomt
+              const zwart = [...document.querySelectorAll('[data-kleur]')].find((b) => b.textContent.trim() === 'Zwart');
+              if (zwart) {
+                zwart.click();
+                await wacht(900);
+                uit.push(`[na Zwart] ${lees().regel}`);
+              } else {
+                uit.push('[na Zwart] KLEURKNOP NIET GEVONDEN');
+              }
+              return uit;
+            });
+            keuze.forEach((r) => log.push(`  ${r}`));
             await ctx.close();
           } catch (e) {
             log.push('schuifbalkproef MISLUKT: ' + e.message.split('\n')[0]);

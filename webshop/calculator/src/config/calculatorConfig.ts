@@ -11,21 +11,18 @@ export const PRODUCTS: ProductConfig[] = [
   {
     id: 'google-standaard',
     handle: 'tapkaarten-google-review-standaard',
+    // Wit en zwart zijn hetzelfde bordje; als twee losse tegels leidde dat
+    // alleen maar af van de keuze die er echt toe doet.
+    options: [
+      { label: 'Wit', handle: 'tapkaarten-google-review-standaard' },
+      { label: 'Zwart', handle: 'tapkaarten-google-review-standaard-zwart' },
+    ],
     title: 'Google Review-standaard',
     blurb: 'Op de balie of het tafeltje. De klassieker voor meer Google-reviews.',
     category: 'google',
     exposure: { steps: [1.0, 0.6, 0.4], tail: 0.25 },
     accent: '#4285F4',
     badge: 'Meest gekozen',
-  },
-  {
-    id: 'google-zwart',
-    handle: 'tapkaarten-google-review-standaard-zwart',
-    title: 'Google Review-standaard — zwart',
-    blurb: 'Zelfde kaart, matzwart. Voor een donker interieur.',
-    category: 'google',
-    exposure: { steps: [1.0, 0.6, 0.4], tail: 0.25 },
-    accent: '#1A202C',
   },
   {
     id: 'google-sticker',
@@ -103,24 +100,39 @@ export const SLIDER = {
 export const VAT_RATE = 0.21;
 
 /** Snelkeuzes: vullen de aantallen in één klik. */
-export const PRESETS: { id: string; label: string; hint: string; quantities: Record<string, number> }[] = [
+export const PRESETS: { id: string; label: string; hint: string; quantities: Record<string, number>; }[] = [
   {
     id: 'start',
     label: 'Eén balie',
-    hint: 'Kleine zaak, één afrekenpunt',
-    quantities: { 'google-standaard': 1 },
+    hint: 'Van elk één',
+    quantities: {
+      'google-standaard': 1,
+      'google-sticker': 1,
+      'instagram-standaard': 1,
+      'facebook-standaard': 1,
+    },
   },
   {
     id: 'compleet',
     label: 'Compleet',
-    hint: 'Reviews én volgers',
-    quantities: { 'google-standaard': 1, 'google-sticker': 1, 'instagram-standaard': 1 },
+    hint: 'Van elk twee, drie stickers',
+    quantities: {
+      'google-standaard': 2,
+      'google-sticker': 3,
+      'instagram-standaard': 2,
+      'facebook-standaard': 2,
+    },
   },
   {
     id: 'meerdere',
     label: 'Meerdere punten',
-    hint: 'Balie, tafels en de deur',
-    quantities: { 'google-standaard': 2, 'google-sticker': 2, 'instagram-standaard': 1, 'facebook-standaard': 1 },
+    hint: 'Van elk drie, vijf stickers',
+    quantities: {
+      'google-standaard': 3,
+      'google-sticker': 5,
+      'instagram-standaard': 3,
+      'facebook-standaard': 3,
+    },
   },
 ];
 

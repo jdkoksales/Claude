@@ -11,8 +11,8 @@ interface AddItem {
  */
 export async function addToCartAndCheckout(lines: CartLine[]): Promise<void> {
   const items: AddItem[] = lines
-    .filter((line) => line.product.shop && line.quantity > 0)
-    .map((line) => ({ id: line.product.shop!.variantId, quantity: line.quantity }));
+    .filter((line) => line.quantity > 0)
+    .map((line) => ({ id: line.shop.variantId, quantity: line.quantity }));
 
   if (items.length === 0) throw new Error('Kies eerst minimaal één TapKaart.');
 

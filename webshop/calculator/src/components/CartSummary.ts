@@ -35,7 +35,7 @@ export function CartSummary(pricesIncludeVat: boolean): CartSummaryHandle {
       }
 
       line.textContent = totals.lines
-        .map((l) => `${l.quantity} × ${l.product.title}`)
+        .map((l) => `${l.quantity} × ${l.product.title}${l.optionLabel ? ` (${l.optionLabel.toLowerCase()})` : ''}`)
         .join(' · ');
 
       const stuks = `${totals.itemCount} ${totals.itemCount === 1 ? 'kaart' : 'kaarten'}`;

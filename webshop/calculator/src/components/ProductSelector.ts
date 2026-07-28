@@ -1,4 +1,4 @@
-import type { Product, Quantities } from '../types';
+import type { Product, Quantities, Selection } from '../types';
 import { PRESETS } from '../config/calculatorConfig';
 import { ProductCard, type ProductCardHandle } from './ProductCard';
 
@@ -6,7 +6,9 @@ export interface ProductSelectorOptions {
   label: string;
   products: Product[];
   quantities: Quantities;
+  selection: Selection;
   onChange: (id: string, delta: number) => void;
+  onOption: (id: string, handle: string) => void;
   onPreset: (quantities: Quantities) => void;
 }
 
@@ -19,7 +21,9 @@ export function ProductSelector({
   label,
   products,
   quantities,
+  selection,
   onChange,
+  onOption,
   onPreset,
 }: ProductSelectorOptions): ProductSelectorHandle {
   const el = document.createElement('div');
@@ -47,7 +51,9 @@ export function ProductSelector({
     const card = ProductCard({
       product,
       quantity: quantities[product.id] || 0,
+      option: selection[product.id] || product.handle,
       onChange: (delta) => onChange(product.id, delta),
+      onOption: (handle) => onOption(product.id, handle),
     });
     cards.set(product.id, card);
     grid.appendChild(card.el);

@@ -5,7 +5,7 @@
  * Liquid levert de echte Shopify-gegevens aan in een JSON-blok; alle aannames
  * en producten staan in config/calculatorConfig.ts.
  */
-import type { CartLine, CartTotals, Product, Quantities, ShopifyProduct } from './types';
+import type { CartLine, CartTotals, Product, Quantities, Selection, ShopifyProduct } from './types';
 import { PRODUCTS, SLIDER, VAT_RATE, VOLUME_TIERS } from './config/calculatorConfig';
 import { calculate, marginalGain } from './utils/calc';
 import { setCurrency } from './utils/format';
@@ -54,18 +54,36 @@ function tiersFor(itemCount: number): Pick<CartTotals, 'tierPercentage' | 'nextT
   return { tierPercentage, nextTier };
 }
 
-function totalsFor(products: Product[], quantities: Quantities, pricesIncludeVat: boolean): CartTotals {
-  const lines: CartLine[] = products
-    .filter((p) => (quantities[p.id] || 0) > 0)
-    .map((p) => ({ product: p, quantity: quantities[p.id] }));
+/** De winkelgegevens van de kleur die op deze kaart gekozen is. */
+function gekozenShop(product: Product, selection: Selection): { shop: ShopifyProduct; label?: string } | null {
+  const handle = selection[product.id] || product.handle;
+  const keuze = (product.shopOptions || []).find((k) => k.handle === handle);
+  if (keuze) return { shop: keuze.shop, label: keuze.label };
+  return product.shop ? { shop: product.shop } : null;
+}
+
+function totalsFor(
+  products: Product[],
+  quantities: Quantities,
+  selection: Selection,
+  pricesIncludeVat: boolean
+): CartTotals {
+  const lines: CartLine[] = [];
+  for (const p of products) {
+    const aantal = quantities[p.id] || 0;
+    if (aantal <= 0) continue;
+    const keuze = gekozenShop(p, selection);
+    if (!keuze) continue;
+    lines.push({ product: p, quantity: aantal, shop: keuze.shop, optionLabel: keuze.label });
+  }
 
   const itemCount = lines.reduce((sum, l) => sum + l.quantity, 0);
-  const bruto = lines.reduce((sum, l) => sum + (l.product.shop?.price || 0) * l.quantity, 0);
+  const bruto = lines.reduce((sum, l) => sum + l.shop.price * l.quantity, 0);
   const { tierPercentage, nextTier } = tiersFor(itemCount);
   // Shopify rekent de korting per stuk en rondt naar beneden af. Zelfde volgorde
   // aanhouden, anders wijkt dit bedrag een cent af van wat de kassa laat zien.
   const discount = lines.reduce(
-    (sum, l) => sum + Math.floor((l.product.shop?.price || 0) * tierPercentage) * l.quantity,
+    (sum, l) => sum + Math.floor(l.shop.price * tierPercentage) * l.quantity,
     0
   );
   const total = bruto - discount;
@@ -91,10 +109,17 @@ function mount(root: HTMLElement): void {
   setCurrency(data.currency);
 
   const byHandle = new Map(data.products.map((p) => [p.handle, p]));
-  const products: Product[] = PRODUCTS.map((config) => ({
-    ...config,
-    shop: byHandle.get(config.handle) || null,
-  })).filter((p) => p.shop !== null);
+  const products: Product[] = PRODUCTS.map((config) => {
+    // Alleen kleuren tonen die de winkel ook echt levert.
+    const shopOptions = (config.options || [])
+      .map((o) => ({ label: o.label, handle: o.handle, shop: byHandle.get(o.handle) }))
+      .filter((o): o is { label: string; handle: string; shop: ShopifyProduct } => Boolean(o.shop));
+    return {
+      ...config,
+      shop: byHandle.get(config.handle) || shopOptions[0]?.shop || null,
+      shopOptions: shopOptions.length > 1 ? shopOptions : undefined,
+    };
+  }).filter((p) => p.shop !== null);
 
   if (products.length === 0) {
     root.innerHTML = '<p class="cfg-warn">Koppel de producten in de theme-editor om de calculator te tonen.</p>';
@@ -103,7 +128,11 @@ function mount(root: HTMLElement): void {
 
   let visitors: number = SLIDER.default;
   const quantities: Quantities = {};
-  for (const p of products) quantities[p.id] = 0;
+  const selection: Selection = {};
+  for (const p of products) {
+    quantities[p.id] = 0;
+    selection[p.id] = p.handle;
+  }
   const first = products.find((p) => p.id === 'google-standaard') || products[0];
   quantities[first.id] = 1;
 
@@ -120,6 +149,11 @@ function mount(root: HTMLElement): void {
     label: data.labels.selector,
     products,
     quantities,
+    selection,
+    onOption: (id, handle) => {
+      selection[id] = handle;
+      render(false);
+    },
     onChange: (id, delta) => {
       quantities[id] = Math.max(0, Math.min(20, (quantities[id] || 0) + delta));
       render(true);
@@ -136,7 +170,7 @@ function mount(root: HTMLElement): void {
     heading: data.labels.ctaHeading,
     text: data.labels.ctaText,
     label: data.labels.ctaButton,
-    getLines: () => totalsFor(products, quantities, data.pricesIncludeVat).lines,
+    getLines: () => totalsFor(products, quantities, selection, data.pricesIncludeVat).lines,
   });
 
   const layout = document.createElement('div');
@@ -166,7 +200,7 @@ function mount(root: HTMLElement): void {
     }
     selector.update(quantities, hints, animate);
 
-    const totals = totalsFor(products, quantities, data!.pricesIncludeVat);
+    const totals = totalsFor(products, quantities, selection, data!.pricesIncludeVat);
     summary.update(totals);
     checkout.setEnabled(totals.itemCount > 0);
   }

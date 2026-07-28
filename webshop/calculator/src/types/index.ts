@@ -10,11 +10,20 @@ export interface ExposureCurve {
   tail: number;
 }
 
+/** Een kleurkeuze binnen één kaart: zelfde product, ander Shopify-artikel. */
+export interface ProductOption {
+  /** Wat er op het knopje staat, bijvoorbeeld "Wit". */
+  label: string;
+  handle: string;
+}
+
 /** Statische productdefinitie — staat in calculatorConfig.ts. */
 export interface ProductConfig {
   id: string;
-  /** Shopify-handle; koppelt aan de gegevens die Liquid meegeeft. */
+  /** Shopify-handle van de standaardkeuze. */
   handle: string;
+  /** Laat staan als er niets te kiezen valt; anders de kleuren. */
+  options?: ProductOption[];
   title: string;
   blurb: string;
   category: Category;
@@ -39,6 +48,8 @@ export interface ShopifyProduct {
 /** Definitie plus live winkelgegevens. */
 export interface Product extends ProductConfig {
   shop: ShopifyProduct | null;
+  /** Alleen gevuld bij een kleurkeuze; per keuze de winkelgegevens. */
+  shopOptions?: { label: string; handle: string; shop: ShopifyProduct }[];
 }
 
 export interface CategoryResult {
@@ -58,7 +69,14 @@ export interface CalculationResult {
 export interface CartLine {
   product: Product;
   quantity: number;
+  /** De gekozen kleurvariant; hiermee gaat de regel naar de winkelwagen. */
+  shop: ShopifyProduct;
+  /** "Wit" of "Zwart" als er iets te kiezen viel. */
+  optionLabel?: string;
 }
+
+/** Welke kleur er per product gekozen is, op Shopify-handle. */
+export type Selection = Record<string, string>;
 
 export interface CartTotals {
   lines: CartLine[];

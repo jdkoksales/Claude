@@ -1,4 +1,6 @@
-kassa: https://tapkaarten.nl/checkouts/cn/hWNEzqkx4m1eTC9PqqS8XpHW/nl-nl?_r=AQABgrn-3Nn
+kassa: https://tapkaarten.nl/checkouts/cn/hWNF0GqHgAD8QNaEuVkOuZVq/nl-nl?_r=AQAB1jl8n14
+vraagteken zonder adres: Meer informatie over btw
+vraagteken met volledig adres: Meer informatie over btw
 besteloverzicht:
    Verzendwijze Kies een verzendmethode Standaard di 4 aug. – do 6 aug. GRATIS
    Kies een verzendmethode Standaard di 4 aug. – do 6 aug. GRATIS
@@ -6,8 +8,8 @@ besteloverzicht:
    Subtotaal
    Verzending GRATIS
    Verzending
-   Geschatte belasting € 23,49
-   Geschatte belasting
+   btw € 23,49
+   btw
    Totaal EUR € 135,33
    Totaal
 >> BTW-REGEL AANWEZIG

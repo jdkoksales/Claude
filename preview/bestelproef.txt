@@ -9,14 +9,14 @@ lade aanwezig: true
 calculatorknop: {"disabled":false,"klassen":"cfg-checkout","groot":"370x65"}
     console: Failed to load resource: the server responded with a status of 401 ()
     console: Failed to load resource: the server responded with a status of 403 ()
-  na klik: https://tapkaarten.nl/checkouts/cn/hWNEzmCEbTETrd3hWtJomSpu/nl-nl?_r=AQABQESb3D09zhjf4Hu7oztI0gKBwQaOddoG4WTNz
+  na klik: https://tapkaarten.nl/checkouts/cn/hWNEzoD2hzlYj7YJYHMwJzMo/nl-nl?_r=AQABhNE5vKrSFYhQXkITcW34E8mMhqyg8qku7u0q6
   regels in winkelwagen: 1
     console: Framing 'https://shop.app/' violates the following Content Security Policy directive: "frame-ancestors 'self' https://shop.app https://admin.shopify.com". The r
     console: Failed to load resource: the server responded with a status of 403 ()
 winkelwagenpagina knoppen: a "Veilig afrekenen" zichtbaar=true | button[name=checkout] "Afrekenen" zichtbaar=true
     console: Failed to load resource: the server responded with a status of 401 ()
     console: Failed to load resource: the server responded with a status of 403 ()
-  na klik: https://tapkaarten.nl/checkouts/cn/hWNEzmD54rzxMu5rzk9Urjc2/nl-nl?_r=AQABGaziczq_kAM10uoFcSMPq16mWxDxv2nrbrHGW
+  na klik: https://tapkaarten.nl/checkouts/cn/hWNEzoDxDLOsgpErkXvgzGSY/nl-nl?_r=AQAByEoClyfIvtFfHNtVeY_XdEvst3bBQv0vKd1CW
     console: Framing 'https://shop.app/' violates the following Content Security Policy directive: "frame-ancestors 'self' https://shop.app https://admin.shopify.com". The r
     console: Failed to load resource: the server responded with a status of 403 ()
 kopregel heeft data-cart-toggle: true
@@ -27,4 +27,11 @@ productpagina toevoegen: {"laadOpen":true,"regels":1,"telling":"1","genavigeerd"
     console: Failed to load resource: the server responded with a status of 429 ()
     console: %c%d font-size:0;color:transparent NaN
     console: %c%d font-size:0;color:transparent NaN
-rechtstreeks /checkout: status=200 url=https://ikep5e-3q.myshopify.com/checkouts/cn/hWNEzmGATKZgjludtsx49syA/nl-us?_r=AQABrk3kaKaPQbLhJ5_MBsCBkaZthAZ
+rechtstreeks /checkout: status=200 url=https://ikep5e-3q.myshopify.com/checkouts/cn/hWNEzoHGYmLkGdowp3NqDWDa/nl-us?_r=AQABmJlegJaeNvSpZ_dopluxlfmbK8I
+kassa-url: https://ikep5e-3q.myshopify.com/checkouts/cn/hWNEzoHecqVzIpM8AUjPWRLG/nl-us?_r=AQAB4KPSzU9
+kassa-overzicht:
+   BesteloverzichtTotale prijs€ 139,80Kortingsprijs€ 111,84
+   Kortingscode STAFFELKORTING 4 STUKS OF MEER — 20% (-€ 27,96)
+   Originele prijs € 139,80 Kortingsprijs € 111,84
+   Subtotaal € 111,84
+   Totaal EUR € 111,84

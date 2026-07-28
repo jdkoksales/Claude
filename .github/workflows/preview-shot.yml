@@ -211,6 +211,30 @@ jobs:
             log.push('staffelproef MISLUKT: ' + e.message.split('\n')[0]);
           }
 
+          // schuifbalk: welk bezoekersaantal hoort bij welke plek op de balk?
+          try {
+            const ctx = await b.newContext({ viewport: { width: 1440, height: 900 } });
+            const t = await ctx.newPage();
+            await t.goto(BASE + '/' + PV, { waitUntil: 'domcontentloaded', timeout: 60000 });
+            await t.waitForSelector('.cfg-main input[type=range]', { timeout: 30000 });
+            const uit = await t.evaluate(() => {
+              const inp = document.querySelector('.cfg-main input[type=range]');
+              const teller = document.querySelector('.cfg-bignum [data-count]');
+              const max = parseInt(inp.max, 10);
+              const rij = [];
+              for (const deel of [0, 0.1, 0.2, 0.25, 0.3, 0.4, 0.5, 0.6, 0.75, 0.9, 1]) {
+                inp.value = String(Math.round(max * deel));
+                inp.dispatchEvent(new Event('input', { bubbles: true }));
+                rij.push(`${Math.round(deel * 100)}%=${teller.textContent.trim()}`);
+              }
+              return rij.join('  ');
+            });
+            log.push(`schuifbalk ${uit}`);
+            await ctx.close();
+          } catch (e) {
+            log.push('schuifbalkproef MISLUKT: ' + e.message.split('\n')[0]);
+          }
+
           // linkcontrole
           const links = fs.readFileSync('preview/links.txt', 'utf8').split('\n').filter(Boolean);
           const p = await b.newPage();

@@ -1,0 +1,134 @@
+name: Teksten en prijzen nalopen
+
+# Loopt elke pagina langs en zoekt naar tegenstrijdigheden: oude prijzen,
+# "inclusief btw", oningevulde velden, kapotte links en lege afbeeldingen.
+on:
+  workflow_dispatch:
+  push:
+    branches: [claude/3d-product-animations-btyc7y]
+    paths: ['.github/workflows/tekstcontrole.yml', 'preview/tekst-trigger.txt']
+
+permissions:
+  contents: write
+
+jobs:
+  controle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: claude/3d-product-animations-btyc7y
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Playwright installeren
+        run: npm i -D playwright && npx playwright install --with-deps chromium
+
+      - name: Nalopen
+        run: |
+          mkdir -p preview
+          cat > tekst.mjs <<'JS'
+          import { chromium } from 'playwright';
+          import fs from 'fs';
+
+          const BASE = 'https://ikep5e-3q.myshopify.com';
+          const PV = '?preview_theme_id=196665213305';
+
+          const PAGES = [
+            ['home', '/'],
+            ['collectie', '/collections/alle-tapkaarten'],
+            ['google-wit', '/products/tapkaarten-google-review-standaard'],
+            ['google-zwart', '/products/tapkaarten-google-review-standaard-zwart'],
+            ['instagram', '/products/tapkaarten-instagram-standaard'],
+            ['facebook', '/products/tapkaarten-facebook-standaard'],
+            ['sticker', '/products/tapkaarten-google-review-sticker'],
+            ['winkelwagen', '/cart'],
+            ['verzending', '/pages/verzending'],
+            ['retour', '/pages/retourbeleid'],
+            ['voorwaarden', '/pages/algemene-voorwaarden'],
+            ['vragen', '/pages/veelgestelde-vragen'],
+            ['over', '/pages/over-ons'],
+            ['contact', '/pages/contact'],
+            ['privacy', '/policies/privacy-policy'],
+          ];
+
+          // Dingen die nergens meer mogen staan.
+          const VERBODEN = [
+            ['oude prijs 39,95', /€\s*39,95/],
+            ['oude prijs 59,95', /€\s*59,95/],
+            ['oude prijs 24,95', /€\s*24,95/],
+            ['inclusief btw', /inclusief\s*(21%\s*)?btw|incl\.\s*btw|belastingen inbegrepen/i],
+            ['oningevuld veld', /\[VUL IN\]/],
+            ['Engelse restanten', /\bAdd to cart\b|\bCheckout\b|\bSold out\b|Shop now|5 YEARS OF LOVE/],
+            ['plaatshouder', /lorem ipsum|voorbeeldtekst|TODO/i],
+          ];
+
+          const b = await chromium.launch();
+          const log = [];
+          const fouten = [];
+
+          for (const [naam, pad] of PAGES) {
+            const ctx = await b.newContext({ viewport: { width: 1440, height: 900 } });
+            const p = await ctx.newPage();
+            p.on('pageerror', (e) => fouten.push(`${naam}: JS ${e.message.slice(0, 120)}`));
+            p.on('response', (r) => {
+              const u = r.url();
+              if (r.status() >= 400 && !u.includes('shop.app') && !u.includes('cdn.shopify.com/shopifycloud')) {
+                fouten.push(`${naam}: ${r.status()} ${u.slice(0, 110)}`);
+              }
+            });
+
+            const resp = await p.goto(BASE + pad + PV, { waitUntil: 'domcontentloaded', timeout: 60000 }).catch(() => null);
+            await p.waitForTimeout(2500);
+            const status = resp ? resp.status() : 'FOUT';
+
+            const bev = await p.evaluate(() => {
+              // de previewbalk en het cookievenster horen niet bij de site
+              document.querySelectorAll('#preview-bar-iframe, #shopify-pc__banner, .shopify-pc__banner').forEach((el) => el.remove());
+              const hoofd = document.body.innerText.replace(/\s+/g, ' ');
+              const prijzen = [...new Set(hoofd.match(/€\s?[\d.]+,\d{2}/g) || [])];
+              const legeAlt = [...document.querySelectorAll('img')].filter((i) => !i.alt || !i.alt.trim()).length;
+              const kapotteAfb = [...document.querySelectorAll('img')].filter(
+                (i) => i.complete && i.naturalWidth === 0
+              ).map((i) => i.getAttribute('src')?.slice(-50));
+              return { tekst: hoofd, prijzen, legeAlt, kapotteAfb, titel: document.title, afbeeldingen: document.querySelectorAll('img').length };
+            });
+
+            log.push(`\n== ${naam} (${pad}) status=${status}`);
+            log.push(`   titel: ${bev.titel}`);
+            if (bev.prijzen.length) log.push(`   prijzen op de pagina: ${bev.prijzen.join('  ')}`);
+            for (const [label, regex] of VERBODEN) {
+              const m = bev.tekst.match(regex);
+              if (m) {
+                const i = bev.tekst.indexOf(m[0]);
+                log.push(`   !! ${label}: "...${bev.tekst.slice(Math.max(0, i - 60), i + 70)}..."`);
+                fouten.push(`${naam}: ${label}`);
+              }
+            }
+            if (bev.kapotteAfb.length) {
+              log.push(`   !! kapotte afbeeldingen: ${bev.kapotteAfb.join(', ')}`);
+              fouten.push(`${naam}: kapotte afbeelding`);
+            }
+            if (bev.legeAlt) log.push(`   afbeeldingen zonder alt-tekst: ${bev.legeAlt} van ${bev.afbeeldingen}`);
+
+            await ctx.close();
+          }
+
+          await b.close();
+          const kop = fouten.length
+            ? `GEVONDEN: ${fouten.length} punten\n` + [...new Set(fouten)].map((f) => ' - ' + f).join('\n')
+            : 'GEEN AFWIJKINGEN GEVONDEN';
+          fs.writeFileSync('preview/tekstcontrole.txt', kop + '\n' + log.join('\n') + '\n');
+          console.log(kop);
+          JS
+          node tekst.mjs
+
+      - name: Terugcommitten
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add preview/tekstcontrole.txt
+          git commit -m "Uitkomst van de tekstcontrole" || echo "niets gewijzigd"
+          git push

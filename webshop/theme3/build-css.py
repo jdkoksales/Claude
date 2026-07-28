@@ -65,7 +65,7 @@ TAIL = ("html{scroll-behavior:smooth}\n"
         ".tk3-linkveld small{display:block;margin-top:6px;font-size:12.5px;line-height:1.45;color:rgba(0,0,0,.55)}\n"
         # Laatste kans om de link te vragen, in de winkelwagenlade boven de
         # afrekenknop. Dichtgeklapt, zodat het geen extra handeling is.
-        ".tk3-cartlink{margin:0 0 12px}\n"
+        ".tk3-cartlink{margin:0 0 10px}\n"
         ".tk3-cartlink-blok>summary{display:flex;align-items:center;gap:8px;cursor:pointer;list-style:none;"
         "font-size:13.5px;font-weight:600;color:rgba(0,0,0,.72)}\n"
         ".tk3-cartlink-blok>summary::-webkit-details-marker{display:none}\n"

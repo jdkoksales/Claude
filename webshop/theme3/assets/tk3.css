@@ -33,7 +33,7 @@ html,body{overflow-x:clip}
 .tk3-linkveld input::placeholder{color:rgba(0,0,0,.34)}
 .tk3-linkveld input:focus{outline:2px solid rgba(0,0,0,.55);outline-offset:1px;border-color:transparent}
 .tk3-linkveld small{display:block;margin-top:6px;font-size:12.5px;line-height:1.45;color:rgba(0,0,0,.55)}
-.tk3-cartlink{margin:0 0 12px}
+.tk3-cartlink{margin:0 0 10px}
 .tk3-cartlink-blok>summary{display:flex;align-items:center;gap:8px;cursor:pointer;list-style:none;font-size:13.5px;font-weight:600;color:rgba(0,0,0,.72)}
 .tk3-cartlink-blok>summary::-webkit-details-marker{display:none}
 .tk3-cartlink-blok>summary::after{content:'+';margin-left:auto;font-size:16px;color:rgba(0,0,0,.42)}

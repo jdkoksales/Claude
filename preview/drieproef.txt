@@ -1,0 +1,41 @@
+== loopbalk
+   teksten: 🚚 Gratis verzending vanaf € 70 | ☀️ Zomerkorting tot 20% | 🇳🇱 Verstuurd vanuit Nederland
+   achtergrond: linear-gradient(90deg, rgb(219, 78, 20) 0%, rgb(244, 128, 31) 26%, rgb(255, 168, 63) 50%, rgb(244, 128, 31) 74%, rgb(219, 78, 20) 100%)
+   tekstkleur: rgb(255, 255, 255)  hoogte: 45px  stippen: 18
+   animatie: mq-adem  glans: mq-glans
+
+== prijskleuren op de productpagina
+   €0,00      kleur=rgb(11, 13, 16)      doorgestreept=nee  
+   € 49,95    kleur=rgb(138, 143, 152)   doorgestreept=ja  product-info__compare
+   € 34,95    kleur=rgb(226, 59, 30)     doorgestreept=nee  product-info__price
+   €34,95     kleur=rgba(0, 0, 0, 0.5)   doorgestreept=nee  tk3-trede-prijs
+   €62,92     kleur=rgba(0, 0, 0, 0.5)   doorgestreept=nee  tk3-trede-prijs
+   €89,13     kleur=rgba(0, 0, 0, 0.5)   doorgestreept=nee  tk3-trede-prijs
+   €111,84    kleur=rgba(0, 0, 0, 0.5)   doorgestreept=nee  tk3-trede-prijs
+   € 34,95    kleur=rgb(11, 13, 16)      doorgestreept=nee  product-sticky-bar__price
+   € 49,95    kleur=rgba(0, 0, 0, 0.36)  doorgestreept=ja  cfg-prijs-oud
+   € 34,95    kleur=rgb(226, 59, 30)     doorgestreept=nee  cfg-prijs-nieuw
+
+== prijskleuren op de collectie
+   €0,00      kleur=rgb(11, 13, 16)      doorgestreept=nee  
+   €34,95     kleur=rgb(226, 59, 30)     doorgestreept=nee  product-tile__price-current
+   €49,95     kleur=rgb(138, 143, 152)   doorgestreept=ja  product-tile__price-compare
+   €34,95     kleur=rgb(226, 59, 30)     doorgestreept=nee  product-tile__price-current
+   €49,95     kleur=rgb(138, 143, 152)   doorgestreept=ja  product-tile__price-compare
+   €34,95     kleur=rgb(226, 59, 30)     doorgestreept=nee  product-tile__price-current
+   €49,95     kleur=rgb(138, 143, 152)   doorgestreept=ja  product-tile__price-compare
+   €34,95     kleur=rgb(226, 59, 30)     doorgestreept=nee  product-tile__price-current
+   €49,95     kleur=rgb(138, 143, 152)   doorgestreept=ja  product-tile__price-compare
+   €19,95     kleur=rgb(226, 59, 30)     doorgestreept=nee  product-tile__price-current
+   €29,95     kleur=rgb(138, 143, 152)   doorgestreept=ja  product-tile__price-compare
+
+== winkelwagenlade
+   linkblok aanwezig: true  dichtgeklapt: true
+   tekst: Link voor je kaarten alvast doorgeven? OPTIONEEL Niet nodig om te bestellen — anders mailen we je er direct na je bestelling over.
+   afrekenknop zichtbaar: true
+   kenmerken na invullen: {"Link voor de kaart":"https://g.page/r/proef"}
+   2 stuks: totaal 62.92 (gratis verzenden vanaf 70,00)
+   4 stuks: totaal 111.84 (gratis verzenden vanaf 70,00)
+
+== productpagina (telefoon)
+   linkveld dichtgeklapt: true — Link nu al doorgeven? OPTIONEEL

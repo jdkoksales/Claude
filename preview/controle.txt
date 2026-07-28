@@ -90,16 +90,13 @@ contact mobiel status=200
   KLEINE KNOPPEN a 106x20, a.brand 148x21, a.cartlink 26x26, a 135x19, a 105x19
 winkelwagenproef zonder link: 1× TapKaarten Google Review-standaard — wit props={}
 winkelwagenproef met link: 1× TapKaarten Google Review-standaard — wit props={"Link voor de kaart":"https://g.page/r/voorbeeld"}
-staffel 1×: van € 39,95 af € 0,00 (0%) => € 39,95  []
-staffel 2×: van € 79,90 af € 7,98 (10%) => € 71,92  [Staffelkorting 2 stuks — 10%]
-staffel 3×: van € 119,85 af € 17,97 (15%) => € 101,88  [Staffelkorting 3 stuks — 15%]
-staffel 4×: van € 159,80 af € 31,96 (20%) => € 127,84  [Staffelkorting 4 stuks of meer — 20%]
-staffel 5×: van € 199,75 af € 39,95 (20%) => € 159,80  [Staffelkorting 4 stuks of meer — 20%]
+staffel 1×: van € 34,95 af € 0,00 (0%) => € 34,95  []
+staffel 2×: van € 69,90 af € 6,98 (10%) => € 62,92  [Staffelkorting 2 stuks — 10%]
+staffel 3×: van € 104,85 af € 15,72 (15%) => € 89,13  [Staffelkorting 3 stuks — 15%]
+staffel 4×: van € 139,80 af € 27,96 (20%) => € 111,84  [Staffelkorting 4 stuks of meer — 20%]
+staffel 5×: van € 174,75 af € 34,95 (20%) => € 139,80  [Staffelkorting 4 stuks of meer — 20%]
 schuifbalk 0%=10  10%=13  20%=28  25%=41  30%=60  40%=110  50%=185  60%=290  75%=490  90%=775  100%=1.000
-  [Eén balie] 1 × Google Review-standaard (wit) · 1 × Instagram-standaard | 2 kaarten — € 79,90 € 71,92 incl. btw −10% staffelkorting | 💥 Je pakt nu 10% staffelkorting — dat scheelt € 7,98 | boost -
-  [Compleet] 1 × Google Review-standaard (wit) · 1 × Google Review-sticker · 1 × Instagram-standaard · 1 × Facebook-standaard | 4 kaarten — € 144,80 € 115,84 incl. btw −20% staffelkorting | 💥 Je pakt nu 20% staffelkorting — dat scheelt € 28,96 | boost ▲ 1,3×
-  [Meerdere punten] 2 × Google Review-standaard (wit) · 3 × Google Review-sticker · 2 × Instagram-standaard · 2 × Facebook-standaard | 9 kaarten — € 314,55 € 251,64 incl. btw −20% staffelkorting | 💥 Je pakt nu 20% staffelkorting — dat scheelt € 62,91 | boost ▲ 1,5× ▲ 1,3× ▲ 1,3×
-  [na Zwart] 2 × Google Review-standaard (zwart) · 3 × Google Review-sticker · 2 × Instagram-standaard · 2 × Facebook-standaard
+schuifbalkproef MISLUKT: page.evaluate: TypeError: Cannot read properties of null (reading 'textContent')
 mobiel menu {"open":true,"rect":"142,104 230x352","stijl":"display=block vis=visible opacity=1 z=70 pos=absolute","bovenop":"div.sheet","links":6,"ketting":["body. ovf=clip visible/clip/visible tf=nee z=auto"]}
 link 200 /
 link 200 /collections/alle-tapkaarten
@@ -117,19 +114,19 @@ link 200 /pages/contact
 link 200 /pages/over-ons
 link 200 /pages/verzending
 link 200 /pages/retourbeleid
-link 200 /pages/algemene-voorwaarden
+link 429 /pages/algemene-voorwaarden
 link 200 /policies/privacy-policy
 
 --- fouten ---
-home/desktop 403 https://shop.app/pay/hop?analytics_trace_id=5ee2e9aa-624b-4d23-b8ca-0c9a736d68a9&target_origin=https%3A%2F%2Ftapkaarten.
-home/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=2703a383-c693-45eb-9913-99117b745ba3&target_origin=https%3A%2F%2Ftapkaarten.
-product/desktop 403 https://shop.app/pay/hop?analytics_trace_id=ba76522d-450a-4961-9d5b-4b7a8530fda8&target_origin=https%3A%2F%2Ftapkaarten.
-product/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=81e47d70-e220-43c8-85cb-aec5c7121376&target_origin=https%3A%2F%2Ftapkaarten.
-collectie/desktop 403 https://shop.app/pay/hop?analytics_trace_id=2a8df414-bc1f-44a2-9ff9-d5c3647f6531&target_origin=https%3A%2F%2Ftapkaarten.
-collectie/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=62282590-29a4-458e-9802-ab73c39c4207&target_origin=https%3A%2F%2Ftapkaarten.
-winkelwagen/desktop 403 https://shop.app/pay/hop?analytics_trace_id=0f63ff39-26b9-4729-b013-ef35faf0659e&target_origin=https%3A%2F%2Ftapkaarten.
-winkelwagen/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=4c2e3196-c576-47fc-b554-3864e7814ddd&target_origin=https%3A%2F%2Ftapkaarten.
-verzending/desktop 403 https://shop.app/pay/hop?analytics_trace_id=3b362898-91c7-4dae-847c-e61d8bd2423b&target_origin=https%3A%2F%2Ftapkaarten.
-verzending/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=77944983-0ff0-4560-ad9c-bb0a5a60bd05&target_origin=https%3A%2F%2Ftapkaarten.
-contact/desktop 403 https://shop.app/pay/hop?analytics_trace_id=2bfd0f8a-a5b2-49ff-9b27-174d77d6ecd7&target_origin=https%3A%2F%2Ftapkaarten.
-contact/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=92b5ebac-190d-4df0-996f-a98dd754f281&target_origin=https%3A%2F%2Ftapkaarten.
+home/desktop 403 https://shop.app/pay/hop?analytics_trace_id=757d12e0-5313-4fe8-943f-5f3e8e739a3e&target_origin=https%3A%2F%2Ftapkaarten.
+home/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=d641c93c-81f1-4196-902a-24047e11296a&target_origin=https%3A%2F%2Ftapkaarten.
+product/desktop 403 https://shop.app/pay/hop?analytics_trace_id=a7fb4367-4d1b-4404-8564-a3ebb170b14f&target_origin=https%3A%2F%2Ftapkaarten.
+product/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=43de2d9a-b4ce-4927-940a-f03891ddf8c6&target_origin=https%3A%2F%2Ftapkaarten.
+collectie/desktop 403 https://shop.app/pay/hop?analytics_trace_id=9931dadf-4b56-4a28-ac97-4806eb17dc0c&target_origin=https%3A%2F%2Ftapkaarten.
+collectie/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=9bc6964b-f3af-4bcd-a218-a950d630a3f1&target_origin=https%3A%2F%2Ftapkaarten.
+winkelwagen/desktop 403 https://shop.app/pay/hop?analytics_trace_id=74c6c94d-94f5-49b2-9363-da9569dfdb32&target_origin=https%3A%2F%2Ftapkaarten.
+winkelwagen/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=737e0d79-13da-4073-ae96-dde7fa260a55&target_origin=https%3A%2F%2Ftapkaarten.
+verzending/desktop 403 https://shop.app/pay/hop?analytics_trace_id=150f2568-f4ad-4857-a567-6fa1e83e740d&target_origin=https%3A%2F%2Ftapkaarten.
+verzending/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=fd363f59-1e54-4f44-ba6d-6171ad9ff848&target_origin=https%3A%2F%2Ftapkaarten.
+contact/desktop 403 https://shop.app/pay/hop?analytics_trace_id=0a3963b4-9b13-4b35-8a8f-9462ab4a059c&target_origin=https%3A%2F%2Ftapkaarten.
+contact/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=95f5d286-6694-4375-ba5f-0c71153328bd&target_origin=https%3A%2F%2Ftapkaarten.

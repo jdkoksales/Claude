@@ -271,6 +271,47 @@ jobs:
             log.push('schuifbalkproef MISLUKT: ' + e.message.split('\n')[0]);
           }
 
+          // mobiel menu: opent de uitklap en is hij dan ook echt te zien?
+          try {
+            const ctx = await b.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+            const t = await ctx.newPage();
+            await t.goto(BASE + '/' + PV, { waitUntil: 'domcontentloaded', timeout: 60000 });
+            await t.waitForSelector('.mobmenu > summary', { timeout: 30000 });
+            await t.click('.mobmenu > summary');
+            await t.waitForTimeout(700);
+            const m = await t.evaluate(() => {
+              const det = document.querySelector('.mobmenu');
+              const sheet = document.querySelector('.mobmenu .sheet');
+              if (!det || !sheet) return { fout: 'menu niet in de pagina' };
+              const r = sheet.getBoundingClientRect();
+              const cs = getComputedStyle(sheet);
+              const ketting = [];
+              let el = sheet.parentElement;
+              while (el && el !== document.documentElement) {
+                const c = getComputedStyle(el);
+                if (c.overflow !== 'visible' || c.overflowX !== 'visible' || c.overflowY !== 'visible' ||
+                    c.transform !== 'none' || c.contain !== 'none') {
+                  ketting.push(`${el.tagName.toLowerCase()}.${(el.className || '').toString().trim().split(/\s+/)[0]} ovf=${c.overflow}/${c.overflowX}/${c.overflowY} tf=${c.transform !== 'none' ? 'ja' : 'nee'} z=${c.zIndex}`);
+                }
+                el = el.parentElement;
+              }
+              const midden = document.elementFromPoint(Math.round(r.left + r.width / 2), Math.round(r.top + 10));
+              return {
+                open: det.open,
+                rect: `${Math.round(r.left)},${Math.round(r.top)} ${Math.round(r.width)}x${Math.round(r.height)}`,
+                stijl: `display=${cs.display} vis=${cs.visibility} opacity=${cs.opacity} z=${cs.zIndex} pos=${cs.position}`,
+                bovenop: midden ? `${midden.tagName.toLowerCase()}.${(midden.className || '').toString().trim().split(/\s+/)[0]}` : 'niets',
+                links: [...sheet.querySelectorAll('a')].length,
+                ketting: ketting.slice(0, 6),
+              };
+            });
+            log.push(`mobiel menu ${JSON.stringify(m)}`);
+            await t.screenshot({ path: 'preview/menu-mobiel.png' });
+            await ctx.close();
+          } catch (e) {
+            log.push('menuproef MISLUKT: ' + e.message.split('\n')[0]);
+          }
+
           // linkcontrole
           const links = fs.readFileSync('preview/links.txt', 'utf8').split('\n').filter(Boolean);
           const p = await b.newPage();

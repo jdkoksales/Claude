@@ -217,7 +217,8 @@ jobs:
             const t = await ctx.newPage();
             await t.goto(BASE + '/' + PV, { waitUntil: 'domcontentloaded', timeout: 60000 });
             await t.waitForSelector('.cfg-main input[type=range]', { timeout: 30000 });
-            const uit = await t.evaluate(() => {
+            const uit = await t.evaluate(async () => {
+              const wacht = (ms) => new Promise((r) => setTimeout(r, ms));
               const inp = document.querySelector('.cfg-main input[type=range]');
               const teller = document.querySelector('.cfg-bignum [data-count]');
               const max = parseInt(inp.max, 10);
@@ -225,6 +226,8 @@ jobs:
               for (const deel of [0, 0.1, 0.2, 0.25, 0.3, 0.4, 0.5, 0.6, 0.75, 0.9, 1]) {
                 inp.value = String(Math.round(max * deel));
                 inp.dispatchEvent(new Event('input', { bubbles: true }));
+                // de teller loopt geanimeerd naar het nieuwe getal
+                await wacht(900);
                 rij.push(`${Math.round(deel * 100)}%=${teller.textContent.trim()}`);
               }
               return rij.join('  ');

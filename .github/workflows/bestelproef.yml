@@ -132,8 +132,17 @@ jobs:
             // ---------- 3b. lade openen via de winkelwagenknop in de kopregel ----------
             {
               const { ctx: c2, p: p2 } = await nieuw();
+              // eerst iets in de winkelwagen, anders valt er niets te tonen
               await p2.goto(BASE + '/' + PV, { waitUntil: 'domcontentloaded', timeout: 60000 });
-              await p2.waitForSelector('[data-cart-toggle]', { timeout: 20000 }).catch(() => {});
+              await p2.evaluate(() =>
+                fetch('/cart/add.js', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ items: [{ id: 64057218662777, quantity: 2 }] }),
+                })
+              );
+              await p2.reload({ waitUntil: 'networkidle', timeout: 60000 }).catch(() => {});
+              await p2.waitForTimeout(2000);
               const heeft = await p2.evaluate(() => !!document.querySelector('[data-cart-toggle]'));
               log.push(`kopregel heeft data-cart-toggle: ${heeft}`);
               if (heeft) {
@@ -142,10 +151,26 @@ jobs:
                 const open = await p2.evaluate(() => {
                   const d = document.querySelector('[data-cart-drawer]');
                   const r = d.querySelector('.cart-drawer__panel').getBoundingClientRect();
-                  return { klasse: d.className, zichtbaar: `${Math.round(r.width)}x${Math.round(r.height)} @${Math.round(r.left)}`, url: location.pathname };
+                  const knop = d.querySelector('.cart-drawer__checkout-button');
+                  return {
+                    klasse: d.className,
+                    paneel: `${Math.round(r.width)}x${Math.round(r.height)} @x=${Math.round(r.left)}`,
+                    regels: d.querySelectorAll('[data-cart-item-key]').length,
+                    subtotaal: d.querySelector('[data-cart-drawer-subtotal]')?.textContent.trim(),
+                    kassaknop: knop ? knop.getAttribute('href') : 'geen',
+                    telling: document.querySelector('[data-cart-count]')?.textContent.trim(),
+                  };
                 });
                 log.push(`  lade na klik: ${JSON.stringify(open)}`);
+                await p2.screenshot({ path: 'preview/lade.png' });
               }
+              await p2.evaluate(() =>
+                fetch('/cart/update.js', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ updates: { 64057218662777: 0 } }),
+                })
+              );
               await c2.close();
             }
           }
@@ -180,6 +205,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add preview/bestelproef.txt
+          git add preview/bestelproef.txt preview/lade.png
           git commit -m "Uitkomst van de bestelproef" || echo "niets gewijzigd"
           git push

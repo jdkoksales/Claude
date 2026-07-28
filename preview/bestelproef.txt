@@ -9,28 +9,27 @@ lade aanwezig: true
 calculatorknop: {"disabled":false,"klassen":"cfg-checkout","groot":"370x65"}
     console: Failed to load resource: the server responded with a status of 401 ()
     console: Failed to load resource: the server responded with a status of 403 ()
-  na klik: https://tapkaarten.nl/checkouts/cn/hWNEzoD2hzlYj7YJYHMwJzMo/nl-nl?_r=AQABhNE5vKrSFYhQXkITcW34E8mMhqyg8qku7u0q6
+  na klik: https://tapkaarten.nl/checkouts/cn/hWNEzoUILGnbuBz3g9dQuU5K/nl-nl?_r=AQAB9OLqzlq3UnLZ-dWN7Zz7Dd8k8D4rFNnYe_n-u
   regels in winkelwagen: 1
-    console: Framing 'https://shop.app/' violates the following Content Security Policy directive: "frame-ancestors 'self' https://shop.app https://admin.shopify.com". The r
-    console: Failed to load resource: the server responded with a status of 403 ()
+    console: Invalid 'X-Frame-Options' header encountered when loading 'https://tapkaarten.nl/': 'ALLOW-FROM https://tapkaarten.nl' is not a recognized directive. The header
 winkelwagenpagina knoppen: a "Veilig afrekenen" zichtbaar=true | button[name=checkout] "Afrekenen" zichtbaar=true
     console: Failed to load resource: the server responded with a status of 401 ()
     console: Failed to load resource: the server responded with a status of 403 ()
-  na klik: https://tapkaarten.nl/checkouts/cn/hWNEzoDxDLOsgpErkXvgzGSY/nl-nl?_r=AQAByEoClyfIvtFfHNtVeY_XdEvst3bBQv0vKd1CW
-    console: Framing 'https://shop.app/' violates the following Content Security Policy directive: "frame-ancestors 'self' https://shop.app https://admin.shopify.com". The r
-    console: Failed to load resource: the server responded with a status of 403 ()
+  na klik: https://tapkaarten.nl/checkouts/cn/hWNEzoV9VJzxeXqyQZA2K6KI/nl-nl?_r=AQAB8IKuolDbjj2RmHWsOjuUCOsk854XJX5oGZqyE
+    console: Invalid 'X-Frame-Options' header encountered when loading 'https://tapkaarten.nl/': 'ALLOW-FROM https://tapkaarten.nl' is not a recognized directive. The header
 kopregel heeft data-cart-toggle: true
   lade na klik: {"klasse":"cart-drawer is-open","paneel":"440x900 @x=1000","regels":1,"subtotaal":"€ 62,92","kassaknop":"/checkout","telling":"2"}
-    console: Framing 'https://shop.app/' violates the following Content Security Policy directive: "frame-ancestors 'self' https://shop.app https://admin.shopify.com". The r
-    console: Failed to load resource: the server responded with a status of 403 ()
+    console: Invalid 'X-Frame-Options' header encountered when loading 'https://tapkaarten.nl/': 'ALLOW-FROM https://tapkaarten.nl' is not a recognized directive. The header
 productpagina toevoegen: {"laadOpen":true,"regels":1,"telling":"1","genavigeerd":"/products/tapkaarten-instagram-standaard"} (was productpagina)
     console: Failed to load resource: the server responded with a status of 429 ()
     console: %c%d font-size:0;color:transparent NaN
     console: %c%d font-size:0;color:transparent NaN
-rechtstreeks /checkout: status=200 url=https://ikep5e-3q.myshopify.com/checkouts/cn/hWNEzoHGYmLkGdowp3NqDWDa/nl-us?_r=AQABmJlegJaeNvSpZ_dopluxlfmbK8I
-kassa-url: https://ikep5e-3q.myshopify.com/checkouts/cn/hWNEzoHecqVzIpM8AUjPWRLG/nl-us?_r=AQAB4KPSzU9
+rechtstreeks /checkout: status=200 url=https://ikep5e-3q.myshopify.com/checkouts/cn/hWNEzoYGeSWW2WvMFJordnXe/nl-us?_r=AQABnD7hQwjlDt5BOvzj3-Vk9qGTIoJ
+kassa-url: https://ikep5e-3q.myshopify.com/checkouts/cn/hWNEzoYbAkbn9lYSxfyJ1zF4/nl-us?_r=AQABwcmTu6w
+    land gezet op: NL
 kassa-overzicht:
    BesteloverzichtTotale prijs€ 139,80Kortingsprijs€ 111,84
+   Kies een verzendmethode Standaard di 4 aug. – do 6 aug. GRATIS
    Kortingscode STAFFELKORTING 4 STUKS OF MEER — 20% (-€ 27,96)
    Originele prijs € 139,80 Kortingsprijs € 111,84
    Subtotaal € 111,84

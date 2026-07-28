@@ -104,6 +104,15 @@ export const PRESETS: { id: string; label: string; hint: string; quantities: Rec
   {
     id: 'start',
     label: 'Eén balie',
+    hint: 'Google en Instagram',
+    quantities: {
+      'google-standaard': 1,
+      'instagram-standaard': 1,
+    },
+  },
+  {
+    id: 'compleet',
+    label: 'Compleet',
     hint: 'Van elk één',
     quantities: {
       'google-standaard': 1,
@@ -113,25 +122,14 @@ export const PRESETS: { id: string; label: string; hint: string; quantities: Rec
     },
   },
   {
-    id: 'compleet',
-    label: 'Compleet',
+    id: 'meerdere',
+    label: 'Meerdere punten',
     hint: 'Van elk twee, drie stickers',
     quantities: {
       'google-standaard': 2,
       'google-sticker': 3,
       'instagram-standaard': 2,
       'facebook-standaard': 2,
-    },
-  },
-  {
-    id: 'meerdere',
-    label: 'Meerdere punten',
-    hint: 'Van elk drie, vijf stickers',
-    quantities: {
-      'google-standaard': 3,
-      'google-sticker': 5,
-      'instagram-standaard': 3,
-      'facebook-standaard': 3,
     },
   },
 ];

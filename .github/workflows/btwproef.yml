@@ -1,0 +1,139 @@
+name: Btw in de kassa nakijken
+
+# Doet één ding: vier kaarten in de winkelwagen, Nederlands adres invullen en
+# de bedragen uit het besteloverzicht lezen. Bewust los van de andere proeven,
+# zodat een trage pagina elders deze meting niet onderuit haalt.
+on:
+  workflow_dispatch:
+  push:
+    branches: [claude/3d-product-animations-btyc7y]
+    paths: ['.github/workflows/btwproef.yml', 'preview/btw-trigger.txt']
+
+permissions:
+  contents: write
+
+jobs:
+  btw:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: claude/3d-product-animations-btyc7y
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Playwright installeren
+        run: npm i -D playwright && npx playwright install --with-deps chromium
+
+      - name: Kassa doorrekenen
+        run: |
+          mkdir -p preview
+          cat > btw.mjs <<'JS'
+          import { chromium } from 'playwright';
+          import fs from 'fs';
+
+          const BASE = 'https://ikep5e-3q.myshopify.com';
+          const VARIANT = 64057218662777; // Google Review-standaard wit
+          const log = [];
+
+          const b = await chromium.launch();
+          const ctx = await b.newContext({ viewport: { width: 1440, height: 1100 }, locale: 'nl-NL' });
+          const p = await ctx.newPage();
+
+          try {
+            await p.goto(BASE + '/', { waitUntil: 'domcontentloaded', timeout: 60000 });
+            await p.evaluate(
+              (id) =>
+                fetch('/cart/update.js', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ updates: { [id]: 4 } }),
+                }),
+              VARIANT
+            );
+            await p.waitForTimeout(1500);
+
+            await p.goto(BASE + '/checkout', { waitUntil: 'domcontentloaded', timeout: 90000 });
+            await p.waitForTimeout(7000);
+            log.push(`kassa: ${p.url().slice(0, 80)}`);
+
+            const vul = async (label, waarde) => {
+              const v = p.getByLabel(label, { exact: false }).first();
+              if (await v.count()) await v.fill(waarde, { timeout: 15000 }).catch(() => {});
+              else log.push(`  veld ontbreekt: ${label}`);
+            };
+
+            await vul('E-mail', 'proef@tapkaarten.nl');
+
+            const land = p.getByLabel('Land/regio', { exact: false }).first();
+            if (await land.count()) {
+              const tag = await land.evaluate((el) => el.tagName.toLowerCase());
+              if (tag === 'select') {
+                await land.selectOption({ label: 'Nederland' }).catch(() => land.selectOption('NL').catch(() => {}));
+              } else {
+                await land.click();
+                await land.fill('Nederland').catch(() => {});
+                await p.waitForTimeout(1500);
+                await p.keyboard.press('Enter');
+              }
+              await p.waitForTimeout(3000);
+            }
+
+            await vul('Voornaam', 'Jan');
+            await vul('Achternaam', 'Jansen');
+            await vul('Adres', 'Dingspil 13');
+            await p.waitForTimeout(1200);
+            await p.keyboard.press('Escape');
+            await vul('Postcode', '9302 ET');
+            await vul('Stad', 'Roden');
+            await p.getByLabel('Telefoon', { exact: false }).first().click().catch(() => {});
+            await p.waitForTimeout(15000);
+
+            const regels = await p.evaluate(() => {
+              const uit = [];
+              document.querySelectorAll('div, li, tr, section').forEach((el) => {
+                if (el.children.length > 4) return;
+                const t = (el.innerText || '').replace(/\s+/g, ' ').trim();
+                if (!t || t.length > 80) return;
+                if (/(subtotaal|btw|belasting|verzend|totaal)/i.test(t)) uit.push(t);
+              });
+              return [...new Set(uit)];
+            });
+            log.push('besteloverzicht:');
+            regels.forEach((r) => log.push(`   ${r}`));
+
+            const heeftBtw = regels.some((r) => /btw|belasting/i.test(r) && /\d/.test(r));
+            log.push(heeftBtw ? '>> BTW-REGEL AANWEZIG' : '>> GEEN BTW-REGEL GEVONDEN');
+
+            await p.screenshot({ path: 'preview/kassa.png' });
+          } catch (e) {
+            log.push('MISLUKT: ' + e.message.split('\n')[0].slice(0, 150));
+            await p.screenshot({ path: 'preview/kassa.png' }).catch(() => {});
+          }
+
+          await p.evaluate(
+            (id) =>
+              fetch('/cart/update.js', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ updates: { [id]: 0 } }),
+              }),
+            VARIANT
+          ).catch(() => {});
+          await b.close();
+
+          fs.writeFileSync('preview/btwproef.txt', log.join('\n') + '\n');
+          console.log(log.join('\n'));
+          JS
+          node btw.mjs
+
+      - name: Terugcommitten
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add preview/btwproef.txt preview/kassa.png || true
+          git commit -m "Uitkomst van de btw-proef" || echo "niets gewijzigd"
+          git push || true

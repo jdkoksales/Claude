@@ -56,16 +56,25 @@ export const PRODUCTS: ProductConfig[] = [
   },
 ];
 
-/** Basisconversie per categorie: het aandeel kassabezoekers dat iets doet. */
+/**
+ * Basisconversie per categorie: het aandeel kassabezoekers dat iets doet.
+ * Dit is een nettogetal — tikpercentage maal afmaakpercentage. De 4% voor
+ * Google staat bijvoorbeeld voor: één op de tien klanten houdt zijn telefoon
+ * tegen de kaart, en vier op de tien daarvan schrijft de review ook echt.
+ * Instagram ligt hoger omdat volgen één tik is en een review typen kost.
+ *
+ * Dit zijn schattingen. Zodra je eigen cijfers hebt uit de eerste maanden,
+ * vervang je ze hier door de gemeten waarden.
+ */
 export const BASE_CONVERSION: Record<Category, number> = {
-  google: 0.02,
-  instagram: 0.03,
-  facebook: 0.015,
+  google: 0.04,
+  instagram: 0.05,
+  facebook: 0.025,
 };
 
 export const ASSUMPTIONS = {
   /** Deel van de bezoekers dat langs de kassa of balie komt. */
-  checkoutShare: 0.8,
+  checkoutShare: 0.9,
   daysPerMonth: 30,
   /**
    * `1 - e^(-exposure)` geeft één standaard maar 63% effectiviteit. Met

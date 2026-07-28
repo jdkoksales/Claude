@@ -95,6 +95,7 @@ staffel 2×: van € 79,90 af € 7,98 (10%) => € 71,92  [Staffelkorting 2 stu
 staffel 3×: van € 119,85 af € 17,97 (15%) => € 101,88  [Staffelkorting 3 stuks — 15%]
 staffel 4×: van € 159,80 af € 31,96 (20%) => € 127,84  [Staffelkorting 4 stuks of meer — 20%]
 staffel 5×: van € 199,75 af € 39,95 (20%) => € 159,80  [Staffelkorting 4 stuks of meer — 20%]
+schuifbalk 0%=150  10%=150  20%=150  25%=150  30%=150  40%=150  50%=150  60%=150  75%=150  90%=150  100%=150
 link 200 /
 link 200 /collections/alle-tapkaarten
 link 200 /account
@@ -115,15 +116,15 @@ link 200 /pages/algemene-voorwaarden
 link 200 /policies/privacy-policy
 
 --- fouten ---
-home/desktop 403 https://shop.app/pay/hop?analytics_trace_id=b9523651-d3f4-4534-84ba-fa1fb4d07606&target_origin=https%3A%2F%2Ftapkaarten.
-home/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=85029959-218e-45f9-a13d-34f505a0ec00&target_origin=https%3A%2F%2Ftapkaarten.
-product/desktop 403 https://shop.app/pay/hop?analytics_trace_id=69f14a25-b9b9-4270-97f8-0b53e6bddc0a&target_origin=https%3A%2F%2Ftapkaarten.
-product/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=3aaa05c4-9f72-4e4e-b709-b54a485d835d&target_origin=https%3A%2F%2Ftapkaarten.
-collectie/desktop 403 https://shop.app/pay/hop?analytics_trace_id=29d937ce-42f0-4ddb-ad05-bf09057df1d2&target_origin=https%3A%2F%2Ftapkaarten.
-collectie/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=b94b7b1d-431a-4122-8bc6-44e5cb7cf6ae&target_origin=https%3A%2F%2Ftapkaarten.
-winkelwagen/desktop 403 https://shop.app/pay/hop?analytics_trace_id=aec722e5-f4ce-4081-a652-75677fd6b10d&target_origin=https%3A%2F%2Ftapkaarten.
-winkelwagen/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=e8719ec6-e7fb-4c23-a9e0-e1090c9015ea&target_origin=https%3A%2F%2Ftapkaarten.
-verzending/desktop 403 https://shop.app/pay/hop?analytics_trace_id=f3272d3c-105b-49d6-ae43-40f9f158b142&target_origin=https%3A%2F%2Ftapkaarten.
-verzending/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=d83c9cf4-a6d3-4ad4-af47-4944ecba22e7&target_origin=https%3A%2F%2Ftapkaarten.
-contact/desktop 403 https://shop.app/pay/hop?analytics_trace_id=1caefde5-0868-4dcd-abc4-95318dcffc18&target_origin=https%3A%2F%2Ftapkaarten.
-contact/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=535534ff-b011-4b34-8607-093a1acb4da2&target_origin=https%3A%2F%2Ftapkaarten.
+home/desktop 403 https://shop.app/pay/hop?analytics_trace_id=6f46c43a-c048-4247-bba9-5b68bb855c5d&target_origin=https%3A%2F%2Ftapkaarten.
+home/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=3190f7ca-686a-431d-9e84-7721fda9c187&target_origin=https%3A%2F%2Ftapkaarten.
+product/desktop 403 https://shop.app/pay/hop?analytics_trace_id=47da35a3-30e5-495d-acea-9195f0515bf1&target_origin=https%3A%2F%2Ftapkaarten.
+product/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=2f128c98-6ec5-41c0-9f10-56a69cbf1c47&target_origin=https%3A%2F%2Ftapkaarten.
+collectie/desktop 403 https://shop.app/pay/hop?analytics_trace_id=bec25fc3-f3be-462f-9ae4-4c3a4c994703&target_origin=https%3A%2F%2Ftapkaarten.
+collectie/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=8fc729fc-d702-45f4-86e6-c2999f26d612&target_origin=https%3A%2F%2Ftapkaarten.
+winkelwagen/desktop 403 https://shop.app/pay/hop?analytics_trace_id=29972340-0fc3-4d52-b6a7-f804a71723a5&target_origin=https%3A%2F%2Ftapkaarten.
+winkelwagen/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=58c2c379-55b8-49d1-b19f-9080eb1ca9eb&target_origin=https%3A%2F%2Ftapkaarten.
+verzending/desktop 403 https://shop.app/pay/hop?analytics_trace_id=ee2c8515-5d92-438d-ae71-bc3f37438eeb&target_origin=https%3A%2F%2Ftapkaarten.
+verzending/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=8164e9cd-4692-4763-91aa-301451d8cbeb&target_origin=https%3A%2F%2Ftapkaarten.
+contact/desktop 403 https://shop.app/pay/hop?analytics_trace_id=a158c6c2-a2fb-45c9-875e-0761b14f14bd&target_origin=https%3A%2F%2Ftapkaarten.
+contact/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=9c8dbcfa-3f9f-4383-ad6b-b1c67dc304df&target_origin=https%3A%2F%2Ftapkaarten.

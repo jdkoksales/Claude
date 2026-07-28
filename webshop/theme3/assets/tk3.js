@@ -185,6 +185,19 @@
   } else {
     init();
   }
+  // Het uitklapmenu sluit vanzelf als je ernaast tikt of op Escape drukt.
+  document.addEventListener('click', function (e) {
+    document.querySelectorAll('details.mobmenu[open]').forEach(function (det) {
+      if (!det.contains(e.target)) det.open = false;
+    });
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    document.querySelectorAll('details.mobmenu[open]').forEach(function (det) {
+      det.open = false;
+    });
+  });
+
   // themabewerker: opnieuw binden na het herladen van een sectie
   document.addEventListener('shopify:section:load', init);
 })();

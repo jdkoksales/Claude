@@ -67,7 +67,8 @@ footer .brand img{height:29px}
 .hdr nav{display:flex;align-items:center;gap:26px;margin:0 auto}
 .hdr nav a{font-size:var(--fs-sm);font-weight:600}
 .hdr .right{display:flex;align-items:center;gap:26px}
-.hdr .right a{font-size:var(--fs-sm);font-weight:600}
+.hdr .right>a{font-size:var(--fs-sm);font-weight:600}
+.hdr .cartlink{display:flex;align-items:center;gap:6px}
 .pill-link{border:1.5px solid var(--ink);border-radius:9999px;padding:7px 17px;font-size:var(--fs-xs);font-weight:700}
 .burger{display:none}
 /* mobiel menu: details/summary, werkt zonder javascript */
@@ -77,11 +78,13 @@ footer .brand img{height:29px}
 .mobmenu .sheet{position:absolute;right:0;top:calc(100% + 14px);background:#fff;
   border:1px solid var(--line);border-radius:16px;padding:10px;min-width:230px;
   box-shadow:0 16px 40px rgba(0,0,0,.12);z-index:70}
-.mobmenu .sheet a{display:block;padding:12px 14px;font-size:var(--fs-sm);font-weight:600;border-radius:11px}
+.mobmenu .sheet a{display:block;padding:13px 14px;font-size:var(--fs-sm);font-weight:600;border-radius:11px}
+.mobmenu>summary{padding:4px}
+.mobmenu[open]>summary{opacity:.55}
 .mobmenu .sheet a:hover{background:var(--grey-bg)}
 .mobmenu .sheet hr{border:0;border-top:1px solid var(--line);margin:8px 6px}
 @media(max-width:900px){
-  .hdr nav,.hdr .right a{display:none}
+  .hdr nav,.hdr .deskonly{display:none}
   .hdr .row{height:64px;gap:14px}
   .hdr .right{margin-left:auto;gap:16px}
   .mobmenu{display:block}

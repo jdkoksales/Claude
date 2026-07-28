@@ -77,9 +77,17 @@ export const ASSUMPTIONS = {
 
 export const SLIDER = {
   min: 10,
-  max: 5000,
-  step: 1,
-  default: 250,
+  max: 1000,
+  default: 150,
+  /**
+   * De schuifbalk loopt niet recht. Verreweg de meeste zaken zitten tussen de
+   * 20 en 300 bezoekers per dag, en op een rechte schaal schiet je daar met één
+   * duimbeweging overheen. Met deze macht krijgt 10–100 ruim een derde van de
+   * balk, terwijl de bovenkant bruikbaar blijft.
+   */
+  curve: 2.5,
+  /** Aantal standen van de balk zelf; niet het aantal bezoekers. */
+  positions: 1000,
 } as const;
 
 /** Btw-tarief voor de uitsplitsing in het overzicht. */

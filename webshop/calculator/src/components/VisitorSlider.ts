@@ -1,6 +1,7 @@
 import { SLIDER } from '../config/calculatorConfig';
 import { formatNumber } from '../utils/format';
 import { countTo } from '../utils/animate';
+import { positionToVisitors, visitorsToPosition } from '../utils/slider';
 
 export interface VisitorSliderOptions {
   label: string;
@@ -15,8 +16,11 @@ export function VisitorSlider({ label, value, onChange }: VisitorSliderOptions):
     <div class="cfg-step">Stap 1</div>
     <div class="cfg-q">${label}</div>
     <div class="cfg-bignum"><span data-count>${formatNumber(value)}</span><small>bezoekers per dag</small></div>
-    <input type="range" min="${SLIDER.min}" max="${SLIDER.max}" step="${SLIDER.step}"
-      value="${value}" aria-label="${label}">
+    <input type="range" min="0" max="${SLIDER.positions}" step="1"
+      value="${visitorsToPosition(value)}"
+      aria-label="${label}"
+      aria-valuemin="${SLIDER.min}" aria-valuemax="${SLIDER.max}"
+      aria-valuenow="${value}" aria-valuetext="${value} bezoekers per dag">
     <div class="cfg-ends"><span>${formatNumber(SLIDER.min)}</span><span>${formatNumber(SLIDER.max)}+</span></div>`;
 
   const input = el.querySelector('input') as HTMLInputElement;
@@ -25,7 +29,12 @@ export function VisitorSlider({ label, value, onChange }: VisitorSliderOptions):
   let cancel: (() => void) | null = null;
 
   input.addEventListener('input', () => {
-    const next = parseInt(input.value, 10);
+    const next = positionToVisitors(parseInt(input.value, 10));
+    // Meerdere standen kunnen op hetzelfde afgeronde aantal uitkomen; dan is er
+    // niets te tellen en hoeft de rest van de calculator niet te rekenen.
+    if (next === shown) return;
+    input.setAttribute('aria-valuenow', String(next));
+    input.setAttribute('aria-valuetext', `${next} bezoekers per dag`);
     if (cancel) cancel();
     cancel = countTo(count, shown, next, formatNumber);
     shown = next;

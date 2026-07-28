@@ -111,19 +111,43 @@ jobs:
             await p.goto(BASE + '/cart' + PV, { waitUntil: 'domcontentloaded', timeout: 60000 });
             await p.waitForTimeout(2000);
             const knoppen = await p.evaluate(() =>
-              [...document.querySelectorAll('a[href*="checkout"], button[name="checkout"], [data-checkout]')].map(
-                (el) => `${el.tagName.toLowerCase()}${el.name ? '[name=' + el.name + ']' : ''} "${el.textContent.trim().slice(0, 30)}" href=${el.getAttribute('href') || '-'}`
-              )
+              [...document.querySelectorAll('a[href*="checkout"], button[name="checkout"], [data-checkout]')].map((el) => {
+                const r = el.getBoundingClientRect();
+                const zichtbaar = r.width > 0 && r.height > 0;
+                return `${el.tagName.toLowerCase()}${el.name ? '[name=' + el.name + ']' : ''} "${el.textContent.trim().slice(0, 26)}" zichtbaar=${zichtbaar}`;
+              })
             );
             log.push(`winkelwagenpagina knoppen: ${knoppen.join(' | ') || 'GEEN'}`);
             const voor = p.url();
-            const doel = await p.$('a[href*="checkout"], button[name="checkout"]');
-            if (doel) {
-              await doel.click().catch((e) => log.push(`    klik mislukt: ${e.message.slice(0, 90)}`));
-              await p.waitForTimeout(7000);
+            const doel = p.locator('button[name="checkout"]:visible, main a[href*="checkout"]:visible').first();
+            if (await doel.count()) {
+              await doel.click({ timeout: 15000 }).catch((e) => log.push(`    klik mislukt: ${e.message.split('\n')[0].slice(0, 90)}`));
+              await p.waitForTimeout(8000);
               log.push(`  na klik: ${p.url() === voor ? 'GEEN NAVIGATIE' : p.url().slice(0, 110)}`);
+            } else {
+              log.push('  geen zichtbare afrekenknop gevonden');
             }
             await ctx.close();
+
+            // ---------- 3b. lade openen via de winkelwagenknop in de kopregel ----------
+            {
+              const { ctx: c2, p: p2 } = await nieuw();
+              await p2.goto(BASE + '/' + PV, { waitUntil: 'domcontentloaded', timeout: 60000 });
+              await p2.waitForSelector('[data-cart-toggle]', { timeout: 20000 }).catch(() => {});
+              const heeft = await p2.evaluate(() => !!document.querySelector('[data-cart-toggle]'));
+              log.push(`kopregel heeft data-cart-toggle: ${heeft}`);
+              if (heeft) {
+                await p2.click('[data-cart-toggle]');
+                await p2.waitForTimeout(2500);
+                const open = await p2.evaluate(() => {
+                  const d = document.querySelector('[data-cart-drawer]');
+                  const r = d.querySelector('.cart-drawer__panel').getBoundingClientRect();
+                  return { klasse: d.className, zichtbaar: `${Math.round(r.width)}x${Math.round(r.height)} @${Math.round(r.left)}`, url: location.pathname };
+                });
+                log.push(`  lade na klik: ${JSON.stringify(open)}`);
+              }
+              await c2.close();
+            }
           }
 
           // ---------- 4. rechtstreeks naar /checkout ----------

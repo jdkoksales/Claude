@@ -5,6 +5,17 @@ interface AddItem {
   quantity: number;
 }
 
+/** Shopify kan onder een submap draaien; dan moet /checkout dat voorvoegsel ook krijgen. */
+function wortel(): string {
+  const shopify = (window as unknown as { Shopify?: { routes?: { root?: string } } }).Shopify;
+  const root = shopify?.routes?.root || '/';
+  return root.endsWith('/') ? root : root + '/';
+}
+
+export function kassaUrl(): string {
+  return wortel() + 'checkout';
+}
+
 /**
  * Legt de samenstelling in de Shopify-winkelwagen en gaat door naar de kassa.
  * Gooit een fout met een leesbare melding zodat de knop die kan tonen.
@@ -16,7 +27,7 @@ export async function addToCartAndCheckout(lines: CartLine[]): Promise<void> {
 
   if (items.length === 0) throw new Error('Kies eerst minimaal één TapKaart.');
 
-  const response = await fetch('/cart/add.js', {
+  const response = await fetch(wortel() + 'cart/add.js', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
     body: JSON.stringify({ items }),
@@ -33,5 +44,7 @@ export async function addToCartAndCheckout(lines: CartLine[]): Promise<void> {
     throw new Error(message);
   }
 
-  window.location.href = '/checkout';
+  // assign() in plaats van href: die werkt ook als de pagina in een frame staat,
+  // bijvoorbeeld in de themavoorbeeldweergave van Shopify.
+  window.location.assign(kassaUrl());
 }

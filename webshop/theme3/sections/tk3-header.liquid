@@ -52,9 +52,14 @@
         {%- if section.settings.help_url != blank -%}
           <a class="deskonly" href="{{ section.settings.help_url }}">Helpcentrum</a>
         {%- endif -%}
-        <a class="cartlink" href="{{ routes.cart_url }}" aria-label="Winkelwagen ({{ cart.item_count }})">
+        {%- comment -%}
+          data-cart-toggle laat de winkelwagenlade van het thema openschuiven in
+          plaats van naar /cart te springen. De href blijft staan: werkt de
+          JavaScript niet, dan kom je alsnog op de winkelwagenpagina.
+        {%- endcomment -%}
+        <a class="cartlink" href="{{ routes.cart_url }}" data-cart-toggle aria-label="Winkelwagen">
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-          {%- if cart.item_count > 0 -%}<span style="font-size:14px;font-weight:700">{{ cart.item_count }}</span>{%- endif -%}
+          <span class="cart-telling" data-cart-count {% if cart.item_count == 0 %}hidden{% endif %}>{{ cart.item_count }}</span>
         </a>
         <details class="mobmenu">
           <summary aria-label="Menu">

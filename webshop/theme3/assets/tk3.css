@@ -92,7 +92,10 @@ html,body{overflow-x:clip}
 .tk3 .hdr nav a{font-size:var(--fs-sm);font-weight:600}
 .tk3 .hdr .right{display:flex;align-items:center;gap:26px}
 .tk3 .hdr .right>a{font-size:var(--fs-sm);font-weight:600}
-.tk3 .hdr .cartlink{display:flex;align-items:center;gap:6px}
+.tk3 .hdr .cartlink{display:flex;align-items:center;gap:6px;position:relative}
+.tk3 .cart-telling{min-width:19px;height:19px;padding:0 5px;border-radius:9999px;background:var(--ink);
+  color:#fff;font-size:11.5px;font-weight:750;line-height:19px;text-align:center}
+.tk3 .cart-telling[hidden]{display:none}
 .tk3 .pill-link{border:1.5px solid var(--ink);border-radius:9999px;padding:7px 17px;font-size:var(--fs-xs);font-weight:700}
 .tk3 .burger{display:none}
 .tk3 .mobmenu{display:none;position:relative}
@@ -425,6 +428,9 @@ html,body{overflow-x:clip}
 .tk3 .cfg-checkout.is-glans::after{animation:tk3glans .85s ease}
 @keyframes tk3glans{0%{left:-45%;opacity:0}12%{opacity:1}88%{opacity:1}100%{left:118%;opacity:0}}
 .tk3 .cfg-error{font-size:13px;color:#B42318;margin-top:10px}
+.tk3 .cfg-noodlink{font-size:12.5px;color:var(--ink-64);margin-top:10px;text-align:center;line-height:1.45}
+.tk3 .cfg-noodlink a{text-decoration:underline;font-weight:650}
+.tk3 .cfg-noodlink[hidden]{display:none}
 .tk3 .cfg-gerust{font-size:12px;color:var(--ink-36);text-align:center;margin-top:11px;line-height:1.45}
 .tk3 .price s{color:var(--ink-36);font-weight:500;margin-right:7px}
 .tk3 .price .actie{color:#E23B1E;font-weight:750}

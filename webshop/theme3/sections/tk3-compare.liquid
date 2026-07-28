@@ -17,7 +17,7 @@
               {%- if product != blank and product.featured_media -%}
                 <img src="{{ product.featured_media | image_url: width: 700 }}" alt="{{ product.title | escape }}" width="700" height="700" loading="lazy">
               {%- else -%}
-                <img src="{% if idx == 1 %}{{ 'tk3-prod-wit.jpg' | asset_url }}{% else %}{{ 'tk3-prod-zwart.jpg' | asset_url }}{% endif %}" alt="" width="700" height="700" loading="lazy">
+                <img src="{% if idx == 1 %}{{ 'tk3-prod-wit.jpg' | asset_url }}{% else %}{{ 'tk3-prod-zwart.jpg' | asset_url }}{% endif %}" alt="TapKaarten Google Review-standaard in {% if idx == 1 %}wit{% else %}mat zwart{% endif %}" width="700" height="700" loading="lazy">
               {%- endif -%}
               {%- if product != blank -%}
                 <div class="price">

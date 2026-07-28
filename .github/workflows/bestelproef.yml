@@ -175,6 +175,31 @@ jobs:
             }
           }
 
+          // ---------- 3c. productpagina: opent de lade na toevoegen? ----------
+          {
+            const { ctx, p } = await nieuw();
+            await p.goto(BASE + '/products/tapkaarten-instagram-standaard' + PV, { waitUntil: 'domcontentloaded', timeout: 60000 });
+            await p.waitForSelector('[data-add-to-cart]', { timeout: 30000 });
+            const voor = p.url();
+            await p.click('[data-add-to-cart]');
+            await p.waitForTimeout(4000);
+            const na = await p.evaluate(() => {
+              const d = document.querySelector('[data-cart-drawer]');
+              return {
+                laadOpen: d ? d.classList.contains('is-open') : false,
+                regels: d ? d.querySelectorAll('[data-cart-item-key]').length : 0,
+                telling: document.querySelector('[data-cart-count]')?.textContent.trim(),
+                genavigeerd: location.pathname,
+              };
+            });
+            log.push(`productpagina toevoegen: ${JSON.stringify(na)} (was ${voor.includes('/products/') ? 'productpagina' : '?'})`);
+            if (na.laadOpen) await p.screenshot({ path: 'preview/lade-product.png' });
+            await p.evaluate(() =>
+              fetch('/cart/clear.js', { method: 'POST' })
+            );
+            await ctx.close();
+          }
+
           // ---------- 4. rechtstreeks naar /checkout ----------
           {
             const { ctx, p } = await nieuw();
@@ -205,6 +230,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add preview/bestelproef.txt preview/lade.png
+          git add preview/bestelproef.txt preview/lade.png preview/lade-product.png
           git commit -m "Uitkomst van de bestelproef" || echo "niets gewijzigd"
           git push

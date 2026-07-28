@@ -1,7 +1,7 @@
-import type { CalculationResult, Category } from '../types';
+import type { CalculationResult, CartTotals, Category } from '../types';
 import { CATEGORY_LABELS } from '../config/calculatorConfig';
-import { formatNumber } from '../utils/format';
-import { countTo } from '../utils/animate';
+import { formatMoney, formatNumber } from '../utils/format';
+import { countTo, pulse } from '../utils/animate';
 
 const ICONS: Record<Category, string> = {
   google:
@@ -20,7 +20,13 @@ const SHORT: Record<Category, string> = {
 
 export interface ResultsHandle {
   el: HTMLElement;
-  update: (result: CalculationResult) => void;
+  update: (result: CalculationResult, totals: CartTotals) => void;
+}
+
+/** "1,5×" — hoeveel meer dan met één losse kaart. Onder de 1,05 zeggen we niets. */
+function boostLabel(effectiveness: number): string {
+  if (effectiveness < 1.05) return '';
+  return `${effectiveness.toFixed(1).replace('.', ',')}×`;
 }
 
 /**
@@ -30,12 +36,18 @@ export interface ResultsHandle {
 export function Results(intro: string): ResultsHandle {
   const el = document.createElement('div');
   el.className = 'cfg-out';
-  el.innerHTML = `<p class="cfg-out-intro">${intro}</p><div class="cfg-out-rows"></div>`;
+  el.innerHTML = `
+    <div class="cfg-out-flag">🔥 Dit levert het op</div>
+    <p class="cfg-out-intro">${intro}</p>
+    <div class="cfg-out-rows"></div>
+    <div class="cfg-out-staffel" data-staffel hidden></div>`;
   const rows = el.querySelector('.cfg-out-rows') as HTMLElement;
+  const staffel = el.querySelector('[data-staffel]') as HTMLElement;
+  let staffelStand = '';
 
   const entries = new Map<
     Category,
-    { node: HTMLElement; row: HTMLElement; shown: number; cancel: (() => void) | null }
+    { node: HTMLElement; boost: HTMLElement; row: HTMLElement; shown: number; cancel: (() => void) | null }
   >();
 
   (Object.keys(CATEGORY_LABELS) as Category[]).forEach((category) => {
@@ -43,7 +55,10 @@ export function Results(intro: string): ResultsHandle {
     row.className = 'cfg-out-row';
     row.style.setProperty('--card-accent', CATEGORY_LABELS[category].accent);
     row.innerHTML = `
-      <div class="cfg-out-val" data-val>+0</div>
+      <div class="cfg-out-top">
+        <span class="cfg-out-val" data-val>+0</span>
+        <span class="cfg-out-boost" data-boost hidden></span>
+      </div>
       <div class="cfg-out-meta">
         <span class="cfg-out-ico">${ICONS[category]}</span>
         <span class="cfg-out-lbl">${SHORT[category]}<em>per maand</em></span>
@@ -51,6 +66,7 @@ export function Results(intro: string): ResultsHandle {
     rows.appendChild(row);
     entries.set(category, {
       node: row.querySelector('[data-val]') as HTMLElement,
+      boost: row.querySelector('[data-boost]') as HTMLElement,
       row,
       shown: 0,
       cancel: null,
@@ -59,14 +75,38 @@ export function Results(intro: string): ResultsHandle {
 
   return {
     el,
-    update(result) {
+    update(result, totals) {
       entries.forEach((entry, category) => {
-        const next = result.byCategory[category].perMonth;
+        const vak = result.byCategory[category];
+        const next = vak.perMonth;
+        if (next !== entry.shown) pulse(entry.node);
         if (entry.cancel) entry.cancel();
         entry.cancel = countTo(entry.node, entry.shown, next, (v) => '+' + formatNumber(v));
         entry.shown = next;
         entry.row.classList.toggle('is-empty', next === 0);
+
+        const label = next > 0 ? boostLabel(vak.effectiveness) : '';
+        entry.boost.textContent = label ? `▲ ${label}` : '';
+        entry.boost.title = label ? 'meer dan met één losse kaart' : '';
+        entry.boost.hidden = label === '';
       });
+
+      // Waar sta je in de staffel? Alleen echte bedragen, geen verzonnen urgentie.
+      let tekst = '';
+      let soort = '';
+      if (totals.itemCount > 0 && totals.discount > 0) {
+        tekst = `💥 Je pakt nu ${Math.round(totals.tierPercentage * 100)}% staffelkorting — dat scheelt ${formatMoney(totals.discount)}`;
+        soort = 'is-actief';
+      } else if (totals.itemCount > 0 && totals.nextTier) {
+        const { itemsNeeded, percentage } = totals.nextTier;
+        tekst = `Nog ${itemsNeeded} ${itemsNeeded === 1 ? 'kaart' : 'kaarten'} erbij → ${Math.round(percentage * 100)}% staffelkorting`;
+        soort = 'is-volgende';
+      }
+      staffel.textContent = tekst;
+      staffel.hidden = tekst === '';
+      staffel.className = `cfg-out-staffel ${soort}`.trim();
+      if (tekst && tekst !== staffelStand) pulse(staffel);
+      staffelStand = tekst;
     },
   };
 }

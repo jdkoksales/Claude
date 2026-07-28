@@ -431,21 +431,40 @@ footer{background:linear-gradient(115deg,#fdfdfe,#fdf1f5);padding:88px 0 44px}
 
 /* het uitkomstpaneel: dit moet het eerst opvallen */
 .cfg-side{position:sticky;top:88px;display:grid;gap:14px}
-.cfg-out{background:linear-gradient(155deg,#fff,#f7f8fb);border:1px solid var(--line);
-  border-radius:24px;padding:30px 28px;box-shadow:0 20px 50px rgba(0,0,0,.06)}
-.cfg-out-intro{font-size:13px;color:var(--ink-48);line-height:1.45;margin-bottom:20px}
-.cfg-out-rows{display:grid;gap:20px}
-.cfg-out-row{display:grid;gap:2px;transition:opacity .3s}
-.cfg-out-row.is-empty{opacity:.28}
-.cfg-out-val{font-size:60px;font-weight:750;letter-spacing:-.045em;line-height:1;
-  color:var(--card-accent);font-variant-numeric:tabular-nums}
+.cfg-out{--vlam:#FF5A1F;position:relative;background:#fff;border:2px solid var(--vlam);
+  border-radius:24px;padding:32px 24px 24px;box-shadow:0 20px 50px rgba(255,90,31,.18)}
+.cfg-out-flag{position:absolute;top:-13px;left:22px;background:var(--vlam);color:#fff;
+  font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;
+  padding:5px 12px;border-radius:9999px;white-space:nowrap;
+  box-shadow:0 4px 12px rgba(255,90,31,.34)}
+.cfg-out-intro{font-size:13px;color:var(--ink-48);line-height:1.45;margin-bottom:16px}
+.cfg-out-rows{display:grid;gap:10px}
+.cfg-out-row{display:grid;gap:2px;padding:11px 13px;border-radius:14px;transition:opacity .3s;
+  background:linear-gradient(90deg,color-mix(in srgb,var(--card-accent) 13%,transparent),transparent 74%)}
+.cfg-out-row.is-empty{opacity:.3}
+.cfg-out-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.cfg-out-val{font-size:60px;font-weight:750;letter-spacing:-.045em;line-height:1.05;
+  color:var(--card-accent);font-variant-numeric:tabular-nums;display:inline-block}
+.cfg-out-val.is-pulse{animation:tk3flits .4s ease}
+@keyframes tk3flits{0%{transform:scale(1)}32%{transform:scale(1.055)}100%{transform:scale(1)}}
+/* Hoeveel meer dan met één losse kaart — komt uit de effectiviteitscurve, geen sierbadge. */
+.cfg-out-boost{font-size:14px;font-weight:750;color:#136C34;background:#E7F6EC;
+  padding:3px 10px;border-radius:9999px;letter-spacing:-.01em;white-space:nowrap}
 .cfg-out-meta{display:flex;align-items:center;gap:9px}
 .cfg-out-ico{display:grid;place-items:center;flex:0 0 auto}
 .cfg-out-lbl{font-size:var(--fs-sm);font-weight:650;line-height:1.2}
 .cfg-out-lbl em{display:block;font-style:normal;font-size:12px;font-weight:500;color:var(--ink-48)}
+/* Staffelstand: alleen bedragen die de kassa ook echt rekent. */
+.cfg-out-staffel{margin-top:16px;border:1px dashed var(--vlam);background:#FFF4ED;border-radius:12px;
+  padding:12px 14px;font-size:13px;font-weight:700;color:#C2410C;text-align:center;line-height:1.4}
+.cfg-out-staffel.is-volgende{border-color:#D9A441;background:#FFF9EC;color:#8A5A12}
+.cfg-out-staffel.is-pulse{animation:tk3opkomst .34s ease}
+@keyframes tk3opkomst{0%{transform:scale(.94);opacity:0}100%{transform:scale(1);opacity:1}}
 
 .cfg-cta{background:#fff;border:1px solid var(--line);border-radius:20px;padding:22px 20px;
   box-shadow:0 14px 34px rgba(0,0,0,.05)}
+.cfg-card.is-active{animation:tk3wip .3s ease}
+@keyframes tk3wip{0%{transform:translateY(0)}45%{transform:translateY(-4px)}100%{transform:translateY(0)}}
 .cfg-cta h3{font-size:var(--fs-lg);margin-bottom:6px}
 .cfg-cta p{font-size:13px;color:var(--ink-64);margin-bottom:14px;line-height:1.45}
 .cfg-checkout{width:100%;justify-content:center;border:0;cursor:pointer}
@@ -547,9 +566,13 @@ footer{background:linear-gradient(115deg,#fdfdfe,#fdf1f5);padding:88px 0 44px}
   .cfg-main input[type=range]::-moz-range-thumb{width:30px;height:30px}
   .cfg-ends{font-size:12.5px;margin-top:11px}
 
-  .cfg-out{padding:22px 17px}
-  .cfg-out-rows{gap:14px}
+  .cfg-out{padding:28px 15px 20px}
+  .cfg-out-flag{left:16px;font-size:10.5px;padding:5px 10px}
+  .cfg-out-rows{gap:8px}
+  .cfg-out-row{padding:10px 11px}
   .cfg-out-val{font-size:46px}
+  .cfg-out-boost{font-size:13px;padding:2px 9px}
+  .cfg-out-staffel{font-size:12.5px;padding:11px 12px}
   .cfg-cta{padding:19px 17px}
   .cfg-fine{margin-top:20px}
 

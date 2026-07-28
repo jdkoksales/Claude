@@ -187,7 +187,8 @@ function mount(root: HTMLElement): void {
 
   function render(animate: boolean): void {
     const result = calculate(visitors, products, quantities);
-    results.update(result);
+    const uitkomst = totalsFor(products, quantities, selection, data!.pricesIncludeVat);
+    results.update(result, uitkomst);
 
     // Laat zien wat de eerstvolgende kaart nog toevoegt — eerlijk, ook als dat weinig is.
     const hints: Record<string, string> = {};

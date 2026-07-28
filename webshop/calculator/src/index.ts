@@ -65,8 +65,7 @@ function gekozenShop(product: Product, selection: Selection): { shop: ShopifyPro
 function totalsFor(
   products: Product[],
   quantities: Quantities,
-  selection: Selection,
-  pricesIncludeVat: boolean
+  selection: Selection
 ): CartTotals {
   const lines: CartLine[] = [];
   for (const p of products) {
@@ -91,23 +90,19 @@ function totalsFor(
     (sum, l) => sum + Math.floor(l.shop.price * tierPercentage) * l.quantity,
     0
   );
-  // We verkopen aan bedrijven, dus alle bedragen staan exclusief btw. Rekent de
-  // winkel met btw-inclusieve prijzen, dan halen we die er hier weer af zodat
-  // wat de klant ziet klopt met wat er op de factuur komt.
-  const naarExcl = (bedrag: number): number =>
-    pricesIncludeVat ? Math.round(bedrag / (1 + VAT_RATE)) : bedrag;
-
+  // We verkopen aan bedrijven: de prijs die in Shopify staat is het bedrag
+  // exclusief btw, en de btw komt er in de kassa bovenop. We tonen die prijs
+  // dus onbewerkt, net als overal elders op de site.
   const total = bruto - discount;
-  const exclTotal = naarExcl(total);
   return {
     lines,
     itemCount,
-    total: exclTotal,
-    vat: Math.round(exclTotal * VAT_RATE),
-    excludingVat: exclTotal,
-    totalOriginal: naarExcl(origineel),
-    totalBeforeDiscount: naarExcl(bruto),
-    discount: naarExcl(discount),
+    total,
+    vat: Math.round(total * VAT_RATE),
+    excludingVat: total,
+    totalOriginal: origineel,
+    totalBeforeDiscount: bruto,
+    discount,
     tierPercentage,
     nextTier,
   };
@@ -181,7 +176,7 @@ function mount(root: HTMLElement): void {
   const checkout = CheckoutButton({
     label: data.labels.ctaButton,
     reassurance: data.labels.ctaText,
-    getLines: () => totalsFor(products, quantities, selection, data.pricesIncludeVat).lines,
+    getLines: () => totalsFor(products, quantities, selection).lines,
   });
 
   const layout = document.createElement('div');
@@ -219,7 +214,7 @@ function mount(root: HTMLElement): void {
     }
     selector.update(quantities, hints, animate);
 
-    const totals = totalsFor(products, quantities, selection, data!.pricesIncludeVat);
+    const totals = totalsFor(products, quantities, selection);
     summary.update(totals);
     checkout.setEnabled(totals.itemCount > 0);
     if (animate && totals.itemCount > 0) checkout.glans();

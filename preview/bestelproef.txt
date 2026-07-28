@@ -1,0 +1,27 @@
+    console: Framing 'https://shop.app/' violates the following Content Security Policy directive: "frame-ancestors 'self' https://shop.app https://admin.shopify.com". The r
+    console: Failed to load resource: the server responded with a status of 403 ()
+lade aanwezig: true
+  data-cart-attributen: data-cart-currency, data-cart-drawer, data-cart-drawer-adding-label, data-cart-drawer-body, data-cart-drawer-close, data-cart-drawer-close-label, data-cart-drawer-compare-at-prices, data-cart-drawer-compare-subtotal, data-cart-drawer-continue-label, data-cart-drawer-continue-url, data-cart-drawer-count, data-cart-drawer-decrease-label, data-cart-drawer-empty, data-cart-drawer-empty-copy, data-cart-drawer-empty-title, data-cart-drawer-footer, data-cart-drawer-increase-label, data-cart-drawer-live-region, data-cart-drawer-live-template, data-cart-drawer-loading-label, data-cart-drawer-quantity-label, data-cart-drawer-remove-label, data-cart-drawer-secure-checkout-label, data-cart-drawer-show-compare-at, data-cart-drawer-subtotal, data-cart-drawer-subtotal-label
+  globals: geen
+  header-winkelwagenlink: /cart
+    console: Framing 'https://shop.app/' violates the following Content Security Policy directive: "frame-ancestors 'self' https://shop.app https://admin.shopify.com". The r
+    console: Failed to load resource: the server responded with a status of 403 ()
+calculatorknop: {"disabled":false,"klassen":"cfg-checkout","groot":"370x65"}
+    console: Failed to load resource: the server responded with a status of 401 ()
+    console: Failed to load resource: the server responded with a status of 403 ()
+  na klik: https://tapkaarten.nl/checkouts/cn/hWNEzgpEo2wH5SNgn9dNfVMg/nl-nl?_r=AQABhNhcGKX7iXLs4DQtBjylpVth_I4Ne2L6UMJlC
+  regels in winkelwagen: 1
+    console: Framing 'https://shop.app/' violates the following Content Security Policy directive: "frame-ancestors 'self' https://shop.app https://admin.shopify.com". The r
+    console: Failed to load resource: the server responded with a status of 403 ()
+winkelwagenpagina knoppen: a "Veilig afrekenen" href=/checkout | button[name=checkout] "Afrekenen" href=-
+    klik mislukt: elementHandle.click: Timeout 30000ms exceeded.
+Call log:
+  - attempting click action
+    2
+  na klik: GEEN NAVIGATIE
+    console: Failed to load resource: the server responded with a status of 429 ()
+    console: Failed to load resource: the server responded with a status of 429 ()
+    console: %c%d font-size:0;color:transparent NaN
+    console: %c%d font-size:0;color:transparent NaN
+    console: Failed to load resource: the server responded with a status of 429 ()
+rechtstreeks /checkout: status=200 url=https://tapkaarten.nl/?__cf_chl_rt_tk=5mRJq4_FxvtJaef_gN09ADswA39_ik1Z7dnCtCERNnA-1785228493-1.0.1.1-hkw0_2DWT

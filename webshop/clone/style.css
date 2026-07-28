@@ -15,6 +15,8 @@
   --grey-bg:rgba(0,0,0,.05);  /* alternerende sectie */
   --dark-bg:rgba(0,0,0,.898);
   --amber:#FBC26B;
+  --oranje:#F4801F;
+  --oranje-diep:#DB4E14;
   --line:rgba(0,0,0,.08);
 
   /* Chakra-typeschaal op 17px basis */
@@ -50,12 +52,39 @@ h2{font-size:var(--fs-3xl);font-weight:600;line-height:1.2;letter-spacing:-.05em
 h3{font-size:var(--fs-xl);font-weight:550;line-height:1.2;letter-spacing:-.05em}
 .lead{font-size:var(--fs-lg);color:var(--ink-64);line-height:1.55}
 
-/* ---------- marquee ---------- */
-.marquee{background:var(--amber);overflow:hidden;white-space:nowrap;padding:7px 0}
-.marquee .track{display:inline-flex;gap:0;animation:slide 26s linear infinite;will-change:transform}
-.marquee span{font-size:var(--fs-sm);font-weight:600;color:#1A202C;padding:0 22px}
+/* ---------- marquee ----------
+   Drie boodschappen achter elkaar op een oranje verloop. Het verloop
+   ademt langzaam heen en weer en er trekt af en toe een glans overheen;
+   samen geeft dat beweging zonder dat de tekst onrustig wordt. */
+.marquee{
+  position:relative;overflow:hidden;white-space:nowrap;padding:9px 0;
+  background:linear-gradient(90deg,var(--oranje-diep) 0%,var(--oranje) 26%,#FFA83F 50%,var(--oranje) 74%,var(--oranje-diep) 100%);
+  background-size:220% 100%;
+  animation:mq-adem 14s ease-in-out infinite;
+}
+.marquee::after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(104deg,transparent 40%,rgba(255,255,255,.42) 48%,rgba(255,255,255,.42) 52%,transparent 60%);
+  transform:translateX(-100%);
+  animation:mq-glans 7s ease-in-out infinite;
+}
+.marquee .track{display:inline-flex;align-items:center;gap:0;animation:slide 34s linear infinite;will-change:transform}
+.marquee span{
+  font-size:var(--fs-sm);font-weight:650;color:#fff;padding:0 18px;
+  letter-spacing:.005em;text-shadow:0 1px 1px rgba(120,40,0,.22)
+}
+.marquee .mq-dot{
+  flex:0 0 auto;width:5px;height:5px;border-radius:50%;
+  background:rgba(255,255,255,.62);box-shadow:0 0 0 3px rgba(255,255,255,.12)
+}
 @keyframes slide{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-@media(prefers-reduced-motion:reduce){.marquee .track{animation:none}}
+@keyframes mq-adem{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+@keyframes mq-glans{0%,72%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+@media(prefers-reduced-motion:reduce){
+  .marquee{animation:none;background-size:100% 100%}
+  .marquee .track{animation:none}
+  .marquee::after{display:none}
+}
 
 /* ---------- header ---------- */
 .hdr{position:sticky;top:0;z-index:60;background:rgba(255,255,255,.86);backdrop-filter:blur(16px)}

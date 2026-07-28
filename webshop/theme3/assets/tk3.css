@@ -20,11 +20,32 @@ html,body{overflow-x:clip}
 .page-section__content.rte tr:last-child td{border-bottom:0}
 .product-info__buy-buttons{flex-wrap:wrap}
 .tk3-linkveld{flex:1 0 100%;width:100%;margin:0 0 14px}
+.tk3-linkveld>summary{display:flex;align-items:center;gap:8px;cursor:pointer;list-style:none;padding:11px 13px;border:1px dashed rgba(0,0,0,.2);border-radius:10px;font-size:14px;font-weight:600}
+.tk3-linkveld>summary::-webkit-details-marker{display:none}
+.tk3-linkveld>summary::after{content:'+';margin-left:auto;font-size:17px;font-weight:600;color:rgba(0,0,0,.45)}
+.tk3-linkveld[open]>summary::after{content:'–'}
+.tk3-linkveld[open]>summary{border-style:solid;border-bottom-left-radius:0;border-bottom-right-radius:0;border-bottom-color:transparent}
+.tk3-linkveld>summary:hover{border-color:rgba(0,0,0,.42)}
+.tk3-linkveld-tag{font-size:11.5px;font-weight:600;letter-spacing:.02em;text-transform:uppercase;color:rgba(0,0,0,.5);background:rgba(0,0,0,.06);border-radius:100px;padding:2px 8px}
+.tk3-linkveld-uit{padding:12px 13px 2px;border:1px solid rgba(0,0,0,.2);border-top:0;border-bottom-left-radius:10px;border-bottom-right-radius:10px}
 .tk3-linkveld label{display:block;font-size:14px;font-weight:600;letter-spacing:-.01em;margin-bottom:6px}
 .tk3-linkveld input{width:100%;padding:12px 14px;font:inherit;font-size:15px;border:1px solid rgba(0,0,0,.16);border-radius:10px;background:#fff;color:inherit}
 .tk3-linkveld input::placeholder{color:rgba(0,0,0,.34)}
 .tk3-linkveld input:focus{outline:2px solid rgba(0,0,0,.55);outline-offset:1px;border-color:transparent}
 .tk3-linkveld small{display:block;margin-top:6px;font-size:12.5px;line-height:1.45;color:rgba(0,0,0,.55)}
+.tk3-cartlink{margin:0 0 12px}
+.tk3-cartlink-blok>summary{display:flex;align-items:center;gap:8px;cursor:pointer;list-style:none;font-size:13.5px;font-weight:600;color:rgba(0,0,0,.72)}
+.tk3-cartlink-blok>summary::-webkit-details-marker{display:none}
+.tk3-cartlink-blok>summary::after{content:'+';margin-left:auto;font-size:16px;color:rgba(0,0,0,.42)}
+.tk3-cartlink-blok[open]>summary::after{content:'–'}
+.tk3-cartlink-titel{text-decoration:underline;text-underline-offset:3px}
+.tk3-cartlink-tag{font-size:11px;font-weight:600;letter-spacing:.02em;text-transform:uppercase;color:rgba(0,0,0,.5);background:rgba(0,0,0,.06);border-radius:100px;padding:2px 7px;text-decoration:none}
+.tk3-cartlink-veld{width:100%;margin-top:9px;padding:11px 13px;font:inherit;font-size:15px;border:1px solid rgba(0,0,0,.18);border-radius:10px;background:#fff;color:inherit}
+.tk3-cartlink-veld::placeholder{color:rgba(0,0,0,.34)}
+.tk3-cartlink-veld:focus{outline:2px solid rgba(0,0,0,.55);outline-offset:1px;border-color:transparent}
+.tk3-cartlink-status{display:block;margin-top:5px;font-size:12px;color:#136C34}
+.tk3-cartlink-rust{margin:7px 0 0;font-size:12px;line-height:1.45;color:rgba(0,0,0,.5)}
+.tk3-cartlink-ok{margin:0;font-size:13px;font-weight:600;color:#136C34}
 .tk3-staffel{flex:1 0 100%;width:100%;margin:0 0 18px}
 .tk3-staffel-kop{font-size:14px;font-weight:600;letter-spacing:-.01em;margin-bottom:8px}
 .tk3-staffel-rij{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
@@ -46,6 +67,8 @@ html,body{overflow-x:clip}
   --grey-bg:rgba(0,0,0,.05);  
   --dark-bg:rgba(0,0,0,.898);
   --amber:#FBC26B;
+  --oranje:#F4801F;
+  --oranje-diep:#DB4E14;
   --line:rgba(0,0,0,.08);
 
   
@@ -78,11 +101,31 @@ html,body{overflow-x:clip}
 .tk3 h2{font-size:var(--fs-3xl);font-weight:600;line-height:1.2;letter-spacing:-.05em}
 .tk3 h3{font-size:var(--fs-xl);font-weight:550;line-height:1.2;letter-spacing:-.05em}
 .tk3 .lead{font-size:var(--fs-lg);color:var(--ink-64);line-height:1.55}
-.tk3 .marquee{background:var(--amber);overflow:hidden;white-space:nowrap;padding:7px 0}
-.tk3 .marquee .track{display:inline-flex;gap:0;animation:tk3slide 26s linear infinite;will-change:transform}
-.tk3 .marquee span{font-size:var(--fs-sm);font-weight:600;color:#1A202C;padding:0 22px}
+.tk3 .marquee{
+  position:relative;overflow:hidden;white-space:nowrap;padding:9px 0;
+  background:linear-gradient(90deg,var(--oranje-diep) 0%,var(--oranje) 26%,#FFA83F 50%,var(--oranje) 74%,var(--oranje-diep) 100%);
+  background-size:220% 100%;
+  animation:mq-adem 14s ease-in-out infinite;
+}
+.tk3 .marquee::after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(104deg,transparent 40%,rgba(255,255,255,.42) 48%,rgba(255,255,255,.42) 52%,transparent 60%);
+  transform:translateX(-100%);
+  animation:mq-glans 7s ease-in-out infinite;
+}
+.tk3 .marquee .track{display:inline-flex;align-items:center;gap:0;animation:tk3slide 34s linear infinite;will-change:transform}
+.tk3 .marquee span{
+  font-size:var(--fs-sm);font-weight:650;color:#fff;padding:0 18px;
+  letter-spacing:.005em;text-shadow:0 1px 1px rgba(120,40,0,.22)
+}
+.tk3 .marquee .mq-dot{
+  flex:0 0 auto;width:5px;height:5px;border-radius:50%;
+  background:rgba(255,255,255,.62);box-shadow:0 0 0 3px rgba(255,255,255,.12)
+}
 @keyframes tk3slide{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-@media(prefers-reduced-motion:reduce){.tk3 .marquee .track{animation:none}}
+@keyframes mq-adem{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+@keyframes mq-glans{0%,72%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+@media(prefers-reduced-motion:reduce){.tk3 .marquee{animation:none;background-size:100% 100%}.tk3 .marquee .track{animation:none}.tk3 .marquee::after{display:none}}
 .tk3 .hdr{position:sticky;top:0;z-index:60;background:rgba(255,255,255,.86);backdrop-filter:blur(16px)}
 .tk3 .hdr .row{display:flex;align-items:center;gap:28px;height:64px}
 .tk3 .brand{display:flex;align-items:center;flex:0 0 auto}

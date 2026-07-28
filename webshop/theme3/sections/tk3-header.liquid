@@ -9,11 +9,25 @@
 -%}
 
 <div class="tk3">
+  {%- comment -%}
+    De loopbalk herhaalt zes keer dezelfde reeks. De animatie schuift naar
+    -50%, dus de tweede helft moet exact gelijk zijn aan de eerste: bij zes
+    herhalingen is dat drie om drie. Verander je het aantal, houd het dan even.
+  {%- endcomment -%}
+  {%- liquid
+    assign rauw = section.settings.marquee_text | append: '|' | append: section.settings.marquee_text_2 | append: '|' | append: section.settings.marquee_text_3
+    assign berichten = rauw | split: '|'
+  -%}
   {%- if section.settings.marquee_text != blank -%}
-    <div class="marquee">
+    <div class="marquee" role="region" aria-label="Aanbiedingen en voorwaarden">
       <div class="track">
-        {%- for i in (1..8) -%}
-          <span>{{ section.settings.marquee_text }}</span><span>{{ section.settings.marquee_emoji }}</span>
+        {%- for i in (1..6) -%}
+          {%- for bericht in berichten -%}
+            {%- assign tekst = bericht | strip -%}
+            {%- if tekst != blank -%}
+              <span>{{ tekst }}</span><i class="mq-dot" aria-hidden="true"></i>
+            {%- endif -%}
+          {%- endfor -%}
         {%- endfor -%}
       </div>
     </div>
@@ -91,8 +105,9 @@
   "settings": [
     { "type": "image_picker", "id": "logo", "label": "Logo (leeg = ingebouwd tk3-logo)" },
     { "type": "link_list", "id": "menu", "label": "Hoofdmenu", "default": "main-menu" },
-    { "type": "text", "id": "marquee_text", "label": "Loopbalk", "default": "Zomeractie — tot 20% korting!" },
-    { "type": "text", "id": "marquee_emoji", "label": "Loopbalk-emoji", "default": "☀️" },
+    { "type": "text", "id": "marquee_text", "label": "Loopbalk 1", "default": "🚚 Gratis verzending vanaf € 70" },
+    { "type": "text", "id": "marquee_text_2", "label": "Loopbalk 2", "default": "☀️ Zomerkorting tot 20%" },
+    { "type": "text", "id": "marquee_text_3", "label": "Loopbalk 3", "default": "🇳🇱 Verstuurd vanuit Nederland" },
     { "type": "text", "id": "pill_text", "label": "Knop in menu", "default": "Nieuw!" },
     { "type": "url", "id": "pill_url", "label": "Link van die knop" },
     { "type": "url", "id": "help_url", "label": "Helpcentrum" }

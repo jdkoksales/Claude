@@ -1,0 +1,283 @@
+{% liquid
+  assign cart_compare_total = 0
+  capture cart_drawer_secure_icon
+    echo '<svg aria-hidden="true" focusable="false" role="presentation" class="cart-drawer__secure-icon" viewBox="0 0 24 24"><path d="M16 12h1.4a.6.6 0 0 1 .6.6v6.8a.6.6 0 0 1-.6.6H6.6a.6.6 0 0 1-.6-.6v-6.8a.6.6 0 0 1 .6-.6H8m8 0V8c0-1.333-.8-4-4-4S8 6.667 8 8v4m8 0H8" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></path></svg>'
+  endcapture
+  for item in cart.items
+    if item.variant.compare_at_price > item.final_price
+      assign item_compare_total = item.variant.compare_at_price | times: item.quantity
+      assign cart_compare_total = cart_compare_total | plus: item_compare_total
+    else
+      assign cart_compare_total = cart_compare_total | plus: item.final_line_price
+    endif
+  endfor
+
+  comment
+    Weten we al welke pagina de kaart moet openen? Dat kan op twee manieren
+    binnengekomen zijn: als eigenschap bij een regel (veld op de productpagina)
+    of als kenmerk op de hele bestelling (het veld hieronder in de lade).
+  endcomment
+  assign link_bekend = false
+  for item in cart.items
+    assign regel_link = item.properties['Link voor de kaart']
+    if regel_link != blank
+      assign link_bekend = true
+    endif
+  endfor
+  assign lade_link = cart.attributes['Link voor de kaart']
+  if lade_link != blank
+    assign link_bekend = true
+  endif
+%}
+
+<aside
+  class="cart-drawer"
+  data-cart-drawer
+  data-cart-currency="{{ cart.currency.iso_code }}"
+  data-cart-drawer-show-compare-at="{{ settings.cart_drawer_show_compare_at }}"
+  data-cart-drawer-close-label="{{ 'cart.drawer.close' | t }}"
+  data-cart-drawer-empty-title="{{ 'cart.empty_title' | t }}"
+  data-cart-drawer-empty-copy="{{ 'cart.empty_message' | t }}"
+  data-cart-drawer-decrease-label="{{ 'cart.decrease_quantity' | t }}"
+  data-cart-drawer-increase-label="{{ 'cart.increase_quantity' | t }}"
+  data-cart-drawer-remove-label="{{ 'cart.remove' | t }}"
+  data-cart-drawer-subtotal-label="{{ 'cart.subtotal' | t }}"
+  data-cart-drawer-secure-checkout-label="{{ 'cart.secure_checkout' | t }}"
+  data-cart-drawer-live-template="{{ 'cart.drawer.live_region' | t: count: '[[count]]', subtotal: '[[subtotal]]' }}"
+  data-cart-drawer-adding-label="{{ 'product.adding_to_cart' | t }}"
+  data-cart-drawer-quantity-label="{{ 'product.quantity' | t }}"
+  data-cart-drawer-loading-label="{{ 'cart.drawer.loading' | t }}"
+  data-cart-drawer-continue-url="{{ routes.all_products_collection_url }}"
+  data-cart-drawer-continue-label="{{ 'cart.continue_shopping' | t }}"
+  aria-hidden="true"
+  style="
+    --cart-drawer-image-fit: {{ settings.cart_drawer_image_fit }};
+    --cart-drawer-heading-color: {{ settings.cart_drawer_heading_color }};
+    --cart-drawer-eyebrow-color: {{ settings.cart_drawer_eyebrow_color }};
+    --cart-drawer-item-title-color: {{ settings.cart_drawer_item_title_color }};
+    --cart-drawer-variant-color: {{ settings.cart_drawer_variant_color }};
+    --cart-drawer-price-color: {{ settings.cart_drawer_price_color }};
+    --cart-drawer-compare-price-color: {{ settings.cart_drawer_compare_price_color }};
+    --cart-drawer-subtotal-label-color: {{ settings.cart_drawer_subtotal_label_color }};
+    --cart-drawer-subtotal-price-color: {{ settings.cart_drawer_subtotal_price_color }};
+    --cart-drawer-compare-subtotal-color: {{ settings.cart_drawer_compare_subtotal_color }};
+    --cart-drawer-remove-color: {{ settings.cart_drawer_remove_color }};
+  "
+>
+  <script type="application/json" data-cart-drawer-compare-at-prices>
+    {
+      {% for item in cart.items %}
+        "{{ item.variant_id }}": {{ item.variant.compare_at_price | default: 0 | json }}{% unless forloop.last %},{% endunless %}
+      {% endfor %}
+    }
+  </script>
+  <button type="button" class="cart-drawer__overlay" data-cart-drawer-close aria-label="{{ 'cart.drawer.close' | t }}"></button>
+
+  <div class="cart-drawer__panel" role="dialog" aria-modal="true" aria-labelledby="CartDrawerTitle">
+    <p class="visually-hidden" data-cart-drawer-live-region aria-live="polite"></p>
+    <div class="cart-drawer__header">
+      <div class="cart-drawer__header-main">
+        <div>
+          <p class="cart-drawer__eyebrow">{{ 'cart.drawer.eyebrow' | t }}</p>
+          <h2 id="CartDrawerTitle" class="cart-drawer__title" tabindex="-1">
+            {{ 'cart.title' | t }}
+            <span data-cart-drawer-count>{{ cart.item_count }}</span>
+          </h2>
+        </div>
+        <button type="button" class="cart-drawer__close" data-cart-drawer-close aria-label="{{ 'cart.drawer.close' | t }}">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="cart-drawer__body" data-cart-drawer-body>
+      {% if cart.item_count == 0 %}
+        <div class="cart-drawer__empty" data-cart-drawer-empty>
+          <p class="cart-drawer__empty-title">{{ 'cart.empty_title' | t }}</p>
+          <p class="cart-drawer__empty-copy">{{ 'cart.empty_message' | t }}</p>
+          <a href="{{ routes.all_products_collection_url }}" class="button button--primary cart-drawer__empty-cta">
+            {{ 'cart.continue_shopping' | t }}
+          </a>
+        </div>
+      {% else %}
+        <ul class="cart-drawer__items" data-cart-drawer-items role="list">
+          {% for item in cart.items %}
+            <li class="cart-drawer__item" data-cart-item-key="{{ item.key }}">
+              <a href="{{ item.url }}" class="cart-drawer__item-media">
+                {% if item.image %}
+                  {{
+                    item.image
+                    | image_url: width: 320, height: 400, crop: 'center'
+                    | image_tag: loading: 'lazy', class: 'cart-drawer__item-image'
+                  }}
+                {% endif %}
+              </a>
+
+              <div class="cart-drawer__item-content">
+                <div class="cart-drawer__item-top">
+                  <div>
+                    <a href="{{ item.url }}" class="cart-drawer__item-title">{{ item.product.title }}</a>
+                    {% if item.variant_title and item.variant_title != 'Default Title' %}
+                      <p class="cart-drawer__item-variant">{{ item.variant_title }}</p>
+                    {% endif %}
+                  </div>
+                  <div class="cart-drawer__item-prices">
+                    <p class="cart-drawer__item-price">{{ item.final_line_price | money }}</p>
+                    {% if settings.cart_drawer_show_compare_at and item.variant.compare_at_price > item.final_price %}
+                      <p class="cart-drawer__item-compare-price">{{ item.variant.compare_at_price | times: item.quantity | money }}</p>
+                    {% endif %}
+                  </div>
+                </div>
+
+                <div class="cart-drawer__item-bottom">
+                  <div class="cart-drawer__quantity">
+                    <button type="button" class="cart-drawer__quantity-button" data-cart-quantity-change data-cart-quantity-delta="-1" aria-label="{{ 'cart.decrease_quantity' | t }}">-</button>
+                    <input
+                      type="number"
+                      class="cart-drawer__quantity-value"
+                      value="{{ item.quantity }}"
+                      min="1"
+                      aria-label="{{ 'product.quantity' | t }}"
+                      data-cart-quantity-input
+                    >
+                    <button type="button" class="cart-drawer__quantity-button" data-cart-quantity-change data-cart-quantity-delta="1" aria-label="{{ 'cart.increase_quantity' | t }}">+</button>
+                  </div>
+                  <button type="button" class="cart-drawer__remove" data-cart-remove aria-label="{{ 'cart.remove' | t }}: {{ item.product.title | escape }}">{{ 'cart.remove' | t }}</button>
+                </div>
+              </div>
+            </li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    </div>
+
+    <div class="cart-drawer__footer" data-cart-drawer-footer {% if cart.item_count == 0 %}hidden{% endif %}>
+      <div class="cart-drawer__summary">
+        <div class="cart-drawer__summary-row">
+          <span class="cart-drawer__subtotal-label">{{ 'cart.subtotal' | t }}</span>
+          <div class="cart-drawer__subtotal-values">
+            {% if settings.cart_drawer_show_compare_at and cart_compare_total > cart.total_price %}
+              <p class="cart-drawer__subtotal-compare" data-cart-drawer-compare-subtotal>{{ cart_compare_total | money }}</p>
+            {% else %}
+              <p class="cart-drawer__subtotal-compare" data-cart-drawer-compare-subtotal hidden></p>
+            {% endif %}
+            <strong data-cart-drawer-subtotal>{{ cart.total_price | money }}</strong>
+          </div>
+        </div>
+      </div>
+
+      {%- comment -%}
+        Laatste kans om de link te vragen vóór de kassa, maar dichtgeklapt: wie
+        hem overslaat verliest geen enkele klik. Het veld schrijft naar de
+        kenmerken van de bestelling, dus het staat straks bij de bestelling in
+        de beheeromgeving. Weten we de link al via de productpagina, dan
+        bevestigen we dat alleen nog.
+      {%- endcomment -%}
+      <div class="tk3-cartlink" data-tk3-cartlink>
+        {%- if link_bekend -%}
+          <p class="tk3-cartlink-ok">
+            <span aria-hidden="true">✓</span> Link ontvangen — wij zetten hem er vooraf op.
+          </p>
+        {%- else -%}
+          <details class="tk3-cartlink-blok">
+            <summary>
+              <span class="tk3-cartlink-titel">Link voor je kaarten alvast doorgeven?</span>
+              <span class="tk3-cartlink-tag">optioneel</span>
+            </summary>
+            <input
+              type="url"
+              class="tk3-cartlink-veld"
+              placeholder="https://g.page/r/... of je Instagram-profiel"
+              autocomplete="url"
+              spellcheck="false"
+              aria-label="Link voor je kaarten"
+              value="{{ lade_link | escape }}"
+              data-tk3-cartlink-veld
+            >
+            <span class="tk3-cartlink-status" data-tk3-cartlink-status aria-live="polite"></span>
+          </details>
+          <p class="tk3-cartlink-rust">Niet nodig om te bestellen — anders mailen we je er direct na je bestelling over.</p>
+        {%- endif -%}
+      </div>
+
+      <div class="cart-drawer__actions">
+        <a href="/checkout" class="button button--primary cart-drawer__checkout-button">
+          {% if settings.cart_drawer_show_secure_icon and settings.cart_drawer_secure_icon_position == 'before' %}
+            {{ cart_drawer_secure_icon }}
+          {% endif %}
+          <span>{{ 'cart.secure_checkout' | t }}</span>
+          {% if settings.cart_drawer_show_secure_icon and settings.cart_drawer_secure_icon_position == 'after' %}
+            {{ cart_drawer_secure_icon }}
+          {% endif %}
+        </a>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<script>
+  // Het veld slaat op zodra je het verlaat; niets om op te klikken. Alleen als
+  // er echt iets veranderd is sturen we een verzoek, anders krijgt /cart/update.js
+  // bij elke blur een oproep.
+  (function () {
+    if (window.tk3CartlinkGeregeld) return;
+    window.tk3CartlinkGeregeld = true;
+
+    var laatst = null;
+
+    var bewaar = function (veld) {
+      var waarde = veld.value.trim();
+      if (waarde === laatst) return;
+      laatst = waarde;
+
+      var status = document.querySelector('[data-tk3-cartlink-status]');
+      if (status) status.textContent = 'Opslaan…';
+
+      fetch('/cart/update.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ attributes: { 'Link voor de kaart': waarde } })
+      })
+        .then(function (r) {
+          if (!r.ok) throw new Error('mislukt');
+          if (status) status.textContent = waarde ? 'Opgeslagen ✓' : '';
+        })
+        .catch(function () {
+          if (status) status.textContent = 'Opslaan lukte niet — we mailen je er anders over.';
+          laatst = null;
+        });
+    };
+
+    document.addEventListener(
+      'blur',
+      function (e) {
+        var veld = e.target;
+        if (veld && veld.matches && veld.matches('[data-tk3-cartlink-veld]')) bewaar(veld);
+      },
+      true
+    );
+
+    // Enter voelt als bevestigen; het veld staat niet in een formulier.
+    document.addEventListener('keydown', function (e) {
+      if (e.key !== 'Enter') return;
+      var veld = e.target;
+      if (veld && veld.matches && veld.matches('[data-tk3-cartlink-veld]')) {
+        e.preventDefault();
+        bewaar(veld);
+        veld.blur();
+      }
+    });
+
+    // Ook nog meepakken als iemand meteen op afrekenen klikt.
+    document.addEventListener(
+      'click',
+      function (e) {
+        var knop = e.target && e.target.closest && e.target.closest('.cart-drawer__checkout-button');
+        if (!knop) return;
+        var veld = document.querySelector('[data-tk3-cartlink-veld]');
+        if (veld && veld.value.trim() && veld.value.trim() !== laatst) bewaar(veld);
+      },
+      true
+    );
+  })();
+</script>

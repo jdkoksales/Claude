@@ -6,8 +6,9 @@
       "type": "tk3-header",
       "settings": {
         "menu": "main-menu",
-        "marquee_text": "Gratis verzending vanaf € 55",
-        "marquee_emoji": "📦",
+        "marquee_text": "🚚 Gratis verzending vanaf € 70",
+        "marquee_text_2": "☀️ Zomerkorting tot 20%",
+        "marquee_text_3": "🇳🇱 Verstuurd vanuit Nederland",
         "pill_text": "Hoe werkt het?",
         "pill_url": "/#hoe-het-werkt",
         "help_url": "/pages/veelgestelde-vragen"

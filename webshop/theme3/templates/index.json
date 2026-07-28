@@ -18,7 +18,7 @@
         "t1": {
           "type": "item",
           "settings": {
-            "text": "🚚 Gratis verzending vanaf € 55"
+            "text": "🚚 Gratis verzending vanaf € 70"
           }
         },
         "t2": {
@@ -348,7 +348,7 @@
         "q1": "Hoeveel bezoekers ontvangt jouw bedrijf gemiddeld per dag?",
         "q2": "Stel jouw TapKaart-pakket samen",
         "results_intro": "Geschatte opbrengst per maand op basis van jouw gemiddelde aantal bezoekers per dag.",
-        "cta_text": "Gratis verzending vanaf € 55 · 14 dagen bedenktijd",
+        "cta_text": "Gratis verzending vanaf € 70 · 14 dagen bedenktijd",
         "cta_button": "Bestel mijn TapKaarten",
         "disclaimer": "De berekening is een indicatieve schatting op basis van gemiddelde conversiepercentages. Werkelijke aantallen hangen af van je zaak, je klanten en waar je de kaarten neerzet."
       }

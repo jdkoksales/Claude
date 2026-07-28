@@ -43,19 +43,25 @@
     moet openen en moet er alsnog gemaild worden. Het is bewust optioneel: wie
     het overslaat krijgt gewoon een mailtje.
   {%- endcomment -%}
-  <div class="tk3-linkveld">
-    <label for="tk3-link-{{ current_variant.id }}">Welke pagina moet de kaart openen?</label>
-    <input
-      type="url"
-      id="tk3-link-{{ current_variant.id }}"
-      name="properties[Link voor de kaart]"
-      placeholder="https://g.page/r/... of je Instagram-profiel"
-      autocomplete="url"
-      spellcheck="false"
-      data-tk3-linkveld
-    >
-    <small>Optioneel. Weet je de link nog niet? Laat het leeg — we mailen je na je bestelling. Je kunt de kaart later ook zelf herprogrammeren.</small>
-  </div>
+  <details class="tk3-linkveld">
+    <summary>
+      <span class="tk3-linkveld-titel">Link nu al doorgeven?</span>
+      <span class="tk3-linkveld-tag">optioneel</span>
+    </summary>
+    <div class="tk3-linkveld-uit">
+      <label for="tk3-link-{{ current_variant.id }}">Welke pagina moet de kaart openen?</label>
+      <input
+        type="url"
+        id="tk3-link-{{ current_variant.id }}"
+        name="properties[Link voor de kaart]"
+        placeholder="https://g.page/r/... of je Instagram-profiel"
+        autocomplete="url"
+        spellcheck="false"
+        data-tk3-linkveld
+      >
+    </div>
+    <small>Hoeft niet om te bestellen. Vul je niets in, dan mailen wij je er direct na je bestelling over. Je kunt de kaart later ook zelf herprogrammeren.</small>
+  </details>
 
   <button
     type="submit"

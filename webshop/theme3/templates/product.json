@@ -13,8 +13,8 @@
         "price": {
           "type": "price",
           "settings": {
-            "price_color": "#1A202C",
-            "compare_price_color": "#B42318",
+            "price_color": "#E23B1E",
+            "compare_price_color": "#8A8F98",
             "price_size": 26,
             "compare_price_size": 16,
             "compare_price_position": "before",
@@ -68,7 +68,7 @@
           "type": "accordion",
           "settings": {
             "heading": "Verzending en retour",
-            "content": "<p>Nederland € 6,95, gratis vanaf € 55. België en de rest van de EU € 12,95, daarbuiten € 19,95. Op werkdagen voor 16:00 uur besteld gaat dezelfde dag op de post; in Nederland is dat doorgaans de volgende werkdag in huis.</p><p>Alle bedragen zijn exclusief btw. De btw wordt in de kassa berekend en staat apart op je factuur. Je kunt daar ook je btw-nummer opgeven.</p><p>Niet tevreden? Je hebt 14 dagen bedenktijd. Lees het volledige <a href=\"/pages/retourbeleid\">retourbeleid</a> of bekijk de <a href=\"/pages/verzending\">verzendinformatie</a>.</p>",
+            "content": "<p>Nederland € 6,95, gratis vanaf € 70. België en de rest van de EU € 12,95, daarbuiten € 19,95. Op werkdagen voor 16:00 uur besteld gaat dezelfde dag op de post; in Nederland is dat doorgaans de volgende werkdag in huis.</p><p>Alle bedragen zijn exclusief btw. De btw wordt in de kassa berekend en staat apart op je factuur. Je kunt daar ook je btw-nummer opgeven.</p><p>Niet tevreden? Je hebt 14 dagen bedenktijd. Lees het volledige <a href=\"/pages/retourbeleid\">retourbeleid</a> of bekijk de <a href=\"/pages/verzending\">verzendinformatie</a>.</p>",
             "open_by_default": false
           }
         },
@@ -162,7 +162,7 @@
         "q1": "Hoeveel bezoekers ontvangt jouw bedrijf gemiddeld per dag?",
         "q2": "Stel jouw TapKaart-pakket samen",
         "results_intro": "Geschatte opbrengst per maand op basis van jouw gemiddelde aantal bezoekers per dag.",
-        "cta_text": "Gratis verzending vanaf € 55 · 14 dagen bedenktijd",
+        "cta_text": "Gratis verzending vanaf € 70 · 14 dagen bedenktijd",
         "cta_button": "Bestel mijn TapKaarten",
         "disclaimer": "De berekening is een indicatieve schatting op basis van gemiddelde conversiepercentages. Werkelijke aantallen hangen af van je zaak, je klanten en waar je de kaarten neerzet."
       }

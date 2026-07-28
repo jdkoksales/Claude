@@ -220,6 +220,60 @@ jobs:
             await ctx.close();
           }
 
+          // ---------- 5. echte kassa met adres: klopt de btw? ----------
+          try {
+            const ctx = await b.newContext({ viewport: { width: 1440, height: 1000 }, locale: 'nl-NL' });
+            const p = await ctx.newPage();
+            await p.goto(BASE + '/' + PV, { waitUntil: 'domcontentloaded', timeout: 60000 });
+            await p.evaluate(() =>
+              fetch('/cart/update.js', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ updates: { 64057218662777: 4 } }),
+              })
+            );
+            await p.waitForTimeout(1500);
+            await p.goto(BASE + '/checkout', { waitUntil: 'domcontentloaded', timeout: 90000 });
+            await p.waitForTimeout(6000);
+            log.push(`kassa-url: ${p.url().slice(0, 90)}`);
+
+            const vul = async (label, waarde) => {
+              const veld = p.getByLabel(label, { exact: false }).first();
+              if (await veld.count()) {
+                await veld.fill(waarde, { timeout: 12000 }).catch(() => {});
+              } else {
+                log.push(`    veld niet gevonden: ${label}`);
+              }
+            };
+            await vul('E-mail', 'proef@tapkaarten.nl');
+            await vul('Voornaam', 'Jan');
+            await vul('Achternaam', 'Jansen');
+            await vul('Adres', 'Dingspil 13');
+            await p.waitForTimeout(1200);
+            await p.keyboard.press('Escape'); // adressuggesties wegklikken
+            await vul('Postcode', '9302 ET');
+            await vul('Stad', 'Roden');
+            await p.waitForTimeout(9000);
+
+            const totalen = await p.evaluate(() => {
+              const regels = [];
+              document.querySelectorAll('[role="row"], tr, li, div').forEach((el) => {
+                if (el.children.length > 3) return;
+                const t = (el.innerText || '').replace(/\s+/g, ' ').trim();
+                if (!t || t.length > 70) return;
+                if (/(subtotaal|btw|belasting|verzend|totaal|korting)/i.test(t) && /[€\d]/.test(t)) regels.push(t);
+              });
+              return [...new Set(regels)].slice(0, 14);
+            });
+            log.push('kassa-overzicht:');
+            totalen.forEach((t) => log.push(`   ${t}`));
+            await p.screenshot({ path: 'preview/kassa.png', fullPage: false });
+            await p.goto(BASE + '/cart/clear' + PV, { waitUntil: 'domcontentloaded' }).catch(() => {});
+            await ctx.close();
+          } catch (e) {
+            log.push('kassaproef MISLUKT: ' + e.message.split('\n')[0].slice(0, 140));
+          }
+
           await b.close();
           fs.writeFileSync('preview/bestelproef.txt', log.join('\n') + '\n');
           console.log(log.join('\n'));
@@ -230,6 +284,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add preview/bestelproef.txt preview/lade.png preview/lade-product.png
+          git add preview/bestelproef.txt preview/lade.png preview/lade-product.png preview/kassa.png
           git commit -m "Uitkomst van de bestelproef" || echo "niets gewijzigd"
           git push

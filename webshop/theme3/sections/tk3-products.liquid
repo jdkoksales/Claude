@@ -32,10 +32,13 @@
               <span class="flag">{% if product.tags.size > 0 %}{{ product.tags.first }}{% else %}&nbsp;{% endif %}</span>
               <div class="name">{{ product.title }}</div>
               <div class="price">
-                {{ product.price | money }}
                 {%- if product.compare_at_price > product.price -%}
-                  <s style="color:var(--ink-36);font-weight:500;margin-left:8px">{{ product.compare_at_price | money }}</s>
+                  <s>{{ product.compare_at_price | money }}</s>
+                  <b class="actie">{{ product.price | money }}</b>
+                {%- else -%}
+                  {{ product.price | money }}
                 {%- endif -%}
+                <em class="btw">excl. btw</em>
               </div>
             </div>
           </a>
@@ -87,7 +90,7 @@
     { "type": "range", "id": "count", "min": 3, "max": 12, "step": 1, "label": "Aantal kaarten", "default": 8 },
     { "type": "text", "id": "link_text", "label": "Link rechtsboven", "default": "Bekijk alle specificaties" },
     { "type": "url", "id": "link_url", "label": "Link" },
-    { "type": "text", "id": "fallback_price", "label": "Prijs in de terugvalkaarten", "default": "€ 39,95" }
+    { "type": "text", "id": "fallback_price", "label": "Prijs in de terugvalkaarten", "default": "€ 34,95" }
   ],
   "presets": [{ "name": "TK3 productrij" }]
 }

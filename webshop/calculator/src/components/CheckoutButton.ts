@@ -2,34 +2,40 @@ import type { CartLine } from '../types';
 import { addToCartAndCheckout } from '../utils/cart';
 
 export interface CheckoutButtonOptions {
-  heading: string;
-  text: string;
   label: string;
+  reassurance: string;
   getLines: () => CartLine[];
 }
 
 export interface CheckoutButtonHandle {
   el: HTMLElement;
   setEnabled: (enabled: boolean) => void;
+  glans: () => void;
 }
 
-export function CheckoutButton({ heading, text, label, getLines }: CheckoutButtonOptions): CheckoutButtonHandle {
+/**
+ * De enige knop in het blok. Alles eromheen is bewust rustig gehouden zodat
+ * dit het felste vlak is; daarom zit de glans hier en nergens anders.
+ */
+export function CheckoutButton({ label, reassurance, getLines }: CheckoutButtonOptions): CheckoutButtonHandle {
   const el = document.createElement('div');
   el.className = 'cfg-cta';
   el.innerHTML = `
-    <h3>${heading}</h3>
-    <p>${text}</p>
-    <button type="button" class="btn-primary cfg-checkout" data-go>${label}</button>
-    <p class="cfg-error" role="alert" data-error hidden></p>`;
+    <button type="button" class="cfg-checkout" data-go>
+      <span>${label}</span><span class="cfg-pijl" aria-hidden="true">→</span>
+    </button>
+    <p class="cfg-error" role="alert" data-error hidden></p>
+    <p class="cfg-gerust">${reassurance}</p>`;
 
   const button = el.querySelector('[data-go]') as HTMLButtonElement;
+  const tekst = button.querySelector('span') as HTMLElement;
   const error = el.querySelector('[data-error]') as HTMLElement;
 
   button.addEventListener('click', async () => {
     error.hidden = true;
     button.disabled = true;
     button.classList.add('is-busy');
-    button.textContent = 'Bezig…';
+    tekst.textContent = 'Bezig…';
     try {
       await addToCartAndCheckout(getLines());
     } catch (err) {
@@ -37,7 +43,7 @@ export function CheckoutButton({ heading, text, label, getLines }: CheckoutButto
       error.hidden = false;
       button.disabled = false;
       button.classList.remove('is-busy');
-      button.textContent = label;
+      tekst.textContent = label;
     }
   });
 
@@ -46,6 +52,11 @@ export function CheckoutButton({ heading, text, label, getLines }: CheckoutButto
     setEnabled(enabled) {
       button.disabled = !enabled;
       button.classList.toggle('is-off', !enabled);
+    },
+    glans() {
+      button.classList.remove('is-glans');
+      void button.offsetWidth;
+      button.classList.add('is-glans');
     },
   };
 }

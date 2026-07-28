@@ -363,56 +363,76 @@ html,body{overflow-x:clip}
 .tk3 .cfg-hint{font-size:11.5px;color:var(--card-accent);font-weight:650;margin-top:7px;line-height:1.3}
 .tk3 .cfg-warn{font-size:11.5px;color:#B42318;font-weight:600;margin-top:6px}
 .tk3 .cfg-side{position:sticky;top:88px;display:grid;gap:14px}
-.tk3 .cfg-out{--vlam:#FF5A1F;position:relative;background:#fff;border:2px solid var(--vlam);
-  border-radius:24px;padding:32px 24px 24px;box-shadow:0 20px 50px rgba(255,90,31,.18)}
-.tk3 .cfg-out-flag{position:absolute;top:-13px;left:22px;background:var(--vlam);color:#fff;
-  font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;
-  padding:5px 12px;border-radius:9999px;white-space:nowrap;
-  box-shadow:0 4px 12px rgba(255,90,31,.34)}
-.tk3 .cfg-out-intro{font-size:13px;color:var(--ink-48);line-height:1.45;margin-bottom:16px}
-.tk3 .cfg-out-rows{display:grid;gap:10px}
-.tk3 .cfg-out-row{display:grid;gap:2px;padding:11px 13px;border-radius:14px;transition:opacity .3s;
-  background:linear-gradient(90deg,color-mix(in srgb,var(--card-accent) 13%,transparent),transparent 74%)}
-.tk3 .cfg-out-row.is-empty{opacity:.3}
-.tk3 .cfg-out-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.tk3 .cfg-out-val{font-size:60px;font-weight:750;letter-spacing:-.045em;line-height:1.05;
-  color:var(--card-accent);font-variant-numeric:tabular-nums;display:inline-block}
+.tk3 .cfg-out{background:#fff;border:1px solid var(--line);border-radius:22px;overflow:hidden;
+  box-shadow:0 20px 50px rgba(0,0,0,.09)}
+.tk3 .cfg-out-boven{position:relative;overflow:hidden;padding:26px 24px 22px}
+.tk3 .cfg-out-gloed{position:absolute;inset:0;pointer-events:none}
+.tk3 .cfg-out-gloed::before,.tk3 .cfg-out-gloed::after{content:'';position:absolute;border-radius:50%}
+.tk3 .cfg-out-gloed::before{inset:-60% -30% auto auto;width:330px;height:330px;
+  background:radial-gradient(circle,rgba(66,133,244,.16),transparent 66%)}
+.tk3 .cfg-out-gloed::after{inset:auto auto -55% -25%;width:290px;height:290px;
+  background:radial-gradient(circle,rgba(214,41,118,.13),transparent 66%)}
+.tk3 .cfg-out-inhoud{position:relative}
+.tk3 .cfg-out-kap{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink-36);margin-bottom:4px}
+.tk3 .cfg-out-intro{font-size:12.5px;color:var(--ink-48);line-height:1.45;margin-bottom:18px}
+.tk3 .cfg-out-rows{display:grid;gap:14px}
+.tk3 .cfg-out-row{display:flex;align-items:center;gap:12px;transition:opacity .3s}
+.tk3 .cfg-out-row.is-empty{opacity:.32}
+.tk3 .cfg-out-val{font-size:38px;font-weight:750;letter-spacing:-.04em;line-height:1;
+  font-variant-numeric:tabular-nums;min-width:100px;color:var(--card-accent)}
 .tk3 .cfg-out-val.is-pulse{animation:tk3flits .4s ease}
 @keyframes tk3flits{0%{transform:scale(1)}32%{transform:scale(1.055)}100%{transform:scale(1)}}
-.tk3 .cfg-out-boost{font-size:14px;font-weight:750;color:#136C34;background:#E7F6EC;
-  padding:3px 10px;border-radius:9999px;letter-spacing:-.01em;white-space:nowrap}
-.tk3 .cfg-out-meta{display:flex;align-items:center;gap:9px}
+.tk3 .cfg-out-val i{font-style:normal}
+.tk3 .cfg-out-val .g-plus{background:linear-gradient(120deg,#4285F4 8%,#EA4335 38%,#EFA400 66%,#34A853 94%);
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.tk3 .cfg-out-val .g-rood{color:#EA4335}
+.tk3 .cfg-out-val .g-geel{color:#EFA400}
+.tk3 .cfg-out-val .g-groen{color:#34A853}
+.tk3 .cfg-out-val .g-blauw{color:#4285F4}
+.tk3 .cfg-out-val .g-punt{color:var(--ink-48)}
+.tk3 .cfg-out-row:nth-child(2) .cfg-out-val{background:linear-gradient(120deg,#F9CE34,#EE2A7B 55%,#6228D7);
+  -webkit-background-clip:text;background-clip:text;color:transparent}
 .tk3 .cfg-out-ico{display:grid;place-items:center;flex:0 0 auto}
+.tk3 .cfg-out-ico svg{width:26px;height:26px}
 .tk3 .cfg-out-lbl{font-size:var(--fs-sm);font-weight:650;line-height:1.2}
 .tk3 .cfg-out-lbl em{display:block;font-style:normal;font-size:12px;font-weight:500;color:var(--ink-48)}
-.tk3 .cfg-out-staffel{margin-top:16px;border:1px dashed var(--vlam);background:#FFF4ED;border-radius:12px;
-  padding:12px 14px;font-size:13px;font-weight:700;color:#C2410C;text-align:center;line-height:1.4}
-.tk3 .cfg-out-staffel.is-volgende{border-color:#D9A441;background:#FFF9EC;color:#8A5A12}
-.tk3 .cfg-out-staffel.is-pulse{animation:tk3opkomst .34s ease}
-@keyframes tk3opkomst{0%{transform:scale(.94);opacity:0}100%{transform:scale(1);opacity:1}}
-.tk3 .cfg-cta{background:#fff;border:1px solid var(--line);border-radius:20px;padding:22px 20px;
-  box-shadow:0 14px 34px rgba(0,0,0,.05)}
-.tk3 .cfg-card.is-active{animation:tk3wip .3s ease}
-@keyframes tk3wip{0%{transform:translateY(0)}45%{transform:translateY(-4px)}100%{transform:translateY(0)}}
-.tk3 .cfg-cta h3{font-size:var(--fs-lg);margin-bottom:6px}
-.tk3 .cfg-cta p{font-size:13px;color:var(--ink-64);margin-bottom:14px;line-height:1.45}
-.tk3 .cfg-checkout{width:100%;justify-content:center;border:0;cursor:pointer}
-.tk3 .cfg-checkout.is-off{opacity:.4;cursor:not-allowed}
+.tk3 .cfg-out-voet{background:#F4F5F7;border-top:1px solid var(--line);padding:20px 24px 22px}
+.tk3 .cfg-prijs-kop{display:flex;align-items:center;justify-content:space-between;gap:10px;
+  font-size:13px;font-weight:600;color:var(--ink-48);margin-bottom:3px}
+.tk3 .cfg-staffelchip{font-size:11.5px;font-weight:750;padding:2px 9px;border-radius:9999px;
+  background:#E7F6EC;color:#136C34;white-space:nowrap}
+.tk3 .cfg-staffelchip.is-pulse{animation:tk3opkomst .34s ease}
+@keyframes tk3opkomst{0%{transform:scale(.9);opacity:0}100%{transform:scale(1);opacity:1}}
+.tk3 .cfg-prijs-rij{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.tk3 .cfg-prijs-oud{font-size:17px;font-weight:600;color:var(--ink-36);text-decoration-thickness:2px}
+.tk3 .cfg-prijs-nieuw{font-size:34px;font-weight:750;letter-spacing:-.035em;line-height:1.1;
+  color:#E23B1E;font-variant-numeric:tabular-nums}
+.tk3 .cfg-prijs-btw{font-size:11px;color:var(--ink-36);font-weight:500}
+.tk3 .cfg-prijs-regel{font-size:12px;color:var(--ink-48);line-height:1.45;margin:8px 0 15px}
+.tk3 .cfg-cta{display:block}
+.tk3 .cfg-checkout{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;
+  gap:9px;width:100%;padding:19px;border:0;border-radius:9999px;cursor:pointer;
+  background:var(--ink);color:#fff;font-size:17px;font-weight:750;letter-spacing:-.015em;
+  box-shadow:0 12px 28px rgba(26,32,44,.3);transition:transform .15s,box-shadow .15s}
+.tk3 .cfg-checkout:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 16px 34px rgba(26,32,44,.36)}
+.tk3 .cfg-checkout.is-off{opacity:.4;cursor:not-allowed;box-shadow:none}
 .tk3 .cfg-checkout.is-busy{opacity:.75}
+.tk3 .cfg-pijl{font-size:19px;line-height:1}
+.tk3 .cfg-checkout::after{content:'';position:absolute;top:0;left:-45%;width:34%;height:100%;
+  background:linear-gradient(100deg,transparent,rgba(255,255,255,.45),transparent);
+  transform:skewX(-18deg);opacity:0}
+.tk3 .cfg-checkout.is-glans::after{animation:tk3glans .85s ease}
+@keyframes tk3glans{0%{left:-45%;opacity:0}12%{opacity:1}88%{opacity:1}100%{left:118%;opacity:0}}
 .tk3 .cfg-error{font-size:13px;color:#B42318;margin-top:10px}
-.tk3 .cfg-summary{padding:0 4px}
-.tk3 .cfg-summary-line{font-size:12.5px;color:var(--ink-48);line-height:1.45}
-.tk3 .cfg-summary-total{font-size:12.5px;color:var(--ink-64);font-weight:650;margin-top:4px}
-.tk3 .cfg-summary-total s{color:var(--ink-36);font-weight:500;margin-right:2px}
-.tk3 .cfg-tier-badge{display:inline-block;margin-left:4px;padding:1px 7px;border-radius:999px;
-  background:#E7F6EC;color:#136C34;font-weight:650;font-size:11.5px;letter-spacing:-.01em;
-  vertical-align:1px}
-.tk3 .cfg-summary-nudge{margin-top:6px;font-size:12.5px;line-height:1.45;font-weight:600;
-  color:#8A5A12}
+.tk3 .cfg-gerust{font-size:12px;color:var(--ink-36);text-align:center;margin-top:11px;line-height:1.45}
+.tk3 .price s{color:var(--ink-36);font-weight:500;margin-right:7px}
+.tk3 .price .actie{color:#E23B1E;font-weight:750}
+.tk3 .price .btw{display:block;font-style:normal;font-size:11px;font-weight:500;color:var(--ink-36);margin-top:2px}
 .tk3 .cfg-fine{font-size:12.5px;color:var(--ink-36);text-align:center;margin-top:26px;line-height:1.5;
   max-width:70ch;margin-left:auto;margin-right:auto}
-@media(max-width:1040px){.tk3 .cfg-layout{grid-template-columns:1fr}.tk3 .cfg-side{position:static}.tk3 .cfg-out-rows{grid-template-columns:repeat(3,1fr);display:grid;gap:16px}}
-@media(max-width:760px){.tk3 .cfg-main{padding:24px 16px;border-radius:20px}.tk3 .cfg-cards{grid-template-columns:repeat(3,1fr)}.tk3 .cfg-name{min-height:0}.tk3 .cfg-out{padding:24px 20px}.tk3 .cfg-out-rows{grid-template-columns:1fr;gap:18px}.tk3 .cfg-out-val{font-size:52px}}
+@media(max-width:1040px){.tk3 .cfg-layout{grid-template-columns:1fr}.tk3 .cfg-side{position:static}}
+@media(max-width:760px){.tk3 .cfg-main{padding:24px 16px;border-radius:20px}.tk3 .cfg-cards{grid-template-columns:repeat(3,1fr)}.tk3 .cfg-name{min-height:0}}
 @media(prefers-reduced-motion:reduce){.tk3 .cfg-card,.tk3 .cfg-preset,.tk3 .cfg-stepper button,.tk3 .cfg-out-row{transition:none}.tk3 .cfg-card:hover,.tk3 .cfg-preset:hover{transform:none}.tk3 .cfg-qty.is-pulse{animation:none}}
 .tk3 .howto-steps{list-style:none;display:grid;grid-template-columns:repeat(3,1fr);gap:30px;
   margin-top:52px;counter-reset:none}
@@ -433,5 +453,5 @@ html,body{overflow-x:clip}
 @media(max-width:900px){.tk3 .howto-steps{grid-template-columns:1fr;gap:26px;margin-top:36px}.tk3 .howto-shot{aspect-ratio:16/10}}
 @media(max-width:560px){.tk3 section.blk{padding:56px 0}.tk3 .statement{padding:72px 0}.tk3 .statement p{font-size:25px;max-width:100%}.tk3 footer{padding:56px 0 36px}.tk3 h1{font-size:33px}.tk3 h2{font-size:26px}.tk3 .sec-sub{font-size:var(--fs-md)}.tk3 .cfg-main{padding:22px 14px}.tk3 .cfg-block+.cfg-block{margin-top:28px}.tk3 .cfg-q{font-size:var(--fs-md);margin-bottom:13px}.tk3 .cfg-bignum{font-size:var(--fs-2xl)}.tk3 .cfg-cards{grid-template-columns:1fr;gap:8px}.tk3 .cfg-card{display:grid;grid-template-columns:54px 1fr auto;grid-template-areas:
       "foto naam teller" "foto kleur teller" "foto tip tip";
-    align-items:center;column-gap:12px;row-gap:4px;text-align:left;padding:10px 12px;border-radius:14px}.tk3 .cfg-kleur{grid-area:kleur;margin-top:2px;justify-self:start}.tk3 .cfg-kleur button{padding:4px 10px}.tk3 .cfg-card:hover{transform:none}.tk3 .cfg-thumb{grid-area:foto;width:54px;max-width:54px;height:54px;margin:0;border-radius:10px}.tk3 .cfg-name{grid-area:naam;font-size:13.5px;min-height:0}.tk3 .cfg-stepper{grid-area:teller;margin-top:0}.tk3 .cfg-hint{grid-area:tip;margin-top:0;font-size:11.5px}.tk3 .cfg-warn{grid-area:tip;margin-top:0}.tk3 .cfg-presets{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.tk3 .cfg-preset{padding:10px 8px;text-align:center;border-radius:11px}.tk3 .cfg-preset strong{font-size:12.5px;line-height:1.25}.tk3 .cfg-preset span{display:none}.tk3 .cfg-main input[type=range]{height:14px;margin-top:18px}.tk3 .cfg-main input[type=range]::-webkit-slider-thumb{width:34px;height:34px}.tk3 .cfg-main input[type=range]::-moz-range-thumb{width:30px;height:30px}.tk3 .cfg-ends{font-size:12.5px;margin-top:11px}.tk3 .cfg-out{padding:28px 15px 20px}.tk3 .cfg-out-flag{left:16px;font-size:10.5px;padding:5px 10px}.tk3 .cfg-out-rows{gap:8px}.tk3 .cfg-out-row{padding:10px 11px}.tk3 .cfg-out-val{font-size:46px}.tk3 .cfg-out-boost{font-size:13px;padding:2px 9px}.tk3 .cfg-out-staffel{font-size:12.5px;padding:11px 12px}.tk3 .cfg-cta{padding:19px 17px}.tk3 .cfg-fine{margin-top:20px}.tk3 .cfg-stepper button{width:34px;height:34px;font-size:18px}.tk3 .cfg-stepper{padding:3px;gap:3px}.tk3 .f-cols a{padding:10px 0}.tk3 .f-cols{gap:14px 18px;margin-top:32px;padding-top:28px}.tk3 .seg button,.tk3 .seg.tabs button{padding:12px 18px}.tk3 .buy{padding:13px 22px}.tk3 .howto-facts{gap:8px;margin-top:32px}.tk3 .howto-facts span{padding:10px 15px}}
+    align-items:center;column-gap:12px;row-gap:4px;text-align:left;padding:10px 12px;border-radius:14px}.tk3 .cfg-kleur{grid-area:kleur;margin-top:2px;justify-self:start}.tk3 .cfg-kleur button{padding:4px 10px}.tk3 .cfg-card:hover{transform:none}.tk3 .cfg-thumb{grid-area:foto;width:54px;max-width:54px;height:54px;margin:0;border-radius:10px}.tk3 .cfg-name{grid-area:naam;font-size:13.5px;min-height:0}.tk3 .cfg-stepper{grid-area:teller;margin-top:0}.tk3 .cfg-hint{grid-area:tip;margin-top:0;font-size:11.5px}.tk3 .cfg-warn{grid-area:tip;margin-top:0}.tk3 .cfg-presets{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.tk3 .cfg-preset{padding:10px 8px;text-align:center;border-radius:11px}.tk3 .cfg-preset strong{font-size:12.5px;line-height:1.25}.tk3 .cfg-preset span{display:none}.tk3 .cfg-main input[type=range]{height:14px;margin-top:18px}.tk3 .cfg-main input[type=range]::-webkit-slider-thumb{width:34px;height:34px}.tk3 .cfg-main input[type=range]::-moz-range-thumb{width:30px;height:30px}.tk3 .cfg-ends{font-size:12.5px;margin-top:11px}.tk3 .cfg-out-boven{padding:22px 16px 18px}.tk3 .cfg-out-voet{padding:17px 16px 19px}.tk3 .cfg-out-rows{gap:12px}.tk3 .cfg-out-val{font-size:34px;min-width:88px}.tk3 .cfg-out-ico svg{width:23px;height:23px}.tk3 .cfg-prijs-nieuw{font-size:30px}.tk3 .cfg-prijs-oud{font-size:16px}.tk3 .cfg-checkout{padding:17px;font-size:16px}.tk3 .cfg-cta{padding:19px 17px}.tk3 .cfg-fine{margin-top:20px}.tk3 .cfg-stepper button{width:34px;height:34px;font-size:18px}.tk3 .cfg-stepper{padding:3px;gap:3px}.tk3 .f-cols a{padding:10px 0}.tk3 .f-cols{gap:14px 18px;margin-top:32px;padding-top:28px}.tk3 .seg button,.tk3 .seg.tabs button{padding:12px 18px}.tk3 .buy{padding:13px 22px}.tk3 .howto-facts{gap:8px;margin-top:32px}.tk3 .howto-facts span{padding:10px 15px}}
 @media(max-width:400px){.tk3{--gut:18px}.tk3 .cfg-presets{margin-left:-14px;margin-right:-14px}}

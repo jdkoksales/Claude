@@ -79,6 +79,11 @@ function totalsFor(
 
   const itemCount = lines.reduce((sum, l) => sum + l.quantity, 0);
   const bruto = lines.reduce((sum, l) => sum + l.shop.price * l.quantity, 0);
+  // De doorgestreepte prijs telt vanaf de originele prijs, niet vanaf de actieprijs.
+  const origineel = lines.reduce(
+    (sum, l) => sum + (l.shop.compareAtPrice || l.shop.price) * l.quantity,
+    0
+  );
   const { tierPercentage, nextTier } = tiersFor(itemCount);
   // Shopify rekent de korting per stuk en rondt naar beneden af. Zelfde volgorde
   // aanhouden, anders wijkt dit bedrag een cent af van wat de kassa laat zien.
@@ -86,16 +91,23 @@ function totalsFor(
     (sum, l) => sum + Math.floor(l.shop.price * tierPercentage) * l.quantity,
     0
   );
+  // We verkopen aan bedrijven, dus alle bedragen staan exclusief btw. Rekent de
+  // winkel met btw-inclusieve prijzen, dan halen we die er hier weer af zodat
+  // wat de klant ziet klopt met wat er op de factuur komt.
+  const naarExcl = (bedrag: number): number =>
+    pricesIncludeVat ? Math.round(bedrag / (1 + VAT_RATE)) : bedrag;
+
   const total = bruto - discount;
-  const excludingVat = pricesIncludeVat ? Math.round(total / (1 + VAT_RATE)) : total;
+  const exclTotal = naarExcl(total);
   return {
     lines,
     itemCount,
-    total: pricesIncludeVat ? total : Math.round(total * (1 + VAT_RATE)),
-    vat: pricesIncludeVat ? total - excludingVat : Math.round(total * VAT_RATE),
-    excludingVat,
-    totalBeforeDiscount: pricesIncludeVat ? bruto : Math.round(bruto * (1 + VAT_RATE)),
-    discount: pricesIncludeVat ? discount : Math.round(discount * (1 + VAT_RATE)),
+    total: exclTotal,
+    vat: Math.round(exclTotal * VAT_RATE),
+    excludingVat: exclTotal,
+    totalOriginal: naarExcl(origineel),
+    totalBeforeDiscount: naarExcl(bruto),
+    discount: naarExcl(discount),
     tierPercentage,
     nextTier,
   };
@@ -165,11 +177,10 @@ function mount(root: HTMLElement): void {
   });
 
   const results = Results(data.labels.resultsIntro);
-  const summary = CartSummary(data.pricesIncludeVat);
+  const summary = CartSummary();
   const checkout = CheckoutButton({
-    heading: data.labels.ctaHeading,
-    text: data.labels.ctaText,
     label: data.labels.ctaButton,
+    reassurance: data.labels.ctaText,
     getLines: () => totalsFor(products, quantities, selection, data.pricesIncludeVat).lines,
   });
 
@@ -180,15 +191,22 @@ function mount(root: HTMLElement): void {
   const side = document.createElement('div');
   side.className = 'cfg-side';
 
+  // Resultaat en bestelknop horen in één blok: één verhaal, één knop.
+  const paneel = document.createElement('div');
+  paneel.className = 'cfg-out';
+  const voet = document.createElement('div');
+  voet.className = 'cfg-out-voet';
+  voet.append(summary.el, checkout.el);
+  paneel.append(results.el, voet);
+
   main.append(slider, selector.el);
-  side.append(results.el, checkout.el, summary.el);
+  side.append(paneel);
   layout.append(main, side);
   root.append(layout);
 
   function render(animate: boolean): void {
     const result = calculate(visitors, products, quantities);
-    const uitkomst = totalsFor(products, quantities, selection, data!.pricesIncludeVat);
-    results.update(result, uitkomst);
+    results.update(result);
 
     // Laat zien wat de eerstvolgende kaart nog toevoegt — eerlijk, ook als dat weinig is.
     const hints: Record<string, string> = {};
@@ -204,6 +222,7 @@ function mount(root: HTMLElement): void {
     const totals = totalsFor(products, quantities, selection, data!.pricesIncludeVat);
     summary.update(totals);
     checkout.setEnabled(totals.itemCount > 0);
+    if (animate && totals.itemCount > 0) checkout.glans();
   }
 
   render(false);

@@ -11,12 +11,13 @@ export function countTo(
   to: number,
   render: (value: number) => string
 ): () => void {
+  // render levert HTML, want de Google-regel kleurt elk cijfer apart.
   if (from === to) {
-    element.textContent = render(to);
+    element.innerHTML = render(to);
     return () => {};
   }
   if (reduced()) {
-    element.textContent = render(to);
+    element.innerHTML = render(to);
     return () => {};
   }
 
@@ -27,7 +28,7 @@ export function countTo(
   const tick = (now: number): void => {
     const t = Math.min(1, (now - start) / duration);
     const eased = 1 - Math.pow(1 - t, 3);
-    element.textContent = render(Math.round(from + (to - from) * eased));
+    element.innerHTML = render(Math.round(from + (to - from) * eased));
     if (t < 1) frame = requestAnimationFrame(tick);
   };
   frame = requestAnimationFrame(tick);

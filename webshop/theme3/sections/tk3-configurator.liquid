@@ -28,7 +28,6 @@
               "slider": {{ section.settings.q1 | json }},
               "selector": {{ section.settings.q2 | json }},
               "resultsIntro": {{ section.settings.results_intro | json }},
-              "ctaHeading": {{ section.settings.cta_heading | json }},
               "ctaText": {{ section.settings.cta_text | json }},
               "ctaButton": {{ section.settings.cta_button | json }}
             },
@@ -42,6 +41,7 @@
                     "title": {{ product.title | json }},
                     "variantId": {{ product.selected_or_first_available_variant.id | default: product.variants.first.id }},
                     "price": {{ product.price }},
+                    "compareAtPrice": {%- if product.compare_at_price > product.price -%}{{ product.compare_at_price }}{%- else -%}null{%- endif -%},
                     "available": {{ product.available | json }},
                     "url": {{ product.url | json }},
                     "image": {%- if product.featured_media -%}{{ product.featured_media | image_url: width: 320 | json }}{%- else -%}null{%- endif -%}
@@ -73,8 +73,7 @@
     { "type": "text", "id": "q2", "label": "Vraag 2", "default": "Stel jouw TapKaart-pakket samen" },
     { "type": "textarea", "id": "results_intro", "label": "Regel boven de resultaten", "default": "Geschatte opbrengst per maand op basis van jouw gemiddelde aantal bezoekers per dag." },
     { "type": "header", "content": "Oproep tot actie" },
-    { "type": "text", "id": "cta_heading", "label": "Kop", "default": "Klaar om meer reviews en volgers te verzamelen?" },
-    { "type": "textarea", "id": "cta_text", "label": "Tekst", "default": "Je gaat direct naar de kassa met precies de kaarten en aantallen die je hier hebt gekozen." },
+    { "type": "textarea", "id": "cta_text", "label": "Regel onder de knop", "default": "Gratis verzending vanaf € 55 · 14 dagen bedenktijd" },
     { "type": "text", "id": "cta_button", "label": "Knop", "default": "Bestel mijn TapKaarten" },
     { "type": "textarea", "id": "disclaimer", "label": "Disclaimer", "default": "De berekening is een indicatieve schatting op basis van gemiddelde conversiepercentages. Werkelijke aantallen hangen af van je zaak, je klanten en waar je de kaarten neerzet." }
   ],

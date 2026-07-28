@@ -40,6 +40,8 @@ export interface ShopifyProduct {
   variantId: number;
   /** In centen, zoals Shopify het levert. */
   price: number;
+  /** Originele prijs in centen, of null als er geen actie loopt. */
+  compareAtPrice: number | null;
   available: boolean;
   url: string;
   image: string | null;
@@ -85,6 +87,8 @@ export interface CartTotals {
   total: number;
   vat: number;
   excludingVat: number;
+  /** Totaal tegen de originele prijs, in centen — de doorgestreepte prijs. */
+  totalOriginal: number;
   /** Totaal vóór staffelkorting, in centen. */
   totalBeforeDiscount: number;
   /** Bedrag dat de staffelkorting scheelt, in centen. */

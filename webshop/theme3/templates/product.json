@@ -5,7 +5,10 @@
       "blocks": {
         "title": {
           "type": "title",
-          "settings": { "title_size_desktop": 34, "title_size_mobile": 24 }
+          "settings": {
+            "title_size_desktop": 34,
+            "title_size_mobile": 24
+          }
         },
         "price": {
           "type": "price",
@@ -27,11 +30,11 @@
             "text_color": "#1A202C",
             "icon_size": 22,
             "icon_1_url": "",
-            "text_1": "Geen app en geen abonnement — eenmalig betalen",
+            "text_1": "Prijzen exclusief btw — wij leveren aan bedrijven",
             "icon_2_url": "",
-            "text_2": "Op werkdagen voor 16:00 besteld, dezelfde dag verzonden",
+            "text_2": "Geen app en geen abonnement — eenmalig betalen",
             "icon_3_url": "",
-            "text_3": "14 dagen bedenktijd",
+            "text_3": "Op werkdagen voor 16:00 besteld, dezelfde dag verzonden",
             "placement": "info"
           }
         },
@@ -41,7 +44,9 @@
         },
         "buy": {
           "type": "buy_buttons",
-          "settings": { "sticky_label": "" }
+          "settings": {
+            "sticky_label": ""
+          }
         },
         "description": {
           "type": "description",
@@ -63,7 +68,7 @@
           "type": "accordion",
           "settings": {
             "heading": "Verzending en retour",
-            "content": "<p>Nederland € 6,95, gratis vanaf € 55. België en de rest van de EU € 12,95, daarbuiten € 19,95. Op werkdagen voor 16:00 uur besteld gaat dezelfde dag op de post; in Nederland is dat doorgaans de volgende werkdag in huis.</p><p>Niet tevreden? Je hebt 14 dagen bedenktijd. Lees het volledige <a href=\"/pages/retourbeleid\">retourbeleid</a> of bekijk de <a href=\"/pages/verzending\">verzendinformatie</a>.</p>",
+            "content": "<p>Nederland € 6,95, gratis vanaf € 55. België en de rest van de EU € 12,95, daarbuiten € 19,95. Op werkdagen voor 16:00 uur besteld gaat dezelfde dag op de post; in Nederland is dat doorgaans de volgende werkdag in huis.</p><p>Alle bedragen zijn exclusief btw. De btw wordt in de kassa berekend en staat apart op je factuur. Je kunt daar ook je btw-nummer opgeven.</p><p>Niet tevreden? Je hebt 14 dagen bedenktijd. Lees het volledige <a href=\"/pages/retourbeleid\">retourbeleid</a> of bekijk de <a href=\"/pages/verzending\">verzendinformatie</a>.</p>",
             "open_by_default": false
           }
         },
@@ -136,7 +141,11 @@
           }
         }
       },
-      "block_order": ["s1", "s2", "s3"],
+      "block_order": [
+        "s1",
+        "s2",
+        "s3"
+      ],
       "settings": {
         "heading": "Zo werkt het.",
         "sub": "Je hoeft niets te installeren en niets in te stellen. Uitpakken, neerzetten, klaar.",
@@ -153,12 +162,15 @@
         "q1": "Hoeveel bezoekers ontvangt jouw bedrijf gemiddeld per dag?",
         "q2": "Stel jouw TapKaart-pakket samen",
         "results_intro": "Geschatte opbrengst per maand op basis van jouw gemiddelde aantal bezoekers per dag.",
-        "cta_heading": "Klaar om meer reviews en volgers te verzamelen?",
-        "cta_text": "Je gaat direct naar de kassa met precies de kaarten en aantallen die je hier hebt gekozen.",
+        "cta_text": "Gratis verzending vanaf € 55 · 14 dagen bedenktijd",
         "cta_button": "Bestel mijn TapKaarten",
         "disclaimer": "De berekening is een indicatieve schatting op basis van gemiddelde conversiepercentages. Werkelijke aantallen hangen af van je zaak, je klanten en waar je de kaarten neerzet."
       }
     }
   },
-  "order": ["main", "hoe", "configurator"]
+  "order": [
+    "main",
+    "hoe",
+    "configurator"
+  ]
 }

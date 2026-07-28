@@ -70,7 +70,7 @@
         "count": 8,
         "link_text": "Bekijk alle specificaties",
         "link_url": "/#specs",
-        "fallback_price": "€ 39,95"
+        "fallback_price": "€ 34,95"
       }
     },
     "branches": {
@@ -348,8 +348,7 @@
         "q1": "Hoeveel bezoekers ontvangt jouw bedrijf gemiddeld per dag?",
         "q2": "Stel jouw TapKaart-pakket samen",
         "results_intro": "Geschatte opbrengst per maand op basis van jouw gemiddelde aantal bezoekers per dag.",
-        "cta_heading": "Klaar om meer reviews en volgers te verzamelen?",
-        "cta_text": "Je gaat direct naar de kassa met precies de kaarten en aantallen die je hier hebt gekozen.",
+        "cta_text": "Gratis verzending vanaf € 55 · 14 dagen bedenktijd",
         "cta_button": "Bestel mijn TapKaarten",
         "disclaimer": "De berekening is een indicatieve schatting op basis van gemiddelde conversiepercentages. Werkelijke aantallen hangen af van je zaak, je klanten en waar je de kaarten neerzet."
       }

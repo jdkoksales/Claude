@@ -65,6 +65,17 @@ jobs:
               else log.push(`  veld ontbreekt: ${label}`);
             };
 
+            const vraagteken = async (wanneer) => {
+              const n = await p.evaluate(() => {
+                const knoppen = [...document.querySelectorAll('button[aria-label]')].filter((b) =>
+                  /btw|belasting|tax/i.test(b.getAttribute('aria-label') || '')
+                );
+                return knoppen.map((b) => b.getAttribute('aria-label'));
+              });
+              log.push(`vraagteken ${wanneer}: ${n.length ? n.join(' | ') : 'AFWEZIG'}`);
+            };
+            await vraagteken('zonder adres');
+
             await vul('E-mail', 'proef@tapkaarten.nl');
 
             const land = p.getByLabel('Land/regio', { exact: false }).first();
@@ -90,6 +101,8 @@ jobs:
             await vul('Stad', 'Roden');
             await p.getByLabel('Telefoon', { exact: false }).first().click().catch(() => {});
             await p.waitForTimeout(15000);
+
+            await vraagteken('met volledig adres');
 
             const regels = await p.evaluate(() => {
               const uit = [];

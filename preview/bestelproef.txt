@@ -7,20 +7,20 @@ lade aanwezig: true
     console: Framing 'https://shop.app/' violates the following Content Security Policy directive: "frame-ancestors 'self' https://shop.app https://admin.shopify.com". The r
     console: Failed to load resource: the server responded with a status of 403 ()
 calculatorknop: {"disabled":false,"klassen":"cfg-checkout","groot":"370x65"}
-    console: Failed to load resource: the server responded with a status of 401 ()
-    console: Failed to load resource: the server responded with a status of 403 ()
-  na klik: https://tapkaarten.nl/checkouts/cn/hWNEzhHCLCuYctHYWEnToPKc/nl-nl?_r=AQABYkR5x3JCMLp3sVMAVElVsydYL37VZrkJJrxZW
+    console: Failed to load resource: the server responded with a status of 503 ()
+  na klik: https://tapkaarten.nl/checkout
   regels in winkelwagen: 1
     console: Framing 'https://shop.app/' violates the following Content Security Policy directive: "frame-ancestors 'self' https://shop.app https://admin.shopify.com". The r
     console: Failed to load resource: the server responded with a status of 403 ()
 winkelwagenpagina knoppen: a "Veilig afrekenen" zichtbaar=true | button[name=checkout] "Afrekenen" zichtbaar=true
     console: Failed to load resource: the server responded with a status of 401 ()
     console: Failed to load resource: the server responded with a status of 403 ()
-  na klik: https://tapkaarten.nl/checkouts/cn/hWNEzhI6nKdx73ZqF5jQALwo/nl-nl?_r=AQABa8jTc2vs67BBq74tYf9Ea-Hk3TCQ6bxlh2MQ1
-    console: Failed to load resource: the server responded with a status of 503 ()
-kopregel heeft data-cart-toggle: false
+  na klik: https://tapkaarten.nl/checkouts/cn/hWNEzhXKVkbBDxaitNmXVviU/nl-nl?_r=AQABCJOz3Bnhy7jzH5qk5OZEyNmCYOTdK66Y-LMYz
+    console: Framing 'https://shop.app/' violates the following Content Security Policy directive: "frame-ancestors 'self' https://shop.app https://admin.shopify.com". The r
+    console: Failed to load resource: the server responded with a status of 403 ()
+kopregel heeft data-cart-toggle: true
+  lade na klik: {"klasse":"cart-drawer is-open","paneel":"440x900 @x=1000","regels":1,"subtotaal":"€ 62,92","kassaknop":"/checkout","telling":"2"}
     console: Failed to load resource: the server responded with a status of 429 ()
     console: %c%d font-size:0;color:transparent NaN
     console: %c%d font-size:0;color:transparent NaN
-    console: Failed to load resource: the server responded with a status of 503 ()
-rechtstreeks /checkout: status=503 url=https://ikep5e-3q.myshopify.com/checkout
+rechtstreeks /checkout: status=200 url=https://ikep5e-3q.myshopify.com/checkouts/cn/hWNEzha2eSVlddiG1QwLz5Ji/nl-us?_r=AQABgfchql6CLHK48lWl7DEMVY4GS4d

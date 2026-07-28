@@ -1,0 +1,60 @@
+{%- comment -%}
+  Plak dit blok in Shopify onder Instellingen → Meldingen → Bestelbevestiging,
+  vlak boven <table class="row section"> met het besteloverzicht (of gewoon
+  direct onder de begroeting). Dit is het enige moment waarop je om de link kunt
+  vragen zonder ook maar iets aan conversie te verliezen: er is al betaald.
+
+  Het blok kijkt eerst of de link al binnen is. Zo ja, dan bevestigt het dat
+  alleen — dan krijgt niemand een vraag die hij al beantwoord heeft.
+{%- endcomment -%}
+
+{% assign link_bekend = false %}
+{% for line in line_items %}
+  {% for eigenschap in line.properties %}
+    {% if eigenschap.first == 'Link voor de kaart' and eigenschap.last != blank %}
+      {% assign link_bekend = true %}
+      {% assign bekende_link = eigenschap.last %}
+    {% endif %}
+  {% endfor %}
+{% endfor %}
+{% if attributes['Link voor de kaart'] != blank %}
+  {% assign link_bekend = true %}
+  {% assign bekende_link = attributes['Link voor de kaart'] %}
+{% endif %}
+
+<table class="row" style="width:100%;margin:24px 0 0">
+  <tr>
+    <td>
+      {% if link_bekend %}
+        <div style="border:1px solid #D6DAE0;border-radius:10px;padding:18px 20px;background:#F7F8FA">
+          <p style="margin:0 0 6px;font-size:16px;font-weight:600;color:#0B0D10">
+            We hebben je link — je hoeft niets meer te doen
+          </p>
+          <p style="margin:0;font-size:14px;line-height:1.55;color:#4A5058">
+            De kaart wordt geprogrammeerd naar<br>
+            <span style="word-break:break-all;color:#0B0D10">{{ bekende_link }}</span><br><br>
+            Klopt dat niet? Antwoord op deze mail, dan passen we het aan voordat je pakket de deur uit gaat.
+          </p>
+        </div>
+      {% else %}
+        <div style="border:2px solid #F4801F;border-radius:10px;padding:18px 20px;background:#FFF7F0">
+          <p style="margin:0 0 8px;font-size:16px;font-weight:700;color:#0B0D10">
+            Nog één ding: welke pagina moet je kaart openen?
+          </p>
+          <p style="margin:0 0 14px;font-size:14px;line-height:1.55;color:#4A5058">
+            Wij programmeren je TapKaart vóór verzending. Stuur ons de link die erop moet —
+            je Google-reviewlink, je Instagram of je Facebookpagina.
+            <strong>Antwoord gewoon op deze mail</strong>, dan is het geregeld.
+          </p>
+          <a href="https://tapkaarten.nl/pages/link-doorgeven"
+             style="display:inline-block;padding:11px 20px;border-radius:100px;background:#0B0D10;color:#ffffff;font-size:14px;font-weight:600;text-decoration:none">
+            Zo vind je jouw link
+          </a>
+          <p style="margin:12px 0 0;font-size:12.5px;line-height:1.5;color:#7A828C">
+            Nog geen link? Geen haast — je kunt de kaart ook zelf herprogrammeren met een gratis NFC-app.
+          </p>
+        </div>
+      {% endif %}
+    </td>
+  </tr>
+</table>

@@ -81,6 +81,9 @@ TAIL = ("html{scroll-behavior:smooth}\n"
         ".tk3-cartlink-status{display:block;margin-top:5px;font-size:12px;color:#136C34}\n"
         ".tk3-cartlink-rust{margin:7px 0 0;font-size:12px;line-height:1.45;color:rgba(0,0,0,.5)}\n"
         ".tk3-cartlink-ok{margin:0;font-size:13px;font-weight:600;color:#136C34}\n"
+        # De meeloopbalk onderaan de productpagina toont dezelfde actieprijs;
+        # die moet dus ook rood zijn en niet zwart.
+        ".product-sticky-bar__price{color:#E23B1E}\n"
         # Staffelkorting op de productpagina.
         ".tk3-staffel{flex:1 0 100%;width:100%;margin:0 0 18px}\n"
         ".tk3-staffel-kop{font-size:14px;font-weight:600;letter-spacing:-.01em;margin-bottom:8px}\n"

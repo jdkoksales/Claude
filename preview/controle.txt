@@ -4,14 +4,14 @@ home desktop status=200
   og     tk3-social.jpg?v=169197354925792053761785174942
 home mobiel status=200
   BREEDTE scroll=390 client=390
-    steekt uit: div.track 0..2672
-    steekt uit: span 334..604
-    steekt uit: span 604..668
-    steekt uit: span 668..938
-    steekt uit: span 938..1002
-    steekt uit: span 1002..1272
-    steekt uit: span 1272..1336
-    steekt uit: span 1336..1606
+    steekt uit: div.track 0..4947
+    steekt uit: span 295..533
+    steekt uit: i.mq-dot 533..538
+    steekt uit: span 538..820
+    steekt uit: i.mq-dot 820..825
+    steekt uit: span 825..1115
+    steekt uit: i.mq-dot 1115..1120
+    steekt uit: span 1120..1358
   KLEINE KNOPPEN a 106x20, a.brand 148x21, a.cartlink 26x26, input 324x14, button 39x23, button 54x23, a 203x26
 product desktop status=200
   titel  Google Review-standaard wit — NFC bordje voor meer reviews – TapKaarten
@@ -19,14 +19,14 @@ product desktop status=200
   og     tapkaarten-google-wit-1.png?v=1785095945
 product mobiel status=200
   BREEDTE scroll=390 client=390
-    steekt uit: div.track 0..2672
-    steekt uit: span 334..604
-    steekt uit: span 604..668
-    steekt uit: span 668..938
-    steekt uit: span 938..1002
-    steekt uit: span 1002..1272
-    steekt uit: span 1272..1336
-    steekt uit: span 1336..1606
+    steekt uit: div.track 0..4947
+    steekt uit: span 295..533
+    steekt uit: i.mq-dot 533..538
+    steekt uit: span 538..820
+    steekt uit: i.mq-dot 820..825
+    steekt uit: span 825..1115
+    steekt uit: i.mq-dot 1115..1120
+    steekt uit: span 1120..1358
   KLEINE KNOPPEN a 106x20, a.brand 148x21, a.cartlink 26x26, button.product-gallery__dot 14x11, a 96x20, a 144x20, a 161x20, input 324x14
 collectie desktop status=200
   titel  Alle TapKaarten — NFC-bordjes voor reviews en volgers
@@ -34,14 +34,14 @@ collectie desktop status=200
   og     tk3-social.jpg?v=169197354925792053761785174942
 collectie mobiel status=200
   BREEDTE scroll=390 client=390
-    steekt uit: div.track 0..2672
-    steekt uit: span 334..604
-    steekt uit: span 604..668
-    steekt uit: span 668..938
-    steekt uit: span 938..1002
-    steekt uit: span 1002..1272
-    steekt uit: span 1272..1336
-    steekt uit: span 1336..1606
+    steekt uit: div.track 0..4947
+    steekt uit: span 295..533
+    steekt uit: i.mq-dot 533..538
+    steekt uit: span 538..820
+    steekt uit: i.mq-dot 820..825
+    steekt uit: span 825..1115
+    steekt uit: i.mq-dot 1115..1120
+    steekt uit: span 1120..1358
   KLEINE KNOPPEN a 106x20, a.brand 148x21, a.cartlink 26x26
 winkelwagen desktop status=200
   titel  Je winkelwagen – TapKaarten
@@ -49,29 +49,29 @@ winkelwagen desktop status=200
   og     tk3-social.jpg?v=169197354925792053761785174942
 winkelwagen mobiel status=200
   BREEDTE scroll=390 client=390
-    steekt uit: div.track 0..2672
-    steekt uit: span 334..604
-    steekt uit: span 604..668
-    steekt uit: span 668..938
-    steekt uit: span 938..1002
-    steekt uit: span 1002..1272
-    steekt uit: span 1272..1336
-    steekt uit: span 1336..1606
+    steekt uit: div.track 0..4947
+    steekt uit: span 295..533
+    steekt uit: i.mq-dot 533..538
+    steekt uit: span 538..820
+    steekt uit: i.mq-dot 820..825
+    steekt uit: span 825..1115
+    steekt uit: i.mq-dot 1115..1120
+    steekt uit: span 1120..1358
   KLEINE KNOPPEN a 106x20, a.brand 148x21, a.cartlink 26x26
 verzending desktop status=200
   titel  Verzending – TapKaarten
-  omschr Verzendkosten Nederland € 6,95 — gratis vanaf € 55 België en de rest van de EU € 12,95 Bui
+  omschr Verzendkosten Nederland € 6,95 — gratis vanaf € 70 België en de rest van de EU € 12,95 Bui
   og     tk3-social.jpg?v=169197354925792053761785174942
 verzending mobiel status=200
   BREEDTE scroll=390 client=390
-    steekt uit: div.track 0..2672
-    steekt uit: span 334..604
-    steekt uit: span 604..668
-    steekt uit: span 668..938
-    steekt uit: span 938..1002
-    steekt uit: span 1002..1272
-    steekt uit: span 1272..1336
-    steekt uit: span 1336..1606
+    steekt uit: div.track 0..4947
+    steekt uit: span 295..533
+    steekt uit: i.mq-dot 533..538
+    steekt uit: span 538..820
+    steekt uit: i.mq-dot 820..825
+    steekt uit: span 825..1115
+    steekt uit: i.mq-dot 1115..1120
+    steekt uit: span 1120..1358
   KLEINE KNOPPEN a 106x20, a.brand 148x21, a.cartlink 26x26, a 149x20
 contact desktop status=200
   titel  Contact – TapKaarten
@@ -79,17 +79,17 @@ contact desktop status=200
   og     tk3-social.jpg?v=169197354925792053761785174942
 contact mobiel status=200
   BREEDTE scroll=390 client=390
-    steekt uit: div.track 0..2672
-    steekt uit: span 334..604
-    steekt uit: span 604..668
-    steekt uit: span 668..938
-    steekt uit: span 938..1002
-    steekt uit: span 1002..1272
-    steekt uit: span 1272..1336
-    steekt uit: span 1336..1606
+    steekt uit: div.track 0..4947
+    steekt uit: span 295..533
+    steekt uit: i.mq-dot 533..538
+    steekt uit: span 538..820
+    steekt uit: i.mq-dot 820..825
+    steekt uit: span 825..1115
+    steekt uit: i.mq-dot 1115..1120
+    steekt uit: span 1120..1358
   KLEINE KNOPPEN a 106x20, a.brand 148x21, a.cartlink 26x26, a 135x19, a 105x19
 winkelwagenproef zonder link: 1× TapKaarten Google Review-standaard — wit props={}
-winkelwagenproef met link: 1× TapKaarten Google Review-standaard — wit props={"Link voor de kaart":"https://g.page/r/voorbeeld"}
+winkelwagenproef MISLUKT: page.fill: Timeout 30000ms exceeded.
 staffel 1×: van € 34,95 af € 0,00 (0%) => € 34,95  []
 staffel 2×: van € 69,90 af € 6,98 (10%) => € 62,92  [Staffelkorting 2 stuks — 10%]
 staffel 3×: van € 104,85 af € 15,72 (15%) => € 89,13  [Staffelkorting 3 stuks — 15%]
@@ -100,7 +100,7 @@ schuifbalk 0%=10  10%=13  20%=28  25%=41  30%=60  40%=110  50%=185  60%=290  75%
   [Compleet] € 179,80 -> € 99,84 excl. btw | −20% staffelkorting | google +1.396 | 4 kaarten · 1 × Google Review-standaard (wit) · 1 × Google Review-sticker · 1 × Instagram-standaard · 1 × Facebook-standaard
   [Meerdere punten] € 389,55 -> € 215,64 excl. btw | −20% staffelkorting | google +1.599 | 9 kaarten · 2 × Google Review-standaard (wit) · 3 × Google Review-sticker · 2 × Instagram-standaard · 2 × Facebook-standaard
   [na Zwart] 9 kaarten · 2 × Google Review-standaard (zwart) · 3 × Google Review-sticker · 2 × Instagram-standaard · 2 × Facebook-standaard
-mobiel menu {"open":true,"rect":"142,104 230x352","stijl":"display=block vis=visible opacity=1 z=70 pos=absolute","bovenop":"div.sheet","links":6,"ketting":["body. ovf=clip visible/clip/visible tf=nee z=auto"]}
+mobiel menu {"open":true,"rect":"142,108 230x352","stijl":"display=block vis=visible opacity=1 z=70 pos=absolute","bovenop":"div.sheet","links":6,"ketting":["body. ovf=clip visible/clip/visible tf=nee z=auto"]}
 link 200 /
 link 200 /collections/alle-tapkaarten
 link 200 /account
@@ -121,15 +121,15 @@ link 200 /pages/algemene-voorwaarden
 link 200 /policies/privacy-policy
 
 --- fouten ---
-home/desktop 403 https://shop.app/pay/hop?analytics_trace_id=d5d5666f-2274-4d90-9c8c-78c9f3564a3d&target_origin=https%3A%2F%2Ftapkaarten.
-home/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=5b368a9a-4c3a-4137-8dc3-cdbf3a710a2b&target_origin=https%3A%2F%2Ftapkaarten.
-product/desktop 403 https://shop.app/pay/hop?analytics_trace_id=d93e1293-a8fb-4c5d-a315-5abfac61f6be&target_origin=https%3A%2F%2Ftapkaarten.
-product/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=f89ae230-e25a-4e23-b37d-e83053423594&target_origin=https%3A%2F%2Ftapkaarten.
-collectie/desktop 403 https://shop.app/pay/hop?analytics_trace_id=05a2518a-1262-4e5d-83d9-d2281990e9f4&target_origin=https%3A%2F%2Ftapkaarten.
-collectie/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=aced03dd-62bf-4fa8-bff9-ac2323f09f06&target_origin=https%3A%2F%2Ftapkaarten.
-winkelwagen/desktop 403 https://shop.app/pay/hop?analytics_trace_id=ab209b42-f990-4bc5-82e3-fe5a7ea62e79&target_origin=https%3A%2F%2Ftapkaarten.
-winkelwagen/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=2a6df4db-1409-4589-bac6-51df9e787fce&target_origin=https%3A%2F%2Ftapkaarten.
-verzending/desktop 403 https://shop.app/pay/hop?analytics_trace_id=c52b3717-d0c5-4c3e-996c-39f657228259&target_origin=https%3A%2F%2Ftapkaarten.
-verzending/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=3b900294-77af-4655-869f-f66f44217ad1&target_origin=https%3A%2F%2Ftapkaarten.
-contact/desktop 403 https://shop.app/pay/hop?analytics_trace_id=75eb3405-1c7a-4712-a7f7-57e4ac85023f&target_origin=https%3A%2F%2Ftapkaarten.
-contact/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=fc8d5e8d-c062-4734-9f22-adea57ef7c0d&target_origin=https%3A%2F%2Ftapkaarten.
+home/desktop 403 https://shop.app/pay/hop?analytics_trace_id=b6f66d70-f7d8-4bb6-b2b5-0942fc0e96ba&target_origin=https%3A%2F%2Ftapkaarten.
+home/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=b2d55c18-8f17-44f6-a6bb-3fdaad0eaa1f&target_origin=https%3A%2F%2Ftapkaarten.
+product/desktop 403 https://shop.app/pay/hop?analytics_trace_id=e30e3ff2-59a3-426d-bf23-a04adee11a19&target_origin=https%3A%2F%2Ftapkaarten.
+product/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=287ed1de-fa91-48ef-b7b6-393b2f584f2c&target_origin=https%3A%2F%2Ftapkaarten.
+collectie/desktop 403 https://shop.app/pay/hop?analytics_trace_id=b7c625f4-c13d-4e9d-9fed-a6ce167775a9&target_origin=https%3A%2F%2Ftapkaarten.
+collectie/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=455f99a9-753a-46b0-b815-773c8571c9fe&target_origin=https%3A%2F%2Ftapkaarten.
+winkelwagen/desktop 403 https://shop.app/pay/hop?analytics_trace_id=c49530e8-7cfc-47d1-ac3c-42e97b07cc75&target_origin=https%3A%2F%2Ftapkaarten.
+winkelwagen/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=ccc93f88-9743-4854-98db-ee6142fa8893&target_origin=https%3A%2F%2Ftapkaarten.
+verzending/desktop 403 https://shop.app/pay/hop?analytics_trace_id=0894050a-d21a-4d7a-b503-ab0aae8cefc6&target_origin=https%3A%2F%2Ftapkaarten.
+verzending/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=259bc7c8-8dc8-4213-a8c1-c7003748411c&target_origin=https%3A%2F%2Ftapkaarten.
+contact/desktop 403 https://shop.app/pay/hop?analytics_trace_id=8723d3ca-86f2-49d5-aef7-bdd0f98a516c&target_origin=https%3A%2F%2Ftapkaarten.
+contact/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=d692d712-ec7b-4361-8677-c43b1516e220&target_origin=https%3A%2F%2Ftapkaarten.

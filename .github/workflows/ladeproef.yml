@@ -84,6 +84,36 @@ jobs:
           try {
             await p.goto(BASE + '/products/tapkaarten-google-review-standaard' + PV, { waitUntil: 'domcontentloaded', timeout: 60000 });
             await p.waitForTimeout(3000);
+
+            // Eerst kijken wat de winkelwagen-API überhaupt teruggeeft. Twee
+            // proeven op rij kregen HTML in plaats van JSON; zonder te weten
+            // wát voor pagina dat is, is repareren gokken.
+            const diagnose = await p.evaluate(async () => {
+              const uit = [];
+              for (const url of ['/cart.js', '/cart/update.js']) {
+                try {
+                  const r = await fetch(url, url === '/cart.js' ? undefined : {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ updates: {} }),
+                  });
+                  const t = await r.text();
+                  uit.push({
+                    url,
+                    status: r.status,
+                    type: r.headers.get('content-type'),
+                    begin: t.slice(0, 220).replace(/\s+/g, ' '),
+                  });
+                } catch (e) { uit.push({ url, fout: String(e).slice(0, 120) }); }
+              }
+              return uit;
+            });
+            log.push('== wat geeft de winkelwagen-API terug?');
+            diagnose.forEach((d) => {
+              log.push(`   ${d.url}: status=${d.status} type=${d.type}`);
+              log.push(`      ${d.begin || d.fout}`);
+            });
+            log.push('');
             await p.evaluate(() => {
               document.querySelectorAll('#preview-bar-iframe, #shopify-pc__banner').forEach((el) => el.remove());
             });
@@ -156,4 +186,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add preview/ladeproef.txt preview/lade-*.png || true
           git commit -m "Uitkomst van de ladeproef" || echo "niets gewijzigd"
-          git push || true
+          for poging in 1 2 3 4; do
+            git pull --rebase origin claude/3d-product-animations-btyc7y && git push && break
+            sleep $((poging * 5))
+          done

@@ -1,0 +1,321 @@
+name: Volledige controle van de webshop
+
+# Eén brede ronde: hero op vier schermmaten, het koppelformulier, elke pagina
+# op fouten en tegenstrijdigheden, en het complete bestelproces.
+on:
+  workflow_dispatch:
+  push:
+    branches: [claude/3d-product-animations-btyc7y]
+    paths: ['.github/workflows/grotecheck.yml', 'preview/groot-trigger.txt']
+
+permissions:
+  contents: write
+
+jobs:
+  controle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: claude/3d-product-animations-btyc7y
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Playwright installeren
+        run: npm i -D playwright && npx playwright install --with-deps chromium
+
+      - name: Nalopen
+        run: |
+          mkdir -p preview
+          cat > groot.mjs <<'JS'
+          import { chromium } from 'playwright';
+          import fs from 'fs';
+
+          const BASE = 'https://ikep5e-3q.myshopify.com';
+          const PV = '?preview_theme_id=196665213305';
+          const VARIANT = 64057218662777;
+          const log = [];
+          const fouten = [];
+          const b = await chromium.launch();
+
+          const schoon = (p) => p.evaluate(() => {
+            document.querySelectorAll('#preview-bar-iframe, #shopify-pc__banner, .shopify-pc__banner').forEach((el) => el.remove());
+          });
+
+          const nieuw = async (w, h, mobiel = false) =>
+            b.newContext({ viewport: { width: w, height: h }, isMobile: mobiel, hasTouch: mobiel, locale: 'nl-NL' });
+
+          // ---------- 1. hero op vier maten ----------
+          log.push('== hero: staat de kop midden of boven?');
+          for (const [naam, w, h, mob] of [
+            ['telefoon', 390, 844, true],
+            ['tablet', 820, 1180, false],
+            ['laptop', 1440, 900, false],
+            ['groot', 1920, 1200, false],
+          ]) {
+            const ctx = await nieuw(w, h, mob);
+            const p = await ctx.newPage();
+            p.on('pageerror', (e) => fouten.push(`hero-${naam}: JS ${e.message.slice(0, 110)}`));
+            await p.goto(BASE + '/' + PV, { waitUntil: 'domcontentloaded', timeout: 60000 });
+            await p.waitForTimeout(3000);
+            await schoon(p);
+
+            const m = await p.evaluate(() => {
+              const hero = document.querySelector('.hero');
+              const inner = document.querySelector('.hero .inner');
+              const h1 = document.querySelector('.hero h1');
+              const shots = document.querySelector('.hero .shots');
+              const knop = document.querySelector('.hero .buy');
+              if (!hero || !h1) return null;
+              const hb = hero.getBoundingClientRect();
+              const tb = h1.getBoundingClientRect();
+              const sb = shots ? shots.getBoundingClientRect() : null;
+              const kb = knop ? knop.getBoundingClientRect() : null;
+              return {
+                heroHoog: Math.round(hb.height),
+                ruimteBoven: Math.round(tb.top - hb.top),
+                ruimteOnder: sb ? Math.round(sb.top - tb.bottom) : null,
+                knopOnder: kb ? Math.round(kb.bottom) : null,
+                fotoBoven: sb ? Math.round(sb.top) : null,
+                fotoOnder: sb ? Math.round(sb.bottom) : null,
+                flex: inner ? getComputedStyle(inner).display : '',
+                overloop: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+              };
+            });
+            if (!m) { log.push(`   ${naam}: hero niet gevonden`); fouten.push(`hero-${naam} ontbreekt`); }
+            else {
+              const gecentreerd = m.flex === 'flex';
+              log.push(
+                `   ${naam} ${w}x${h}: ${gecentreerd ? 'GECENTREERD' : 'bovenin'} — ruimte boven de kop ${m.ruimteBoven}px, ` +
+                `tot de foto ${m.ruimteOnder}px, hero ${m.heroHoog}px hoog, knop eindigt op ${m.knopOnder}px`
+              );
+              if (m.overloop > 2) { log.push(`   !! ${naam}: horizontale overloop van ${m.overloop}px`); fouten.push(`${naam}: overloop`); }
+              if (m.knopOnder !== null && m.fotoBoven !== null && m.knopOnder > m.fotoBoven + 4) {
+                log.push('   !! knop valt over de foto heen'); fouten.push(`${naam}: knop over foto`);
+              }
+              if (gecentreerd && m.ruimteBoven < 40) { log.push('   !! kop plakt tegen de bovenkant'); fouten.push(`${naam}: kop te hoog`); }
+            }
+            await p.screenshot({ path: `preview/hero-${naam}.png`, clip: { x: 0, y: 0, width: w, height: Math.min(h, 1200) } });
+            await ctx.close();
+          }
+
+          // ---------- 2. koppelformulier ----------
+          {
+            log.push('\n== koppelformulier');
+            const ctx = await nieuw(1440, 1100);
+            const p = await ctx.newPage();
+            p.on('pageerror', (e) => fouten.push(`koppelen: JS ${e.message.slice(0, 110)}`));
+            const r = await p.goto(BASE + '/pages/koppelen' + PV, { waitUntil: 'domcontentloaded', timeout: 60000 });
+            await p.waitForTimeout(2500);
+            await schoon(p);
+            log.push(`   status ${r ? r.status() : 'FOUT'}`);
+
+            const f = await p.evaluate(() => {
+              const form = document.querySelector('form[action*="/contact"]');
+              if (!form) return null;
+              const velden = [...form.querySelectorAll('input,textarea')]
+                .map((el) => el.name)
+                .filter((n) => n && n !== 'form_type' && n !== 'utf8');
+              const pdf = [...document.querySelectorAll('a')].find((a) => (a.href || '').includes('.pdf'));
+              return {
+                actie: form.getAttribute('action'),
+                velden,
+                verplicht: [...form.querySelectorAll('[required]')].map((el) => el.name),
+                knop: form.querySelector('button[type=submit]')?.textContent.trim(),
+                pdf: pdf ? pdf.href : null,
+              };
+            });
+            if (!f) { log.push('   !! formulier niet gevonden'); fouten.push('koppelformulier ontbreekt'); }
+            else {
+              log.push(`   actie: ${f.actie}`);
+              log.push(`   velden: ${f.velden.join(', ')}`);
+              log.push(`   verplicht: ${f.verplicht.join(', ')}`);
+              log.push(`   knop: ${f.knop}   pdf: ${f.pdf ? 'aanwezig' : 'ONTBREEKT'}`);
+              if (!f.pdf) fouten.push('pdf-link ontbreekt op de koppelpagina');
+              if (f.pdf) {
+                const pr = await p.request.get(f.pdf).catch(() => null);
+                log.push(`   pdf bereikbaar: ${pr ? pr.status() : 'FOUT'} (${pr ? pr.headers()['content-type'] : '-'})`);
+                if (!pr || pr.status() !== 200) fouten.push('pdf niet bereikbaar');
+              }
+            }
+            await p.screenshot({ path: 'preview/koppelen.png', fullPage: true });
+            await ctx.close();
+          }
+
+          // ---------- 3. alle pagina's nalopen ----------
+          const PAGES = [
+            ['home', '/'],
+            ['collectie', '/collections/alle-tapkaarten'],
+            ['google-wit', '/products/tapkaarten-google-review-standaard'],
+            ['google-zwart', '/products/tapkaarten-google-review-standaard-zwart'],
+            ['instagram', '/products/tapkaarten-instagram-standaard'],
+            ['facebook', '/products/tapkaarten-facebook-standaard'],
+            ['sticker', '/products/tapkaarten-google-review-sticker'],
+            ['winkelwagen', '/cart'],
+            ['koppelen', '/pages/koppelen'],
+            ['verzending', '/pages/verzending'],
+            ['retour', '/pages/retourbeleid'],
+            ['voorwaarden', '/pages/algemene-voorwaarden'],
+            ['vragen', '/pages/veelgestelde-vragen'],
+            ['over', '/pages/over-ons'],
+            ['contact', '/pages/contact'],
+            ['privacy', '/policies/privacy-policy'],
+            ['404', '/pages/bestaat-niet-abc'],
+          ];
+
+          const VERBODEN = [
+            ['oude prijs 39,95', /€\s*39,95/],
+            ['oude prijs 59,95', /€\s*59,95/],
+            ['oude prijs 24,95', /€\s*24,95/],
+            ['oude drempel 55', /vanaf\s*€\s*55/i],
+            ['inclusief btw', /inclusief\s*(21%\s*)?btw|incl\.\s*btw|belastingen inbegrepen/i],
+            ['oningevuld veld', /\[VUL IN\]/],
+            ['Engelse restanten', /\bAdd to cart\b|\bSold out\b|Shop now|5 YEARS OF LOVE|Liquid error/],
+            ['plaatshouder', /lorem ipsum|voorbeeldtekst|TODO/i],
+            ['dood linkveld', /Link nu al doorgeven/i],
+          ];
+
+          log.push('\n== pagina voor pagina');
+          for (const [naam, pad] of PAGES) {
+            const ctx = await nieuw(1440, 900);
+            const p = await ctx.newPage();
+            p.on('pageerror', (e) => fouten.push(`${naam}: JS ${e.message.slice(0, 110)}`));
+            p.on('response', (r) => {
+              const u = r.url();
+              if (r.status() >= 400 && !u.includes('shop.app') && !u.includes('shopifycloud') && !u.includes('bestaat-niet')) {
+                fouten.push(`${naam}: ${r.status()} ${u.slice(0, 100)}`);
+              }
+            });
+
+            const resp = await p.goto(BASE + pad + PV, { waitUntil: 'domcontentloaded', timeout: 60000 }).catch(() => null);
+            await p.waitForTimeout(2200);
+            const status = resp ? resp.status() : 'FOUT';
+            await schoon(p);
+
+            const bev = await p.evaluate(() => {
+              const hoofd = document.body.innerText.replace(/\s+/g, ' ');
+              const kapot = [...document.querySelectorAll('img')]
+                .filter((i) => i.complete && i.naturalWidth === 0)
+                .map((i) => (i.getAttribute('src') || '').slice(-46));
+              const leeg = [...document.querySelectorAll('a')]
+                .filter((a) => { const h = a.getAttribute('href'); return h === '' || h === '#' || h === null; }).length;
+              return {
+                tekst: hoofd,
+                titel: document.title,
+                kapot,
+                leeg,
+                overloop: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+                h1: document.querySelectorAll('h1').length,
+              };
+            });
+
+            log.push(`\n   -- ${naam} (${pad}) status=${status} h1=${bev.h1}`);
+            log.push(`      titel: ${bev.titel}`);
+            for (const [label, regex] of VERBODEN) {
+              const m = bev.tekst.match(regex);
+              if (m) {
+                const i = bev.tekst.indexOf(m[0]);
+                log.push(`      !! ${label}: "...${bev.tekst.slice(Math.max(0, i - 55), i + 65)}..."`);
+                fouten.push(`${naam}: ${label}`);
+              }
+            }
+            if (bev.kapot.length) { log.push(`      !! kapotte afbeeldingen: ${bev.kapot.join(', ')}`); fouten.push(`${naam}: kapotte afbeelding`); }
+            if (bev.overloop > 2) { log.push(`      !! horizontale overloop ${bev.overloop}px`); fouten.push(`${naam}: overloop`); }
+            if (bev.leeg) log.push(`      links zonder doel: ${bev.leeg}`);
+            if (naam !== '404' && bev.h1 !== 1) log.push(`      let op: ${bev.h1} h1-koppen`);
+            await ctx.close();
+          }
+
+          // ---------- 4. mobiel: overloop en menu ----------
+          log.push('\n== mobiel (390px)');
+          for (const [naam, pad] of [['home', '/'], ['product', '/products/tapkaarten-google-review-standaard'], ['koppelen', '/pages/koppelen']]) {
+            const ctx = await nieuw(390, 844, true);
+            const p = await ctx.newPage();
+            await p.goto(BASE + pad + PV, { waitUntil: 'domcontentloaded', timeout: 60000 });
+            await p.waitForTimeout(2500);
+            await schoon(p);
+            const o = await p.evaluate(() => {
+              const breed = [...document.querySelectorAll('body *')]
+                .filter((el) => el.getBoundingClientRect().right > window.innerWidth + 2)
+                .slice(0, 3)
+                .map((el) => (el.className || el.tagName).toString().slice(0, 40));
+              return { overloop: document.documentElement.scrollWidth - document.documentElement.clientWidth, breed };
+            });
+            log.push(`   ${naam}: overloop ${o.overloop}px ${o.breed.length ? '— ' + o.breed.join(' | ') : ''}`);
+            if (o.overloop > 2) fouten.push(`mobiel ${naam}: overloop ${o.overloop}px`);
+            await p.screenshot({ path: `preview/mob-${naam}.png`, fullPage: true });
+            await ctx.close();
+          }
+
+          // ---------- 5. bestelproces ----------
+          log.push('\n== bestelproces');
+          {
+            const ctx = await nieuw(1440, 1000);
+            const p = await ctx.newPage();
+            p.on('pageerror', (e) => fouten.push(`bestellen: JS ${e.message.slice(0, 110)}`));
+            await p.goto(BASE + '/products/tapkaarten-google-review-standaard' + PV, { waitUntil: 'domcontentloaded', timeout: 60000 });
+            await p.waitForTimeout(2500);
+            await schoon(p);
+
+            await p.evaluate(() => fetch('/cart/clear.js', { method: 'POST' }));
+            await p.click('[data-add-to-cart]').catch(() => {});
+            await p.waitForTimeout(2500);
+            const na = await p.evaluate(() => fetch('/cart.js').then((r) => r.json()));
+            log.push(`   toevoegen vanaf de productpagina: ${na.item_count} stuk(s), ${(na.total_price / 100).toFixed(2)}`);
+            if (na.item_count < 1) fouten.push('toevoegen aan winkelwagen mislukt');
+
+            const laOpen = await p.evaluate(() => document.querySelector('[data-cart-drawer]')?.classList.contains('is-open'));
+            log.push(`   winkelwagenlade schuift open: ${laOpen}`);
+            if (!laOpen) fouten.push('winkelwagenlade opent niet na toevoegen');
+
+            const belofte = await p.evaluate(() => {
+              const el = document.querySelector('.cart-drawer__footer .tk3-cartlink-ok');
+              const knop = document.querySelector('.cart-drawer__checkout-button');
+              return { tekst: el ? el.innerText.trim().slice(0, 90) : null, knop: knop ? Math.round(knop.getBoundingClientRect().bottom) : null };
+            });
+            log.push(`   regel in de lade: ${belofte.tekst || 'ONTBREEKT'}`);
+            log.push(`   afrekenknop eindigt op ${belofte.knop}px van 1000`);
+            if (!belofte.tekst) fouten.push('koppelregel ontbreekt in de lade');
+            if (belofte.knop && belofte.knop > 1000) fouten.push('afrekenknop valt buiten beeld in de lade');
+
+            for (const n of [2, 3, 4]) {
+              await p.evaluate((a) => fetch('/cart/update.js', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ updates: { [a.id]: a.n } }),
+              }), { id: VARIANT, n });
+              await p.waitForTimeout(1000);
+              const c = await p.evaluate(() => fetch('/cart.js').then((r) => r.json()));
+              const bruto = 3495 * n;
+              const pct = { 2: 10, 3: 15, 4: 20 }[n];
+              const verwacht = bruto - Math.floor(3495 * (pct / 100)) * n;
+              const ok = c.total_price === verwacht;
+              log.push(`   ${n} stuks: ${(c.total_price / 100).toFixed(2)} (verwacht ${(verwacht / 100).toFixed(2)}) ${ok ? 'ok' : '!! WIJKT AF'}`);
+              if (!ok) fouten.push(`staffel bij ${n} stuks klopt niet`);
+            }
+
+            const kassa = await p.request.get(BASE + '/checkout', { maxRedirects: 5 }).catch(() => null);
+            log.push(`   /checkout bereikbaar: ${kassa ? kassa.status() : 'FOUT'}`);
+
+            await p.evaluate(() => fetch('/cart/clear.js', { method: 'POST' })).catch(() => {});
+            await ctx.close();
+          }
+
+          await b.close();
+          const kop = fouten.length
+            ? `GEVONDEN: ${[...new Set(fouten)].length} punten\n` + [...new Set(fouten)].map((f) => ' - ' + f).join('\n')
+            : 'GEEN AFWIJKINGEN GEVONDEN';
+          fs.writeFileSync('preview/grotecheck.txt', kop + '\n\n' + log.join('\n') + '\n');
+          console.log(kop);
+          JS
+          node groot.mjs
+
+      - name: Terugcommitten
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add preview/grotecheck.txt preview/hero-*.png preview/koppelen.png preview/mob-*.png || true
+          git commit -m "Uitkomst van de volledige controle" || echo "niets gewijzigd"
+          git push || true

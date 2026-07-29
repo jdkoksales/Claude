@@ -1,0 +1,292 @@
+name: Bestelwaarde-ingrepen nakijken
+
+# Meet wat er op de gemiddelde bestelwaarde is gebouwd: de pakketten, de
+# verzendbalk en de bijverkoop in de lade, de staffel per stuk en de
+# offertepagina.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: aovcheck
+  cancel-in-progress: false
+
+jobs:
+  controle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: claude/3d-product-animations-btyc7y
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Playwright installeren
+        run: npm i -D playwright && npx playwright install --with-deps chromium
+
+      - name: Nakijken
+        run: |
+          mkdir -p preview
+          cat > aov.mjs <<'JS'
+          import { chromium } from 'playwright';
+          import fs from 'fs';
+
+          const BASE = 'https://ikep5e-3q.myshopify.com';
+          const PV = '?preview_theme_id=196665213305';
+          const KAART = 64057218662777;   // Google Review-standaard wit
+          const log = [];
+          const fouten = [];
+          const b = await chromium.launch();
+
+          const schoon = (p) => p.evaluate(() => {
+            document.querySelectorAll('#preview-bar-iframe, #shopify-pc__banner, .shopify-pc__banner').forEach((el) => el.remove());
+          });
+
+          const winkelwagen = async (p, url, opties) => {
+            for (let poging = 0; poging < 6; poging++) {
+              const uit = await p.evaluate(async (a) => {
+                const r = await fetch(a.url, a.opties || undefined);
+                const t = await r.text();
+                try { return { ok: r.ok, data: JSON.parse(t) }; }
+                catch { return { ok: false, status: r.status }; }
+              }, { url, opties }).catch(() => null);
+              if (uit && uit.ok) return uit.data;
+              await p.waitForTimeout(1500 * (poging + 1));
+            }
+            return null;
+          };
+
+          const nieuw = (w, h, mob = false) =>
+            b.newContext({ viewport: { width: w, height: h }, isMobile: mob, hasTouch: mob, locale: 'nl-NL' });
+
+          // ---------- 1. pakketten op de homepage ----------
+          try {
+            log.push('== pakketten op de homepage');
+            const ctx = await nieuw(1440, 1000);
+            const p = await ctx.newPage();
+            p.on('pageerror', (e) => fouten.push(`home: JS ${e.message.slice(0, 110)}`));
+            await p.goto(BASE + '/' + PV, { waitUntil: 'domcontentloaded', timeout: 60000 });
+            await p.waitForTimeout(3000);
+            await schoon(p);
+
+            const uit = await p.evaluate(() => {
+              const sec = document.querySelector('.bundels');
+              if (!sec) return null;
+              const tegels = [...sec.querySelectorAll('.bdl')].map((el) => ({
+                titel: el.querySelector('h3')?.textContent.trim(),
+                wat: el.querySelector('.bdl-wat')?.textContent.trim(),
+                oud: el.querySelector('.bdl-prijs s')?.textContent.trim() || null,
+                nieuw: el.querySelector('.bdl-prijs b')?.textContent.trim(),
+                bespaar: el.querySelector('.bdl-bespaar')?.textContent.trim() || null,
+                verzend: el.querySelector('.bdl-verzend')?.textContent.trim() || null,
+                lint: el.querySelector('.bdl-lint')?.textContent.trim() || null,
+                foto: !!el.querySelector('.bdl-foto img'),
+                kapot: [...el.querySelectorAll('img')].some((i) => i.complete && i.naturalWidth === 0),
+                href: el.getAttribute('href'),
+              }));
+              return { aantal: tegels.length, tegels };
+            });
+            if (!uit) { log.push('   !! sectie niet gevonden'); fouten.push('pakkettensectie ontbreekt op de homepage'); }
+            else {
+              log.push(`   ${uit.aantal} tegels`);
+              uit.tegels.forEach((t) => {
+                log.push(`   - ${t.titel} | ${t.wat}`);
+                log.push(`     ${t.oud ? t.oud + ' → ' : ''}${t.nieuw}   ${t.bespaar || ''}   ${t.verzend || ''}   ${t.lint || ''}`);
+                log.push(`     foto: ${t.foto ? (t.kapot ? 'KAPOT' : 'ok') : 'ONTBREEKT'}   link: ${t.href}`);
+                if (!t.foto || t.kapot) fouten.push(`pakketfoto mist of is kapot: ${t.titel}`);
+                if (!t.bespaar) fouten.push(`geen bespaarbedrag bij ${t.titel}`);
+              });
+              if (uit.aantal !== 3) fouten.push(`${uit.aantal} pakkettegels in plaats van 3`);
+            }
+            await p.evaluate(() => document.querySelector('.bundels')?.scrollIntoView());
+            await p.waitForTimeout(900);
+            await p.screenshot({ path: 'preview/aov-pakketten.png' });
+            await ctx.close();
+          } catch (e) { fouten.push('pakketten: ' + e.message.slice(0, 90)); }
+
+          // ---------- 2. de drie pakketpagina's ----------
+          for (const handle of ['tapkaarten-startpakket', 'tapkaarten-balie-compleet', 'tapkaarten-meerdere-plekken']) {
+            const ctx = await nieuw(1440, 1000);
+            const p = await ctx.newPage();
+            p.on('pageerror', (e) => fouten.push(`${handle}: JS ${e.message.slice(0, 100)}`));
+            const r = await p.goto(BASE + '/products/' + handle + PV, { waitUntil: 'domcontentloaded', timeout: 60000 }).catch(() => null);
+            await p.waitForTimeout(2500);
+            await schoon(p);
+            const prijs = await p.evaluate(() => {
+              const t = document.body.innerText.replace(/\s+/g, ' ');
+              return {
+                titel: document.title,
+                prijzen: [...new Set(t.match(/€\s?[\d.]+,\d{2}/g) || [])].slice(0, 6),
+                staffel: !!document.querySelector('[data-tk3-staffel]'),
+                kopen: !!document.querySelector('[data-add-to-cart]'),
+              };
+            });
+            log.push(`\n== ${handle} status=${r ? r.status() : 'FOUT'}`);
+            log.push(`   ${prijs.titel}`);
+            log.push(`   prijzen: ${prijs.prijzen.join('  ')}`);
+            log.push(`   staffelblok: ${prijs.staffel}   koopknop: ${prijs.kopen}`);
+            if (!r || r.status() !== 200) fouten.push(`${handle} geeft geen 200`);
+            if (!prijs.kopen) fouten.push(`${handle} heeft geen koopknop`);
+            await ctx.close();
+          }
+
+          // ---------- 3. staffel per stuk ----------
+          try {
+            log.push('\n== staffel op de productpagina');
+            const ctx = await nieuw(1440, 1000);
+            const p = await ctx.newPage();
+            await p.goto(BASE + '/products/tapkaarten-google-review-standaard' + PV, { waitUntil: 'domcontentloaded', timeout: 60000 });
+            await p.waitForTimeout(2500);
+            await schoon(p);
+            const treden = await p.evaluate(() =>
+              [...document.querySelectorAll('[data-tk3-trede]')].map((el) => ({
+                aantal: el.querySelector('.tk3-trede-aantal')?.textContent.trim(),
+                stuk: el.querySelector('.tk3-trede-stuk')?.textContent.trim(),
+                pct: el.querySelector('.tk3-trede-pct')?.textContent.trim(),
+                totaal: el.querySelector('.tk3-trede-prijs')?.textContent.trim(),
+                grootte: parseFloat(getComputedStyle(el.querySelector('.tk3-trede-stuk') || el).fontSize),
+              }))
+            );
+            treden.forEach((t) => log.push(`   ${t.aantal} → ${t.stuk} (${t.pct}) ${t.totaal}  [${t.grootte}px]`));
+            if (treden.length !== 4) fouten.push('staffel toont geen vier treden');
+            if (treden[0] && treden[3] && treden[0].stuk === treden[3].stuk) fouten.push('stuksprijs daalt niet');
+            const offerte = await p.evaluate(() => !!document.querySelector('.tk3-staffel a[href*="offerte"]'));
+            log.push(`   offertelink aanwezig: ${offerte}`);
+            if (!offerte) fouten.push('offertelink ontbreekt bij de staffel');
+            await ctx.close();
+          } catch (e) { fouten.push('staffel: ' + e.message.slice(0, 90)); }
+
+          // ---------- 4. verzendbalk en bijverkoop in de lade ----------
+          try {
+            log.push('\n== winkelwagenlade');
+            const ctx = await nieuw(1440, 1000);
+            const p = await ctx.newPage();
+            p.on('pageerror', (e) => fouten.push(`lade: JS ${e.message.slice(0, 100)}`));
+            await p.goto(BASE + '/products/tapkaarten-google-review-standaard' + PV, { waitUntil: 'domcontentloaded', timeout: 60000 });
+            await p.waitForTimeout(2500);
+            await schoon(p);
+            await winkelwagen(p, '/cart/clear.js', { method: 'POST' });
+
+            for (const n of [1, 2]) {
+              const kar = await winkelwagen(p, '/cart/update.js', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ updates: { [KAART]: n } }),
+              });
+              if (!kar) { log.push(`   ${n} stuks: winkelwagen niet uit te lezen`); fouten.push('winkelwagen niet uit te lezen'); continue; }
+              await p.click('[data-cart-toggle]').catch(() => {});
+              await p.waitForTimeout(2500);
+              const b2 = await p.evaluate(() => {
+                const balk = document.querySelector('[data-tk3-verzendbalk]');
+                const vak = document.querySelector('[data-tk3-bijverkoop]');
+                return {
+                  balkZichtbaar: balk ? !balk.hidden : null,
+                  tekst: balk ? balk.innerText.replace(/\s+/g, ' ').trim() : null,
+                  breedte: balk?.querySelector('[data-tk3-verzendvulling]')?.style.width || null,
+                  gehaald: balk ? balk.classList.contains('is-gehaald') : null,
+                  bijverkoop: vak ? !vak.hidden : null,
+                  bijtekst: vak ? vak.innerText.replace(/\s+/g, ' ').trim().slice(0, 80) : null,
+                };
+              });
+              log.push(`   ${n} stuks (totaal ${(kar.total_price / 100).toFixed(2)}): balk=${b2.balkZichtbaar} "${b2.tekst}" vulling=${b2.breedte} gehaald=${b2.gehaald}`);
+              log.push(`      bijverkoop zichtbaar: ${b2.bijverkoop} — ${b2.bijtekst}`);
+              if (!b2.balkZichtbaar) fouten.push(`verzendbalk niet zichtbaar bij ${n} stuks`);
+              if (n === 2 && b2.gehaald) fouten.push('verzendbalk zegt gehaald bij 62,92 — dat klopt niet');
+              await p.screenshot({ path: `preview/aov-lade-${n}.png` });
+              await p.click('[data-cart-drawer-close]').catch(() => {});
+              await p.waitForTimeout(700);
+            }
+
+            // sticker toevoegen via de knop
+            await p.click('[data-cart-toggle]').catch(() => {});
+            await p.waitForTimeout(2000);
+            const voor = await winkelwagen(p, '/cart.js');
+            await p.click('[data-tk3-bijverkoop-knop]').catch(() => {});
+            await p.waitForTimeout(4000);
+            const na = await winkelwagen(p, '/cart.js');
+            if (voor && na) {
+              log.push(`   sticker toevoegen: ${voor.item_count} → ${na.item_count} stuks, ${(voor.total_price / 100).toFixed(2)} → ${(na.total_price / 100).toFixed(2)}`);
+              if (na.item_count <= voor.item_count) fouten.push('sticker toevoegen werkt niet');
+              const gehaald = na.total_price >= 7000;
+              log.push(`   boven de drempel na toevoegen: ${gehaald}`);
+            } else { fouten.push('winkelwagen niet uit te lezen rond de bijverkoop'); }
+            await p.screenshot({ path: 'preview/aov-lade-sticker.png' });
+
+            await winkelwagen(p, '/cart/clear.js', { method: 'POST' });
+            await ctx.close();
+          } catch (e) { fouten.push('lade: ' + e.message.slice(0, 90)); }
+
+          // ---------- 5. offertepagina en pakkettencollectie ----------
+          for (const [naam, pad] of [['offerte', '/pages/offerte'], ['pakkettencollectie', '/collections/pakketten'], ['collectie', '/collections/alle-tapkaarten']]) {
+            const ctx = await nieuw(1440, 1000);
+            const p = await ctx.newPage();
+            p.on('pageerror', (e) => fouten.push(`${naam}: JS ${e.message.slice(0, 100)}`));
+            const r = await p.goto(BASE + pad + PV, { waitUntil: 'domcontentloaded', timeout: 60000 }).catch(() => null);
+            await p.waitForTimeout(2500);
+            await schoon(p);
+            const info = await p.evaluate(() => ({
+              titel: document.title,
+              formulier: !!document.querySelector('form[action*="/contact"]'),
+              velden: [...document.querySelectorAll('form[action*="/contact"] input, form[action*="/contact"] textarea')]
+                .map((el) => el.name).filter((n) => n && n !== 'form_type' && n !== 'utf8'),
+              pakkettegels: document.querySelectorAll('.bdl').length,
+              producttegels: document.querySelectorAll('.product-tile, .product-card').length,
+              overloop: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+            }));
+            log.push(`\n== ${naam} (${pad}) status=${r ? r.status() : 'FOUT'}`);
+            log.push(`   ${info.titel}`);
+            if (info.formulier) log.push(`   formuliervelden: ${info.velden.join(', ')}`);
+            log.push(`   pakkettegels: ${info.pakkettegels}   producttegels: ${info.producttegels}   overloop: ${info.overloop}px`);
+            if (!r || r.status() !== 200) fouten.push(`${naam} geeft geen 200`);
+            if (naam === 'offerte' && !info.formulier) fouten.push('offerteformulier ontbreekt');
+            if (naam === 'pakkettencollectie' && info.pakkettegels > 0) fouten.push('pakkettenstrook wordt dubbel getoond op de pakkettencollectie');
+            if (naam === 'collectie' && info.pakkettegels !== 3) fouten.push('pakkettenstrook staat niet boven de collectie');
+            if (info.overloop > 2) fouten.push(`${naam}: horizontale overloop ${info.overloop}px`);
+            await p.screenshot({ path: `preview/aov-${naam}.png`, fullPage: naam === 'offerte' });
+            await ctx.close();
+          }
+
+          // ---------- 6. mobiel ----------
+          try {
+            const ctx = await nieuw(390, 844, true);
+            const p = await ctx.newPage();
+            await p.goto(BASE + '/' + PV, { waitUntil: 'domcontentloaded', timeout: 60000 });
+            await p.waitForTimeout(3000);
+            await schoon(p);
+            const o = await p.evaluate(() => {
+              const eerste = document.querySelector('.bdl');
+              return {
+                overloop: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+                eersteTegel: eerste ? eerste.querySelector('h3')?.textContent.trim() : null,
+                uitgelichtBoven: eerste ? eerste.classList.contains('is-uit') : null,
+              };
+            });
+            log.push(`\n== mobiel: overloop ${o.overloop}px, eerste pakkettegel "${o.eersteTegel}" (uitgelicht bovenaan: ${o.uitgelichtBoven})`);
+            if (o.overloop > 2) fouten.push(`mobiel: overloop ${o.overloop}px`);
+            await p.evaluate(() => document.querySelector('.bundels')?.scrollIntoView());
+            await p.waitForTimeout(800);
+            await p.screenshot({ path: 'preview/aov-mobiel.png' });
+            await ctx.close();
+          } catch (e) { fouten.push('mobiel: ' + e.message.slice(0, 90)); }
+
+          await b.close();
+          const kop = fouten.length
+            ? `GEVONDEN: ${[...new Set(fouten)].length} punten\n` + [...new Set(fouten)].map((f) => ' - ' + f).join('\n')
+            : 'GEEN AFWIJKINGEN GEVONDEN';
+          fs.writeFileSync('preview/aovcheck.txt', kop + '\n\n' + log.join('\n') + '\n');
+          console.log(kop);
+          JS
+          node aov.mjs
+
+      - name: Terugcommitten
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add preview/aovcheck.txt preview/aov-*.png || true
+          git commit -m "Uitkomst van de bestelwaarde-controle" || echo "niets gewijzigd"
+          git push || true

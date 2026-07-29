@@ -85,6 +85,8 @@ jobs:
                 calcTekst: calc ? calc.innerText.replace(/\s+/g, ' ').trim() : null,
                 calcLink: calc ? calc.getAttribute('href') : null,
                 calcOnder: calc ? Math.round(r(calc).bottom) : null,
+                fotoOnder: Math.round(r(shots).bottom),
+                venster: window.innerHeight,
                 calcMidden: calc ? Math.round(r(calc).left + r(calc).width / 2) : null,
                 calcBreed: calc ? Math.round(r(calc).width) : null,
                 calcAchtergrond: calc ? getComputedStyle(calc).backgroundColor : null,
@@ -109,6 +111,10 @@ jobs:
               if (m.calcBreed !== null && m.calcBreed > w - 44) fouten.push(`${naam}: tweede knop is ${m.calcBreed}px breed en steekt buiten de zijmarge`);
               if (!m.calcTekst) fouten.push(`${naam}: tweede regel ontbreekt`);
               if (m.calcLink && m.calcLink.indexOf('calculator') === -1) fouten.push(`${naam}: tweede regel wijst niet naar de rekenhulp`);
+              const onderVouw = m.fotoOnder - m.venster;
+              log.push(`   onderkant foto op ${m.fotoOnder}px van ${m.venster}px venster (${onderVouw <= 0 ? 'binnen beeld' : onderVouw + 'px eronder'})`);
+              if (onderVouw > 4) fouten.push(`${naam}: de balie valt ${onderVouw}px onder de vouw`);
+              if (m.kopBoven < 44) fouten.push(`${naam}: kop plakt tegen de header (${m.kopBoven}px)`);
               if (speling < 0) { log.push('   !! TEKST EN FOTO OVERLAPPEN'); fouten.push(`${naam}: overlap van ${-speling}px`); }
               if (m.overloop > 2) fouten.push(`${naam}: horizontale overloop ${m.overloop}px`);
             }

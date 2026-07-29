@@ -134,13 +134,18 @@ footer .brand img{height:29px}
 @media(min-width:901px) and (min-height:700px){
   .hero .inner{display:flex;flex-direction:column;padding-top:0;
     min-height:calc(100vh - 64px);min-height:calc(100svh - 64px)}
-  /* Tekst en foto staan onder elkaar, nooit over elkaar. Op een breed maar
-     laag scherm is de foto bijna net zo hoog als de hero; met overlap valt
-     de knop dan op de balie. De tekst hangt in het midden van wat er
-     bóven de foto overblijft. */
   .hero .inner>.wrap{flex:1 1 auto;display:flex;flex-direction:column;
-    justify-content:center;padding-top:36px;padding-bottom:22px}
-  .hero .inner>.shots{flex:0 0 auto;margin-top:0}
+    justify-content:center;padding-top:34px;padding-bottom:28px}
+  /* De foto ontleende zijn hoogte aan de bréédte van het scherm. Op een breed
+     scherm werd hij daardoor zo hoog dat de tekst tegen de header werd geduwd
+     en de balie onder de vouw viel. Nu is de hoogte een deel van het scherm;
+     de foto wordt van onderaf bijgesneden, dus de balie blijft altijd staan.
+     De bovenrand vervaagt, zodat de snede niet als een lijn zichtbaar wordt. */
+  .hero .inner>.shots{flex:0 0 auto;margin-top:0;overflow:hidden;
+    height:clamp(300px,50svh,640px);
+    -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 90px);
+    mask-image:linear-gradient(to bottom,transparent 0,#000 90px)}
+  .hero .inner>.shots img{width:100%;height:100%;object-fit:cover;object-position:center bottom}
 }
 .hero h1{max-width:720px;margin:0 auto 14px;font-size:clamp(32px,3.4vw,44px)}
 .hero .sub{font-size:clamp(15.5px,1.3vw,18px);color:var(--ink-64);max-width:54ch;margin:0 auto 22px}

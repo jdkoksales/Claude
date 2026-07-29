@@ -17,6 +17,7 @@
 /pages/contact
 /pages/over-ons
 /pages/verzending
-/pages/retourbeleid
+/pages/koppelen
 /pages/algemene-voorwaarden
 /policies/privacy-policy
+/pages/retourbeleid

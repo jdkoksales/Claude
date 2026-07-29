@@ -1,26 +1,33 @@
-GEEN AFWIJKINGEN GEVONDEN
+GEVONDEN: 1 punten
+ - telefoon: tweede knop rekt uit tot 354px
 
-telefoon 390x844: kop 32px, sub 17px, hero 523px hoog
-   kop begint 56px onder de bovenrand; tekst eindigt op 495px, foto begint op 503px
+telefoon 390x844: kop 32px, sub 17px, hero 555px hoog
+   kop begint 56px onder de bovenrand; tekst eindigt op 528px, foto begint op 536px
    speling tussen tekst en foto: 8px
-   tweede regel: Bereken wat TapKaarten jou oplevert. -> #calculator
-tablet 820x1180: kop 32px, sub 17px, hero 573px hoog
-   kop begint 56px onder de bovenrand; tekst eindigt op 404px, foto begint op 412px
+   tweede knop: Bereken wat TapKaarten jou oplevert. -> #calculator
+      breed 354px, achtergrond rgba(26, 26, 26, 0.1), midden op 195px (rij erboven: 195px)
+tablet 820x1180: kop 32px, sub 17px, hero 579px hoog
+   kop begint 56px onder de bovenrand; tekst eindigt op 410px, foto begint op 418px
    speling tussen tekst en foto: 8px
-   tweede regel: Bereken wat TapKaarten jou oplevert. -> #calculator
-laptop-laag 1440x780: kop 44px, sub 18px, hero 809px hoog
-   kop begint 36px onder de bovenrand; tekst eindigt op 422px, foto begint op 444px
+   tweede knop: Bereken wat TapKaarten jou oplevert. -> #calculator
+      breed 372px, achtergrond rgba(26, 26, 26, 0.1), midden op 410px (rij erboven: 410px)
+laptop-laag 1440x780: kop 44px, sub 18px, hero 815px hoog
+   kop begint 36px onder de bovenrand; tekst eindigt op 428px, foto begint op 450px
    speling tussen tekst en foto: 22px
-   tweede regel: Bereken wat TapKaarten jou oplevert. -> #calculator
+   tweede knop: Bereken wat TapKaarten jou oplevert. -> #calculator
+      breed 372px, achtergrond rgba(26, 26, 26, 0.1), midden op 720px (rij erboven: 720px)
 laptop 1440x900: kop 44px, sub 18px, hero 836px hoog
-   kop begint 49px onder de bovenrand; tekst eindigt op 436px, foto begint op 471px
-   speling tussen tekst en foto: 35px
-   tweede regel: Bereken wat TapKaarten jou oplevert. -> #calculator
-breed-laag 1900x880: kop 44px, sub 18px, hero 829px hoog
-   kop begint 36px onder de bovenrand; tekst eindigt op 422px, foto begint op 444px
+   kop begint 46px onder de bovenrand; tekst eindigt op 439px, foto begint op 471px
+   speling tussen tekst en foto: 32px
+   tweede knop: Bereken wat TapKaarten jou oplevert. -> #calculator
+      breed 372px, achtergrond rgba(26, 26, 26, 0.1), midden op 720px (rij erboven: 720px)
+breed-laag 1900x880: kop 44px, sub 18px, hero 835px hoog
+   kop begint 36px onder de bovenrand; tekst eindigt op 428px, foto begint op 450px
    speling tussen tekst en foto: 22px
-   tweede regel: Bereken wat TapKaarten jou oplevert. -> #calculator
+   tweede knop: Bereken wat TapKaarten jou oplevert. -> #calculator
+      breed 372px, achtergrond rgba(26, 26, 26, 0.1), midden op 950px (rij erboven: 950px)
 groot 1920x1200: kop 44px, sub 18px, hero 1136px hoog
-   kop begint 189px onder de bovenrand; tekst eindigt op 576px, foto begint op 751px
-   speling tussen tekst en foto: 175px
-   tweede regel: Bereken wat TapKaarten jou oplevert. -> #calculator
+   kop begint 186px onder de bovenrand; tekst eindigt op 579px, foto begint op 751px
+   speling tussen tekst en foto: 172px
+   tweede knop: Bereken wat TapKaarten jou oplevert. -> #calculator
+      breed 372px, achtergrond rgba(26, 26, 26, 0.1), midden op 960px (rij erboven: 960px)

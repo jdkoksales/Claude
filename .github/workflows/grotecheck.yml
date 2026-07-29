@@ -4,12 +4,14 @@ name: Volledige controle van de webshop
 # op fouten en tegenstrijdigheden, en het complete bestelproces.
 on:
   workflow_dispatch:
-  push:
-    branches: [claude/3d-product-animations-btyc7y]
-    paths: ['.github/workflows/grotecheck.yml', 'preview/groot-trigger.txt']
 
 permissions:
   contents: write
+
+# Twee runs tegelijk op dezelfde winkel leveren 429's op de winkelwagen-API op.
+concurrency:
+  group: grotecheck
+  cancel-in-progress: false
 
 jobs:
   controle:
@@ -43,6 +45,23 @@ jobs:
           const schoon = (p) => p.evaluate(() => {
             document.querySelectorAll('#preview-bar-iframe, #shopify-pc__banner, .shopify-pc__banner').forEach((el) => el.remove());
           });
+
+          // De winkelwagen-API knijpt af bij te veel verzoeken en geeft dan een
+          // HTML-foutpagina terug. Daarom hier opnieuw proberen in plaats van
+          // blind r.json() aanroepen; dat sloopte de vorige ronde.
+          const winkelwagen = async (p, url, opties) => {
+            for (let poging = 0; poging < 5; poging++) {
+              const uit = await p.evaluate(async (a) => {
+                const r = await fetch(a.url, a.opties || undefined);
+                const t = await r.text();
+                try { return { ok: r.ok, data: JSON.parse(t) }; }
+                catch { return { ok: false, status: r.status, ruw: t.slice(0, 60) }; }
+              }, { url, opties }).catch(() => null);
+              if (uit && uit.ok) return uit.data;
+              await p.waitForTimeout(1200 * (poging + 1));
+            }
+            return null;
+          };
 
           const nieuw = async (w, h, mobiel = false) =>
             b.newContext({ viewport: { width: w, height: h }, isMobile: mobiel, hasTouch: mobiel, locale: 'nl-NL' });
@@ -251,7 +270,7 @@ jobs:
 
           // ---------- 5. bestelproces ----------
           log.push('\n== bestelproces');
-          {
+          try {
             const ctx = await nieuw(1440, 1000);
             const p = await ctx.newPage();
             p.on('pageerror', (e) => fouten.push(`bestellen: JS ${e.message.slice(0, 110)}`));
@@ -259,12 +278,15 @@ jobs:
             await p.waitForTimeout(2500);
             await schoon(p);
 
-            await p.evaluate(() => fetch('/cart/clear.js', { method: 'POST' }));
+            await winkelwagen(p, '/cart/clear.js', { method: 'POST' });
             await p.click('[data-add-to-cart]').catch(() => {});
-            await p.waitForTimeout(2500);
-            const na = await p.evaluate(() => fetch('/cart.js').then((r) => r.json()));
-            log.push(`   toevoegen vanaf de productpagina: ${na.item_count} stuk(s), ${(na.total_price / 100).toFixed(2)}`);
-            if (na.item_count < 1) fouten.push('toevoegen aan winkelwagen mislukt');
+            await p.waitForTimeout(3000);
+            const na = await winkelwagen(p, '/cart.js');
+            if (!na) { log.push('   !! winkelwagen niet uit te lezen'); fouten.push('winkelwagen niet uit te lezen'); }
+            else {
+              log.push(`   toevoegen vanaf de productpagina: ${na.item_count} stuk(s), ${(na.total_price / 100).toFixed(2)}`);
+              if (na.item_count < 1) fouten.push('toevoegen aan winkelwagen mislukt');
+            }
 
             const laOpen = await p.evaluate(() => document.querySelector('[data-cart-drawer]')?.classList.contains('is-open'));
             log.push(`   winkelwagenlade schuift open: ${laOpen}`);
@@ -281,12 +303,12 @@ jobs:
             if (belofte.knop && belofte.knop > 1000) fouten.push('afrekenknop valt buiten beeld in de lade');
 
             for (const n of [2, 3, 4]) {
-              await p.evaluate((a) => fetch('/cart/update.js', {
-                method: 'POST', headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ updates: { [a.id]: a.n } }),
-              }), { id: VARIANT, n });
-              await p.waitForTimeout(1000);
-              const c = await p.evaluate(() => fetch('/cart.js').then((r) => r.json()));
+              const c = await winkelwagen(p, '/cart/update.js', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ updates: { [VARIANT]: n } }),
+              });
+              if (!c) { log.push(`   ${n} stuks: niet uit te lezen`); fouten.push(`staffel bij ${n} stuks niet te meten`); continue; }
               const bruto = 3495 * n;
               const pct = { 2: 10, 3: 15, 4: 20 }[n];
               const verwacht = bruto - Math.floor(3495 * (pct / 100)) * n;
@@ -298,8 +320,11 @@ jobs:
             const kassa = await p.request.get(BASE + '/checkout', { maxRedirects: 5 }).catch(() => null);
             log.push(`   /checkout bereikbaar: ${kassa ? kassa.status() : 'FOUT'}`);
 
-            await p.evaluate(() => fetch('/cart/clear.js', { method: 'POST' })).catch(() => {});
+            await winkelwagen(p, '/cart/clear.js', { method: 'POST' });
             await ctx.close();
+          } catch (e) {
+            log.push('   !! bestelproces afgebroken: ' + String(e.message).split('\n')[0].slice(0, 140));
+            fouten.push('bestelproef afgebroken');
           }
 
           await b.close();

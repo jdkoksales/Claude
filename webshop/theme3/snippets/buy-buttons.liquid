@@ -5,7 +5,19 @@
     Staffelkorting. De percentages hieronder moeten gelijk lopen met de drie
     automatische kortingen in Shopify; die doen het echte rekenwerk in de
     winkelwagen. Klikken op een trede vult het aantal alvast in.
+
+    De automatische kortingen hangen aan de collectie hieronder. Pakketten
+    zitten daar bewust niet in — hun prijs bevat de korting al. Op zo'n pagina
+    zou deze strook een korting beloven die de kassa niet geeft, dus daar
+    tonen we hem niet.
   {%- endcomment -%}
+  {%- assign staffel_collectie = 'alle-tapkaarten' -%}
+  {%- assign heeft_staffel = false -%}
+  {%- for c in product.collections -%}
+    {%- if c.handle == staffel_collectie -%}{%- assign heeft_staffel = true -%}{%- endif -%}
+  {%- endfor -%}
+
+  {%- if heeft_staffel -%}
   {%- assign eenheid = current_variant.price -%}
   <div class="tk3-staffel" data-tk3-staffel>
     <div class="tk3-staffel-kop">Meer kaarten, meer korting</div>
@@ -45,6 +57,16 @@
     </div>
     <small>Wordt automatisch verrekend in de winkelwagen — je hoeft geen code in te vullen. Geldt over alle TapKaarten samen, ook als je verschillende soorten kiest. <a href="/pages/offerte">Meer dan tien kaarten nodig?</a></small>
   </div>
+  {%- else -%}
+    {%- comment -%}
+      Een pakket: de korting zit al in de prijs. Hier wijzen we alleen nog de
+      weg naar een prijs op maat voor grotere aantallen.
+    {%- endcomment -%}
+    <div class="tk3-pakketregel">
+      <b>De pakketkorting zit al in deze prijs.</b>
+      Meer nodig, of meerdere vestigingen? <a href="/pages/offerte">Vraag een prijs op maat</a>.
+    </div>
+  {%- endif -%}
 
   {%- comment -%}
     Hier stond eerst een invulveld voor de link. Dat is eruit: het koppelen

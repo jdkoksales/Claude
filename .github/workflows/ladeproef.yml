@@ -1,0 +1,159 @@
+name: Winkelwagenlade doormeten
+
+# Alleen de lade, en met rust aan de winkelwagen-API: die knijpt af zodra er
+# in korte tijd veel verzoeken komen en geeft dan een HTML-foutpagina terug.
+on:
+  workflow_dispatch:
+  push:
+    branches: [claude/3d-product-animations-btyc7y]
+    paths: ['preview/lade-trigger.txt']
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ladeproef
+  cancel-in-progress: false
+
+jobs:
+  proef:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: claude/3d-product-animations-btyc7y
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Playwright installeren
+        run: npm i -D playwright && npx playwright install --with-deps chromium
+
+      - name: Doormeten
+        run: |
+          mkdir -p preview
+          cat > lade.mjs <<'JS'
+          import { chromium } from 'playwright';
+          import fs from 'fs';
+
+          const BASE = 'https://ikep5e-3q.myshopify.com';
+          const PV = '?preview_theme_id=196665213305';
+          const KAART = 64057218662777;
+          const log = [];
+          const fouten = [];
+
+          const b = await chromium.launch();
+          const ctx = await b.newContext({ viewport: { width: 1440, height: 1000 }, locale: 'nl-NL' });
+          const p = await ctx.newPage();
+          p.on('pageerror', (e) => fouten.push('JS: ' + e.message.slice(0, 110)));
+
+          // Rustig aan: tussen elke winkelwagen-actie vier seconden.
+          const rust = () => p.waitForTimeout(4000);
+
+          const kar = async (url, opties) => {
+            for (let poging = 0; poging < 4; poging++) {
+              const uit = await p.evaluate(async (a) => {
+                const r = await fetch(a.url, a.opties || undefined);
+                const t = await r.text();
+                try { return { ok: r.ok, data: JSON.parse(t) }; }
+                catch { return { ok: false, status: r.status }; }
+              }, { url, opties }).catch(() => null);
+              if (uit && uit.ok) return uit.data;
+              log.push(`   (opnieuw: ${url} gaf ${uit ? uit.status : 'niets'})`);
+              await p.waitForTimeout(6000 * (poging + 1));
+            }
+            return null;
+          };
+
+          const lees = () => p.evaluate(() => {
+            const balk = document.querySelector('[data-tk3-verzendbalk]');
+            const vak = document.querySelector('[data-tk3-bijverkoop]');
+            const knop = document.querySelector('.cart-drawer__checkout-button');
+            return {
+              balk: balk ? !balk.hidden : null,
+              tekst: balk ? balk.innerText.replace(/\s+/g, ' ').trim() : null,
+              vulling: balk?.querySelector('[data-tk3-verzendvulling]')?.style.width || null,
+              gehaald: balk ? balk.classList.contains('is-gehaald') : null,
+              bij: vak ? !vak.hidden : null,
+              bijtekst: vak ? vak.innerText.replace(/\s+/g, ' ').trim().slice(0, 70) : null,
+              knopOnder: knop ? Math.round(knop.getBoundingClientRect().bottom) : null,
+            };
+          });
+
+          try {
+            await p.goto(BASE + '/products/tapkaarten-google-review-standaard' + PV, { waitUntil: 'domcontentloaded', timeout: 60000 });
+            await p.waitForTimeout(3000);
+            await p.evaluate(() => {
+              document.querySelectorAll('#preview-bar-iframe, #shopify-pc__banner').forEach((el) => el.remove());
+            });
+
+            await kar('/cart/clear.js', { method: 'POST' });
+            await rust();
+
+            for (const n of [1, 2]) {
+              const c = await kar('/cart/update.js', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ updates: { [KAART]: n } }),
+              });
+              if (!c) { log.push(`${n} kaart(en): winkelwagen niet uit te lezen`); fouten.push('winkelwagen niet uit te lezen'); continue; }
+              await p.click('[data-cart-toggle]').catch(() => {});
+              await p.waitForTimeout(4000);
+              const m = await lees();
+              log.push(`${n} kaart(en) — totaal ${(c.total_price / 100).toFixed(2)}`);
+              log.push(`   balk zichtbaar: ${m.balk}   "${m.tekst}"`);
+              log.push(`   vulling ${m.vulling}   gehaald: ${m.gehaald}`);
+              log.push(`   bijverkoop: ${m.bij} — ${m.bijtekst}`);
+              log.push(`   afrekenknop eindigt op ${m.knopOnder}px van 1000`);
+              if (!m.balk) fouten.push(`verzendbalk niet zichtbaar bij ${n}`);
+              if (n === 2 && m.gehaald) fouten.push('balk zegt gehaald bij 62,92');
+              if (n === 2 && m.tekst && m.tekst.indexOf('7,08') === -1) fouten.push('balk noemt niet het juiste tekort van 7,08');
+              if (!m.bij) fouten.push(`bijverkoop niet zichtbaar bij ${n}`);
+              await p.screenshot({ path: `preview/lade-${n}.png` });
+              await p.click('[data-cart-drawer-close]').catch(() => {});
+              await rust();
+            }
+
+            // sticker erbij via de knop
+            await p.click('[data-cart-toggle]').catch(() => {});
+            await p.waitForTimeout(3000);
+            const voor = await kar('/cart.js');
+            await p.click('[data-tk3-bijverkoop-knop]').catch(() => {});
+            await p.waitForTimeout(7000);
+            const na = await kar('/cart.js');
+            if (voor && na) {
+              log.push(`\nsticker toevoegen: ${voor.item_count} → ${na.item_count} stuks, ` +
+                `${(voor.total_price / 100).toFixed(2)} → ${(na.total_price / 100).toFixed(2)}`);
+              if (na.item_count <= voor.item_count) fouten.push('sticker toevoegen werkt niet');
+              const m2 = await lees();
+              log.push(`   balk nu: "${m2.tekst}" gehaald=${m2.gehaald}`);
+              log.push(`   bijverkoop nu verborgen: ${m2.bij === false}`);
+              if (na.total_price >= 7000 && !m2.gehaald) fouten.push('balk springt niet naar gehaald boven de 70');
+              await p.screenshot({ path: 'preview/lade-sticker.png' });
+            } else { fouten.push('winkelwagen niet uit te lezen rond de bijverkoop'); }
+
+            await rust();
+            await kar('/cart/clear.js', { method: 'POST' });
+          } catch (e) {
+            log.push('AFGEBROKEN: ' + String(e.message).split('\n')[0].slice(0, 140));
+            fouten.push('proef afgebroken');
+          }
+
+          await b.close();
+          const kop = fouten.length
+            ? `GEVONDEN: ${[...new Set(fouten)].length} punten\n` + [...new Set(fouten)].map((f) => ' - ' + f).join('\n')
+            : 'GEEN AFWIJKINGEN GEVONDEN';
+          fs.writeFileSync('preview/ladeproef.txt', kop + '\n\n' + log.join('\n') + '\n');
+          console.log(kop);
+          JS
+          node lade.mjs
+
+      - name: Terugcommitten
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add preview/ladeproef.txt preview/lade-*.png || true
+          git commit -m "Uitkomst van de ladeproef" || echo "niets gewijzigd"
+          git push || true

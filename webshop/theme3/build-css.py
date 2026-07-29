@@ -100,6 +100,12 @@ TAIL = ("html{scroll-behavior:smooth}\n"
         ".tk3-staffel small{display:block;margin-top:8px;font-size:12.5px;line-height:1.45;color:rgba(0,0,0,.55)}\n"
         ".tk3-staffel small a{text-decoration:underline;text-underline-offset:2px;font-weight:600;color:rgba(0,0,0,.75)}\n"
         "@media(max-width:560px){.tk3-staffel-rij{grid-template-columns:repeat(2,1fr)}}\n"
+        # Op een pakketpagina staat er geen staffel maar deze regel.
+        ".tk3-pakketregel{flex:1 0 100%;width:100%;margin:0 0 16px;padding:12px 14px;"
+        "background:rgba(0,0,0,.04);border-radius:12px;font-size:13.5px;line-height:1.5;"
+        "color:rgba(0,0,0,.62)}\n"
+        ".tk3-pakketregel b{display:block;color:#1A202C}\n"
+        ".tk3-pakketregel a{text-decoration:underline;text-underline-offset:2px;font-weight:600;color:#1A202C}\n"
         # De koopkolom van het thema is op een telefoon smal; het linkveld en
         # de staffel moeten daar niet in de verdrukking komen.
         "@media(max-width:560px){.tk3-staffel-kop{font-size:13.5px}.tk3-trede{padding:11px 6px}.tk3-trede-aantal{font-size:12.5px}.tk3-trede-pct{font-size:14px}.tk3-staffel small{font-size:12px}.tk3-koppelmelding{font-size:13px}}\n")

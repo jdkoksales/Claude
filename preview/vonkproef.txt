@@ -1,0 +1,8 @@
+GEEN AFWIJKINGEN GEVONDEN
+
+google: gekozen=google tekens=⭐ ⭐ animatie=vonk-op, vonk-op
+   staan 7 en 29px boven de knop; tekens elders die draaien: geen
+instagram: gekozen=instagram tekens=❤️ ❤️ animatie=vonk-op, vonk-op
+   staan 11 en 5px boven de knop; tekens elders die draaien: geen
+facebook: gekozen=facebook tekens=👍 👍 animatie=vonk-op, vonk-op
+   staan 11 en 5px boven de knop; tekens elders die draaien: geen

@@ -111,8 +111,12 @@ jobs:
                 `tot de foto ${m.ruimteOnder}px, hero ${m.heroHoog}px hoog, knop eindigt op ${m.knopOnder}px`
               );
               if (m.overloop > 2) { log.push(`   !! ${naam}: horizontale overloop van ${m.overloop}px`); fouten.push(`${naam}: overloop`); }
-              if (m.knopOnder !== null && m.fotoBoven !== null && m.knopOnder > m.fotoBoven + 4) {
-                log.push('   !! knop valt over de foto heen'); fouten.push(`${naam}: knop over foto`);
+              // Tekst en foto liggen bewust over elkaar; alleen de balie
+              // onderin de foto mag de knop niet raken. Die zit in de onderste
+              // veertig procent van de afbeelding.
+              if (m.knopOnder !== null && m.fotoOnder !== null && m.fotoBoven !== null) {
+                const balie = m.fotoBoven + (m.fotoOnder - m.fotoBoven) * 0.6;
+                if (m.knopOnder > balie) { log.push('   !! knop komt tot in de balie'); fouten.push(`${naam}: knop over de balie`); }
               }
               if (gecentreerd && m.ruimteBoven < 40) { log.push('   !! kop plakt tegen de bovenkant'); fouten.push(`${naam}: kop te hoog`); }
             }

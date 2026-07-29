@@ -135,9 +135,9 @@ html,body{overflow-x:clip}
 .tk3 .hero{position:relative;text-align:center;overflow:hidden;
   background:linear-gradient(112deg,#fbfbfc 0%,#fcf6f8 48%,#fbecf0 100%)}
 .tk3 .hero .inner{padding:56px 0 0;position:relative;z-index:2}
-@media(min-width:901px) and (min-height:700px){.tk3 .hero .inner{display:flex;flex-direction:column;padding-top:0;
-    min-height:calc(100vh - 64px);min-height:calc(100svh - 64px)}.tk3 .hero .inner>.wrap{flex:1 1 auto;display:flex;flex-direction:column;
-    justify-content:center;padding-top:48px;padding-bottom:32px}}
+@media(min-width:901px) and (min-height:700px){.tk3 .hero .inner{display:grid;grid-template-columns:1fr;padding-top:0;
+    min-height:calc(100vh - 64px);min-height:calc(100svh - 64px)}.tk3 .hero .inner>.wrap{grid-area:1/1;z-index:2;align-self:center;
+    padding-top:40px;padding-bottom:14%}.tk3 .hero .inner>.shots{grid-area:1/1;z-index:1;align-self:end;margin-top:0}}
 .tk3 .hero h1{max-width:768px;margin:0 auto 16px}
 .tk3 .hero .sub{font-size:var(--fs-lg);color:var(--ink-64);max-width:56ch;margin:0 auto 24px}
 .tk3 .hero .shots{display:grid;width:min(100%,1500px);margin:8px auto 0}

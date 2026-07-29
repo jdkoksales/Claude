@@ -85,6 +85,10 @@ jobs:
                 calcTekst: calc ? calc.innerText.replace(/\s+/g, ' ').trim() : null,
                 calcLink: calc ? calc.getAttribute('href') : null,
                 calcOnder: calc ? Math.round(r(calc).bottom) : null,
+                calcMidden: calc ? Math.round(r(calc).left + r(calc).width / 2) : null,
+                calcBreed: calc ? Math.round(r(calc).width) : null,
+                calcAchtergrond: calc ? getComputedStyle(calc).backgroundColor : null,
+                rijMidden: seg && knop ? Math.round((r(seg).left + r(knop).right) / 2) : null,
                 overloop: document.documentElement.scrollWidth - document.documentElement.clientWidth,
               };
             });
@@ -97,7 +101,12 @@ jobs:
                 `   kop begint ${m.kopBoven}px onder de bovenrand; tekst eindigt op ${m.tekstOnder}px, foto begint op ${m.fotoBoven}px\n` +
                 `   speling tussen tekst en foto: ${speling}px`
               );
-              log.push(`   tweede regel: ${m.calcTekst || 'ONTBREEKT'} -> ${m.calcLink || '-'}`);
+              log.push(`   tweede knop: ${m.calcTekst || 'ONTBREEKT'} -> ${m.calcLink || '-'}`);
+              log.push(`      breed ${m.calcBreed}px, achtergrond ${m.calcAchtergrond}, midden op ${m.calcMidden}px (rij erboven: ${m.rijMidden}px)`);
+              if (m.calcMidden !== null && m.rijMidden !== null && Math.abs(m.calcMidden - m.rijMidden) > 6) {
+                fouten.push(`${naam}: tweede knop staat ${Math.abs(m.calcMidden - m.rijMidden)}px uit het midden`);
+              }
+              if (m.calcBreed !== null && m.calcBreed > w * 0.6) fouten.push(`${naam}: tweede knop rekt uit tot ${m.calcBreed}px`);
               if (!m.calcTekst) fouten.push(`${naam}: tweede regel ontbreekt`);
               if (m.calcLink && m.calcLink.indexOf('calculator') === -1) fouten.push(`${naam}: tweede regel wijst niet naar de rekenhulp`);
               if (speling < 0) { log.push('   !! TEKST EN FOTO OVERLAPPEN'); fouten.push(`${naam}: overlap van ${-speling}px`); }

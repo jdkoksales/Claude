@@ -66,9 +66,14 @@ jobs:
               const knop = document.querySelector('.hero .buy');
               const seg = document.querySelector('.hero .seg');
               const shots = document.querySelector('.hero .shots');
+              const calc = document.querySelector('.hero-calc');
               if (!hero || !h1 || !shots) return null;
               const r = (el) => el.getBoundingClientRect();
-              const onderste = Math.max(knop ? r(knop).bottom : 0, seg ? r(seg).bottom : 0);
+              const onderste = Math.max(
+                knop ? r(knop).bottom : 0,
+                seg ? r(seg).bottom : 0,
+                calc ? r(calc).bottom : 0
+              );
               return {
                 heroHoog: Math.round(r(hero).height),
                 kopBoven: Math.round(r(h1).top - r(hero).top),
@@ -77,6 +82,9 @@ jobs:
                 tekstOnder: Math.round(onderste),
                 fotoBoven: Math.round(r(shots).top),
                 fotoHoog: Math.round(r(shots).height),
+                calcTekst: calc ? calc.innerText.replace(/\s+/g, ' ').trim() : null,
+                calcLink: calc ? calc.getAttribute('href') : null,
+                calcOnder: calc ? Math.round(r(calc).bottom) : null,
                 overloop: document.documentElement.scrollWidth - document.documentElement.clientWidth,
               };
             });
@@ -89,6 +97,9 @@ jobs:
                 `   kop begint ${m.kopBoven}px onder de bovenrand; tekst eindigt op ${m.tekstOnder}px, foto begint op ${m.fotoBoven}px\n` +
                 `   speling tussen tekst en foto: ${speling}px`
               );
+              log.push(`   tweede regel: ${m.calcTekst || 'ONTBREEKT'} -> ${m.calcLink || '-'}`);
+              if (!m.calcTekst) fouten.push(`${naam}: tweede regel ontbreekt`);
+              if (m.calcLink && m.calcLink.indexOf('calculator') === -1) fouten.push(`${naam}: tweede regel wijst niet naar de rekenhulp`);
               if (speling < 0) { log.push('   !! TEKST EN FOTO OVERLAPPEN'); fouten.push(`${naam}: overlap van ${-speling}px`); }
               if (m.overloop > 2) fouten.push(`${naam}: horizontale overloop ${m.overloop}px`);
             }

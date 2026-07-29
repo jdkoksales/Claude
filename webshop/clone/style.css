@@ -190,8 +190,13 @@ footer .brand img{height:29px}
 .hero-calc{align-self:center;margin-left:auto;margin-right:auto;
   background:rgba(26,26,26,.1);border-radius:9999px;padding:11px 20px;
   font-size:var(--fs-sm);font-weight:750;color:var(--ink);
-  display:inline-flex;align-items:center;gap:9px;margin-top:16px;
-  transition:background .18s}
+  display:inline-flex;align-items:center;justify-content:center;gap:9px;margin-top:16px;
+  max-width:100%;text-align:center;transition:background .18s}
+/* Op een telefoon is de regel te lang voor één lijn; laat hem dan afbreken
+   in plaats van buiten de zijmarge te steken. */
+.hero-calc span{min-width:0}
+.hero-calc svg{flex:0 0 auto}
+@media(max-width:480px){.hero-calc{font-size:15px;padding:11px 18px;gap:7px}}
 .hero-calc:hover{background:rgba(26,26,26,.18)}
 .hero-calc svg{opacity:.6;transition:transform .18s,opacity .16s}
 .hero-calc:hover svg{transform:translateY(2px);opacity:.9}

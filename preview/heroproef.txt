@@ -1,20 +1,26 @@
 GEEN AFWIJKINGEN GEVONDEN
 
-telefoon 390x844: kop 32px, sub 17px, hero 487px hoog
-   kop begint 56px onder de bovenrand; tekst eindigt op 459px, foto begint op 467px
+telefoon 390x844: kop 32px, sub 17px, hero 523px hoog
+   kop begint 56px onder de bovenrand; tekst eindigt op 495px, foto begint op 503px
    speling tussen tekst en foto: 8px
-tablet 820x1180: kop 32px, sub 17px, hero 537px hoog
-   kop begint 56px onder de bovenrand; tekst eindigt op 368px, foto begint op 376px
+   tweede regel: Bereken wat TapKaarten jou oplevert. -> #calculator
+tablet 820x1180: kop 32px, sub 17px, hero 573px hoog
+   kop begint 56px onder de bovenrand; tekst eindigt op 404px, foto begint op 412px
    speling tussen tekst en foto: 8px
-laptop-laag 1440x780: kop 44px, sub 18px, hero 751px hoog
-   kop begint 36px onder de bovenrand; tekst eindigt op 364px, foto begint op 386px
+   tweede regel: Bereken wat TapKaarten jou oplevert. -> #calculator
+laptop-laag 1440x780: kop 44px, sub 18px, hero 809px hoog
+   kop begint 36px onder de bovenrand; tekst eindigt op 422px, foto begint op 444px
    speling tussen tekst en foto: 22px
+   tweede regel: Bereken wat TapKaarten jou oplevert. -> #calculator
 laptop 1440x900: kop 44px, sub 18px, hero 836px hoog
-   kop begint 78px onder de bovenrand; tekst eindigt op 407px, foto begint op 471px
-   speling tussen tekst en foto: 64px
-breed-laag 1900x880: kop 44px, sub 18px, hero 816px hoog
-   kop begint 58px onder de bovenrand; tekst eindigt op 387px, foto begint op 431px
-   speling tussen tekst en foto: 44px
+   kop begint 49px onder de bovenrand; tekst eindigt op 436px, foto begint op 471px
+   speling tussen tekst en foto: 35px
+   tweede regel: Bereken wat TapKaarten jou oplevert. -> #calculator
+breed-laag 1900x880: kop 44px, sub 18px, hero 829px hoog
+   kop begint 36px onder de bovenrand; tekst eindigt op 422px, foto begint op 444px
+   speling tussen tekst en foto: 22px
+   tweede regel: Bereken wat TapKaarten jou oplevert. -> #calculator
 groot 1920x1200: kop 44px, sub 18px, hero 1136px hoog
-   kop begint 218px onder de bovenrand; tekst eindigt op 547px, foto begint op 751px
-   speling tussen tekst en foto: 204px
+   kop begint 189px onder de bovenrand; tekst eindigt op 576px, foto begint op 751px
+   speling tussen tekst en foto: 175px
+   tweede regel: Bereken wat TapKaarten jou oplevert. -> #calculator

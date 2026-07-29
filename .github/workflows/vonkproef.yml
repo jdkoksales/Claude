@@ -1,0 +1,111 @@
+name: Tekens boven de platformknoppen nakijken
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [claude/3d-product-animations-btyc7y]
+    paths: ['preview/vonk-trigger.txt']
+
+permissions:
+  contents: write
+
+concurrency:
+  group: vonkproef
+  cancel-in-progress: false
+
+jobs:
+  proef:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: claude/3d-product-animations-btyc7y
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Playwright installeren
+        run: npm i -D playwright && npx playwright install --with-deps chromium
+      - name: Doormeten
+        run: |
+          mkdir -p preview
+          cat > vonk.mjs <<'JS'
+          import { chromium } from 'playwright';
+          import fs from 'fs';
+
+          const BASE = 'https://ikep5e-3q.myshopify.com';
+          const PV = '?preview_theme_id=196665213305';
+          const VERWACHT = { google: '⭐', instagram: '❤️', facebook: '👍' };
+          const log = [];
+          const fouten = [];
+
+          const b = await chromium.launch();
+          const ctx = await b.newContext({ viewport: { width: 1440, height: 900 }, locale: 'nl-NL' });
+          const p = await ctx.newPage();
+          p.on('pageerror', (e) => fouten.push('JS: ' + e.message.slice(0, 110)));
+
+          await p.goto(BASE + '/' + PV, { waitUntil: 'domcontentloaded', timeout: 60000 });
+          await p.waitForTimeout(3000);
+          await p.evaluate(() => {
+            document.querySelectorAll('#preview-bar-iframe, #shopify-pc__banner').forEach((el) => el.remove());
+          });
+
+          for (const plat of ['google', 'instagram', 'facebook']) {
+            await p.click(`.hero [data-plat="${plat}"]`).catch(() => {});
+            await p.waitForTimeout(1400);
+
+            const m = await p.evaluate((plat) => {
+              const knop = document.querySelector(`.hero [data-plat="${plat}"]`);
+              if (!knop) return null;
+              const vonken = [...knop.querySelectorAll('.vonk')];
+              const kb = knop.getBoundingClientRect();
+              const actief = [...document.querySelectorAll('.hero [data-plat]')]
+                .filter((k) => k.getAttribute('aria-selected') === 'true')
+                .map((k) => k.getAttribute('data-plat'));
+              // draaien er ook tekens boven een knop die NIET gekozen is?
+              const elders = [...document.querySelectorAll('.hero [data-plat]')]
+                .filter((k) => k.getAttribute('aria-selected') !== 'true')
+                .filter((k) => [...k.querySelectorAll('.vonk')]
+                  .some((v) => getComputedStyle(v).animationName !== 'none'))
+                .map((k) => k.getAttribute('data-plat'));
+              return {
+                gekozen: actief,
+                tekens: vonken.map((v) => v.textContent.trim()),
+                animatie: vonken.map((v) => getComputedStyle(v).animationName),
+                bovenKnop: vonken.map((v) => Math.round(kb.top - v.getBoundingClientRect().bottom)),
+                elders,
+                aantalVonken: document.querySelectorAll('.hero .vonk').length,
+              };
+            }, plat);
+
+            if (!m) { log.push(`${plat}: knop niet gevonden`); fouten.push(`${plat}: knop ontbreekt`); continue; }
+            log.push(`${plat}: gekozen=${m.gekozen.join(',')} tekens=${m.tekens.join(' ')} animatie=${m.animatie.join(', ')}`);
+            log.push(`   staan ${m.bovenKnop.join(' en ')}px boven de knop; tekens elders die draaien: ${m.elders.length ? m.elders.join(',') : 'geen'}`);
+
+            if (!m.tekens.every((t) => t === VERWACHT[plat])) fouten.push(`${plat}: verkeerd teken (${m.tekens.join(',')})`);
+            if (!m.animatie.every((a) => a === 'vonk-op')) fouten.push(`${plat}: teken beweegt niet`);
+            if (m.elders.length) fouten.push(`${plat}: tekens draaien ook boven ${m.elders.join(',')}`);
+            if (m.bovenKnop.some((v) => v < 0)) fouten.push(`${plat}: teken valt over de knop`);
+            if (m.aantalVonken !== 6) fouten.push(`${m.aantalVonken} tekens in totaal in plaats van 6`);
+
+            await p.screenshot({ path: `preview/vonk-${plat}.png`, clip: { x: 480, y: 180, width: 480, height: 420 } });
+          }
+
+          await b.close();
+          const kop = fouten.length
+            ? `GEVONDEN: ${[...new Set(fouten)].length} punten\n` + [...new Set(fouten)].map((f) => ' - ' + f).join('\n')
+            : 'GEEN AFWIJKINGEN GEVONDEN';
+          fs.writeFileSync('preview/vonkproef.txt', kop + '\n\n' + log.join('\n') + '\n');
+          console.log(kop);
+          JS
+          node vonk.mjs
+      - name: Terugcommitten
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add preview/vonkproef.txt preview/vonk-*.png || true
+          git commit -m "Uitkomst van de vonkproef" || echo "niets gewijzigd"
+          for poging in 1 2 3 4; do
+            git pull --rebase origin claude/3d-product-animations-btyc7y && git push && break
+            sleep $((poging * 5))
+          done

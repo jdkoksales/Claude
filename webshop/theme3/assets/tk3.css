@@ -166,20 +166,29 @@ html,body{overflow-x:clip}
 .tk3 .hero .shots img{grid-area:1/1;width:100%;opacity:0;transition:opacity .3s ease}
 .tk3 .hero .shots img.on{opacity:1}
 @media(prefers-reduced-motion:reduce){.tk3 .hero .shots img{transition:none}}
-.tk3 .hero .hearts{height:26px;position:relative}
-.tk3 .hero .hearts i{position:absolute;left:50%;font-style:normal;font-size:15px;opacity:0;
-  animation:tk3float 3.4s ease-in-out infinite}
-.tk3 .hero .hearts i:nth-child(2){animation-delay:1.7s;margin-left:34px;font-size:12px}
-@keyframes tk3float{0%{opacity:0;transform:translateY(6px) scale(.8)}
-  25%{opacity:1}70%{opacity:.7}100%{opacity:0;transform:translateY(-26px) scale(1)}}
-@media(prefers-reduced-motion:reduce){.tk3 .hero .hearts i{animation:none;opacity:.9}}
+.tk3 .hero .seg button{position:relative}
+.tk3 .hero .vonk{
+  position:absolute;left:50%;bottom:100%;margin-bottom:5px;
+  font-style:normal;font-size:15px;line-height:1;opacity:0;pointer-events:none;
+  transform:translateX(-50%)
+}
+.tk3 .hero .vonk-b{font-size:12px;margin-left:20px}
+.tk3 .hero .seg button[aria-selected="true"] .vonk{animation:vonk-op 3.4s ease-in-out infinite}
+.tk3 .hero .seg button[aria-selected="true"] .vonk-b{animation-delay:1.7s}
+@keyframes vonk-op{
+  0%{opacity:0;transform:translateX(-50%) translateY(6px) scale(.8)}
+  25%{opacity:1}
+  70%{opacity:.7}
+  100%{opacity:0;transform:translateX(-50%) translateY(-26px) scale(1)}
+}
+@media(prefers-reduced-motion:reduce){.tk3 .hero .seg button[aria-selected="true"] .vonk{animation:none;opacity:.85}}
 .tk3 .seg{display:inline-flex;background:rgba(26,26,26,.07);border-radius:9999px;padding:5px;gap:2px}
 .tk3 .seg button{border-radius:9999px;padding:11px 21px;font-size:var(--fs-sm);font-weight:600;
   color:var(--ink-64);display:inline-flex;align-items:center;gap:8px;transition:background .18s,color .18s}
 .tk3 .seg button[aria-selected="true"]{background:#fff;color:#000;box-shadow:0 1px 3px rgba(0,0,0,.1)}
 .tk3 .seg.tabs{border-radius:14px;padding:4px}
 .tk3 .seg.tabs button{border-radius:12.75px;padding:11px 21px}
-.tk3 .hero .controls{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;align-items:center}
+.tk3 .hero .controls{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;align-items:center;margin-top:26px}
 .tk3 .seg[data-tk3-disabled]{opacity:.35;pointer-events:none}
 .tk3 .hero .seg button svg{filter:grayscale(1);opacity:.45;transition:filter .2s,opacity .2s}
 .tk3 .hero .seg button[aria-selected="true"] svg{filter:none;opacity:1}

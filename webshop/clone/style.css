@@ -150,13 +150,27 @@ footer .brand img{height:29px}
 .hero .shots img{grid-area:1/1;width:100%;opacity:0;transition:opacity .3s ease}
 .hero .shots img.on{opacity:1}
 @media(prefers-reduced-motion:reduce){.hero .shots img{transition:none}}
-.hero .hearts{height:26px;position:relative}
-.hero .hearts i{position:absolute;left:50%;font-style:normal;font-size:15px;opacity:0;
-  animation:float 3.4s ease-in-out infinite}
-.hero .hearts i:nth-child(2){animation-delay:1.7s;margin-left:34px;font-size:12px}
-@keyframes float{0%{opacity:0;transform:translateY(6px) scale(.8)}
-  25%{opacity:1}70%{opacity:.7}100%{opacity:0;transform:translateY(-26px) scale(1)}}
-@media(prefers-reduced-motion:reduce){.hero .hearts i{animation:none;opacity:.9}}
+/* Boven de gekozen knop stijgt het teken op dat bij dat platform hoort:
+   sterretjes bij Google, duimpjes bij Facebook, hartjes bij Instagram. Ze
+   hangen in de knop zelf, dus ze verspringen mee zodra je iets anders kiest. */
+.hero .seg button{position:relative}
+.hero .vonk{
+  position:absolute;left:50%;bottom:100%;margin-bottom:5px;
+  font-style:normal;font-size:15px;line-height:1;opacity:0;pointer-events:none;
+  transform:translateX(-50%)
+}
+.hero .vonk-b{font-size:12px;margin-left:20px}
+.hero .seg button[aria-selected="true"] .vonk{animation:vonk-op 3.4s ease-in-out infinite}
+.hero .seg button[aria-selected="true"] .vonk-b{animation-delay:1.7s}
+@keyframes vonk-op{
+  0%{opacity:0;transform:translateX(-50%) translateY(6px) scale(.8)}
+  25%{opacity:1}
+  70%{opacity:.7}
+  100%{opacity:0;transform:translateX(-50%) translateY(-26px) scale(1)}
+}
+@media(prefers-reduced-motion:reduce){
+  .hero .seg button[aria-selected="true"] .vonk{animation:none;opacity:.85}
+}
 
 /* segmented pill controls, radius 12.75px zoals de referentie */
 .seg{display:inline-flex;background:rgba(26,26,26,.07);border-radius:9999px;padding:5px;gap:2px}
@@ -165,7 +179,7 @@ footer .brand img{height:29px}
 .seg button[aria-selected="true"]{background:#fff;color:#000;box-shadow:0 1px 3px rgba(0,0,0,.1)}
 .seg.tabs{border-radius:14px;padding:4px}
 .seg.tabs button{border-radius:12.75px;padding:11px 21px}
-.hero .controls{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;align-items:center}
+.hero .controls{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;align-items:center;margin-top:26px}
 .seg[data-tk3-disabled]{opacity:.35;pointer-events:none}
 /* platformkeuze: het gekozen logo in kleur, de rest grijs */
 .hero .seg button svg{filter:grayscale(1);opacity:.45;transition:filter .2s,opacity .2s}

@@ -132,17 +132,18 @@ footer .brand img{height:29px}
    op een telefoon of een lage laptop zou centreren de foto wegdrukken,
    dus daar blijft de kop gewoon bovenin staan. */
 @media(min-width:901px) and (min-height:700px){
-  .hero .inner{display:grid;grid-template-columns:1fr;padding-top:0;
+  .hero .inner{display:flex;flex-direction:column;padding-top:0;
     min-height:calc(100vh - 64px);min-height:calc(100svh - 64px)}
-  /* Tekst en foto delen één cel. De bovenste helft van de foto is leeg
-     verloop, dus de tekst mag daar overheen liggen; zonder die overlap
-     zakt de foto weg en valt er een gat onder de knop. */
-  .hero .inner>.wrap{grid-area:1/1;z-index:2;align-self:center;
-    padding-top:40px;padding-bottom:14%}
-  .hero .inner>.shots{grid-area:1/1;z-index:1;align-self:end;margin-top:0}
+  /* Tekst en foto staan onder elkaar, nooit over elkaar. Op een breed maar
+     laag scherm is de foto bijna net zo hoog als de hero; met overlap valt
+     de knop dan op de balie. De tekst hangt in het midden van wat er
+     bóven de foto overblijft. */
+  .hero .inner>.wrap{flex:1 1 auto;display:flex;flex-direction:column;
+    justify-content:center;padding-top:36px;padding-bottom:22px}
+  .hero .inner>.shots{flex:0 0 auto;margin-top:0}
 }
-.hero h1{max-width:768px;margin:0 auto 16px}
-.hero .sub{font-size:var(--fs-lg);color:var(--ink-64);max-width:56ch;margin:0 auto 24px}
+.hero h1{max-width:720px;margin:0 auto 14px;font-size:clamp(32px,3.4vw,44px)}
+.hero .sub{font-size:clamp(15.5px,1.3vw,18px);color:var(--ink-64);max-width:54ch;margin:0 auto 22px}
 /* De foto draagt zelf hetzelfde verloop; de mask laat de bovenrand
    naadloos in de sectieachtergrond oplossen. */
 .hero .shots{display:grid;width:min(100%,1500px);margin:8px auto 0}

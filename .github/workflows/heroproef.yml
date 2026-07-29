@@ -1,0 +1,117 @@
+name: Hero doormeten
+
+# Kijkt op zes schermmaten of de kop en de foto elkaar niet raken. De maat
+# 1900x880 komt overeen met een breed maar laag laptopscherm; daar ging het mis.
+on:
+  workflow_dispatch:
+  push:
+    branches: [claude/3d-product-animations-btyc7y]
+    paths: ['preview/hero-trigger.txt']
+
+permissions:
+  contents: write
+
+concurrency:
+  group: heroproef
+  cancel-in-progress: false
+
+jobs:
+  proef:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: claude/3d-product-animations-btyc7y
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Playwright installeren
+        run: npm i -D playwright && npx playwright install --with-deps chromium
+      - name: Doormeten
+        run: |
+          mkdir -p preview
+          cat > hero.mjs <<'JS'
+          import { chromium } from 'playwright';
+          import fs from 'fs';
+
+          const BASE = 'https://ikep5e-3q.myshopify.com';
+          const PV = '?preview_theme_id=196665213305';
+          const log = [];
+          const fouten = [];
+          const b = await chromium.launch();
+
+          const MATEN = [
+            ['telefoon', 390, 844, true],
+            ['tablet', 820, 1180, false],
+            ['laptop-laag', 1440, 780, false],
+            ['laptop', 1440, 900, false],
+            ['breed-laag', 1900, 880, false],
+            ['groot', 1920, 1200, false],
+          ];
+
+          for (const [naam, w, h, mob] of MATEN) {
+            const ctx = await b.newContext({ viewport: { width: w, height: h }, isMobile: mob, hasTouch: mob, locale: 'nl-NL' });
+            const p = await ctx.newPage();
+            p.on('pageerror', (e) => fouten.push(`${naam}: JS ${e.message.slice(0, 100)}`));
+            await p.goto(BASE + '/' + PV, { waitUntil: 'domcontentloaded', timeout: 60000 });
+            await p.waitForTimeout(3000);
+            await p.evaluate(() => {
+              document.querySelectorAll('#preview-bar-iframe, #shopify-pc__banner').forEach((el) => el.remove());
+            });
+
+            const m = await p.evaluate(() => {
+              const hero = document.querySelector('.hero');
+              const h1 = document.querySelector('.hero h1');
+              const sub = document.querySelector('.hero .sub');
+              const knop = document.querySelector('.hero .buy');
+              const seg = document.querySelector('.hero .seg');
+              const shots = document.querySelector('.hero .shots');
+              if (!hero || !h1 || !shots) return null;
+              const r = (el) => el.getBoundingClientRect();
+              const onderste = Math.max(knop ? r(knop).bottom : 0, seg ? r(seg).bottom : 0);
+              return {
+                heroHoog: Math.round(r(hero).height),
+                kopBoven: Math.round(r(h1).top - r(hero).top),
+                kopGrootte: Math.round(parseFloat(getComputedStyle(h1).fontSize)),
+                subGrootte: Math.round(parseFloat(getComputedStyle(sub).fontSize) * 10) / 10,
+                tekstOnder: Math.round(onderste),
+                fotoBoven: Math.round(r(shots).top),
+                fotoHoog: Math.round(r(shots).height),
+                overloop: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+              };
+            });
+
+            if (!m) { log.push(`${naam}: hero niet gevonden`); fouten.push(`${naam}: hero ontbreekt`); }
+            else {
+              const speling = m.fotoBoven - m.tekstOnder;
+              log.push(
+                `${naam} ${w}x${h}: kop ${m.kopGrootte}px, sub ${m.subGrootte}px, hero ${m.heroHoog}px hoog\n` +
+                `   kop begint ${m.kopBoven}px onder de bovenrand; tekst eindigt op ${m.tekstOnder}px, foto begint op ${m.fotoBoven}px\n` +
+                `   speling tussen tekst en foto: ${speling}px`
+              );
+              if (speling < 0) { log.push('   !! TEKST EN FOTO OVERLAPPEN'); fouten.push(`${naam}: overlap van ${-speling}px`); }
+              if (m.overloop > 2) fouten.push(`${naam}: horizontale overloop ${m.overloop}px`);
+            }
+            await p.screenshot({ path: `preview/hero2-${naam}.png`, clip: { x: 0, y: 0, width: w, height: Math.min(h, 1200) } });
+            await ctx.close();
+          }
+
+          await b.close();
+          const kop = fouten.length
+            ? `GEVONDEN: ${[...new Set(fouten)].length} punten\n` + [...new Set(fouten)].map((f) => ' - ' + f).join('\n')
+            : 'GEEN AFWIJKINGEN GEVONDEN';
+          fs.writeFileSync('preview/heroproef.txt', kop + '\n\n' + log.join('\n') + '\n');
+          console.log(kop);
+          JS
+          node hero.mjs
+      - name: Terugcommitten
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add preview/heroproef.txt preview/hero2-*.png || true
+          git commit -m "Uitkomst van de heroproef" || echo "niets gewijzigd"
+          for poging in 1 2 3 4; do
+            git pull --rebase origin claude/3d-product-animations-btyc7y && git push && break
+            sleep $((poging * 5))
+          done

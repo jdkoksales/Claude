@@ -12,22 +12,6 @@
     endif
   endfor
 
-  comment
-    Weten we al welke pagina de kaart moet openen? Dat kan op twee manieren
-    binnengekomen zijn: als eigenschap bij een regel (veld op de productpagina)
-    of als kenmerk op de hele bestelling (het veld hieronder in de lade).
-  endcomment
-  assign link_bekend = false
-  for item in cart.items
-    assign regel_link = item.properties['Link voor de kaart']
-    if regel_link != blank
-      assign link_bekend = true
-    endif
-  endfor
-  assign lade_link = cart.attributes['Link voor de kaart']
-  if lade_link != blank
-    assign link_bekend = true
-  endif
 %}
 
 <aside
@@ -167,38 +151,14 @@
       </div>
 
       {%- comment -%}
-        Laatste kans om de link te vragen vóór de kassa, maar dichtgeklapt: wie
-        hem overslaat verliest geen enkele klik. Het veld schrijft naar de
-        kenmerken van de bestelling, dus het staat straks bij de bestelling in
-        de beheeromgeving. Weten we de link al via de productpagina, dan
-        bevestigen we dat alleen nog.
+        Geen invulveld meer: het koppelen loopt via het formulier dat na de
+        bestelling gemaild wordt. Hier staat alleen nog waarom je je daar geen
+        zorgen over hoeft te maken — dat weegt op deze plek zwaarder dan een
+        veld dat de afrekenknop naar beneden duwt.
       {%- endcomment -%}
-      <div class="tk3-cartlink" data-tk3-cartlink>
-        {%- if link_bekend -%}
-          <p class="tk3-cartlink-ok">
-            <span aria-hidden="true">✓</span> Link ontvangen — wij zetten hem er vooraf op.
-          </p>
-        {%- else -%}
-          <details class="tk3-cartlink-blok">
-            <summary>
-              <span class="tk3-cartlink-titel">Link voor je kaarten alvast doorgeven?</span>
-              <span class="tk3-cartlink-tag">optioneel</span>
-            </summary>
-            <input
-              type="url"
-              class="tk3-cartlink-veld"
-              placeholder="https://g.page/r/... of je Instagram-profiel"
-              autocomplete="url"
-              spellcheck="false"
-              aria-label="Link voor je kaarten"
-              value="{{ lade_link | escape }}"
-              data-tk3-cartlink-veld
-            >
-            <span class="tk3-cartlink-status" data-tk3-cartlink-status aria-live="polite"></span>
-            <p class="tk3-cartlink-rust">Niet nodig om te bestellen — anders mailen we je er direct na je bestelling over.</p>
-          </details>
-        {%- endif -%}
-      </div>
+      <p class="tk3-cartlink-ok">
+        <span aria-hidden="true">✓</span> Wij koppelen je pagina voor je — na je bestelling krijg je een kort formulier.
+      </p>
 
       <div class="cart-drawer__actions">
         <a href="/checkout" class="button button--primary cart-drawer__checkout-button">
@@ -214,101 +174,3 @@
     </div>
   </div>
 </aside>
-
-<script>
-  // Het veld slaat op zodra je het verlaat; niets om op te klikken. Alleen als
-  // er echt iets veranderd is sturen we een verzoek, anders krijgt /cart/update.js
-  // bij elke blur een oproep.
-  (function () {
-    if (window.tk3CartlinkGeregeld) return;
-    window.tk3CartlinkGeregeld = true;
-
-    var laatst = null;
-
-    var bewaar = function (veld) {
-      var waarde = veld.value.trim();
-      if (waarde === laatst) return;
-      laatst = waarde;
-
-      var status = document.querySelector('[data-tk3-cartlink-status]');
-      if (status) status.textContent = 'Opslaan…';
-
-      fetch('/cart/update.js', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ attributes: { 'Link voor de kaart': waarde } })
-      })
-        .then(function (r) {
-          if (!r.ok) throw new Error('mislukt');
-          if (status) status.textContent = waarde ? 'Opgeslagen ✓' : '';
-        })
-        .catch(function () {
-          if (status) status.textContent = 'Opslaan lukte niet — we mailen je er anders over.';
-          laatst = null;
-        });
-    };
-
-    document.addEventListener(
-      'blur',
-      function (e) {
-        var veld = e.target;
-        if (veld && veld.matches && veld.matches('[data-tk3-cartlink-veld]')) bewaar(veld);
-      },
-      true
-    );
-
-    // Enter voelt als bevestigen; het veld staat niet in een formulier.
-    document.addEventListener('keydown', function (e) {
-      if (e.key !== 'Enter') return;
-      var veld = e.target;
-      if (veld && veld.matches && veld.matches('[data-tk3-cartlink-veld]')) {
-        e.preventDefault();
-        bewaar(veld);
-        veld.blur();
-      }
-    });
-
-    // De lade wordt door het thema alleen in het lijstgedeelte opnieuw
-    // opgebouwd; dit blok blijft staan zoals Liquid het neerzette. Vulde
-    // iemand de link op de productpagina in, dan zou hij de vraag hier dus
-    // nog een keer krijgen. Daarom bij het openen even navragen.
-    var alGevraagd = function () {
-      var blok = document.querySelector('[data-tk3-cartlink]');
-      if (!blok || blok.querySelector('.tk3-cartlink-ok')) return;
-
-      fetch('/cart.js', { headers: { Accept: 'application/json' } })
-        .then(function (r) { return r.json(); })
-        .then(function (cart) {
-          var bekend = (cart.attributes || {})['Link voor de kaart'];
-          (cart.items || []).forEach(function (item) {
-            var p = item.properties || {};
-            if (p['Link voor de kaart']) bekend = p['Link voor de kaart'];
-          });
-          if (!bekend) return;
-          blok.innerHTML =
-            '<p class="tk3-cartlink-ok"><span aria-hidden="true">✓</span> Link ontvangen — wij zetten hem er vooraf op.</p>';
-        })
-        .catch(function () { /* niets aan de hand: het veld blijft gewoon staan */ });
-    };
-
-    document.addEventListener('click', function (e) {
-      if (e.target && e.target.closest && e.target.closest('[data-cart-toggle]')) {
-        setTimeout(alGevraagd, 900);
-      }
-    });
-    if (document.readyState !== 'loading') alGevraagd();
-    else document.addEventListener('DOMContentLoaded', alGevraagd);
-
-    // Ook nog meepakken als iemand meteen op afrekenen klikt.
-    document.addEventListener(
-      'click',
-      function (e) {
-        var knop = e.target && e.target.closest && e.target.closest('.cart-drawer__checkout-button');
-        if (!knop) return;
-        var veld = document.querySelector('[data-tk3-cartlink-veld]');
-        if (veld && veld.value.trim() && veld.value.trim() !== laatst) bewaar(veld);
-      },
-      true
-    );
-  })();
-</script>

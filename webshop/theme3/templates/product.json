@@ -34,7 +34,7 @@
             "icon_2_url": "",
             "text_2": "Geen app en geen abonnement — eenmalig betalen",
             "icon_3_url": "",
-            "text_3": "Op werkdagen voor 16:00 besteld, dezelfde dag verzonden",
+            "text_3": "Wij koppelen je pagina — jij hoeft niets in te stellen",
             "placement": "info"
           }
         },
@@ -60,7 +60,7 @@
           "type": "accordion",
           "settings": {
             "heading": "Hoe werkt het?",
-            "content": "<p>Je klant houdt zijn telefoon tegen de kaart. De NFC-chip opent meteen jouw pagina — geen app, geen account, geen uitleg nodig. Werkt de NFC niet, dan scant hij de QR-code op de voorkant; dat werkt met elke camera-app.</p><p>Geef bij je bestelling door welke pagina de kaart moet openen, dan zetten wij die er vooraf op. Je pakt hem uit en zet hem neer. Later zelf veranderen kan onbeperkt met een gratis NFC-app.</p>",
+            "content": "<p>Je klant houdt zijn telefoon tegen de kaart. De NFC-chip opent meteen jouw pagina — geen app, geen account, geen uitleg nodig. Werkt de NFC niet, dan scant hij de QR-code op de voorkant; dat werkt met elke camera-app.</p><p><strong>Instellen hoef je zelf niet te doen.</strong> Direct na je bestelling krijg je een mail met een kort formulier: je bedrijfsnaam, je vestigingsplaats en welke pagina’s je gebruikt. Wij zoeken je Google-, Instagram- of Facebookpagina op en zetten die op je kaarten voordat ze verstuurd worden. Zo werkt dat: <a href=\"/pages/koppelen\">tapkaarten.nl/pages/koppelen</a>.</p><p>Later iets anders erop? Bij je bestelling zit een handleiding waarmee je het zelf in ongeveer twee minuten doet met de gratis app NFC Tools. Onbeperkt, zo vaak je wilt.</p>",
             "open_by_default": false
           }
         },
@@ -68,7 +68,7 @@
           "type": "accordion",
           "settings": {
             "heading": "Verzending en retour",
-            "content": "<p>Nederland € 6,95, gratis vanaf € 70. België en de rest van de EU € 12,95, daarbuiten € 19,95. Op werkdagen voor 16:00 uur besteld gaat dezelfde dag op de post; in Nederland is dat doorgaans de volgende werkdag in huis.</p><p>Alle bedragen zijn exclusief btw. De btw wordt in de kassa berekend en staat apart op je factuur. Je kunt daar ook je btw-nummer opgeven.</p><p>Niet tevreden? Je hebt 14 dagen bedenktijd. Lees het volledige <a href=\"/pages/retourbeleid\">retourbeleid</a> of bekijk de <a href=\"/pages/verzending\">verzendinformatie</a>.</p>",
+            "content": "<p>Nederland € 6,95, gratis vanaf € 70. België en de rest van de EU € 12,95, daarbuiten € 19,95. Op werkdagen voor 16:00 uur besteld gaat dezelfde dag op de post; in Nederland is dat doorgaans de volgende werkdag in huis. Wachten we op dat moment nog op je koppelformulier, dan gaat je pakket de eerstvolgende werkdag na je antwoord weg.</p><p>Alle bedragen zijn exclusief btw. De btw wordt in de kassa berekend en staat apart op je factuur. Je kunt daar ook je btw-nummer opgeven.</p><p>Niet tevreden? Je hebt 14 dagen bedenktijd. Lees het volledige <a href=\"/pages/retourbeleid\">retourbeleid</a> of bekijk de <a href=\"/pages/verzending\">verzendinformatie</a>.</p>",
             "open_by_default": false
           }
         },
@@ -84,7 +84,7 @@
           "type": "accordion",
           "settings": {
             "heading": "Veelgestelde vragen",
-            "content": "<p><strong>Moet mijn klant een app installeren?</strong><br>Nee. De telefoon opent gewoon de webpagina.</p><p><strong>Kan ik de link later veranderen?</strong><br>Ja, onbeperkt, met een gratis NFC-app op je eigen telefoon.</p><p><strong>Mag ik klanten belonen voor een review?</strong><br>Nee. Dat is in strijd met de voorwaarden van Google en Meta en met de Nederlandse wet. Vragen mag wel — daar is dit product voor.</p><p>Meer vragen? Kijk bij de <a href=\"/pages/veelgestelde-vragen\">veelgestelde vragen</a>.</p>",
+            "content": "<p><strong>Moet ik zelf iets instellen?</strong><br>Nee. Na je bestelling vul je een kort formulier in met je bedrijfsnaam en plaats; wij zoeken je pagina’s op en koppelen ze.</p><p><strong>Moet mijn klant een app installeren?</strong><br>Nee. De telefoon opent gewoon de webpagina.</p><p><strong>Kan ik de link later veranderen?</strong><br>Ja, onbeperkt. Met de meegeleverde handleiding en de gratis app NFC Tools doe je dat in twee minuten.</p><p><strong>Mag ik klanten belonen voor een review?</strong><br>Nee. Dat is in strijd met de voorwaarden van Google en Meta en met de Nederlandse wet. Vragen mag wel — daar is dit product voor.</p><p>Meer vragen? Kijk bij de <a href=\"/pages/veelgestelde-vragen\">veelgestelde vragen</a>.</p>",
             "open_by_default": false
           }
         }
@@ -148,8 +148,8 @@
       ],
       "settings": {
         "heading": "Zo werkt het.",
-        "sub": "Je hoeft niets te installeren en niets in te stellen. Uitpakken, neerzetten, klaar.",
-        "reassurance": "Geen app nodig|Werkt op iPhone en Android|Wij zetten jouw link er vooraf op|Ook een QR-code voor oudere telefoons",
+        "sub": "Je hoeft niets te installeren en niets in te stellen. Wij koppelen je pagina, jij zet hem neer.",
+        "reassurance": "Wij koppelen je pagina voor je|Geen app nodig|Werkt op iPhone en Android|Ook een QR-code voor oudere telefoons",
         "cta_text": "",
         "cta_url": ""
       }
@@ -162,7 +162,7 @@
         "q1": "Hoeveel bezoekers ontvangt jouw bedrijf gemiddeld per dag?",
         "q2": "Stel jouw TapKaart-pakket samen",
         "results_intro": "Geschatte opbrengst per maand op basis van jouw gemiddelde aantal bezoekers per dag.",
-        "cta_text": "Gratis verzending vanaf € 70 · 14 dagen bedenktijd",
+        "cta_text": "Wij koppelen je pagina · Gratis verzending vanaf € 70 · 14 dagen bedenktijd",
         "cta_button": "Bestel mijn TapKaarten",
         "disclaimer": "De berekening is een indicatieve schatting op basis van gemiddelde conversiepercentages. Werkelijke aantallen hangen af van je zaak, je klanten en waar je de kaarten neerzet."
       }

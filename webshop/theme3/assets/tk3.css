@@ -19,33 +19,11 @@ html,body{overflow-x:clip}
 .page-section__content.rte td,.page-section__content.rte th{padding:.6em .2em;border-bottom:1px solid rgba(0,0,0,.08);text-align:left;vertical-align:top}
 .page-section__content.rte tr:last-child td{border-bottom:0}
 .product-info__buy-buttons{flex-wrap:wrap}
-.tk3-linkveld{flex:1 0 100%;width:100%;margin:0 0 14px}
-.tk3-linkveld>summary{display:flex;align-items:center;gap:8px;cursor:pointer;list-style:none;padding:11px 13px;border:1px dashed rgba(0,0,0,.2);border-radius:10px;font-size:14px;font-weight:600}
-.tk3-linkveld>summary::-webkit-details-marker{display:none}
-.tk3-linkveld>summary::after{content:'+';margin-left:auto;font-size:17px;font-weight:600;color:rgba(0,0,0,.45)}
-.tk3-linkveld[open]>summary::after{content:'–'}
-.tk3-linkveld[open]>summary{border-style:solid;border-bottom-left-radius:0;border-bottom-right-radius:0;border-bottom-color:transparent}
-.tk3-linkveld>summary:hover{border-color:rgba(0,0,0,.42)}
-.tk3-linkveld-tag{font-size:11.5px;font-weight:600;letter-spacing:.02em;text-transform:uppercase;color:rgba(0,0,0,.5);background:rgba(0,0,0,.06);border-radius:100px;padding:2px 8px}
-.tk3-linkveld-uit{padding:12px 13px 2px;border:1px solid rgba(0,0,0,.2);border-top:0;border-bottom-left-radius:10px;border-bottom-right-radius:10px}
-.tk3-linkveld label{display:block;font-size:14px;font-weight:600;letter-spacing:-.01em;margin-bottom:6px}
-.tk3-linkveld input{width:100%;padding:12px 14px;font:inherit;font-size:15px;border:1px solid rgba(0,0,0,.16);border-radius:10px;background:#fff;color:inherit}
-.tk3-linkveld input::placeholder{color:rgba(0,0,0,.34)}
-.tk3-linkveld input:focus{outline:2px solid rgba(0,0,0,.55);outline-offset:1px;border-color:transparent}
-.tk3-linkveld small{display:block;margin-top:6px;font-size:12.5px;line-height:1.45;color:rgba(0,0,0,.55)}
-.tk3-cartlink{margin:0 0 10px}
-.tk3-cartlink-blok>summary{display:flex;align-items:center;gap:8px;cursor:pointer;list-style:none;font-size:13.5px;font-weight:600;color:rgba(0,0,0,.72)}
-.tk3-cartlink-blok>summary::-webkit-details-marker{display:none}
-.tk3-cartlink-blok>summary::after{content:'+';margin-left:auto;font-size:16px;color:rgba(0,0,0,.42)}
-.tk3-cartlink-blok[open]>summary::after{content:'–'}
-.tk3-cartlink-titel{text-decoration:underline;text-underline-offset:3px}
-.tk3-cartlink-tag{font-size:11px;font-weight:600;letter-spacing:.02em;text-transform:uppercase;color:rgba(0,0,0,.5);background:rgba(0,0,0,.06);border-radius:100px;padding:2px 7px;text-decoration:none}
-.tk3-cartlink-veld{width:100%;margin-top:9px;padding:11px 13px;font:inherit;font-size:15px;border:1px solid rgba(0,0,0,.18);border-radius:10px;background:#fff;color:inherit}
-.tk3-cartlink-veld::placeholder{color:rgba(0,0,0,.34)}
-.tk3-cartlink-veld:focus{outline:2px solid rgba(0,0,0,.55);outline-offset:1px;border-color:transparent}
-.tk3-cartlink-status{display:block;margin-top:5px;font-size:12px;color:#136C34}
-.tk3-cartlink-rust{margin:7px 0 0;font-size:12px;line-height:1.45;color:rgba(0,0,0,.5)}
-.tk3-cartlink-ok{margin:0;font-size:13px;font-weight:600;color:#136C34}
+.tk3-koppelmelding{flex:1 0 100%;width:100%;margin:0 0 14px;display:flex;gap:10px;align-items:flex-start;background:rgba(19,108,52,.06);border:1px solid rgba(19,108,52,.2);border-radius:12px;padding:13px 15px;font-size:13.5px;line-height:1.5;color:rgba(0,0,0,.7)}
+.tk3-koppelmelding-icoon{flex:0 0 auto;width:18px;height:18px;border-radius:50%;background:#136C34;color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.tk3-koppelmelding b{color:var(--ink,#1A202C)}
+.tk3-koppelmelding a{text-decoration:underline;text-underline-offset:2px;font-weight:600;white-space:nowrap}
+.tk3-cartlink-ok{margin:0 0 10px;font-size:12.5px;font-weight:600;color:#136C34;line-height:1.45}
 .product-sticky-bar__price{color:#E23B1E}
 .tk3-staffel{flex:1 0 100%;width:100%;margin:0 0 18px}
 .tk3-staffel-kop{font-size:14px;font-weight:600;letter-spacing:-.01em;margin-bottom:8px}
@@ -59,7 +37,7 @@ html,body{overflow-x:clip}
 .tk3-trede-prijs{font-size:11.5px;color:rgba(0,0,0,.5)}
 .tk3-staffel small{display:block;margin-top:8px;font-size:12.5px;line-height:1.45;color:rgba(0,0,0,.55)}
 @media(max-width:560px){.tk3-staffel-rij{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:560px){.tk3-staffel-kop{font-size:13.5px}.tk3-trede{padding:11px 6px}.tk3-trede-aantal{font-size:12.5px}.tk3-trede-pct{font-size:14px}.tk3-linkveld input{padding:13px 14px;font-size:16px}.tk3-staffel small,.tk3-linkveld small{font-size:12px}}
+@media(max-width:560px){.tk3-staffel-kop{font-size:13.5px}.tk3-trede{padding:11px 6px}.tk3-trede-aantal{font-size:12.5px}.tk3-trede-pct{font-size:14px}.tk3-staffel small{font-size:12px}.tk3-koppelmelding{font-size:13px}}
 .tk3{
   --ink:#1A202C;              
   --ink-64:rgba(0,0,0,.64);
@@ -157,6 +135,9 @@ html,body{overflow-x:clip}
 .tk3 .hero{position:relative;text-align:center;overflow:hidden;
   background:linear-gradient(112deg,#fbfbfc 0%,#fcf6f8 48%,#fbecf0 100%)}
 .tk3 .hero .inner{padding:56px 0 0;position:relative;z-index:2}
+@media(min-width:901px) and (min-height:700px){.tk3 .hero .inner{display:flex;flex-direction:column;padding-top:0;
+    min-height:calc(100vh - 64px);min-height:calc(100svh - 64px)}.tk3 .hero .inner>.wrap{flex:1 1 auto;display:flex;flex-direction:column;
+    justify-content:center;padding-top:48px;padding-bottom:32px}}
 .tk3 .hero h1{max-width:768px;margin:0 auto 16px}
 .tk3 .hero .sub{font-size:var(--fs-lg);color:var(--ink-64);max-width:56ch;margin:0 auto 24px}
 .tk3 .hero .shots{display:grid;width:min(100%,1500px);margin:8px auto 0}
@@ -267,6 +248,57 @@ html,body{overflow-x:clip}
 .tk3 .btn-primary{display:inline-flex;align-items:center;gap:10px;background:var(--ink);color:#fff;
   border-radius:9999px;padding:15px 30px;font-size:var(--fs-sm);font-weight:700;transition:transform .18s,opacity .18s}
 .tk3 .btn-primary:hover{transform:translateY(-1px);opacity:.9}
+.tk3 .btn-secondary{display:inline-flex;align-items:center;gap:9px;background:#fff;color:var(--ink);
+  border:1px solid rgba(0,0,0,.16);border-radius:9999px;padding:13px 24px;font-size:var(--fs-sm);
+  font-weight:650;white-space:nowrap;transition:border-color .18s,background .18s}
+.tk3 .btn-secondary:hover{border-color:rgba(0,0,0,.45);background:#fafafa}
+.tk3 .koppelstrook{background:var(--grey-bg)}
+.tk3 .ks-stappen{list-style:none;display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:44px}
+.tk3 .ks-stappen li{background:#fff;border:1px solid var(--line);border-radius:18px;padding:24px 22px 26px;
+  position:relative}
+.tk3 .ks-num{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;
+  border-radius:50%;background:var(--ink);color:#fff;font-size:14px;font-weight:700;margin-bottom:14px}
+.tk3 .ks-stappen h3{font-size:var(--fs-lg);margin-bottom:7px;letter-spacing:-.02em}
+.tk3 .ks-stappen p{font-size:var(--fs-sm);color:var(--ink-64);line-height:1.5}
+.tk3 .ks-note{text-align:center;max-width:64ch;margin:34px auto 0;font-size:var(--fs-sm);color:var(--ink-64);
+  line-height:1.6}
+.tk3 .ks-note a{text-decoration:underline;text-underline-offset:3px;font-weight:600;color:var(--ink);
+  margin-left:6px;white-space:nowrap}
+@media(max-width:1000px){.tk3 .ks-stappen{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:620px){.tk3 .ks-stappen{grid-template-columns:1fr;gap:14px;margin-top:34px}.tk3 .ks-stappen li{padding:20px 18px 22px}.tk3 .ks-note a{display:block;margin:6px 0 0}}
+.tk3 .koppel .wrap{max-width:760px}
+.tk3 .koppel-kop{text-align:center;margin-bottom:34px}
+.tk3 .koppel-eyebrow{font-size:var(--fs-xs);font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+  color:var(--ink-36);margin-bottom:10px}
+.tk3 .koppel-kop h1{font-size:var(--fs-3xl);margin-bottom:14px}
+.tk3 .koppel-kop .lead{max-width:60ch;margin:0 auto}
+.tk3 .koppel-vak{background:#fff;border:1px solid var(--line);border-radius:22px;padding:34px 32px;
+  box-shadow:0 18px 44px rgba(0,0,0,.05)}
+.tk3 .koppel-form p{margin:0 0 16px}
+.tk3 .koppel-rij{display:grid;grid-template-columns:1fr 1fr;gap:0 18px}
+.tk3 .koppel-form label{display:block;font-size:14px;font-weight:600;letter-spacing:-.01em;margin-bottom:6px}
+.tk3 .koppel-form input,.tk3 .koppel-form textarea{width:100%;padding:12px 14px;font:inherit;font-size:15px;
+  border:1px solid rgba(0,0,0,.16);border-radius:10px;background:#fff;color:inherit;resize:vertical}
+.tk3 .koppel-form input::placeholder,.tk3 .koppel-form textarea::placeholder{color:rgba(0,0,0,.32)}
+.tk3 .koppel-form input:focus,.tk3 .koppel-form textarea:focus{outline:2px solid rgba(0,0,0,.55);
+  outline-offset:1px;border-color:transparent}
+.tk3 .koppel-form small{display:block;margin-top:5px;font-size:12.5px;line-height:1.45;color:var(--ink-48)}
+.tk3 .koppel-scheiding{display:flex;align-items:center;gap:14px;margin:26px 0 18px;
+  font-size:13px;font-weight:650;color:var(--ink-48)}
+.tk3 .koppel-scheiding::before,.tk3 .koppel-scheiding::after{content:'';flex:1;height:1px;background:var(--line)}
+.tk3 .koppel-knop{margin-top:6px;width:100%;justify-content:center}
+.tk3 .koppel-klein{margin-top:12px!important;font-size:12.5px;color:var(--ink-48);text-align:center}
+.tk3 .koppel-klein a{text-decoration:underline;text-underline-offset:2px}
+.tk3 .koppel-gelukt{background:rgba(19,108,52,.07);border:1px solid rgba(19,108,52,.28);border-radius:12px;
+  padding:18px 20px;font-size:var(--fs-sm);line-height:1.55}
+.tk3 .koppel-fout{background:rgba(226,59,30,.07);border:1px solid rgba(226,59,30,.3);border-radius:12px;
+  padding:14px 16px;margin-bottom:18px;font-size:var(--fs-sm)}
+.tk3 .koppel-fout ul{margin:0;padding-left:1.1em}
+.tk3 .koppel-pdf{display:flex;align-items:center;justify-content:space-between;gap:24px;margin-top:26px;
+  background:var(--grey-bg);border-radius:18px;padding:24px 26px}
+.tk3 .koppel-pdf h3{font-size:var(--fs-lg);margin-bottom:5px}
+.tk3 .koppel-pdf p{font-size:var(--fs-sm);color:var(--ink-64);line-height:1.5;margin:0}
+@media(max-width:700px){.tk3 .koppel-rij{grid-template-columns:1fr}.tk3 .koppel-vak{padding:24px 20px;border-radius:18px}.tk3 .koppel-pdf{flex-direction:column;align-items:flex-start;gap:16px}}
 .tk3 .prod-head{display:flex;align-items:baseline;justify-content:space-between;gap:20px;margin-bottom:34px}
 .tk3 .prod-head h2{margin:0}
 .tk3 .prod-head a{font-size:var(--fs-sm);font-weight:600;color:var(--ink-64);white-space:nowrap}

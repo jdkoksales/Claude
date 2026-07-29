@@ -36,7 +36,7 @@
         "t4": {
           "type": "item",
           "settings": {
-            "text": "🔁 Onbeperkt herprogrammeerbaar"
+            "text": "🔗 Wij koppelen je pagina — jij stelt niets in"
           }
         },
         "t5": {
@@ -334,8 +334,8 @@
       ],
       "settings": {
         "heading": "Zo werkt het.",
-        "sub": "Je hoeft niets te installeren en niets in te stellen. Uitpakken, neerzetten, klaar.",
-        "reassurance": "Geen app nodig|Werkt op iPhone en Android|Wij zetten jouw link er vooraf op|Ook een QR-code voor oudere telefoons",
+        "sub": "Je hoeft niets te installeren en niets in te stellen. Wij koppelen je pagina, jij zet hem neer.",
+        "reassurance": "Wij koppelen je pagina voor je|Geen app nodig|Werkt op iPhone en Android|Ook een QR-code voor oudere telefoons",
         "cta_text": "Bereken wat het jou oplevert",
         "cta_url": "/#calculator"
       }
@@ -348,9 +348,54 @@
         "q1": "Hoeveel bezoekers ontvangt jouw bedrijf gemiddeld per dag?",
         "q2": "Stel jouw TapKaart-pakket samen",
         "results_intro": "Geschatte opbrengst per maand op basis van jouw gemiddelde aantal bezoekers per dag.",
-        "cta_text": "Gratis verzending vanaf € 70 · 14 dagen bedenktijd",
+        "cta_text": "Wij koppelen je pagina · Gratis verzending vanaf € 70 · 14 dagen bedenktijd",
         "cta_button": "Bestel mijn TapKaarten",
         "disclaimer": "De berekening is een indicatieve schatting op basis van gemiddelde conversiepercentages. Werkelijke aantallen hangen af van je zaak, je klanten en waar je de kaarten neerzet."
+      }
+    },
+    "koppelen": {
+      "type": "tk3-koppelen",
+      "blocks": {
+        "k1": {
+          "type": "stap",
+          "settings": {
+            "title": "Je bestelt",
+            "text": "Kies je kaarten en reken af. Je hoeft op dat moment nog geen link bij de hand te hebben."
+          }
+        },
+        "k2": {
+          "type": "stap",
+          "settings": {
+            "title": "Je krijgt een formulier in de mail",
+            "text": "Meteen na je bestelling. Je vult je bedrijfsnaam, je vestigingsplaats en je accounts in — een minuut werk."
+          }
+        },
+        "k3": {
+          "type": "stap",
+          "settings": {
+            "title": "Wij zoeken je pagina’s op",
+            "text": "Wij vinden je Google-bedrijfsprofiel, je Instagram of je Facebookpagina en zetten die op je kaarten."
+          }
+        },
+        "k4": {
+          "type": "stap",
+          "settings": {
+            "title": "Je pakt hem uit en zet hem neer",
+            "text": "Hij werkt meteen. Geen instellingen, geen app, geen account."
+          }
+        }
+      },
+      "block_order": [
+        "k1",
+        "k2",
+        "k3",
+        "k4"
+      ],
+      "settings": {
+        "heading": "Instellen hoef je niet te doen.",
+        "sub": "Je hoeft geen link op te zoeken en geen app te installeren. Wij koppelen je pagina’s voordat je bestelling verstuurd wordt.",
+        "note": "Wil je er later een andere pagina op zetten? Dat doe je zelf in ongeveer twee minuten met de gratis app NFC Tools — onbeperkt, zo vaak je wilt.",
+        "pdf_url": "https://cdn.shopify.com/s/files/1/1025/4997/9513/files/tapkaarten-handleiding.pdf?v=1785309994"
       }
     }
   },
@@ -358,6 +403,7 @@
     "hero",
     "trust",
     "hoe",
+    "koppelen",
     "configurator",
     "statement",
     "producten",

@@ -39,29 +39,20 @@
   </div>
 
   {%- comment -%}
-    Zonder dit veld weet de winkel na een bestelling niet welke pagina de kaart
-    moet openen en moet er alsnog gemaild worden. Het is bewust optioneel: wie
-    het overslaat krijgt gewoon een mailtje.
+    Hier stond eerst een invulveld voor de link. Dat is eruit: het koppelen
+    loopt nu via het formulier dat na de bestelling gemaild wordt, en twee
+    kanalen voor dezelfde informatie leverden alleen maar een extra handeling
+    op de plek waar die het duurst is. Wat blijft is de geruststelling.
   {%- endcomment -%}
-  <details class="tk3-linkveld">
-    <summary>
-      <span class="tk3-linkveld-titel">Link nu al doorgeven?</span>
-      <span class="tk3-linkveld-tag">optioneel</span>
-    </summary>
-    <div class="tk3-linkveld-uit">
-      <label for="tk3-link-{{ current_variant.id }}">Welke pagina moet de kaart openen?</label>
-      <input
-        type="url"
-        id="tk3-link-{{ current_variant.id }}"
-        name="properties[Link voor de kaart]"
-        placeholder="https://g.page/r/... of je Instagram-profiel"
-        autocomplete="url"
-        spellcheck="false"
-        data-tk3-linkveld
-      >
-    </div>
-    <small>Hoeft niet om te bestellen. Vul je niets in, dan mailen wij je er direct na je bestelling over. Je kunt de kaart later ook zelf herprogrammeren.</small>
-  </details>
+  <div class="tk3-koppelmelding">
+    <span class="tk3-koppelmelding-icoon" aria-hidden="true">✓</span>
+    <span>
+      <b>Wij koppelen je pagina voor je.</b>
+      Na je bestelling vul je een kort formulier in met je bedrijfsnaam en plaats — wij zoeken je
+      Google-, Instagram- of Facebookpagina op en zetten die erop.
+      <a href="/pages/koppelen">Zo werkt dat</a>
+    </span>
+  </div>
 
   <button
     type="submit"
@@ -95,31 +86,11 @@
 </div>
 
 <script>
-  // Een leeg veld mag niet als lege regel op de bestelling belanden. Uitgeschakelde
-  // velden worden niet meegestuurd, maar het veld moet wél te typen blijven — dus
-  // zetten we het pas op het laatste moment uit, in de capture-fase op document,
-  // zodat dit vóór de winkelwagencode van het thema gebeurt.
+  // Klikken op een staffeltrede vult het aantal in en markeert welke trede je krijgt.
   (function () {
-    if (window.tk3LinkveldGeregeld) return;
-    window.tk3LinkveldGeregeld = true;
+    if (window.tk3StaffelGeregeld) return;
+    window.tk3StaffelGeregeld = true;
 
-    var leegUit = function () {
-      var uit = [];
-      document.querySelectorAll('[data-tk3-linkveld]').forEach(function (veld) {
-        if (!veld.disabled && veld.value.trim() === '') {
-          veld.disabled = true;
-          uit.push(veld);
-        }
-      });
-      // meteen weer aanzetten zodra de bestelling verstuurd is
-      if (uit.length) {
-        setTimeout(function () {
-          uit.forEach(function (veld) { veld.disabled = false; });
-        }, 0);
-      }
-    };
-
-    // Klikken op een trede vult het aantal in en markeert de actieve trede.
     var aantalVeld = function (el) {
       var form = el.closest('form');
       return (form || document).querySelector('input[name="quantity"]');
@@ -155,15 +126,5 @@
       if (e.target && e.target.name === 'quantity') markeer();
     });
     markeer();
-
-    document.addEventListener('submit', leegUit, true);
-    document.addEventListener(
-      'click',
-      function (e) {
-        var knop = e.target && e.target.closest && e.target.closest('[data-add-to-cart]');
-        if (knop) leegUit();
-      },
-      true
-    );
   })();
 </script>

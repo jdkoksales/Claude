@@ -9,7 +9,7 @@
           "type": "column",
           "settings": {
             "heading": "TapKaarten",
-            "links": "Veelgestelde vragen | /pages/veelgestelde-vragen\nContact | /pages/contact\nOver TapKaarten | /pages/over-ons"
+            "links": "Zo koppelen wij je pagina | /pages/koppelen\nVeelgestelde vragen | /pages/veelgestelde-vragen\nContact | /pages/contact\nOver TapKaarten | /pages/over-ons"
           }
         },
         "col2": {
@@ -23,7 +23,7 @@
           "type": "column",
           "settings": {
             "heading": "Bestellen",
-            "links": "Verzending | /pages/verzending\nRetourbeleid | /pages/retourbeleid\nBetaalmethodes | /pages/veelgestelde-vragen"
+            "links": "Verzending | /pages/verzending\nJe pagina doorgeven | /pages/koppelen\nRetourbeleid | /pages/retourbeleid"
           }
         },
         "col4": {

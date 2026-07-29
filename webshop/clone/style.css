@@ -127,6 +127,16 @@ footer .brand img{height:29px}
 .hero{position:relative;text-align:center;overflow:hidden;
   background:linear-gradient(112deg,#fbfbfc 0%,#fcf6f8 48%,#fbecf0 100%)}
 .hero .inner{padding:56px 0 0;position:relative;z-index:2}
+/* Op een ruim scherm hangt de tekst in het midden van de ruimte boven de
+   foto in plaats van tegen de header aan. Alleen als er hoogte over is:
+   op een telefoon of een lage laptop zou centreren de foto wegdrukken,
+   dus daar blijft de kop gewoon bovenin staan. */
+@media(min-width:901px) and (min-height:700px){
+  .hero .inner{display:flex;flex-direction:column;padding-top:0;
+    min-height:calc(100vh - 64px);min-height:calc(100svh - 64px)}
+  .hero .inner>.wrap{flex:1 1 auto;display:flex;flex-direction:column;
+    justify-content:center;padding-top:48px;padding-bottom:32px}
+}
 .hero h1{max-width:768px;margin:0 auto 16px}
 .hero .sub{font-size:var(--fs-lg);color:var(--ink-64);max-width:56ch;margin:0 auto 24px}
 /* De foto draagt zelf hetzelfde verloop; de mask laat de bovenrand
@@ -270,6 +280,69 @@ section.dark .note{margin-top:34px;color:rgba(255,255,255,.62);max-width:62ch}
 .btn-primary{display:inline-flex;align-items:center;gap:10px;background:var(--ink);color:#fff;
   border-radius:9999px;padding:15px 30px;font-size:var(--fs-sm);font-weight:700;transition:transform .18s,opacity .18s}
 .btn-primary:hover{transform:translateY(-1px);opacity:.9}
+.btn-secondary{display:inline-flex;align-items:center;gap:9px;background:#fff;color:var(--ink);
+  border:1px solid rgba(0,0,0,.16);border-radius:9999px;padding:13px 24px;font-size:var(--fs-sm);
+  font-weight:650;white-space:nowrap;transition:border-color .18s,background .18s}
+.btn-secondary:hover{border-color:rgba(0,0,0,.45);background:#fafafa}
+
+/* ---------- strook "wij koppelen het voor je" ---------- */
+.koppelstrook{background:var(--grey-bg)}
+.ks-stappen{list-style:none;display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:44px}
+.ks-stappen li{background:#fff;border:1px solid var(--line);border-radius:18px;padding:24px 22px 26px;
+  position:relative}
+.ks-num{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;
+  border-radius:50%;background:var(--ink);color:#fff;font-size:14px;font-weight:700;margin-bottom:14px}
+.ks-stappen h3{font-size:var(--fs-lg);margin-bottom:7px;letter-spacing:-.02em}
+.ks-stappen p{font-size:var(--fs-sm);color:var(--ink-64);line-height:1.5}
+.ks-note{text-align:center;max-width:64ch;margin:34px auto 0;font-size:var(--fs-sm);color:var(--ink-64);
+  line-height:1.6}
+.ks-note a{text-decoration:underline;text-underline-offset:3px;font-weight:600;color:var(--ink);
+  margin-left:6px;white-space:nowrap}
+@media(max-width:1000px){.ks-stappen{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:620px){
+  .ks-stappen{grid-template-columns:1fr;gap:14px;margin-top:34px}
+  .ks-stappen li{padding:20px 18px 22px}
+  .ks-note a{display:block;margin:6px 0 0}
+}
+
+/* ---------- koppelformulier ---------- */
+.koppel .wrap{max-width:760px}
+.koppel-kop{text-align:center;margin-bottom:34px}
+.koppel-eyebrow{font-size:var(--fs-xs);font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+  color:var(--ink-36);margin-bottom:10px}
+.koppel-kop h1{font-size:var(--fs-3xl);margin-bottom:14px}
+.koppel-kop .lead{max-width:60ch;margin:0 auto}
+.koppel-vak{background:#fff;border:1px solid var(--line);border-radius:22px;padding:34px 32px;
+  box-shadow:0 18px 44px rgba(0,0,0,.05)}
+.koppel-form p{margin:0 0 16px}
+.koppel-rij{display:grid;grid-template-columns:1fr 1fr;gap:0 18px}
+.koppel-form label{display:block;font-size:14px;font-weight:600;letter-spacing:-.01em;margin-bottom:6px}
+.koppel-form input,.koppel-form textarea{width:100%;padding:12px 14px;font:inherit;font-size:15px;
+  border:1px solid rgba(0,0,0,.16);border-radius:10px;background:#fff;color:inherit;resize:vertical}
+.koppel-form input::placeholder,.koppel-form textarea::placeholder{color:rgba(0,0,0,.32)}
+.koppel-form input:focus,.koppel-form textarea:focus{outline:2px solid rgba(0,0,0,.55);
+  outline-offset:1px;border-color:transparent}
+.koppel-form small{display:block;margin-top:5px;font-size:12.5px;line-height:1.45;color:var(--ink-48)}
+.koppel-scheiding{display:flex;align-items:center;gap:14px;margin:26px 0 18px;
+  font-size:13px;font-weight:650;color:var(--ink-48)}
+.koppel-scheiding::before,.koppel-scheiding::after{content:'';flex:1;height:1px;background:var(--line)}
+.koppel-knop{margin-top:6px;width:100%;justify-content:center}
+.koppel-klein{margin-top:12px!important;font-size:12.5px;color:var(--ink-48);text-align:center}
+.koppel-klein a{text-decoration:underline;text-underline-offset:2px}
+.koppel-gelukt{background:rgba(19,108,52,.07);border:1px solid rgba(19,108,52,.28);border-radius:12px;
+  padding:18px 20px;font-size:var(--fs-sm);line-height:1.55}
+.koppel-fout{background:rgba(226,59,30,.07);border:1px solid rgba(226,59,30,.3);border-radius:12px;
+  padding:14px 16px;margin-bottom:18px;font-size:var(--fs-sm)}
+.koppel-fout ul{margin:0;padding-left:1.1em}
+.koppel-pdf{display:flex;align-items:center;justify-content:space-between;gap:24px;margin-top:26px;
+  background:var(--grey-bg);border-radius:18px;padding:24px 26px}
+.koppel-pdf h3{font-size:var(--fs-lg);margin-bottom:5px}
+.koppel-pdf p{font-size:var(--fs-sm);color:var(--ink-64);line-height:1.5;margin:0}
+@media(max-width:700px){
+  .koppel-rij{grid-template-columns:1fr}
+  .koppel-vak{padding:24px 20px;border-radius:18px}
+  .koppel-pdf{flex-direction:column;align-items:flex-start;gap:16px}
+}
 
 
 /* ---------- productrij ---------- */

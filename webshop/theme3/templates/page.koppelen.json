@@ -1,0 +1,17 @@
+{
+  "sections": {
+    "form": {
+      "type": "tk3-koppelform",
+      "settings": {
+        "eyebrow": "Na je bestelling",
+        "heading": "Geef je pagina’s door, wij koppelen ze",
+        "sub": "Vul hieronder in hoe je zaak heet en waar je zit. Wij zoeken je Google-, Instagram- en Facebookpagina op en zetten ze op je kaarten voordat ze de deur uit gaan.",
+        "email": "info@tapkaarten.nl",
+        "pdf_url": "https://cdn.shopify.com/s/files/1/1025/4997/9513/files/tapkaarten-handleiding.pdf?v=1785309994"
+      }
+    }
+  },
+  "order": [
+    "form"
+  ]
+}

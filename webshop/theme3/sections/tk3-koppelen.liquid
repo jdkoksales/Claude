@@ -1,0 +1,72 @@
+{{ 'tk3.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  Het bezwaar dat mensen tegenhoudt is "kan ik dat wel instellen". Deze strook
+  legt uit dat ze dat niet hoeven; de laatste stap laat zien dat ze het later
+  alsnog zelf kunnen. Vier korte stappen, geen foto's — die staan al bij
+  "Zo werkt het" en zouden hier alleen ruis toevoegen.
+{%- endcomment -%}
+
+<div class="tk3">
+  <section class="blk koppelstrook" id="koppelen">
+    <div class="wrap">
+      <h2 class="sec-title center">{{ section.settings.heading }}</h2>
+      {%- if section.settings.sub != blank -%}
+        <p class="sec-sub center">{{ section.settings.sub }}</p>
+      {%- endif -%}
+
+      <ol class="ks-stappen">
+        {%- for block in section.blocks -%}
+          <li {{ block.shopify_attributes }}>
+            <span class="ks-num">{{ forloop.index }}</span>
+            <h3>{{ block.settings.title }}</h3>
+            <p>{{ block.settings.text }}</p>
+          </li>
+        {%- endfor -%}
+      </ol>
+
+      {%- if section.settings.note != blank -%}
+        <p class="ks-note">
+          {{ section.settings.note }}
+          {%- if section.settings.pdf_url != blank -%}
+            <a href="{{ section.settings.pdf_url }}" target="_blank" rel="noopener">Bekijk de handleiding (pdf)</a>
+          {%- endif -%}
+        </p>
+      {%- endif -%}
+    </div>
+  </section>
+</div>
+
+{% schema %}
+{
+  "name": "TK3 wij koppelen",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Kop", "default": "Instellen hoef je niet te doen." },
+    { "type": "textarea", "id": "sub", "label": "Onderkop", "default": "Je hoeft geen link op te zoeken en geen app te installeren. Wij koppelen je pagina’s voordat je bestelling verstuurd wordt." },
+    { "type": "textarea", "id": "note", "label": "Regel eronder", "default": "Wil je er later een andere pagina op zetten? Dat doe je zelf in ongeveer twee minuten met de gratis app NFC Tools — onbeperkt, zo vaak je wilt." },
+    { "type": "url", "id": "pdf_url", "label": "Handleiding (pdf)" }
+  ],
+  "max_blocks": 4,
+  "blocks": [
+    {
+      "type": "stap",
+      "name": "Stap",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Titel", "default": "Je bestelt" },
+        { "type": "textarea", "id": "text", "label": "Tekst", "default": "Kies je kaarten en reken af." }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "TK3 wij koppelen",
+      "blocks": [
+        { "type": "stap", "settings": { "title": "Je bestelt", "text": "Kies je kaarten en reken af. Je hoeft op dat moment nog geen link bij de hand te hebben." } },
+        { "type": "stap", "settings": { "title": "Je krijgt een formulier in de mail", "text": "Meteen na je bestelling. Je vult je bedrijfsnaam, je vestigingsplaats en je accounts in — een minuut werk." } },
+        { "type": "stap", "settings": { "title": "Wij zoeken je pagina’s op", "text": "Wij vinden je Google-bedrijfsprofiel, je Instagram of je Facebookpagina en zetten die op je kaarten." } },
+        { "type": "stap", "settings": { "title": "Je pakt hem uit en zet hem neer", "text": "Hij werkt meteen. Geen instellingen, geen app, geen account." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

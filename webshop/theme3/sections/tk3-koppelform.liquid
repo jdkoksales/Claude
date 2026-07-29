@@ -1,0 +1,131 @@
+{{ 'tk3.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  Het koppelformulier draait op Shopify's eigen contactformulier. Dat scheelt
+  een externe dienst: de inzending komt binnen op het e-mailadres onder
+  Instellingen → Meldingen → Klantenservice, en alles wat hier als
+  contact[…] meegestuurd wordt staat gewoon in die mail.
+{%- endcomment -%}
+
+<div class="tk3">
+  <section class="blk koppel">
+    <div class="wrap">
+      <div class="koppel-kop">
+        <p class="koppel-eyebrow">{{ section.settings.eyebrow }}</p>
+        <h1>{{ section.settings.heading }}</h1>
+        {%- if section.settings.sub != blank -%}
+          <p class="lead">{{ section.settings.sub }}</p>
+        {%- endif -%}
+      </div>
+
+      <div class="koppel-vak">
+        {%- form 'contact', class: 'koppel-form' -%}
+          {%- if form.posted_successfully? -%}
+            <p class="koppel-gelukt">
+              <strong>Bedankt — je gegevens zijn binnen.</strong><br>
+              Wij zoeken je pagina’s op en koppelen ze aan je kaarten. Hoor je binnen één werkdag
+              niets, mail dan even naar
+              <a href="mailto:{{ section.settings.email }}">{{ section.settings.email }}</a>.
+            </p>
+          {%- else -%}
+            {%- if form.errors -%}
+              <p class="koppel-fout">
+                {{ form.errors | default_errors }}
+              </p>
+            {%- endif -%}
+
+            <div class="koppel-rij">
+              <p>
+                <label for="koppel-naam">Je naam</label>
+                <input type="text" id="koppel-naam" name="contact[name]" required
+                  value="{{ form.name }}" autocomplete="name">
+              </p>
+              <p>
+                <label for="koppel-mail">E-mailadres van je bestelling</label>
+                <input type="email" id="koppel-mail" name="contact[email]" required
+                  value="{{ form.email }}" autocomplete="email" spellcheck="false">
+              </p>
+            </div>
+
+            <div class="koppel-rij">
+              <p>
+                <label for="koppel-order">Ordernummer</label>
+                <input type="text" id="koppel-order" name="contact[Ordernummer]"
+                  placeholder="#1042" autocomplete="off">
+                <small>Staat bovenaan je bestelbevestiging. Weet je het niet? Laat het leeg.</small>
+              </p>
+              <p>
+                <label for="koppel-bedrijf">Bedrijfsnaam</label>
+                <input type="text" id="koppel-bedrijf" name="contact[Bedrijfsnaam]" required
+                  placeholder="Café de Klok" autocomplete="organization">
+              </p>
+            </div>
+
+            <p>
+              <label for="koppel-plaats">Vestigingsplaats en adres</label>
+              <input type="text" id="koppel-plaats" name="contact[Vestiging]" required
+                placeholder="Dorpsstraat 12, Roden" autocomplete="street-address">
+              <small>Hiermee vinden wij het juiste Google-bedrijfsprofiel. Heb je meerdere vestigingen, zet ze er dan allemaal bij.</small>
+            </p>
+
+            <div class="koppel-scheiding"><span>Welke pagina’s moeten er op de kaarten?</span></div>
+
+            <p>
+              <label for="koppel-google">Google-bedrijfsprofiel</label>
+              <input type="text" id="koppel-google" name="contact[Google]"
+                placeholder="Naam zoals hij op Google staat, of een link" spellcheck="false">
+            </p>
+            <p>
+              <label for="koppel-insta">Instagram</label>
+              <input type="text" id="koppel-insta" name="contact[Instagram]"
+                placeholder="@jouwzaak" spellcheck="false">
+            </p>
+            <p>
+              <label for="koppel-fb">Facebook</label>
+              <input type="text" id="koppel-fb" name="contact[Facebook]"
+                placeholder="Naam van je bedrijfspagina, of een link" spellcheck="false">
+            </p>
+            <p>
+              <label for="koppel-verdeling">Welke kaart krijgt welke pagina?</label>
+              <textarea id="koppel-verdeling" name="contact[body]" rows="3"
+                placeholder="Bijvoorbeeld: de twee Google-standaards op de bar, de Instagram-standaard bij de kassa."></textarea>
+              <small>Bestel je één soort? Dan mag dit leeg — wij koppelen ze allemaal aan dezelfde pagina.</small>
+            </p>
+
+            <button type="submit" class="btn-primary koppel-knop">Versturen</button>
+            <p class="koppel-klein">
+              Wij gebruiken deze gegevens alleen om je kaarten te programmeren. Zie de
+              <a href="/policies/privacy-policy">privacyverklaring</a>.
+            </p>
+          {%- endif -%}
+        {%- endform -%}
+      </div>
+
+      {%- if section.settings.pdf_url != blank -%}
+        <div class="koppel-pdf">
+          <div>
+            <h3>Liever zelf instellen?</h3>
+            <p>In de handleiding staat hoe je een kaart met de gratis app NFC Tools in ongeveer twee minuten naar een andere pagina laat wijzen. Onbeperkt, zo vaak je wilt.</p>
+          </div>
+          <a class="btn-secondary" href="{{ section.settings.pdf_url }}" target="_blank" rel="noopener">
+            Handleiding (pdf)
+          </a>
+        </div>
+      {%- endif -%}
+    </div>
+  </section>
+</div>
+
+{% schema %}
+{
+  "name": "TK3 koppelformulier",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Bovenregel", "default": "Na je bestelling" },
+    { "type": "text", "id": "heading", "label": "Kop", "default": "Geef je pagina’s door, wij koppelen ze" },
+    { "type": "textarea", "id": "sub", "label": "Onderkop", "default": "Vul hieronder in hoe je zaak heet en waar je zit. Wij zoeken je Google-, Instagram- en Facebookpagina op en zetten ze op je kaarten voordat ze de deur uit gaan." },
+    { "type": "text", "id": "email", "label": "Contactadres", "default": "info@tapkaarten.nl" },
+    { "type": "url", "id": "pdf_url", "label": "Link naar de handleiding (pdf)" }
+  ],
+  "presets": [{ "name": "TK3 koppelformulier" }]
+}
+{% endschema %}

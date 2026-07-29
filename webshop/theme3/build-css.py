@@ -41,46 +41,20 @@ TAIL = ("html{scroll-behavior:smooth}\n"
         ".page-section__content.rte table{width:100%;border-collapse:collapse;margin:0 0 1.4em}\n"
         ".page-section__content.rte td,.page-section__content.rte th{padding:.6em .2em;border-bottom:1px solid rgba(0,0,0,.08);text-align:left;vertical-align:top}\n"
         ".page-section__content.rte tr:last-child td{border-bottom:0}\n"
-        # Veld op de productpagina waarin de klant zijn eigen link kwijt kan.
-        # het thema zet de koopknoppen op één rij; het veld moet daar bovenop
+        # Geruststelling op de productpagina: wij koppelen je pagina.
+        # het thema zet de koopknoppen op één rij, dus het blok moet daar bovenop
         ".product-info__buy-buttons{flex-wrap:wrap}\n"
-        ".tk3-linkveld{flex:1 0 100%;width:100%;margin:0 0 14px}\n"
-        # dichtgeklapt: wie de link overslaat verliest geen klik
-        ".tk3-linkveld>summary{display:flex;align-items:center;gap:8px;cursor:pointer;list-style:none;"
-        "padding:11px 13px;border:1px dashed rgba(0,0,0,.2);border-radius:10px;font-size:14px;font-weight:600}\n"
-        ".tk3-linkveld>summary::-webkit-details-marker{display:none}\n"
-        ".tk3-linkveld>summary::after{content:'+';margin-left:auto;font-size:17px;font-weight:600;color:rgba(0,0,0,.45)}\n"
-        ".tk3-linkveld[open]>summary::after{content:'–'}\n"
-        ".tk3-linkveld[open]>summary{border-style:solid;border-bottom-left-radius:0;border-bottom-right-radius:0;border-bottom-color:transparent}\n"
-        ".tk3-linkveld>summary:hover{border-color:rgba(0,0,0,.42)}\n"
-        ".tk3-linkveld-tag{font-size:11.5px;font-weight:600;letter-spacing:.02em;text-transform:uppercase;"
-        "color:rgba(0,0,0,.5);background:rgba(0,0,0,.06);border-radius:100px;padding:2px 8px}\n"
-        ".tk3-linkveld-uit{padding:12px 13px 2px;border:1px solid rgba(0,0,0,.2);border-top:0;"
-        "border-bottom-left-radius:10px;border-bottom-right-radius:10px}\n"
-        ".tk3-linkveld label{display:block;font-size:14px;font-weight:600;letter-spacing:-.01em;margin-bottom:6px}\n"
-        ".tk3-linkveld input{width:100%;padding:12px 14px;font:inherit;font-size:15px;"
-        "border:1px solid rgba(0,0,0,.16);border-radius:10px;background:#fff;color:inherit}\n"
-        ".tk3-linkveld input::placeholder{color:rgba(0,0,0,.34)}\n"
-        ".tk3-linkveld input:focus{outline:2px solid rgba(0,0,0,.55);outline-offset:1px;border-color:transparent}\n"
-        ".tk3-linkveld small{display:block;margin-top:6px;font-size:12.5px;line-height:1.45;color:rgba(0,0,0,.55)}\n"
-        # Laatste kans om de link te vragen, in de winkelwagenlade boven de
-        # afrekenknop. Dichtgeklapt, zodat het geen extra handeling is.
-        ".tk3-cartlink{margin:0 0 10px}\n"
-        ".tk3-cartlink-blok>summary{display:flex;align-items:center;gap:8px;cursor:pointer;list-style:none;"
-        "font-size:13.5px;font-weight:600;color:rgba(0,0,0,.72)}\n"
-        ".tk3-cartlink-blok>summary::-webkit-details-marker{display:none}\n"
-        ".tk3-cartlink-blok>summary::after{content:'+';margin-left:auto;font-size:16px;color:rgba(0,0,0,.42)}\n"
-        ".tk3-cartlink-blok[open]>summary::after{content:'–'}\n"
-        ".tk3-cartlink-titel{text-decoration:underline;text-underline-offset:3px}\n"
-        ".tk3-cartlink-tag{font-size:11px;font-weight:600;letter-spacing:.02em;text-transform:uppercase;"
-        "color:rgba(0,0,0,.5);background:rgba(0,0,0,.06);border-radius:100px;padding:2px 7px;text-decoration:none}\n"
-        ".tk3-cartlink-veld{width:100%;margin-top:9px;padding:11px 13px;font:inherit;font-size:15px;"
-        "border:1px solid rgba(0,0,0,.18);border-radius:10px;background:#fff;color:inherit}\n"
-        ".tk3-cartlink-veld::placeholder{color:rgba(0,0,0,.34)}\n"
-        ".tk3-cartlink-veld:focus{outline:2px solid rgba(0,0,0,.55);outline-offset:1px;border-color:transparent}\n"
-        ".tk3-cartlink-status{display:block;margin-top:5px;font-size:12px;color:#136C34}\n"
-        ".tk3-cartlink-rust{margin:7px 0 0;font-size:12px;line-height:1.45;color:rgba(0,0,0,.5)}\n"
-        ".tk3-cartlink-ok{margin:0;font-size:13px;font-weight:600;color:#136C34}\n"
+        ".tk3-koppelmelding{flex:1 0 100%;width:100%;margin:0 0 14px;display:flex;gap:10px;"
+        "align-items:flex-start;background:rgba(19,108,52,.06);border:1px solid rgba(19,108,52,.2);"
+        "border-radius:12px;padding:13px 15px;font-size:13.5px;line-height:1.5;color:rgba(0,0,0,.7)}\n"
+        ".tk3-koppelmelding-icoon{flex:0 0 auto;width:18px;height:18px;border-radius:50%;"
+        "background:#136C34;color:#fff;font-size:11px;font-weight:800;display:flex;"
+        "align-items:center;justify-content:center;margin-top:1px}\n"
+        ".tk3-koppelmelding b{color:var(--ink,#1A202C)}\n"
+        ".tk3-koppelmelding a{text-decoration:underline;text-underline-offset:2px;font-weight:600;"
+        "white-space:nowrap}\n"
+        # Dezelfde regel onderaan de winkelwagenlade, boven de afrekenknop.
+        ".tk3-cartlink-ok{margin:0 0 10px;font-size:12.5px;font-weight:600;color:#136C34;line-height:1.45}\n"
         # De meeloopbalk onderaan de productpagina toont dezelfde actieprijs;
         # die moet dus ook rood zijn en niet zwart.
         ".product-sticky-bar__price{color:#E23B1E}\n"
@@ -101,7 +75,7 @@ TAIL = ("html{scroll-behavior:smooth}\n"
         "@media(max-width:560px){.tk3-staffel-rij{grid-template-columns:repeat(2,1fr)}}\n"
         # De koopkolom van het thema is op een telefoon smal; het linkveld en
         # de staffel moeten daar niet in de verdrukking komen.
-        "@media(max-width:560px){.tk3-staffel-kop{font-size:13.5px}.tk3-trede{padding:11px 6px}.tk3-trede-aantal{font-size:12.5px}.tk3-trede-pct{font-size:14px}.tk3-linkveld input{padding:13px 14px;font-size:16px}.tk3-staffel small,.tk3-linkveld small{font-size:12px}}\n")
+        "@media(max-width:560px){.tk3-staffel-kop{font-size:13.5px}.tk3-trede{padding:11px 6px}.tk3-trede-aantal{font-size:12.5px}.tk3-trede-pct{font-size:14px}.tk3-staffel small{font-size:12px}.tk3-koppelmelding{font-size:13px}}\n")
 KEYFRAMES = {"slide": "tk3slide", "float": "tk3float"}
 
 

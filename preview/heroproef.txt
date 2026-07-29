@@ -1,11 +1,10 @@
-GEVONDEN: 1 punten
- - telefoon: tweede knop rekt uit tot 354px
+GEEN AFWIJKINGEN GEVONDEN
 
-telefoon 390x844: kop 32px, sub 17px, hero 555px hoog
-   kop begint 56px onder de bovenrand; tekst eindigt op 528px, foto begint op 536px
+telefoon 390x844: kop 32px, sub 17px, hero 527px hoog
+   kop begint 56px onder de bovenrand; tekst eindigt op 499px, foto begint op 507px
    speling tussen tekst en foto: 8px
    tweede knop: Bereken wat TapKaarten jou oplevert. -> #calculator
-      breed 354px, achtergrond rgba(26, 26, 26, 0.1), midden op 195px (rij erboven: 195px)
+      breed 335px, achtergrond rgba(26, 26, 26, 0.1), midden op 195px (rij erboven: 195px)
 tablet 820x1180: kop 32px, sub 17px, hero 579px hoog
    kop begint 56px onder de bovenrand; tekst eindigt op 410px, foto begint op 418px
    speling tussen tekst en foto: 8px

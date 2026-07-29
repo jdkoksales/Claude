@@ -50,6 +50,18 @@
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
           </a>
         </div>
+
+        {%- comment -%}
+          Tweede, zachtere ingang: wie nog niet wil kopen maar wel wil weten
+          wat het oplevert, gaat naar de rekenhulp. Bewust een link en geen
+          knop, zodat hij niet met Kopen concurreert.
+        {%- endcomment -%}
+        {%- if section.settings.calc_text != blank -%}
+          <a class="hero-calc" href="{{ section.settings.calc_url | default: '#calculator' }}">
+            <span>{{ section.settings.calc_text }}</span>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg>
+          </a>
+        {%- endif -%}
       </div>
 
       <div class="shots">
@@ -72,6 +84,8 @@
     { "type": "textarea", "id": "sub", "label": "Onderkop", "default": "Eén tik met de telefoon en je klant staat op jouw Google-, Instagram- of Facebookpagina. Zonder dat jij erom hoeft te vragen." },
     { "type": "text", "id": "cta_text", "label": "Knop", "default": "Kopen" },
     { "type": "url", "id": "cta_url", "label": "Knoplink (als er geen product gekoppeld is)" },
+    { "type": "text", "id": "calc_text", "label": "Tweede regel onder de knoppen", "default": "Bereken wat TapKaarten jou oplevert." },
+    { "type": "url", "id": "calc_url", "label": "Link van die regel" },
     { "type": "header", "content": "Knop koppelen per platform" },
     { "type": "product", "id": "product_google", "label": "Google" },
     { "type": "product", "id": "product_instagram", "label": "Instagram" },

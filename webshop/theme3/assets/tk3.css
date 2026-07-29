@@ -192,6 +192,17 @@ html,body{overflow-x:clip}
 .tk3 .seg[data-tk3-disabled]{opacity:.35;pointer-events:none}
 .tk3 .hero .seg button svg{filter:grayscale(1);opacity:.45;transition:filter .2s,opacity .2s}
 .tk3 .hero .seg button[aria-selected="true"] svg{filter:none;opacity:1}
+.tk3 .hero-calc{display:inline-flex;align-items:center;gap:7px;margin-top:20px;
+  font-size:var(--fs-sm);font-weight:600;color:var(--ink-64);
+  padding:6px 2px;transition:color .16s}
+.tk3 .hero-calc span{text-decoration:underline;text-underline-offset:4px;
+  text-decoration-thickness:1.5px;text-decoration-color:rgba(0,0,0,.22);
+  transition:text-decoration-color .16s}
+.tk3 .hero-calc:hover{color:var(--ink)}
+.tk3 .hero-calc:hover span{text-decoration-color:currentColor}
+.tk3 .hero-calc svg{opacity:.5;transition:transform .18s,opacity .16s}
+.tk3 .hero-calc:hover svg{transform:translateY(2px);opacity:.85}
+@media(prefers-reduced-motion:reduce){.tk3 .hero-calc svg{transition:none}}
 .tk3 .buy{background:rgba(26,26,26,.1);border-radius:9999px;padding:11px 20px;font-size:var(--fs-sm);
   font-weight:750;display:inline-flex;align-items:center;gap:9px;transition:background .18s}
 .tk3 .buy:hover{background:rgba(26,26,26,.18)}

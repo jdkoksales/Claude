@@ -5,6 +5,9 @@ name: Bestelwaarde-ingrepen nakijken
 # offertepagina.
 on:
   workflow_dispatch:
+  push:
+    branches: [claude/3d-product-animations-btyc7y]
+    paths: ['preview/aov-trigger.txt']
 
 permissions:
   contents: write

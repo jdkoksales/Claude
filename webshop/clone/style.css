@@ -184,17 +184,17 @@ footer .brand img{height:29px}
 /* platformkeuze: het gekozen logo in kleur, de rest grijs */
 .hero .seg button svg{filter:grayscale(1);opacity:.45;transition:filter .2s,opacity .2s}
 .hero .seg button[aria-selected="true"] svg{filter:none;opacity:1}
-/* Zachte tweede ingang onder de knoppenrij: een link, geen knop. */
-.hero-calc{display:inline-flex;align-items:center;gap:7px;margin-top:20px;
-  font-size:var(--fs-sm);font-weight:600;color:var(--ink-64);
-  padding:6px 2px;transition:color .16s}
-.hero-calc span{text-decoration:underline;text-underline-offset:4px;
-  text-decoration-thickness:1.5px;text-decoration-color:rgba(0,0,0,.22);
-  transition:text-decoration-color .16s}
-.hero-calc:hover{color:var(--ink)}
-.hero-calc:hover span{text-decoration-color:currentColor}
-.hero-calc svg{opacity:.5;transition:transform .18s,opacity .16s}
-.hero-calc:hover svg{transform:translateY(2px);opacity:.85}
+/* Tweede ingang onder de knoppenrij, in dezelfde vorm als Kopen.
+   align-self is nodig omdat de tekstkolom op ruime schermen een flexkolom is;
+   zonder dat rekt de knop over de volle breedte en staat hij links. */
+.hero-calc{align-self:center;margin-left:auto;margin-right:auto;
+  background:rgba(26,26,26,.1);border-radius:9999px;padding:11px 20px;
+  font-size:var(--fs-sm);font-weight:750;color:var(--ink);
+  display:inline-flex;align-items:center;gap:9px;margin-top:16px;
+  transition:background .18s}
+.hero-calc:hover{background:rgba(26,26,26,.18)}
+.hero-calc svg{opacity:.6;transition:transform .18s,opacity .16s}
+.hero-calc:hover svg{transform:translateY(2px);opacity:.9}
 @media(prefers-reduced-motion:reduce){.hero-calc svg{transition:none}}
 
 .buy{background:rgba(26,26,26,.1);border-radius:9999px;padding:11px 20px;font-size:var(--fs-sm);

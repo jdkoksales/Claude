@@ -1,0 +1,22 @@
+GEEN AFWIJKINGEN GEVONDEN
+
+== wat geeft de winkelwagen-API terug?
+   /cart.js: status=200 type=text/javascript; charset=utf-8
+      {"token":"ae5db8d1aa02c402fd742e7e4525a624","note":null,"attributes":{},"original_total_price":0,"total_price":0,"total_discount":0,"total_weight":0.0,"item_count":0,"items":[],"requires_shipping":false,"currency":"EUR",
+   /cart/update.js: status=200 type=text/javascript; charset=utf-8
+      {"token":"hWNF2EieSxu6P46K15kWX4fC?key=e3db8bc702bd0d485f8d627d5e0d1945","note":null,"attributes":{},"original_total_price":0,"total_price":0,"total_discount":0,"total_weight":0.0,"item_count":0,"items":[],"requires_ship
+
+1 kaart(en) — totaal 34.95
+   balk zichtbaar: true   "Nog € 35,05 tot gratis verzending"
+   vulling 50%   gehaald: false
+   bijverkoop: true — Plak er ook een op je pinautomaat Google Review-sticker · €19,95 excl.
+   afrekenknop eindigt op 984px van 1000
+2 kaart(en) — totaal 62.92
+   balk zichtbaar: true   "Nog € 7,08 tot gratis verzending"
+   vulling 90%   gehaald: false
+   bijverkoop: true — Plak er ook een op je pinautomaat Google Review-sticker · €19,95 excl.
+   afrekenknop eindigt op 984px van 1000
+
+sticker toevoegen: 2 → 3 stuks, 62.92 → 76.38
+   balk nu: "Gelukt — je verzending is gratis." gehaald=true
+   bijverkoop nu verborgen: true

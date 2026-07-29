@@ -33,6 +33,8 @@
   data-cart-drawer-loading-label="{{ 'cart.drawer.loading' | t }}"
   data-cart-drawer-continue-url="{{ routes.all_products_collection_url }}"
   data-cart-drawer-continue-label="{{ 'cart.continue_shopping' | t }}"
+  data-tk3-drempel="7000"
+  data-tk3-sticker-id="{{ all_products['tapkaarten-google-review-sticker'].selected_or_first_available_variant.id }}"
   aria-hidden="true"
   style="
     --cart-drawer-image-fit: {{ settings.cart_drawer_image_fit }};
@@ -136,6 +138,29 @@
     </div>
 
     <div class="cart-drawer__footer" data-cart-drawer-footer {% if cart.item_count == 0 %}hidden{% endif %}>
+      {%- comment -%}
+        Twee standaards komen op € 62,92 uit — net onder de € 70. Zonder deze
+        balk ziet niemand dat er nog maar een paar euro tussen zit.
+      {%- endcomment -%}
+      <div class="tk3-verzendbalk" data-tk3-verzendbalk hidden>
+        <p data-tk3-verzendtekst></p>
+        <div class="tk3-verzendmeter"><span data-tk3-verzendvulling></span></div>
+      </div>
+
+      {%- assign sticker = all_products['tapkaarten-google-review-sticker'] -%}
+      {%- if sticker.available -%}
+        <div class="tk3-bijverkoop" data-tk3-bijverkoop hidden>
+          {%- if sticker.featured_image -%}
+            <img src="{{ sticker.featured_image | image_url: width: 120 }}" alt="" width="60" height="60" loading="lazy">
+          {%- endif -%}
+          <div class="tk3-bijverkoop-tekst">
+            <b>Plak er ook een op je pinautomaat</b>
+            <span>Google Review-sticker · {{ sticker.price | money }} excl. btw</span>
+          </div>
+          <button type="button" class="tk3-bijverkoop-knop" data-tk3-bijverkoop-knop>Toevoegen</button>
+        </div>
+      {%- endif -%}
+
       <div class="cart-drawer__summary">
         <div class="cart-drawer__summary-row">
           <span class="cart-drawer__subtotal-label">{{ 'cart.subtotal' | t }}</span>
@@ -174,3 +199,103 @@
     </div>
   </div>
 </aside>
+
+<script>
+  // Alles wat de bestelwaarde omhoog helpt in de lade: hoeveel er nog tot
+  // gratis verzending ontbreekt, en de sticker als losse bijverkoop. Beide
+  // lezen de winkelwagen zelf uit, zodat ze meteen kloppen na elke wijziging.
+  (function () {
+    if (window.tk3LadeExtraGeregeld) return;
+    window.tk3LadeExtraGeregeld = true;
+
+    var lade = function () { return document.querySelector('[data-cart-drawer]'); };
+
+    var geld = function (centen) {
+      return new Intl.NumberFormat('nl-NL', { style: 'currency', currency: 'EUR' }).format(centen / 100);
+    };
+
+    var teken = function (kar) {
+      var el = lade();
+      if (!el || !kar) return;
+
+      var drempel = parseInt(el.getAttribute('data-tk3-drempel'), 10) || 0;
+      var balk = document.querySelector('[data-tk3-verzendbalk]');
+      if (balk && drempel > 0) {
+        var tekort = drempel - kar.total_price;
+        var tekst = balk.querySelector('[data-tk3-verzendtekst]');
+        var vulling = balk.querySelector('[data-tk3-verzendvulling]');
+        if (kar.item_count === 0) {
+          balk.hidden = true;
+        } else {
+          balk.hidden = false;
+          balk.classList.toggle('is-gehaald', tekort <= 0);
+          if (tekort <= 0) {
+            tekst.innerHTML = '<b>Gelukt — je verzending is gratis.</b>';
+            vulling.style.width = '100%';
+          } else {
+            tekst.innerHTML = 'Nog <b>' + geld(tekort) + '</b> tot gratis verzending';
+            vulling.style.width = Math.max(4, Math.round((kar.total_price / drempel) * 100)) + '%';
+          }
+        }
+      }
+
+      // De sticker alleen aanbieden als hij er nog niet in zit.
+      var vak = document.querySelector('[data-tk3-bijverkoop]');
+      if (vak) {
+        var id = parseInt(el.getAttribute('data-tk3-sticker-id'), 10);
+        var erin = (kar.items || []).some(function (i) { return i.variant_id === id; });
+        vak.hidden = kar.item_count === 0 || erin || !id;
+      }
+    };
+
+    var ophalen = function () {
+      fetch('/cart.js', { headers: { Accept: 'application/json' } })
+        .then(function (r) { return r.json(); })
+        .then(teken)
+        .catch(function () { /* niets tonen is beter dan iets verkeerds tonen */ });
+    };
+
+    document.addEventListener('click', function (e) {
+      var knop = e.target && e.target.closest && e.target.closest('[data-tk3-bijverkoop-knop]');
+      if (!knop) return;
+      var el = lade();
+      var id = el && parseInt(el.getAttribute('data-tk3-sticker-id'), 10);
+      if (!id) return;
+
+      knop.disabled = true;
+      knop.textContent = 'Bezig…';
+      fetch('/cart/add.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({ items: [{ id: id, quantity: 1 }] }),
+      })
+        .then(function (r) { if (!r.ok) throw new Error('mislukt'); return r.json(); })
+        .then(function () {
+          // het thema herbouwt de regels zelf zodra de winkelwagen ververst is
+          if (window.location.pathname.indexOf('/cart') === 0) { window.location.reload(); return; }
+          var opener = document.querySelector('[data-cart-toggle]');
+          if (opener) opener.click();
+          setTimeout(ophalen, 900);
+        })
+        .catch(function () { knop.textContent = 'Lukt niet — probeer opnieuw'; })
+        .finally(function () {
+          setTimeout(function () { knop.disabled = false; knop.textContent = 'Toevoegen'; }, 1200);
+        });
+    });
+
+    // Bijwerken zodra er iets in de lade gebeurt: aantallen, verwijderen, openen.
+    var laat = null;
+    var straks = function () { clearTimeout(laat); laat = setTimeout(ophalen, 700); };
+    document.addEventListener('click', function (e) {
+      if (!e.target || !e.target.closest) return;
+      if (e.target.closest('[data-cart-quantity-change], [data-cart-remove], [data-cart-toggle], [data-add-to-cart]')) straks();
+    });
+    document.addEventListener('change', function (e) {
+      if (e.target && e.target.closest && e.target.closest('[data-cart-quantity-input]')) straks();
+    });
+    document.addEventListener('submit', straks);
+
+    if (document.readyState !== 'loading') ophalen();
+    else document.addEventListener('DOMContentLoaded', ophalen);
+  })();
+</script>

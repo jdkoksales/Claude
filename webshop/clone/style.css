@@ -289,6 +289,36 @@ section.dark .note{margin-top:34px;color:rgba(255,255,255,.62);max-width:62ch}
   font-weight:650;white-space:nowrap;transition:border-color .18s,background .18s}
 .btn-secondary:hover{border-color:rgba(0,0,0,.45);background:#fafafa}
 
+/* ---------- pakketten ---------- */
+.bdl-rij{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:46px;align-items:start}
+.bdl{position:relative;display:flex;flex-direction:column;background:#fff;border:1px solid var(--line);
+  border-radius:22px;padding:22px 22px 24px;transition:border-color .18s,box-shadow .18s,transform .18s}
+.bdl:hover{border-color:rgba(0,0,0,.3);box-shadow:0 18px 40px rgba(0,0,0,.07);transform:translateY(-2px)}
+.bdl.is-uit{border-color:var(--oranje);box-shadow:0 18px 44px rgba(219,78,20,.13)}
+.bdl-lint{position:absolute;top:-13px;left:50%;transform:translateX(-50%);z-index:3;white-space:nowrap;
+  background:linear-gradient(90deg,var(--oranje-diep),var(--oranje));color:#fff;border-radius:100px;
+  padding:6px 15px;font-size:12px;font-weight:700;letter-spacing:.01em}
+.bdl-foto{position:relative;border-radius:16px;overflow:hidden;background:var(--grey-bg);margin-bottom:16px}
+.bdl-foto img{width:100%;height:auto;display:block}
+.bdl-bespaar{position:absolute;left:12px;bottom:12px;background:#136C34;color:#fff;border-radius:100px;
+  padding:6px 13px;font-size:12.5px;font-weight:700}
+.bdl h3{font-size:var(--fs-lg);letter-spacing:-.02em;margin-bottom:4px}
+.bdl-wat{font-size:var(--fs-sm);color:var(--ink-64);line-height:1.45;margin-bottom:12px}
+.bdl-prijs{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;margin-bottom:6px}
+.bdl-prijs s{color:var(--ink-36);font-size:var(--fs-sm)}
+.bdl-prijs b{font-size:26px;font-weight:750;letter-spacing:-.03em;color:#E23B1E}
+.bdl-prijs em{font-style:normal;font-size:11.5px;color:var(--ink-36)}
+.bdl-verzend{font-size:12.5px;font-weight:600;color:#136C34;margin-bottom:14px}
+.bdl-knop{margin-top:auto;display:block;text-align:center;background:var(--ink);color:#fff;
+  border-radius:9999px;padding:13px 20px;font-size:var(--fs-sm);font-weight:700}
+.bdl.is-uit .bdl-knop{background:linear-gradient(90deg,var(--oranje-diep),var(--oranje))}
+.bdl-note{text-align:center;max-width:62ch;margin:30px auto 0;font-size:var(--fs-sm);color:var(--ink-64)}
+@media(max-width:900px){
+  .bdl-rij{grid-template-columns:1fr;gap:26px;margin-top:38px}
+  .bdl{padding:20px 18px 22px}
+  .bdl.is-uit{order:-1}
+}
+
 /* ---------- strook "wij koppelen het voor je" ---------- */
 .koppelstrook{background:var(--grey-bg)}
 .ks-stappen{list-style:none;display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:44px}
@@ -308,6 +338,14 @@ section.dark .note{margin-top:34px;color:rgba(255,255,255,.62);max-width:62ch}
   .ks-stappen li{padding:20px 18px 22px}
   .ks-note a{display:block;margin:6px 0 0}
 }
+
+/* ---------- offertepagina ---------- */
+.off-punten{list-style:none;display:grid;grid-template-columns:repeat(2,1fr);gap:10px 22px;
+  max-width:760px;margin:0 auto 28px}
+.off-punten li{position:relative;padding-left:26px;font-size:var(--fs-sm);color:var(--ink-64);line-height:1.5}
+.off-punten li::before{content:'\2713';position:absolute;left:0;top:0;width:18px;height:18px;border-radius:50%;
+  background:#136C34;color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center}
+@media(max-width:700px){.off-punten{grid-template-columns:1fr;gap:9px}}
 
 /* ---------- koppelformulier ---------- */
 .koppel .wrap{max-width:760px}

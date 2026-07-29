@@ -1,0 +1,107 @@
+{{ 'tk3.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  Dezelfde machinerie als het koppelformulier: Shopify's contactformulier, dus
+  de aanvraag komt gewoon binnen op het klantenservice-adres. Bedoeld voor
+  ketens, franchises en hotels — daar zit een veelvoud van de gemiddelde
+  bestelling in, en zonder deze pagina belanden die mensen in de gewone
+  winkelwagen of nergens.
+{%- endcomment -%}
+
+<div class="tk3">
+  <section class="blk koppel">
+    <div class="wrap">
+      <div class="koppel-kop">
+        <p class="koppel-eyebrow">{{ section.settings.eyebrow }}</p>
+        <h1>{{ section.settings.heading }}</h1>
+        {%- if section.settings.sub != blank -%}
+          <p class="lead">{{ section.settings.sub }}</p>
+        {%- endif -%}
+      </div>
+
+      {%- if section.settings.punten != blank -%}
+        <ul class="off-punten">
+          {%- assign punten = section.settings.punten | split: '|' -%}
+          {%- for punt in punten -%}
+            <li>{{ punt | strip }}</li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+
+      <div class="koppel-vak">
+        {%- form 'contact', class: 'koppel-form' -%}
+          {%- if form.posted_successfully? -%}
+            <p class="koppel-gelukt">
+              <strong>Bedankt — je aanvraag is binnen.</strong><br>
+              Je krijgt binnen één werkdag een prijs op maat. Haast? Bel of app
+              {{ section.settings.telefoon }}.
+            </p>
+          {%- else -%}
+            {%- if form.errors -%}
+              <p class="koppel-fout">{{ form.errors | default_errors }}</p>
+            {%- endif -%}
+
+            <div class="koppel-rij">
+              <p>
+                <label for="off-naam">Je naam</label>
+                <input type="text" id="off-naam" name="contact[name]" required value="{{ form.name }}" autocomplete="name">
+              </p>
+              <p>
+                <label for="off-mail">E-mailadres</label>
+                <input type="email" id="off-mail" name="contact[email]" required value="{{ form.email }}" autocomplete="email" spellcheck="false">
+              </p>
+            </div>
+
+            <div class="koppel-rij">
+              <p>
+                <label for="off-bedrijf">Bedrijfsnaam</label>
+                <input type="text" id="off-bedrijf" name="contact[Bedrijfsnaam]" required autocomplete="organization">
+              </p>
+              <p>
+                <label for="off-tel">Telefoonnummer</label>
+                <input type="tel" id="off-tel" name="contact[Telefoon]" autocomplete="tel">
+              </p>
+            </div>
+
+            <div class="koppel-rij">
+              <p>
+                <label for="off-aantal">Hoeveel kaarten ongeveer?</label>
+                <input type="number" id="off-aantal" name="contact[Aantal]" min="10" step="1" placeholder="25" required>
+              </p>
+              <p>
+                <label for="off-vestigingen">Hoeveel vestigingen?</label>
+                <input type="number" id="off-vestigingen" name="contact[Vestigingen]" min="1" step="1" placeholder="3">
+              </p>
+            </div>
+
+            <p>
+              <label for="off-toelichting">Waar gaan ze staan, en welke pagina’s moeten erop?</label>
+              <textarea id="off-toelichting" name="contact[body]" rows="4"
+                placeholder="Bijvoorbeeld: drie vestigingen, per vestiging twee Google-standaards op de bar en één bij de kassa."></textarea>
+              <small>Wil je je eigen logo of kleuren op de kaarten? Zet het erbij — vanaf grotere aantallen kan dat.</small>
+            </p>
+
+            <button type="submit" class="btn-primary koppel-knop">Vraag een prijs</button>
+            <p class="koppel-klein">
+              Je krijgt binnen één werkdag antwoord. Geen verplichtingen.
+            </p>
+          {%- endif -%}
+        {%- endform -%}
+      </div>
+    </div>
+  </section>
+</div>
+
+{% schema %}
+{
+  "name": "TK3 offerte",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Bovenregel", "default": "Vanaf tien kaarten" },
+    { "type": "text", "id": "heading", "label": "Kop", "default": "Meer kaarten nodig? Vraag een prijs." },
+    { "type": "textarea", "id": "sub", "label": "Onderkop", "default": "Voor ketens, franchises, hotels en zaken met meerdere vestigingen maken we een prijs op maat — scherper dan de staffelkorting in de winkel." },
+    { "type": "textarea", "id": "punten", "label": "Punten (gescheiden met |)", "default": "Scherpere prijs dan de staffel van 20%|Elke kaart een eigen pagina, ook per vestiging|Wij koppelen alles voor verzending|Eén factuur, betalen op rekening bespreekbaar" },
+    { "type": "text", "id": "telefoon", "label": "Telefoonnummer", "default": "06 16 03 63 28" }
+  ],
+  "presets": [{ "name": "TK3 offerte" }]
+}
+{% endschema %}

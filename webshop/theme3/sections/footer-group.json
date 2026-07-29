@@ -16,14 +16,14 @@
           "type": "column",
           "settings": {
             "heading": "Producten",
-            "links": "Alle producten | /collections/alle-tapkaarten\nGoogle Review-standaard | /products/tapkaarten-google-review-standaard\nGoogle Review-sticker | /products/tapkaarten-google-review-sticker"
+            "links": "Alle producten | /collections/alle-tapkaarten\nPakketten | /collections/pakketten\nGoogle Review-standaard | /products/tapkaarten-google-review-standaard\nGoogle Review-sticker | /products/tapkaarten-google-review-sticker"
           }
         },
         "col3": {
           "type": "column",
           "settings": {
             "heading": "Bestellen",
-            "links": "Verzending | /pages/verzending\nJe pagina doorgeven | /pages/koppelen\nBetaalmethodes | /pages/veelgestelde-vragen"
+            "links": "Verzending | /pages/verzending\nJe pagina doorgeven | /pages/koppelen\nOfferte vanaf 10 kaarten | /pages/offerte"
           }
         },
         "col4": {

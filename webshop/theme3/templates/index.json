@@ -65,7 +65,7 @@
     "producten": {
       "type": "tk3-products",
       "settings": {
-        "heading": "Alle TapKaarten.",
+        "heading": "Of stel het zelf samen.",
         "collection": "alle-tapkaarten",
         "count": 8,
         "link_text": "Bekijk alle specificaties",
@@ -397,6 +397,18 @@
         "note": "Wil je er later een andere pagina op zetten? Dat doe je zelf in ongeveer twee minuten met de gratis app NFC Tools — onbeperkt, zo vaak je wilt.",
         "pdf_url": "https://cdn.shopify.com/s/files/1/1025/4997/9513/files/tapkaarten-handleiding.pdf?v=1785309994"
       }
+    },
+    "pakketten": {
+      "type": "tk3-bundels",
+      "settings": {
+        "heading": "Pakketten.",
+        "sub": "Meerdere plekken in je zaak, één bestelling. Altijd voordeliger dan de losse kaarten.",
+        "collection": "pakketten",
+        "badge": "Meest gekozen",
+        "knop": "Bekijk dit pakket",
+        "drempel": 7000,
+        "note": "Liever zelf samenstellen? Bij twee kaarten krijg je 10% korting, bij drie 15% en vanaf vier 20% — dat wordt automatisch verrekend in de winkelwagen."
+      }
     }
   },
   "order": [
@@ -406,6 +418,7 @@
     "koppelen",
     "configurator",
     "statement",
+    "pakketten",
     "producten",
     "branches",
     "ontwerp",

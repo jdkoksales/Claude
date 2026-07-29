@@ -1,0 +1,103 @@
+{{ 'tk3.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  Pakketten zijn de sterkste hefboom op de bestelwaarde: wie een pakket kiest
+  hoeft niet drie keer los te beslissen. Het bedrag dat je bespaart rekenen we
+  uit de prijzen zelf, zodat het nooit uit de pas kan lopen met de winkel.
+
+  De middelste tegel krijgt het accent. Dat is bewust: het middelste pakket is
+  het pakket dat je het liefst verkoopt.
+{%- endcomment -%}
+
+{%- assign lijst = collections[section.settings.collection] -%}
+
+{%- comment -%}
+  Op de pakkettencollectie zelf zou deze strook dezelfde producten nog een keer
+  tonen, vlak boven het raster. Daar slaan we hem over.
+{%- endcomment -%}
+{%- unless collection.handle == section.settings.collection -%}
+
+<div class="tk3">
+  <section class="blk bundels" id="pakketten">
+    <div class="wrap">
+      <h2 class="sec-title center">{{ section.settings.heading }}</h2>
+      {%- if section.settings.sub != blank -%}
+        <p class="sec-sub center">{{ section.settings.sub }}</p>
+      {%- endif -%}
+
+      {%- if lijst.products.size > 0 -%}
+        <div class="bdl-rij">
+          {%- for product in lijst.products limit: 3 -%}
+            {%- assign uitgelicht = false -%}
+            {%- if forloop.index == 2 and lijst.products.size > 2 -%}{%- assign uitgelicht = true -%}{%- endif -%}
+            {%- assign bespaard = 0 -%}
+            {%- if product.compare_at_price > product.price -%}
+              {%- assign bespaard = product.compare_at_price | minus: product.price -%}
+            {%- endif -%}
+
+            <a class="bdl{% if uitgelicht %} is-uit{% endif %}" href="{{ product.url }}">
+              {%- if uitgelicht and section.settings.badge != blank -%}
+                <span class="bdl-lint">{{ section.settings.badge }}</span>
+              {%- endif -%}
+
+              <div class="bdl-foto">
+                {%- if product.featured_image -%}
+                  <img src="{{ product.featured_image | image_url: width: 700 }}"
+                    alt="{{ product.featured_image.alt | default: product.title | escape }}"
+                    width="700" height="700" loading="lazy">
+                {%- endif -%}
+                {%- if bespaard > 0 -%}
+                  <span class="bdl-bespaar">Bespaar {{ bespaard | money }}</span>
+                {%- endif -%}
+              </div>
+
+              <h3>{{ product.title | split: '—' | first | strip }}</h3>
+              {%- assign onderkop = product.title | split: '—' | last | strip -%}
+              {%- if onderkop != product.title -%}
+                <p class="bdl-wat">{{ onderkop }}</p>
+              {%- endif -%}
+
+              <div class="bdl-prijs">
+                {%- if bespaard > 0 -%}
+                  <s>{{ product.compare_at_price | money }}</s>
+                {%- endif -%}
+                <b>{{ product.price | money }}</b>
+                <em>excl. btw</em>
+              </div>
+
+              {%- if product.price >= section.settings.drempel -%}
+                <p class="bdl-verzend">✓ Gratis verzending</p>
+              {%- endif -%}
+
+              <span class="bdl-knop">{{ section.settings.knop }}</span>
+            </a>
+          {%- endfor -%}
+        </div>
+
+        {%- if section.settings.note != blank -%}
+          <p class="bdl-note">{{ section.settings.note }}</p>
+        {%- endif -%}
+      {%- else -%}
+        <p class="sec-sub center">Er staan nog geen pakketten in de collectie <b>{{ section.settings.collection }}</b>.</p>
+      {%- endif -%}
+    </div>
+  </section>
+</div>
+
+{%- endunless -%}
+
+{% schema %}
+{
+  "name": "TK3 pakketten",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Kop", "default": "Pakketten." },
+    { "type": "textarea", "id": "sub", "label": "Onderkop", "default": "Meerdere plekken in je zaak, één bestelling. Altijd voordeliger dan de losse kaarten." },
+    { "type": "text", "id": "collection", "label": "Collectie", "default": "pakketten" },
+    { "type": "text", "id": "badge", "label": "Lint op de middelste tegel", "default": "Meest gekozen" },
+    { "type": "text", "id": "knop", "label": "Knoptekst", "default": "Bekijk dit pakket" },
+    { "type": "number", "id": "drempel", "label": "Drempel gratis verzending in centen", "default": 7000 },
+    { "type": "textarea", "id": "note", "label": "Regel eronder", "default": "Liever zelf samenstellen? Bij twee kaarten krijg je 10% korting, bij drie 15% en vanaf vier 20% — dat wordt automatisch verrekend." }
+  ],
+  "presets": [{ "name": "TK3 pakketten" }]
+}
+{% endschema %}

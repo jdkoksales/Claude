@@ -24,6 +24,21 @@ html,body{overflow-x:clip}
 .tk3-koppelmelding b{color:var(--ink,#1A202C)}
 .tk3-koppelmelding a{text-decoration:underline;text-underline-offset:2px;font-weight:600;white-space:nowrap}
 .tk3-cartlink-ok{margin:0 0 10px;font-size:12.5px;font-weight:600;color:#136C34;line-height:1.45}
+.tk3-verzendbalk{margin:0 0 14px}
+.tk3-verzendbalk p{margin:0 0 7px;font-size:13px;color:rgba(0,0,0,.66)}
+.tk3-verzendbalk b{color:#1A202C}
+.tk3-verzendmeter{height:6px;border-radius:100px;background:rgba(0,0,0,.09);overflow:hidden}
+.tk3-verzendmeter span{display:block;height:100%;border-radius:100px;background:linear-gradient(90deg,#DB4E14,#F4801F);transition:width .35s ease}
+.tk3-verzendbalk.is-gehaald .tk3-verzendmeter span{background:#136C34}
+.tk3-verzendbalk.is-gehaald b{color:#136C34}
+.tk3-bijverkoop{display:flex;align-items:center;gap:12px;margin:0 0 14px;padding:10px 12px;border:1px dashed rgba(0,0,0,.2);border-radius:12px}
+.tk3-bijverkoop img{width:48px;height:48px;object-fit:contain;border-radius:8px;background:rgba(0,0,0,.04);flex:0 0 auto}
+.tk3-bijverkoop-tekst{flex:1 1 auto;min-width:0;line-height:1.35}
+.tk3-bijverkoop-tekst b{display:block;font-size:13px;color:#1A202C}
+.tk3-bijverkoop-tekst span{font-size:12px;color:rgba(0,0,0,.55)}
+.tk3-bijverkoop-knop{flex:0 0 auto;border:1px solid #1A202C;border-radius:100px;padding:8px 15px;font-size:12.5px;font-weight:700;background:#fff;color:#1A202C;cursor:pointer;transition:background .15s,color .15s}
+.tk3-bijverkoop-knop:hover{background:#1A202C;color:#fff}
+.tk3-bijverkoop-knop[disabled]{opacity:.55;cursor:default}
 .product-sticky-bar__price{color:#E23B1E}
 .tk3-staffel{flex:1 0 100%;width:100%;margin:0 0 18px}
 .tk3-staffel-kop{font-size:14px;font-weight:600;letter-spacing:-.01em;margin-bottom:8px}
@@ -31,11 +46,15 @@ html,body{overflow-x:clip}
 .tk3-trede{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 4px;font:inherit;text-align:center;cursor:pointer;background:#fff;color:inherit;border:1px solid rgba(0,0,0,.14);border-radius:10px;transition:border-color .12s,box-shadow .12s}
 .tk3-trede:hover{border-color:rgba(0,0,0,.38)}
 .tk3-trede.is-actief{border-color:rgba(0,0,0,.85);box-shadow:0 0 0 1px rgba(0,0,0,.85) inset}
-.tk3-trede-aantal{font-size:12px;font-weight:600;letter-spacing:-.01em}
-.tk3-trede-pct{font-size:13px;font-weight:700;letter-spacing:-.02em;color:#136C34}
+.tk3-trede-aantal{font-size:12px;font-weight:600;letter-spacing:-.01em;color:rgba(0,0,0,.55)}
+.tk3-trede-stuk{font-size:17px;font-weight:750;letter-spacing:-.03em;color:#E23B1E;line-height:1.1}
+.tk3-trede:first-child .tk3-trede-stuk{color:#1A202C}
+.tk3-trede-eenheid{font-size:10.5px;color:rgba(0,0,0,.4);margin-top:-1px}
+.tk3-trede-pct{font-size:12px;font-weight:700;letter-spacing:-.01em;color:#136C34;margin-top:3px}
 .tk3-trede:first-child .tk3-trede-pct{color:rgba(0,0,0,.36);font-weight:600}
-.tk3-trede-prijs{font-size:11.5px;color:rgba(0,0,0,.5)}
+.tk3-trede-prijs{font-size:11px;color:rgba(0,0,0,.42)}
 .tk3-staffel small{display:block;margin-top:8px;font-size:12.5px;line-height:1.45;color:rgba(0,0,0,.55)}
+.tk3-staffel small a{text-decoration:underline;text-underline-offset:2px;font-weight:600;color:rgba(0,0,0,.75)}
 @media(max-width:560px){.tk3-staffel-rij{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:560px){.tk3-staffel-kop{font-size:13.5px}.tk3-trede{padding:11px 6px}.tk3-trede-aantal{font-size:12.5px}.tk3-trede-pct{font-size:14px}.tk3-staffel small{font-size:12px}.tk3-koppelmelding{font-size:13px}}
 .tk3{
@@ -252,6 +271,30 @@ html,body{overflow-x:clip}
   border:1px solid rgba(0,0,0,.16);border-radius:9999px;padding:13px 24px;font-size:var(--fs-sm);
   font-weight:650;white-space:nowrap;transition:border-color .18s,background .18s}
 .tk3 .btn-secondary:hover{border-color:rgba(0,0,0,.45);background:#fafafa}
+.tk3 .bdl-rij{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:46px;align-items:start}
+.tk3 .bdl{position:relative;display:flex;flex-direction:column;background:#fff;border:1px solid var(--line);
+  border-radius:22px;padding:22px 22px 24px;transition:border-color .18s,box-shadow .18s,transform .18s}
+.tk3 .bdl:hover{border-color:rgba(0,0,0,.3);box-shadow:0 18px 40px rgba(0,0,0,.07);transform:translateY(-2px)}
+.tk3 .bdl.is-uit{border-color:var(--oranje);box-shadow:0 18px 44px rgba(219,78,20,.13)}
+.tk3 .bdl-lint{position:absolute;top:-13px;left:50%;transform:translateX(-50%);z-index:3;white-space:nowrap;
+  background:linear-gradient(90deg,var(--oranje-diep),var(--oranje));color:#fff;border-radius:100px;
+  padding:6px 15px;font-size:12px;font-weight:700;letter-spacing:.01em}
+.tk3 .bdl-foto{position:relative;border-radius:16px;overflow:hidden;background:var(--grey-bg);margin-bottom:16px}
+.tk3 .bdl-foto img{width:100%;height:auto;display:block}
+.tk3 .bdl-bespaar{position:absolute;left:12px;bottom:12px;background:#136C34;color:#fff;border-radius:100px;
+  padding:6px 13px;font-size:12.5px;font-weight:700}
+.tk3 .bdl h3{font-size:var(--fs-lg);letter-spacing:-.02em;margin-bottom:4px}
+.tk3 .bdl-wat{font-size:var(--fs-sm);color:var(--ink-64);line-height:1.45;margin-bottom:12px}
+.tk3 .bdl-prijs{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;margin-bottom:6px}
+.tk3 .bdl-prijs s{color:var(--ink-36);font-size:var(--fs-sm)}
+.tk3 .bdl-prijs b{font-size:26px;font-weight:750;letter-spacing:-.03em;color:#E23B1E}
+.tk3 .bdl-prijs em{font-style:normal;font-size:11.5px;color:var(--ink-36)}
+.tk3 .bdl-verzend{font-size:12.5px;font-weight:600;color:#136C34;margin-bottom:14px}
+.tk3 .bdl-knop{margin-top:auto;display:block;text-align:center;background:var(--ink);color:#fff;
+  border-radius:9999px;padding:13px 20px;font-size:var(--fs-sm);font-weight:700}
+.tk3 .bdl.is-uit .bdl-knop{background:linear-gradient(90deg,var(--oranje-diep),var(--oranje))}
+.tk3 .bdl-note{text-align:center;max-width:62ch;margin:30px auto 0;font-size:var(--fs-sm);color:var(--ink-64)}
+@media(max-width:900px){.tk3 .bdl-rij{grid-template-columns:1fr;gap:26px;margin-top:38px}.tk3 .bdl{padding:20px 18px 22px}.tk3 .bdl.is-uit{order:-1}}
 .tk3 .koppelstrook{background:var(--grey-bg)}
 .tk3 .ks-stappen{list-style:none;display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:44px}
 .tk3 .ks-stappen li{background:#fff;border:1px solid var(--line);border-radius:18px;padding:24px 22px 26px;
@@ -266,6 +309,12 @@ html,body{overflow-x:clip}
   margin-left:6px;white-space:nowrap}
 @media(max-width:1000px){.tk3 .ks-stappen{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:620px){.tk3 .ks-stappen{grid-template-columns:1fr;gap:14px;margin-top:34px}.tk3 .ks-stappen li{padding:20px 18px 22px}.tk3 .ks-note a{display:block;margin:6px 0 0}}
+.tk3 .off-punten{list-style:none;display:grid;grid-template-columns:repeat(2,1fr);gap:10px 22px;
+  max-width:760px;margin:0 auto 28px}
+.tk3 .off-punten li{position:relative;padding-left:26px;font-size:var(--fs-sm);color:var(--ink-64);line-height:1.5}
+.tk3 .off-punten li::before{content:'\2713';position:absolute;left:0;top:0;width:18px;height:18px;border-radius:50%;
+  background:#136C34;color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center}
+@media(max-width:700px){.tk3 .off-punten{grid-template-columns:1fr;gap:9px}}
 .tk3 .koppel .wrap{max-width:760px}
 .tk3 .koppel-kop{text-align:center;margin-bottom:34px}
 .tk3 .koppel-eyebrow{font-size:var(--fs-xs);font-weight:700;letter-spacing:.07em;text-transform:uppercase;

@@ -1,0 +1,57 @@
+GEVONDEN: 3 punten
+ - winkelwagen niet uit te lezen
+ - lade: JS Unexpected token '<', "<!DOCTYPE "... is not valid JSON
+ - winkelwagen niet uit te lezen rond de bijverkoop
+
+== pakketten op de homepage
+   3 tegels
+   - Startpakket | Google-standaard + sticker
+     €49,42 → €44,95   Bespaar €4,47      
+     foto: ok   link: /products/tapkaarten-startpakket
+   - Balie compleet | Google, Instagram en Facebook
+     €89,13 → €79,95   Bespaar €9,18   ✓ Gratis verzending   Meest gekozen
+     foto: ok   link: /products/tapkaarten-balie-compleet
+   - Meerdere plekken | 4 standaards + 3 stickers
+     €159,72 → €139,95   Bespaar €19,77   ✓ Gratis verzending   
+     foto: ok   link: /products/tapkaarten-meerdere-plekken
+
+== tapkaarten-startpakket status=200
+   Startpakket — Google-standaard + sticker – TapKaarten
+   prijzen: €19,95  €0,00  € 49,42  € 44,95  €44,95  €40,46
+   staffelblok: true   koopknop: true
+
+== tapkaarten-balie-compleet status=200
+   Balie compleet — Google, Instagram en Facebook – TapKaarten
+   prijzen: €19,95  €0,00  € 89,13  € 79,95  €79,95  €71,96
+   staffelblok: true   koopknop: true
+
+== tapkaarten-meerdere-plekken status=200
+   Meerdere plekken — 4 standaards + 3 stickers – TapKaarten
+   prijzen: €19,95  €0,00  € 159,72  € 139,95  €139,95  €125,96
+   staffelblok: true   koopknop: true
+
+== staffel op de productpagina
+   1 kaart → €34,95 (basisprijs) totaal €34,95  [17px]
+   2 kaarten → €31,46 (−10%) totaal €62,92  [17px]
+   3 kaarten → €29,71 (−15%) totaal €89,13  [17px]
+   4+ kaarten → €27,96 (−20%) totaal €111,84  [17px]
+   offertelink aanwezig: true
+
+== winkelwagenlade
+   1 stuks: winkelwagen niet uit te lezen
+   2 stuks: winkelwagen niet uit te lezen
+
+== offerte (/pages/offerte) status=200
+   Offerte aanvragen – TapKaarten
+   formuliervelden: contact[name], contact[email], contact[Bedrijfsnaam], contact[Telefoon], contact[Aantal], contact[Vestigingen], contact[body]
+   pakkettegels: 0   producttegels: 0   overloop: 0px
+
+== pakkettencollectie (/collections/pakketten) status=200
+   Pakketten – TapKaarten
+   pakkettegels: 0   producttegels: 3   overloop: 0px
+
+== collectie (/collections/alle-tapkaarten) status=200
+   Alle TapKaarten — NFC-bordjes voor reviews en volgers
+   pakkettegels: 3   producttegels: 5   overloop: 0px
+
+== mobiel: overloop 0px, eerste pakkettegel "Startpakket" (uitgelicht bovenaan: false)

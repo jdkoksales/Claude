@@ -1,0 +1,127 @@
+GEVONDEN: 22 punten
+ - home: oningevuld veld
+ - collectie: oningevuld veld
+ - google-wit: oningevuld veld
+ - google-zwart: oningevuld veld
+ - instagram: oningevuld veld
+ - facebook: oningevuld veld
+ - sticker: oningevuld veld
+ - winkelwagen: oningevuld veld
+ - koppelen: oningevuld veld
+ - verzending: oningevuld veld
+ - retour: oningevuld veld
+ - voorwaarden: oningevuld veld
+ - vragen: oningevuld veld
+ - over: oningevuld veld
+ - contact: oningevuld veld
+ - privacy: oningevuld veld
+ - 404: oningevuld veld
+ - winkelwagen niet uit te lezen
+ - winkelwagenlade opent niet na toevoegen
+ - staffel bij 2 stuks niet te meten
+ - staffel bij 3 stuks niet te meten
+ - staffel bij 4 stuks niet te meten
+
+== hero: staat de kop midden of boven?
+   telefoon 390x844: bovenin — ruimte boven de kop 56px, tot de foto 236px, hero 493px hoog, knop eindigt op 465px
+   tablet 820x1180: bovenin — ruimte boven de kop 56px, tot de foto 179px, hero 545px hoog, knop eindigt op 375px
+   laptop 1440x900: GECENTREERD — ruimte boven de kop 48px, tot de foto 218px, hero 853px hoog, knop eindigt op 446px
+   groot 1920x1200: GECENTREERD — ruimte boven de kop 180px, tot de foto 350px, hero 1136px hoog, knop eindigt op 578px
+
+== koppelformulier
+   status 200
+   actie: /contact#contact_form
+   velden: contact[name], contact[email], contact[Ordernummer], contact[Bedrijfsnaam], contact[Vestiging], contact[Google], contact[Instagram], contact[Facebook], contact[body]
+   verplicht: contact[name], contact[email], contact[Bedrijfsnaam], contact[Vestiging]
+   knop: Versturen   pdf: aanwezig
+   pdf bereikbaar: 200 (application/pdf)
+
+== pagina voor pagina
+
+   -- home (/) status=200 h1=1
+      titel: TapKaarten — NFC-bordjes voor meer Google-reviews en volgers
+      !! oningevuld veld: "...d © 2026 TapKaarten · Dingspil 13, 9302 ET Roden · KvK [VUL IN] · Btw [VUL IN]..."
+
+   -- collectie (/collections/alle-tapkaarten) status=200 h1=1
+      titel: Alle TapKaarten — NFC-bordjes voor reviews en volgers
+      !! oningevuld veld: "...d © 2026 TapKaarten · Dingspil 13, 9302 ET Roden · KvK [VUL IN] · Btw [VUL IN]..."
+
+   -- google-wit (/products/tapkaarten-google-review-standaard) status=200 h1=1
+      titel: Google Review-standaard wit — NFC bordje voor meer reviews – TapKaarten
+      !! oningevuld veld: "...d © 2026 TapKaarten · Dingspil 13, 9302 ET Roden · KvK [VUL IN] · Btw [VUL IN]..."
+      links zonder doel: 1
+
+   -- google-zwart (/products/tapkaarten-google-review-standaard-zwart) status=200 h1=1
+      titel: Google Review-standaard zwart — NFC bordje voor meer reviews – TapKaarten
+      !! oningevuld veld: "...d © 2026 TapKaarten · Dingspil 13, 9302 ET Roden · KvK [VUL IN] · Btw [VUL IN]..."
+      links zonder doel: 1
+
+   -- instagram (/products/tapkaarten-instagram-standaard) status=200 h1=1
+      titel: Instagram-standaard — NFC bordje voor meer volgers – TapKaarten
+      !! oningevuld veld: "...d © 2026 TapKaarten · Dingspil 13, 9302 ET Roden · KvK [VUL IN] · Btw [VUL IN]..."
+      links zonder doel: 1
+
+   -- facebook (/products/tapkaarten-facebook-standaard) status=200 h1=1
+      titel: Facebook-standaard — NFC bordje voor meer volgers – TapKaarten
+      !! oningevuld veld: "...d © 2026 TapKaarten · Dingspil 13, 9302 ET Roden · KvK [VUL IN] · Btw [VUL IN]..."
+      links zonder doel: 1
+
+   -- sticker (/products/tapkaarten-google-review-sticker) status=200 h1=1
+      titel: Google Review-sticker — zelfklevende NFC-sticker – TapKaarten
+      !! oningevuld veld: "...d © 2026 TapKaarten · Dingspil 13, 9302 ET Roden · KvK [VUL IN] · Btw [VUL IN]..."
+      links zonder doel: 1
+
+   -- winkelwagen (/cart) status=200 h1=1
+      titel: Je winkelwagen – TapKaarten
+      !! oningevuld veld: "...d © 2026 TapKaarten · Dingspil 13, 9302 ET Roden · KvK [VUL IN] · Btw [VUL IN]..."
+
+   -- koppelen (/pages/koppelen) status=200 h1=1
+      titel: Koppelen – TapKaarten
+      !! oningevuld veld: "...d © 2026 TapKaarten · Dingspil 13, 9302 ET Roden · KvK [VUL IN] · Btw [VUL IN]..."
+
+   -- verzending (/pages/verzending) status=200 h1=1
+      titel: Verzending – TapKaarten
+      !! oningevuld veld: "...d © 2026 TapKaarten · Dingspil 13, 9302 ET Roden · KvK [VUL IN] · Btw [VUL IN]..."
+
+   -- retour (/pages/retourbeleid) status=200 h1=1
+      titel: Retourbeleid – TapKaarten
+      !! oningevuld veld: "...d © 2026 TapKaarten · Dingspil 13, 9302 ET Roden · KvK [VUL IN] · Btw [VUL IN]..."
+
+   -- voorwaarden (/pages/algemene-voorwaarden) status=200 h1=1
+      titel: Algemene voorwaarden – TapKaarten
+      !! oningevuld veld: "...o@tapkaarten.nl · Telefoon: 06 16 03 63 28 KvK-nummer: [VUL IN] · Btw-identificatienummer: [VUL IN] 2. Waarop deze voorw..."
+
+   -- vragen (/pages/veelgestelde-vragen) status=200 h1=1
+      titel: Veelgestelde vragen – TapKaarten
+      !! oningevuld veld: "...d © 2026 TapKaarten · Dingspil 13, 9302 ET Roden · KvK [VUL IN] · Btw [VUL IN]..."
+
+   -- over (/pages/over-ons) status=200 h1=1
+      titel: Over TapKaarten
+      !! oningevuld veld: "...d © 2026 TapKaarten · Dingspil 13, 9302 ET Roden · KvK [VUL IN] · Btw [VUL IN]..."
+
+   -- contact (/pages/contact) status=200 h1=1
+      titel: Contact – TapKaarten
+      !! oningevuld veld: "...d © 2026 TapKaarten · Dingspil 13, 9302 ET Roden · KvK [VUL IN] · Btw [VUL IN]..."
+
+   -- privacy (/policies/privacy-policy) status=200 h1=1
+      titel: Privacybeleid – TapKaarten
+      !! oningevuld veld: "...d © 2026 TapKaarten · Dingspil 13, 9302 ET Roden · KvK [VUL IN] · Btw [VUL IN]..."
+
+   -- 404 (/pages/bestaat-niet-abc) status=404 h1=1
+      titel: 404 niet gevonden – TapKaarten
+      !! oningevuld veld: "...d © 2026 TapKaarten · Dingspil 13, 9302 ET Roden · KvK [VUL IN] · Btw [VUL IN]..."
+
+== mobiel (390px)
+   home: overloop 0px — track | SPAN | mq-dot
+   product: overloop 0px — track | SPAN | mq-dot
+   koppelen: overloop 0px — track | SPAN | mq-dot
+
+== bestelproces
+   !! winkelwagen niet uit te lezen
+   winkelwagenlade schuift open: false
+   regel in de lade: ✓ Wij koppelen je pagina voor je — na je bestelling krijg je een kort formulier.
+   afrekenknop eindigt op 984px van 1000
+   2 stuks: niet uit te lezen
+   3 stuks: niet uit te lezen
+   4 stuks: niet uit te lezen
+   /checkout bereikbaar: 200

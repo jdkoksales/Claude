@@ -1,0 +1,175 @@
+
+=== telefoon 390x844  (kop op 179)
+  [0] <picture> class="twic-p"
+      src ...none
+      natuurlijk -  rect 0,151 390x693 bodem=844
+      position:static inset:auto/auto/auto/auto z:auto
+      breedte:auto hoogte:auto aspect:auto
+      object-fit:fill object-position:50% 50%
+  [1] <img> class=""
+      src ....pics/media/strapi/Layer_1_Table_60ad68b990.png?twic=v1/crop=1648x2160@1178x0/quality=50/inside=480x853@bottom
+      natuurlijk 389x693  rect 0,151 390x693 bodem=844
+      position:static inset:auto/auto/auto/auto z:auto
+      breedte:390px hoogte:693.062px aspect:auto 480 / 853
+      object-fit:cover object-position:50% 50%
+      srcset https://smiirl.twic.pics/media/strapi/Layer_1_Table_60ad68b990.png?twic=v1/crop=1648x2160@1178x0/quality=50/inside=960x1707@bottom 960w,https://smiirl.twic.pics
+  [2] <picture> class="twic-p"
+      src ...none
+      natuurlijk -  rect 0,151 390x693 bodem=844
+      position:static inset:auto/auto/auto/auto z:auto
+      breedte:auto hoogte:auto aspect:auto
+      object-fit:fill object-position:50% 50%
+  [3] <img> class=""
+      src ...c.pics/media/strapi/Layer_2_Accessories_5_D_888de5d469.png?twic=v1/crop=1648x2160@1178x0/inside=480x853@bottom
+      natuurlijk 389x693  rect 0,151 390x693 bodem=844
+      position:static inset:auto/auto/auto/auto z:auto
+      breedte:390px hoogte:693.062px aspect:auto 480 / 853
+      object-fit:cover object-position:50% 50%
+      srcset https://smiirl.twic.pics/media/strapi/Layer_2_Accessories_5_D_888de5d469.png?twic=v1/crop=1648x2160@1178x0/inside=960x1707@bottom 960w,https://smiirl.twic.pics/
+  <picture> bronnen:
+      (min-width: 992px) -> cs/media/strapi/Layer_1_Table_60ad68b990.png?twic=v1/quality=50/inside=992x558@bottom 992w
+      (min-width: 768px) -> _Table_60ad68b990.png?twic=v1/crop=2298x1295@772x865/quality=50/inside=768x576@bottom 768w
+      (min-width: 480px) -> 1_Table_60ad68b990.png?twic=v1/crop=1648x2160@1178x0/quality=50/inside=480x640@bottom 480w
+      (min-width: 992px) -> ics/media/strapi/Layer_2_Accessories_5_D_888de5d469.png?twic=v1/inside=992x558@bottom 992w
+      (min-width: 768px) -> 2_Accessories_5_D_888de5d469.png?twic=v1/crop=2298x1295@772x865/inside=768x576@bottom 768w
+      (min-width: 480px) -> _2_Accessories_5_D_888de5d469.png?twic=v1/crop=1648x2160@1178x0/inside=480x640@bottom 480w
+
+=== tel-klein 390x667  (kop op 90)
+  [0] <picture> class="twic-p"
+      src ...none
+      natuurlijk -  rect 0,-26 390x693 bodem=667
+      position:static inset:auto/auto/auto/auto z:auto
+      breedte:auto hoogte:auto aspect:auto
+      object-fit:fill object-position:50% 50%
+  [1] <img> class=""
+      src ....pics/media/strapi/Layer_1_Table_60ad68b990.png?twic=v1/crop=1648x2160@1178x0/quality=50/inside=480x853@bottom
+      natuurlijk 389x693  rect 0,-26 390x693 bodem=667
+      position:static inset:auto/auto/auto/auto z:auto
+      breedte:390px hoogte:693.062px aspect:auto 480 / 853
+      object-fit:cover object-position:50% 50%
+      srcset https://smiirl.twic.pics/media/strapi/Layer_1_Table_60ad68b990.png?twic=v1/crop=1648x2160@1178x0/quality=50/inside=960x1707@bottom 960w,https://smiirl.twic.pics
+  [2] <picture> class="twic-p"
+      src ...none
+      natuurlijk -  rect 0,-26 390x693 bodem=667
+      position:static inset:auto/auto/auto/auto z:auto
+      breedte:auto hoogte:auto aspect:auto
+      object-fit:fill object-position:50% 50%
+  [3] <img> class=""
+      src ...c.pics/media/strapi/Layer_2_Accessories_5_D_888de5d469.png?twic=v1/crop=1648x2160@1178x0/inside=480x853@bottom
+      natuurlijk 389x693  rect 0,-26 390x693 bodem=667
+      position:static inset:auto/auto/auto/auto z:auto
+      breedte:390px hoogte:693.062px aspect:auto 480 / 853
+      object-fit:cover object-position:50% 50%
+      srcset https://smiirl.twic.pics/media/strapi/Layer_2_Accessories_5_D_888de5d469.png?twic=v1/crop=1648x2160@1178x0/inside=960x1707@bottom 960w,https://smiirl.twic.pics/
+  <picture> bronnen:
+      (min-width: 992px) -> cs/media/strapi/Layer_1_Table_60ad68b990.png?twic=v1/quality=50/inside=992x558@bottom 992w
+      (min-width: 768px) -> _Table_60ad68b990.png?twic=v1/crop=2298x1295@772x865/quality=50/inside=768x576@bottom 768w
+      (min-width: 480px) -> 1_Table_60ad68b990.png?twic=v1/crop=1648x2160@1178x0/quality=50/inside=480x640@bottom 480w
+      (min-width: 992px) -> ics/media/strapi/Layer_2_Accessories_5_D_888de5d469.png?twic=v1/inside=992x558@bottom 992w
+      (min-width: 768px) -> 2_Accessories_5_D_888de5d469.png?twic=v1/crop=2298x1295@772x865/inside=768x576@bottom 768w
+      (min-width: 480px) -> _2_Accessories_5_D_888de5d469.png?twic=v1/crop=1648x2160@1178x0/inside=480x640@bottom 480w
+
+=== tablet 820x1180  (kop op 341)
+  [0] <picture> class="twic-p"
+      src ...none
+      natuurlijk -  rect 0,565 820x615 bodem=1180
+      position:static inset:auto/auto/auto/auto z:auto
+      breedte:auto hoogte:auto aspect:auto
+      object-fit:fill object-position:50% 50%
+  [1] <img> class=""
+      src ...cs/media/strapi/Layer_1_Table_60ad68b990.png?twic=v1/crop=2298x1295@772x865/quality=50/inside=1536x1152@bottom
+      natuurlijk 820x615  rect 0,565 820x615 bodem=1180
+      position:static inset:auto/auto/auto/auto z:auto
+      breedte:820px hoogte:615px aspect:auto 768 / 576
+      object-fit:cover object-position:50% 50%
+      srcset https://smiirl.twic.pics/media/strapi/Layer_1_Table_60ad68b990.png?twic=v1/crop=1648x2160@1178x0/quality=50/inside=960x1707@bottom 960w,https://smiirl.twic.pics
+  [2] <picture> class="twic-p"
+      src ...none
+      natuurlijk -  rect 0,565 820x615 bodem=1180
+      position:static inset:auto/auto/auto/auto z:auto
+      breedte:auto hoogte:auto aspect:auto
+      object-fit:fill object-position:50% 50%
+  [3] <img> class=""
+      src ...ics/media/strapi/Layer_2_Accessories_5_D_888de5d469.png?twic=v1/crop=2298x1295@772x865/inside=1536x1152@bottom
+      natuurlijk 820x615  rect 0,565 820x615 bodem=1180
+      position:static inset:auto/auto/auto/auto z:auto
+      breedte:820px hoogte:615px aspect:auto 768 / 576
+      object-fit:cover object-position:50% 50%
+      srcset https://smiirl.twic.pics/media/strapi/Layer_2_Accessories_5_D_888de5d469.png?twic=v1/crop=1648x2160@1178x0/inside=960x1707@bottom 960w,https://smiirl.twic.pics/
+  <picture> bronnen:
+      (min-width: 992px) -> cs/media/strapi/Layer_1_Table_60ad68b990.png?twic=v1/quality=50/inside=992x558@bottom 992w
+      (min-width: 768px) -> _Table_60ad68b990.png?twic=v1/crop=2298x1295@772x865/quality=50/inside=768x576@bottom 768w
+      (min-width: 480px) -> 1_Table_60ad68b990.png?twic=v1/crop=1648x2160@1178x0/quality=50/inside=480x640@bottom 480w
+      (min-width: 992px) -> ics/media/strapi/Layer_2_Accessories_5_D_888de5d469.png?twic=v1/inside=992x558@bottom 992w
+      (min-width: 768px) -> 2_Accessories_5_D_888de5d469.png?twic=v1/crop=2298x1295@772x865/inside=768x576@bottom 768w
+      (min-width: 480px) -> _2_Accessories_5_D_888de5d469.png?twic=v1/crop=1648x2160@1178x0/inside=480x640@bottom 480w
+
+=== laptop 1440x900  (kop op 213)
+  [0] <picture> class="twic-p"
+      src ...none
+      natuurlijk -  rect 20,113 1400x788 bodem=900
+      position:static inset:auto/auto/auto/auto z:auto
+      breedte:auto hoogte:auto aspect:auto
+      object-fit:fill object-position:50% 50%
+  [1] <img> class=""
+      src ...https://smiirl.twic.pics/media/strapi/Layer_1_Table_60ad68b990.png?twic=v1/quality=50/inside=1536x864@bottom
+      natuurlijk 1439x809  rect 20,113 1400x788 bodem=900
+      position:static inset:auto/auto/auto/auto z:auto
+      breedte:1400px hoogte:787.5px aspect:auto 992 / 558
+      object-fit:cover object-position:50% 50%
+      srcset https://smiirl.twic.pics/media/strapi/Layer_1_Table_60ad68b990.png?twic=v1/crop=1648x2160@1178x0/quality=50/inside=960x1707@bottom 960w,https://smiirl.twic.pics
+  [2] <picture> class="twic-p"
+      src ...none
+      natuurlijk -  rect 20,113 1400x788 bodem=900
+      position:static inset:auto/auto/auto/auto z:auto
+      breedte:auto hoogte:auto aspect:auto
+      object-fit:fill object-position:50% 50%
+  [3] <img> class=""
+      src ...https://smiirl.twic.pics/media/strapi/Layer_2_Accessories_5_D_888de5d469.png?twic=v1/inside=1536x864@bottom
+      natuurlijk 1439x809  rect 20,113 1400x788 bodem=900
+      position:static inset:auto/auto/auto/auto z:auto
+      breedte:1400px hoogte:787.5px aspect:auto 992 / 558
+      object-fit:cover object-position:50% 50%
+      srcset https://smiirl.twic.pics/media/strapi/Layer_2_Accessories_5_D_888de5d469.png?twic=v1/crop=1648x2160@1178x0/inside=960x1707@bottom 960w,https://smiirl.twic.pics/
+  <picture> bronnen:
+      (min-width: 992px) -> cs/media/strapi/Layer_1_Table_60ad68b990.png?twic=v1/quality=50/inside=992x558@bottom 992w
+      (min-width: 768px) -> _Table_60ad68b990.png?twic=v1/crop=2298x1295@772x865/quality=50/inside=768x576@bottom 768w
+      (min-width: 480px) -> 1_Table_60ad68b990.png?twic=v1/crop=1648x2160@1178x0/quality=50/inside=480x640@bottom 480w
+      (min-width: 992px) -> ics/media/strapi/Layer_2_Accessories_5_D_888de5d469.png?twic=v1/inside=992x558@bottom 992w
+      (min-width: 768px) -> 2_Accessories_5_D_888de5d469.png?twic=v1/crop=2298x1295@772x865/inside=768x576@bottom 768w
+      (min-width: 480px) -> _2_Accessories_5_D_888de5d469.png?twic=v1/crop=1648x2160@1178x0/inside=480x640@bottom 480w
+
+=== laptop-laag 1440x780  (kop op 153)
+  [0] <picture> class="twic-p"
+      src ...none
+      natuurlijk -  rect 20,-7 1400x788 bodem=780
+      position:static inset:auto/auto/auto/auto z:auto
+      breedte:auto hoogte:auto aspect:auto
+      object-fit:fill object-position:50% 50%
+  [1] <img> class=""
+      src ...https://smiirl.twic.pics/media/strapi/Layer_1_Table_60ad68b990.png?twic=v1/quality=50/inside=1536x864@bottom
+      natuurlijk 1439x809  rect 20,-7 1400x788 bodem=780
+      position:static inset:auto/auto/auto/auto z:auto
+      breedte:1400px hoogte:787.5px aspect:auto 992 / 558
+      object-fit:cover object-position:50% 50%
+      srcset https://smiirl.twic.pics/media/strapi/Layer_1_Table_60ad68b990.png?twic=v1/crop=1648x2160@1178x0/quality=50/inside=960x1707@bottom 960w,https://smiirl.twic.pics
+  [2] <picture> class="twic-p"
+      src ...none
+      natuurlijk -  rect 20,-7 1400x788 bodem=780
+      position:static inset:auto/auto/auto/auto z:auto
+      breedte:auto hoogte:auto aspect:auto
+      object-fit:fill object-position:50% 50%
+  [3] <img> class=""
+      src ...https://smiirl.twic.pics/media/strapi/Layer_2_Accessories_5_D_888de5d469.png?twic=v1/inside=1536x864@bottom
+      natuurlijk 1439x809  rect 20,-7 1400x788 bodem=780
+      position:static inset:auto/auto/auto/auto z:auto
+      breedte:1400px hoogte:787.5px aspect:auto 992 / 558
+      object-fit:cover object-position:50% 50%
+      srcset https://smiirl.twic.pics/media/strapi/Layer_2_Accessories_5_D_888de5d469.png?twic=v1/crop=1648x2160@1178x0/inside=960x1707@bottom 960w,https://smiirl.twic.pics/
+  <picture> bronnen:
+      (min-width: 992px) -> cs/media/strapi/Layer_1_Table_60ad68b990.png?twic=v1/quality=50/inside=992x558@bottom 992w
+      (min-width: 768px) -> _Table_60ad68b990.png?twic=v1/crop=2298x1295@772x865/quality=50/inside=768x576@bottom 768w
+      (min-width: 480px) -> 1_Table_60ad68b990.png?twic=v1/crop=1648x2160@1178x0/quality=50/inside=480x640@bottom 480w
+      (min-width: 992px) -> ics/media/strapi/Layer_2_Accessories_5_D_888de5d469.png?twic=v1/inside=992x558@bottom 992w
+      (min-width: 768px) -> 2_Accessories_5_D_888de5d469.png?twic=v1/crop=2298x1295@772x865/inside=768x576@bottom 768w
+      (min-width: 480px) -> _2_Accessories_5_D_888de5d469.png?twic=v1/crop=1648x2160@1178x0/inside=480x640@bottom 480w

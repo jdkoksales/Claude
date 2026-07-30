@@ -137,42 +137,48 @@ footer .brand img{height:29px}
    hangt de navigatie over de hero heen, bij ons staat hij erboven. tk3.js meet
    die twee samen op in --tk3-boven. */
 .hero .inner{position:relative;z-index:2;
-  padding-top:max(16px,calc(50svh - var(--tk3-kop,243px) - var(--tk3-boven,109px)))}
+  padding-top:max(16px,calc(50svh - var(--tk3-kop,243px) - var(--tk3-boven,109px)));
+  min-height:calc(100vh - var(--tk3-boven,109px));
+  min-height:calc(100svh - var(--tk3-boven,109px))}
+/* De tekst ligt over de foto. Beide zitten in .inner, dus de tekst heeft een
+   eigen laag nodig — anders schuift de foto (die wel een z-index heeft) erover. */
+.hero .wrap{position:relative;z-index:2}
 /* Vanaf ongeveer 415px past de kop in twee regels in plaats van drie; het blok
    is dan een halve regel korter en de referentie zet hem daar 224px boven het
    midden. Onder die breedte blijft het 243px. */
 @media(min-width:415px){:root{--tk3-kop:224px}}
 @media(min-width:768px){:root{--tk3-kop:249px}}
 @media(min-width:1024px){:root{--tk3-kop:237px}}
-@media(min-width:901px) and (min-height:700px){
-  /* De hero vult precies het eerste scherm. */
-  .hero .inner{display:flex;flex-direction:column;
-    height:calc(100vh - var(--tk3-boven,109px));
-    height:calc(100svh - var(--tk3-boven,109px))}
-  /* De tekst houdt zijn eigen hoogte; de foto slokt op wat er overblijft, zo
-     past de balie altijd binnen het eerste scherm. */
-  .hero .inner>.wrap{flex:0 0 auto;padding-bottom:clamp(16px,2.4svh,40px)}
-  /* De foto ontleende zijn hoogte aan de bréédte van het scherm en werd
-     daardoor te hoog. Hij vult nu de rest en wordt van onderaf bijgesneden,
-     dus de balie blijft staan. De bovenrand vervaagt zodat de snede niet als
-     een lijn zichtbaar wordt. */
-  .hero .inner>.shots{position:relative;flex:1 1 auto;min-height:220px;margin-top:0;overflow:hidden;
-    -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 90px);
-    mask-image:linear-gradient(to bottom,transparent 0,#000 90px)}
-  /* De foto moest de hoogte van zijn venster overnemen, maar het thema zet
-     `height:auto` op elke img met !important; alleen object-fit uit deze regel
-     kwam door. Gevolg: de foto bleef 474px hoog in een venster van 258px en
-     werd van onderaf afgeknipt — precies daar staat de tafel.
-     Met absolute positionering en inset:0 bepaalt niet de height-eigenschap
-     maar de afstand tussen boven- en onderrand de hoogte, dus die !important
-     heeft er niets meer over te zeggen.
-     Ook aspect-ratio moet uit: die zet de browser zelf op de width- en
-     height-attributen in de HTML, en zolang die geldt rekent hij de hoogte uit
-     de breedte in plaats van hem tussen de randen te strekken. */
-  .hero .inner>.shots img{position:absolute;inset:0;width:100%;
-    height:100%!important;aspect-ratio:auto;
-    object-fit:cover;object-position:center bottom}
-}
+/* De foto hangt onderaan het eerste scherm en de tekst ligt eroverheen. De
+   lege ruimte bovenin de PNG is transparant, dus de gradient van de sectie
+   loopt er dwars door — daarom is er geen vervaging meer nodig om de snede te
+   verbergen: er is geen snede.
+
+   De referentie serveert per schermbreedte een andere uitsnede van dezelfde
+   bron, altijd onderaan uitgelijnd: 16:9 vanaf 992px, 4:3 op tablet, 3:4
+   daaronder en 9:16 op de telefoon. Zo blijft de tafel groot op een smal
+   scherm in plaats van mee te verschrompelen met de breedte.
+
+   Wij doen dat met een doek van 1600x900 waarop de tafel onderaan staat en het
+   kaartje in het midden. Per breedte krijgt het venster dezelfde verhouding als
+   bij hen, en object-fit:cover snijdt de zijkanten weg — precies de uitsnede
+   die zij vooraf op de server maken. Het kaartje staat op x=800 van 1600, dus
+   het valt altijd binnen die uitsnede. */
+.hero .shots{position:absolute;bottom:0;left:50%;transform:translateX(-50%);
+  z-index:1;width:min(100%,1400px);margin:0;display:block;pointer-events:none;
+  aspect-ratio:1600/900}
+@media(max-width:991px){.hero .shots{aspect-ratio:768/576}}
+@media(max-width:767px){.hero .shots{aspect-ratio:480/640}}
+@media(max-width:479px){.hero .shots{aspect-ratio:480/853}}
+/* Het thema zet height:auto met !important op elke img, en de browser zet zelf
+   aspect-ratio op de width- en height-attributen. Beide moeten wijken, anders
+   rekent hij de hoogte uit de breedte in plaats van hem tussen de randen van
+   het venster te strekken. */
+.hero .shots img{position:absolute;inset:0;width:100%;height:100%!important;
+  aspect-ratio:auto;object-fit:cover;object-position:center bottom;
+  opacity:0;transition:opacity .3s ease}
+.hero .shots img.on{opacity:1}
+@media(prefers-reduced-motion:reduce){.hero .shots img{transition:none}}
 /* Lettermaten exact als bij de referentie. Hun basismaat is 17px en alles is
    daar een veelvoud van: de kop 3× (51px), de onderkop 1× (17px), de knop
    0,875× (14,875px). Onder 768px valt de basis terug op 16px en de kop op
@@ -188,10 +194,6 @@ footer .brand img{height:29px}
 }
 /* De foto draagt zelf hetzelfde verloop; de mask laat de bovenrand
    naadloos in de sectieachtergrond oplossen. */
-.hero .shots{display:grid;width:min(100%,1500px);margin:8px auto 0}
-.hero .shots img{grid-area:1/1;width:100%;opacity:0;transition:opacity .3s ease}
-.hero .shots img.on{opacity:1}
-@media(prefers-reduced-motion:reduce){.hero .shots img{transition:none}}
 /* Boven de gekozen knop stijgt het teken op dat bij dat platform hoort:
    sterretjes bij Google, duimpjes bij Facebook, hartjes bij Instagram. Ze
    hangen in de knop zelf, dus ze verspringen mee zodra je iets anders kiest. */

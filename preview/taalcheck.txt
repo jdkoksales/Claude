@@ -1,0 +1,56 @@
+GEEN AFWIJKINGEN GEVONDEN
+
+home (/) 200
+   staat er: "76%"
+   staat er: "Wat reviews opleveren"
+   staat er: "Vanaf 2 kaarten automatisch korting"
+   staat er: "Verzonden vanuit Nederland"
+   staat er: "Niet tevreden? 14 dagen retour, geld terug"
+   staat er: "Gebogen plexiglas"
+   staat er: "Waarom we dit maken"
+   staat er: "Pakketten: meer plekken, minder per kaart"
+   staat er: "€ 27,96"
+   staat er: "Elke standaard én elke sticker telt mee"
+   staat er: "ligt de telefoon al in de hand"
+   staat er: "Je klant houdt de telefoon ertegenaan"
+
+product-google (/products/tapkaarten-google-review-standaard) 200
+   staat er: "Alle prijzen zijn zonder btw"
+   staat er: "je betaalt één keer"
+   staat er: "Gebogen plexiglas met vaste voet"
+   staat er: "werkt op iPhone en Android"
+   staat er: "Je klant houdt de telefoon tegen de kaart"
+   staat er: "De btw komt er in de kassa bij"
+   staat er: "je krijgt je geld terug"
+
+collectie (/collections/alle-tapkaarten) 200
+   staat er: "elke standaard én elke sticker telt mee"
+
+pakketten (/collections/pakketten) 200
+   staat er: "Hele zaak"
+
+hele-zaak (/products/tapkaarten-meerdere-plekken) 200
+   staat er: "Hele zaak"
+   staat er: "op meer dan één plek langskomt"
+   staat er: "dat er getikt wordt"
+
+vragen (/pages/veelgestelde-vragen) 200
+   staat er: "€ 27,96"
+   staat er: "Ja, zo vaak je wilt"
+   staat er: "Je betaalt één keer"
+   staat er: "Meer plekken leveren meer op"
+   staat er: "je krijgt je geld terug"
+
+over (/pages/over-ons) 200
+   staat er: "Gebogen plexiglas"
+   staat er: "heeft de telefoon al in de hand"
+   staat er: "zo vaak je wilt"
+
+contact (/pages/contact) 200
+   staat er: "Weet je niet welke kaart"
+
+koppelen (/pages/koppelen) 200
+   staat er: "voordat ze de deur uit gaan"
+
+offerte (/pages/offerte) 200
+   staat er: "Scherpere prijs dan de 20% uit de winkel"

@@ -74,6 +74,17 @@
     kanalen voor dezelfde informatie leverden alleen maar een extra handeling
     op de plek waar die het duurst is. Wat blijft is de geruststelling.
   {%- endcomment -%}
+  {%- comment -%}
+    De belofte "voor 16:00 besteld, vandaag verzonden" stond overal als tekst.
+    Een aflopende klok maakt er een echte deadline van, en die klok is eerlijk:
+    hij rekent met de werkelijke tijd in Amsterdam en met werkdagen. Is de
+    grens voorbij, dan zegt hij gewoon wanneer het pakket wél weggaat.
+  {%- endcomment -%}
+  <div class="tk3-klok" data-tk3-klok data-tk3-grens="16" hidden>
+    <span class="tk3-klok-punt" aria-hidden="true"></span>
+    <span data-tk3-klok-tekst></span>
+  </div>
+
   <div class="tk3-koppelmelding">
     <span class="tk3-koppelmelding-icoon" aria-hidden="true">✓</span>
     <span>
@@ -116,6 +127,64 @@
 </div>
 
 <script>
+  // Aflopende klok tot de verzendgrens. Rekent in de tijdzone van de winkel,
+  // niet in die van de bezoeker: iemand in Spanje moet dezelfde grens zien als
+  // wij hier hanteren, anders belooft de klok iets wat niet klopt.
+  (function () {
+    var blok = document.querySelector('[data-tk3-klok]');
+    if (!blok) return;
+
+    var grens = parseInt(blok.getAttribute('data-tk3-grens'), 10);
+    if (isNaN(grens)) grens = 16;
+    var tekst = blok.querySelector('[data-tk3-klok-tekst]');
+    var dagen = ['zondag', 'maandag', 'dinsdag', 'woensdag', 'donderdag', 'vrijdag', 'zaterdag'];
+
+    // Datum en tijd zoals ze in Amsterdam zijn, ongeacht waar de bezoeker zit.
+    var hier = function () {
+      var d = new Intl.DateTimeFormat('en-CA', {
+        timeZone: 'Europe/Amsterdam',
+        year: 'numeric', month: '2-digit', day: '2-digit',
+        hour: '2-digit', minute: '2-digit', second: '2-digit',
+        weekday: 'short', hour12: false,
+      }).formatToParts(new Date()).reduce(function (o, p) { o[p.type] = p.value; return o; }, {});
+      var kort = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };
+      return {
+        dag: kort[d.weekday],
+        uur: parseInt(d.hour, 10) % 24,
+        minuut: parseInt(d.minute, 10),
+        seconde: parseInt(d.second, 10),
+      };
+    };
+
+    var werkdag = function (d) { return d >= 1 && d <= 5; };
+
+    var tik = function () {
+      var n = hier();
+      var voorGrens = n.uur < grens;
+
+      if (werkdag(n.dag) && voorGrens) {
+        var over = (grens * 3600) - (n.uur * 3600 + n.minuut * 60 + n.seconde);
+        var u = Math.floor(over / 3600);
+        var m = Math.floor((over % 3600) / 60);
+        blok.classList.add('is-vandaag');
+        tekst.innerHTML = 'Besteld binnen <b>' + (u > 0 ? u + ' uur en ' : '') + m +
+          ' min</b>? Dan gaat hij vandaag nog op de post.';
+      } else {
+        // eerstvolgende werkdag zoeken
+        var d = n.dag;
+        var stappen = 0;
+        do { d = (d + 1) % 7; stappen++; } while (!werkdag(d) && stappen < 8);
+        blok.classList.remove('is-vandaag');
+        tekst.innerHTML = 'Nu besteld? Dan gaat je pakket <b>' +
+          (stappen === 1 ? 'morgen' : dagen[d]) + '</b> op de post.';
+      }
+      blok.hidden = false;
+    };
+
+    tik();
+    setInterval(tik, 30000);
+  })();
+
   // Klikken op een staffeltrede vult het aantal in en markeert welke trede je krijgt.
   (function () {
     if (window.tk3StaffelGeregeld) return;

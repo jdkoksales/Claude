@@ -12,6 +12,19 @@
     endif
   endfor
 
+  comment
+    De automatische kortingen hangen aan de collectie alle-tapkaarten. Pakketten
+    zitten daar niet in, want hun prijs bevat de korting al. Daarom geeft de lade
+    precies de varianten mee die wel meetellen, in plaats van blind alle regels
+    te tellen.
+  endcomment
+  assign staffel_ids = ''
+  for staffelproduct in collections['alle-tapkaarten'].products
+    for v in staffelproduct.variants
+      assign staffel_ids = staffel_ids | append: v.id | append: ','
+    endfor
+  endfor
+
 %}
 
 <aside
@@ -34,6 +47,8 @@
   data-cart-drawer-continue-url="{{ routes.all_products_collection_url }}"
   data-cart-drawer-continue-label="{{ 'cart.continue_shopping' | t }}"
   data-tk3-drempel="7000"
+  data-tk3-staffel-ids="{{ staffel_ids | split: ',' | join: ',' }}"
+  data-tk3-treden="2:10,3:15,4:20"
   data-tk3-sticker-id="{{ all_products['tapkaarten-google-review-sticker'].selected_or_first_available_variant.id }}"
   aria-hidden="true"
   style="
@@ -142,6 +157,21 @@
         Twee standaards komen op € 62,92 uit — net onder de € 70. Zonder deze
         balk ziet niemand dat er nog maar een paar euro tussen zit.
       {%- endcomment -%}
+      {%- comment -%}
+        De staffelkorting stond alleen op de productpagina. Juist hier, op het
+        moment dat iemand naar Afrekenen kijkt, is een kaart erbij de kleinste
+        stap met het grootste effect: de korting stijgt over de hele bestelling.
+        Het bedrag komt uit de winkelwagen zelf, dus het kan niet uit de pas
+        lopen met wat de kassa rekent.
+      {%- endcomment -%}
+      <div class="tk3-staffelduw" data-tk3-staffelduw hidden>
+        <div class="tk3-staffelduw-tekst">
+          <b data-tk3-staffelduw-kop></b>
+          <span data-tk3-staffelduw-sub></span>
+        </div>
+        <button type="button" class="tk3-staffelduw-knop" data-tk3-staffelduw-knop hidden>Kaart erbij</button>
+      </div>
+
       <div class="tk3-verzendbalk" data-tk3-verzendbalk hidden>
         <p data-tk3-verzendtekst></p>
         <div class="tk3-verzendmeter"><span data-tk3-verzendvulling></span></div>
@@ -218,6 +248,63 @@
       var el = lade();
       if (!el || !kar) return;
 
+      // ---- staffelduw: wat scheelt een kaart erbij? ----
+      var duw = document.querySelector('[data-tk3-staffelduw]');
+      if (duw) {
+        var ids = (el.getAttribute('data-tk3-staffel-ids') || '')
+          .split(',').map(Number).filter(Boolean);
+        var treden = (el.getAttribute('data-tk3-treden') || '')
+          .split(',').map(function (t) {
+            var d = t.split(':');
+            return { aantal: parseInt(d[0], 10), pct: parseInt(d[1], 10) / 100 };
+          }).filter(function (t) { return t.aantal && t.pct; });
+
+        var mee = (kar.items || []).filter(function (i) { return ids.indexOf(i.variant_id) !== -1; });
+        var aantal = mee.reduce(function (n, i) { return n + i.quantity; }, 0);
+
+        // Shopify rekent de korting per stuk en rondt naar beneden af; hier
+        // hetzelfde doen, anders scheelt het een cent met de kassa.
+        var kortingBij = function (pct) {
+          return mee.reduce(function (n, i) {
+            return n + Math.floor(i.original_price * pct) * i.quantity;
+          }, 0);
+        };
+
+        var nuPct = 0;
+        treden.forEach(function (t) { if (aantal >= t.aantal) nuPct = t.pct; });
+        var volgende = null;
+        treden.forEach(function (t) { if (!volgende && aantal < t.aantal) volgende = t; });
+
+        var kop = duw.querySelector('[data-tk3-staffelduw-kop]');
+        var sub = duw.querySelector('[data-tk3-staffelduw-sub]');
+        var duwknop = duw.querySelector('[data-tk3-staffelduw-knop]');
+
+        if (aantal === 0) {
+          duw.hidden = true;
+        } else if (!volgende) {
+          duw.hidden = false;
+          duw.classList.add('is-max');
+          kop.textContent = 'Hoogste korting bereikt: ' + Math.round(nuPct * 100) + '% op alle TapKaarten';
+          sub.textContent = 'Meer dan tien kaarten nodig? Vraag een prijs op maat.';
+          duwknop.hidden = true;
+        } else {
+          var erbij = volgende.aantal - aantal;
+          var extra = kortingBij(volgende.pct) - kortingBij(nuPct);
+          duw.hidden = false;
+          duw.classList.remove('is-max');
+          kop.textContent = 'Nog ' + erbij + (erbij > 1 ? ' kaarten' : ' kaart') + ' erbij: ' +
+            Math.round(volgende.pct * 100) + '% korting' +
+            (nuPct > 0 ? ' in plaats van ' + Math.round(nuPct * 100) + '%' : ' op je hele bestelling');
+          sub.textContent = extra > 0
+            ? 'Dat scheelt ' + geld(extra) + ' op wat er nu in je winkelwagen ligt'
+            : 'De korting geldt over alle TapKaarten samen';
+          // de kaart waarvan er al de meeste in de wagen liggen
+          var drukst = mee.slice().sort(function (a, b) { return b.quantity - a.quantity; })[0];
+          duwknop.hidden = !drukst;
+          if (drukst) duwknop.setAttribute('data-variant', drukst.variant_id);
+        }
+      }
+
       var drempel = parseInt(el.getAttribute('data-tk3-drempel'), 10) || 0;
       var balk = document.querySelector('[data-tk3-verzendbalk]');
       if (balk && drempel > 0) {
@@ -255,6 +342,33 @@
         .catch(function () { /* niets tonen is beter dan iets verkeerds tonen */ });
     };
 
+    // Een kaart erbij vanuit de staffelduw.
+    document.addEventListener('click', function (e) {
+      var knop = e.target && e.target.closest && e.target.closest('[data-tk3-staffelduw-knop]');
+      if (!knop) return;
+      var id = parseInt(knop.getAttribute('data-variant'), 10);
+      if (!id) return;
+
+      knop.disabled = true;
+      knop.textContent = 'Bezig…';
+      fetch('/cart/add.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({ items: [{ id: id, quantity: 1 }] }),
+      })
+        .then(function (r) { if (!r.ok) throw new Error('mislukt'); return r.json(); })
+        .then(function () {
+          if (window.location.pathname.indexOf('/cart') === 0) { window.location.reload(); return; }
+          var opener = document.querySelector('[data-cart-toggle]');
+          if (opener) opener.click();
+          setTimeout(ophalen, 900);
+        })
+        .catch(function () { knop.textContent = 'Lukt niet — probeer opnieuw'; })
+        .finally(function () {
+          setTimeout(function () { knop.disabled = false; knop.textContent = 'Kaart erbij'; }, 1200);
+        });
+    });
+
     document.addEventListener('click', function (e) {
       var knop = e.target && e.target.closest && e.target.closest('[data-tk3-bijverkoop-knop]');
       if (!knop) return;
@@ -288,7 +402,7 @@
     var straks = function () { clearTimeout(laat); laat = setTimeout(ophalen, 700); };
     document.addEventListener('click', function (e) {
       if (!e.target || !e.target.closest) return;
-      if (e.target.closest('[data-cart-quantity-change], [data-cart-remove], [data-cart-toggle], [data-add-to-cart]')) straks();
+      if (e.target.closest('[data-cart-quantity-change], [data-cart-remove], [data-cart-toggle], [data-add-to-cart], [data-tk3-staffelduw-knop]')) straks();
     });
     document.addEventListener('change', function (e) {
       if (e.target && e.target.closest && e.target.closest('[data-cart-quantity-input]')) straks();

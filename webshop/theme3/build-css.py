@@ -41,6 +41,17 @@ TAIL = ("html{scroll-behavior:smooth}\n"
         ".page-section__content.rte table{width:100%;border-collapse:collapse;margin:0 0 1.4em}\n"
         ".page-section__content.rte td,.page-section__content.rte th{padding:.6em .2em;border-bottom:1px solid rgba(0,0,0,.08);text-align:left;vertical-align:top}\n"
         ".page-section__content.rte tr:last-child td{border-bottom:0}\n"
+        # Aflopende klok tot de verzendgrens, pal boven de koopknop.
+        ".tk3-klok{flex:1 0 100%;width:100%;margin:0 0 10px;display:flex;align-items:center;gap:9px;"
+        "font-size:13.5px;line-height:1.45;color:rgba(0,0,0,.66)}\n"
+        ".tk3-klok b{color:#1A202C;font-weight:750}\n"
+        ".tk3-klok-punt{flex:0 0 auto;width:8px;height:8px;border-radius:50%;background:rgba(0,0,0,.28)}\n"
+        ".tk3-klok.is-vandaag .tk3-klok-punt{background:#136C34;"
+        "box-shadow:0 0 0 4px rgba(19,108,52,.16);animation:tk3klop 2.2s ease-in-out infinite}\n"
+        ".tk3-klok.is-vandaag b{color:#136C34}\n"
+        "@keyframes tk3klop{0%,100%{box-shadow:0 0 0 3px rgba(19,108,52,.14)}"
+        "50%{box-shadow:0 0 0 7px rgba(19,108,52,.05)}}\n"
+        "@media(prefers-reduced-motion:reduce){.tk3-klok.is-vandaag .tk3-klok-punt{animation:none}}\n"
         # Geruststelling op de productpagina: wij koppelen je pagina.
         # het thema zet de koopknoppen op één rij, dus het blok moet daar bovenop
         ".product-info__buy-buttons{flex-wrap:wrap}\n"
@@ -55,6 +66,21 @@ TAIL = ("html{scroll-behavior:smooth}\n"
         "white-space:nowrap}\n"
         # Dezelfde regel onderaan de winkelwagenlade, boven de afrekenknop.
         ".tk3-cartlink-ok{margin:0 0 10px;font-size:12.5px;font-weight:600;color:#136C34;line-height:1.45}\n"
+        # Eén kaart erbij tilt de korting over de hele bestelling omhoog. Dit
+        # blok staat bovenaan in de voet van de lade, waar de beslissing valt.
+        ".tk3-staffelduw{display:flex;align-items:center;gap:12px;margin:0 0 12px;padding:11px 13px;"
+        "border-radius:12px;background:linear-gradient(92deg,rgba(219,78,20,.09),rgba(244,128,31,.05));"
+        "border:1px solid rgba(219,78,20,.26)}\n"
+        ".tk3-staffelduw.is-max{background:rgba(19,108,52,.07);border-color:rgba(19,108,52,.26)}\n"
+        ".tk3-staffelduw-tekst{flex:1 1 auto;min-width:0;line-height:1.35}\n"
+        ".tk3-staffelduw-tekst b{display:block;font-size:13px;color:#1A202C}\n"
+        ".tk3-staffelduw-tekst span{font-size:12px;color:rgba(0,0,0,.58)}\n"
+        ".tk3-staffelduw.is-max .tk3-staffelduw-tekst b{color:#136C34}\n"
+        ".tk3-staffelduw-knop{flex:0 0 auto;border:0;border-radius:100px;padding:9px 15px;"
+        "font-size:12.5px;font-weight:750;cursor:pointer;color:#fff;"
+        "background:linear-gradient(92deg,#DB4E14,#F4801F);transition:filter .15s}\n"
+        ".tk3-staffelduw-knop:hover{filter:brightness(1.08)}\n"
+        ".tk3-staffelduw-knop[disabled]{opacity:.6;cursor:default}\n"
         # Hoeveel er nog tot gratis verzending ontbreekt. Twee kaarten komen op
         # 62,92 uit; zonder deze balk ziet niemand dat 70 vlakbij ligt.
         ".tk3-verzendbalk{margin:0 0 14px}\n"

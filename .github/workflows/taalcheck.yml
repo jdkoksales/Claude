@@ -1,0 +1,138 @@
+name: Schrijfstijl nalopen
+
+# Kijkt of de herschreven teksten echt op de pagina staan en of de oude
+# woorden nergens meer opduiken. Een tekstwijziging die alleen in de
+# repository staat is geen tekstwijziging.
+on:
+  workflow_dispatch:
+  push:
+    branches: [claude/3d-product-animations-btyc7y]
+    paths: ['.github/workflows/taalcheck.yml', 'preview/taal-trigger.txt']
+
+permissions:
+  contents: write
+
+jobs:
+  taal:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: claude/3d-product-animations-btyc7y
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Playwright installeren
+        run: npm i -D playwright && npx playwright install --with-deps chromium
+
+      - name: Nalopen
+        run: |
+          mkdir -p preview
+          cat > taal.mjs <<'JS'
+          import { chromium } from 'playwright';
+          import fs from 'fs';
+
+          const BASE = 'https://ikep5e-3q.myshopify.com';
+          const PV = '?preview_theme_id=196665213305';
+
+          // Woorden die nergens meer thuishoren op de verkooppagina's. De
+          // juridische pagina's staan er niet bij: daar hoort "bedenktijd" wel.
+          const VERBODEN = [
+            'acrylaat', 'herprogrammeerbaar', 'NTAG', 'Zomerkorting',
+            'Verstuurd vanuit', 'indicatieve schatting', 'contactmoment',
+            'kan schelen', 'staffel van 20%',
+          ];
+
+          const PAGINAS = [
+            ['home', '/', [
+              '76%', 'Wat reviews opleveren', 'Vanaf 2 kaarten automatisch korting',
+              'Verzonden vanuit Nederland', 'Niet tevreden? 14 dagen retour, geld terug',
+              'Gebogen plexiglas', 'Waarom we dit maken',
+              'Pakketten: meer plekken, minder per kaart',
+              '€ 27,96', 'Elke standaard én elke sticker telt mee',
+              'ligt de telefoon al in de hand', 'Je klant houdt de telefoon ertegenaan',
+            ], ['98%', 'In cijfers', 'Het verhaal.', 'gewoon ']],
+            ['product-google', '/products/tapkaarten-google-review-standaard', [
+              'Alle prijzen zijn zonder btw', 'je betaalt één keer',
+              'Gebogen plexiglas met vaste voet', 'werkt op iPhone en Android',
+              'Je klant houdt de telefoon tegen de kaart',
+              'De btw komt er in de kassa bij',
+              'je krijgt je geld terug',
+            ], ['gewoon ', 'exclusief btw — wij leveren']],
+            ['collectie', '/collections/alle-tapkaarten', [
+              'elke standaard én elke sticker telt mee',
+            ], []],
+            ['pakketten', '/collections/pakketten', ['Hele zaak'], ['Meerdere plekken —']],
+            ['hele-zaak', '/products/tapkaarten-meerdere-plekken', [
+              'Hele zaak', 'op meer dan één plek langskomt', 'dat er getikt wordt',
+            ], ['contactmoment']],
+            ['vragen', '/pages/veelgestelde-vragen', [
+              '€ 27,96', 'Ja, zo vaak je wilt', 'Je betaalt één keer',
+              'Meer plekken leveren meer op', 'je krijgt je geld terug',
+            ], ['gewoon ', 'Ja, onbeperkt']],
+            ['over', '/pages/over-ons', [
+              'Gebogen plexiglas', 'heeft de telefoon al in de hand',
+              'zo vaak je wilt',
+            ], ['wat hij van online reviews vindt', 'Mail gerust']],
+            ['contact', '/pages/contact', ['Weet je niet welke kaart'], ['Twijfel je welke']],
+            ['koppelen', '/pages/koppelen', ['voordat ze de deur uit gaan'], []],
+            ['offerte', '/pages/offerte', ['Scherpere prijs dan de 20% uit de winkel'], ['staffel van 20%']],
+          ];
+
+          const fouten = [];
+          const log = [];
+
+          const b = await chromium.launch();
+          const p = await (await b.newContext({ viewport: { width: 1440, height: 900 } })).newPage();
+
+          for (const [naam, pad, moet, mag_niet] of PAGINAS) {
+            const r = await p.goto(BASE + pad + PV, { waitUntil: 'domcontentloaded' });
+            await p.waitForTimeout(2200);
+            const status = r.status();
+            const tekst = await p.evaluate(() => document.body.innerText);
+            log.push(`\n${naam} (${pad}) ${status}`);
+            if (status !== 200) fouten.push(`${naam}: status ${status}`);
+
+            for (const s of moet) {
+              const ok = tekst.includes(s);
+              log.push(`   ${ok ? 'staat er' : 'ONTBREEKT'}: "${s}"`);
+              if (!ok) fouten.push(`${naam}: "${s}" ontbreekt`);
+            }
+            for (const s of mag_niet) {
+              if (tekst.includes(s)) {
+                log.push(`   NOG AANWEZIG: "${s}"`);
+                fouten.push(`${naam}: "${s}" staat er nog`);
+              }
+            }
+            for (const s of VERBODEN) {
+              if (tekst.includes(s)) {
+                log.push(`   VERBODEN WOORD: "${s}"`);
+                fouten.push(`${naam}: verboden woord "${s}"`);
+              }
+            }
+          }
+
+          await b.close();
+
+          const kop = fouten.length
+            ? `GEVONDEN: ${fouten.length} punten\n` + fouten.map((f) => ' - ' + f).join('\n')
+            : 'GEEN AFWIJKINGEN GEVONDEN';
+          fs.writeFileSync('preview/taalcheck.txt', kop + '\n' + log.join('\n') + '\n');
+          console.log(kop);
+          JS
+          node taal.mjs
+
+      - name: Uitkomst vastleggen
+        if: always()
+        run: |
+          git config user.name Claude
+          git config user.email noreply@anthropic.com
+          git add preview/taalcheck.txt || true
+          git commit -m "Uitkomst van de taalcontrole" || exit 0
+          for poging in 1 2 3 4; do
+            git pull --rebase origin claude/3d-product-animations-btyc7y && \
+              git push origin HEAD:claude/3d-product-animations-btyc7y && break
+            sleep $((poging * 4))
+          done

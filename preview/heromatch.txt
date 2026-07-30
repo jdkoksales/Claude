@@ -53,18 +53,18 @@ tablet-laag     820x900     201 / 201     0      51px /   51px    17px / 17px   
      img   h=615px fit=cover aspect=auto
      --tk3-boven=109px  --tk3-kop=249px  shots is kind van inner: true
 klein-liggend   1024x768    147 / 147     0      51px /   51px    17px / 17px    385 /  395    768/768
-     foto 1024x576 (top 192) — referentie 1400x788 (top -19) | tafel ongeveer 230px hoog
+     foto 1400x787 (top -19) — referentie 1400x788 (top -19) | tafel ongeveer 315px hoog
      inner h=659px padTop=38px box=border-box display=block
      wrap  h=350 flex=0 1 auto padBottom=0px
-     shots h=576px (576px) min=0px flex=0 1 auto overflow=visible
-     img   h=576px fit=cover aspect=auto
+     shots h=787.5px (788px) min=0px flex=0 1 auto overflow=visible
+     img   h=787.5px fit=cover aspect=auto
      --tk3-boven=109px  --tk3-kop=237px  shots is kind van inner: true
 laptop-smal     1280x800    163 / 163     0      51px /   51px    17px / 17px    401 /  411    800/800
-     foto 1280x720 (top 80) — referentie 1400x788 (top 13) | tafel ongeveer 288px hoog
+     foto 1400x787 (top 13) — referentie 1400x788 (top 13) | tafel ongeveer 315px hoog
      inner h=691px padTop=54px box=border-box display=block
      wrap  h=350 flex=0 1 auto padBottom=0px
-     shots h=720px (720px) min=0px flex=0 1 auto overflow=visible
-     img   h=720px fit=cover aspect=auto
+     shots h=787.5px (788px) min=0px flex=0 1 auto overflow=visible
+     img   h=787.5px fit=cover aspect=auto
      --tk3-boven=109px  --tk3-kop=237px  shots is kind van inner: true
 laptop-laag     1440x780    153 / 153     0      51px /   51px    17px / 17px    391 /  401    780/780
      foto 1400x787 (top -7) — referentie 1400x788 (top -7) | tafel ongeveer 315px hoog

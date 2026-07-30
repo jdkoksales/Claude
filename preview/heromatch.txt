@@ -1,0 +1,27 @@
+GEVONDEN: 9 punten
+ - tel-klein: kop staat 35px lager dan de referentie
+ - tel-klein: foto eindigt op 600 van 667, de tafel valt weg
+ - telefoon: foto eindigt op 654 van 844, de tafel valt weg
+ - tel-hoog: foto eindigt op 698 van 932, de tafel valt weg
+ - tel-breed: kop staat 19px hoger dan de referentie
+ - tel-breed: foto eindigt op 711 van 932, de tafel valt weg
+ - tablet-staand: foto eindigt op 874 van 1024, de tafel valt weg
+ - tablet: foto eindigt op 970 van 1180, de tafel valt weg
+ - tablet-laag: foto eindigt op 830 van 900, de tafel valt weg
+
+formaat           venster     kop-top          kopgrootte       onderkop      knop-top   foto
+                              ons / ref  ver   ons / ref        ons / ref     ons        onderkant
+tel-klein       390x667     125 /  90   +35      36px /   36px    16px / 16px    350 /  363    600/667
+telefoon        390x844     179 / 179     0      36px /   36px    16px / 16px    404 /  451    654/844
+tel-hoog        390x932     223 / 223     0      36px /   36px    16px / 16px    448 /  495    698/932
+tel-breed       430x932     223 / 242   -19      36px /   36px    16px / 16px    448 /  476    711/932
+tablet-staand   768x1024    263 / 263     0      51px /   51px    17px / 17px    501 /  536    874/1024
+tablet          820x1180    341 / 341     0      51px /   51px    17px / 17px    579 /  614    970/1180
+tablet-laag     820x900     201 / 201     0      51px /   51px    17px / 17px    439 /  474    830/900
+klein-liggend   1024x768    147 / 147     0      51px /   51px    17px / 17px    385 /  395    853/768
+laptop-smal     1280x800    163 / 163     0      51px /   51px    17px / 17px    401 /  411    954/800
+laptop-laag     1440x780    153 / 153     0      51px /   51px    17px / 17px    391 /  401    996/780
+laptop          1440x900    213 / 213     0      51px /   51px    17px / 17px    451 /  461   1059/900
+breed-laag      1900x880    203 / 203     0      51px /   51px    17px / 17px    441 /  451   1069/880
+groot           1920x1200   363 / 363     0      51px /   51px    17px / 17px    601 /  611   1236/1200
+heel-groot      2560x1440   483 / 483     0      51px /   51px    17px / 17px    721 /  731   1440/1440

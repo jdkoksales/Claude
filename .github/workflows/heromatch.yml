@@ -79,13 +79,38 @@ jobs:
               };
               const foto = document.querySelector('.tk3 .hero .shots img.on') || document.querySelector('.tk3 .hero .shots img');
               const fr = foto ? foto.getBoundingClientRect() : null;
+              // Waarom de foto staat waar hij staat: de doorgerekende waarden
+              // van de drie dozen die zijn hoogte bepalen.
+              const doos = (sel) => {
+                const el = document.querySelector(sel);
+                if (!el) return null;
+                const s = getComputedStyle(el);
+                const r = el.getBoundingClientRect();
+                return {
+                  top: Math.round(r.top), hoog: Math.round(r.height),
+                  hoogte: s.height, minHoogte: s.minHeight, display: s.display,
+                  padTop: s.paddingTop, padBottom: s.paddingBottom,
+                  boxSizing: s.boxSizing, flex: s.flex, overflow: s.overflow,
+                  objectFit: s.objectFit, aspect: s.aspectRatio,
+                };
+              };
+              const wrapper = document.querySelector('.tk3 .hero .inner');
               return {
                 venster: { w: innerWidth, h: innerHeight },
                 h1: pak('.tk3 .hero h1'),
                 sub: pak('.tk3 .hero .sub'),
                 knop: pak('.tk3 .hero .buy'),
                 calc: pak('.tk3 .hero-calc'),
-                boven: getComputedStyle(document.documentElement).getPropertyValue('--tk3-boven').trim(),
+                boven: getComputedStyle(document.documentElement).getPropertyValue('--tk3-boven').trim()
+                     || getComputedStyle(document.querySelector('.tk3')).getPropertyValue('--tk3-boven').trim(),
+                kopvar: getComputedStyle(document.querySelector('.tk3')).getPropertyValue('--tk3-kop').trim(),
+                shotsIsKind: !!(wrapper && wrapper.querySelector(':scope > .shots')),
+                diag: {
+                  inner: doos('.tk3 .hero .inner'),
+                  wrap: doos('.tk3 .hero .inner > .wrap'),
+                  shots: doos('.tk3 .hero .inner > .shots'),
+                  img: doos('.tk3 .hero .shots img.on'),
+                },
                 foto: fr ? { top: Math.round(fr.top), bodem: Math.round(fr.bottom) } : null,
                 overloop: Math.max(0, document.documentElement.scrollWidth - innerWidth),
               };
@@ -111,7 +136,21 @@ jobs:
             if (m.sub && rsub.fontSize && m.sub.fontSize !== rsub.fontSize) fouten.push(`${naam}: onderkop ${m.sub.fontSize} in plaats van ${rsub.fontSize}`);
             if (m.overloop > 0) fouten.push(`${naam}: ${m.overloop}px horizontale overloop`);
             if (m.h1 && m.h1.top < 4) fouten.push(`${naam}: kop valt achter de header (top ${m.h1.top})`);
-            if (m.foto && m.foto.bodem < h - 2) fouten.push(`${naam}: foto eindigt op ${m.foto.bodem} van ${h}, de tafel valt weg`);
+            // Alleen op een ruim scherm hoort de hero het volledige venster te
+            // vullen; daaronder is de hero korter dan het scherm en dat is goed.
+            const volscherm = w >= 901 && h >= 700;
+            if (volscherm && m.foto) {
+              if (m.foto.bodem > h + 2) fouten.push(`${naam}: foto loopt ${m.foto.bodem - h}px onder het venster door, de tafel wordt afgesneden`);
+              if (m.foto.bodem < h - 2) fouten.push(`${naam}: foto eindigt ${h - m.foto.bodem}px boven de onderrand, er blijft een gat`);
+            }
+            if (m.diag) {
+              const d = m.diag;
+              log.push(`     inner h=${d.inner && d.inner.hoogte} padTop=${d.inner && d.inner.padTop} box=${d.inner && d.inner.boxSizing} display=${d.inner && d.inner.display}`);
+              log.push(`     wrap  h=${d.wrap && d.wrap.hoog} flex=${d.wrap && d.wrap.flex} padBottom=${d.wrap && d.wrap.padBottom}`);
+              log.push(`     shots h=${d.shots && d.shots.hoogte} (${d.shots && d.shots.hoog}px) min=${d.shots && d.shots.minHoogte} flex=${d.shots && d.shots.flex} overflow=${d.shots && d.shots.overflow}`);
+              log.push(`     img   h=${d.img && d.img.hoogte} fit=${d.img && d.img.objectFit} aspect=${d.img && d.img.aspect}`);
+              log.push(`     --tk3-boven=${m.boven || 'niet gezet'}  --tk3-kop=${m.kopvar || 'niet gezet'}  shots is kind van inner: ${m.shotsIsKind}`);
+            }
 
             await p.screenshot({ path: `preview/match-${naam}.png` });
             await ctx.close();

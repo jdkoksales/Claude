@@ -132,17 +132,22 @@ footer .brand img{height:29px}
    op een telefoon of een lage laptop zou centreren de foto wegdrukken,
    dus daar blijft de kop gewoon bovenin staan. */
 @media(min-width:901px) and (min-height:700px){
+  /* De hero vult precies het eerste scherm. Wat daarboven staat is de
+     loopbalk plus de header; tk3.js meet die samen op en zet de uitkomst in
+     --tk3-boven. Eerder rekende dit met alleen de header, en dan valt de
+     onderkant van de foto er net zoveel onderuit als de loopbalk hoog is. */
   .hero .inner{display:flex;flex-direction:column;padding-top:0;
-    min-height:calc(100vh - 64px);min-height:calc(100svh - 64px)}
-  .hero .inner>.wrap{flex:1 1 auto;display:flex;flex-direction:column;
-    justify-content:center;padding-top:34px;padding-bottom:28px}
-  /* De foto ontleende zijn hoogte aan de bréédte van het scherm. Op een breed
-     scherm werd hij daardoor zo hoog dat de tekst tegen de header werd geduwd
-     en de balie onder de vouw viel. Nu is de hoogte een deel van het scherm;
-     de foto wordt van onderaf bijgesneden, dus de balie blijft altijd staan.
-     De bovenrand vervaagt, zodat de snede niet als een lijn zichtbaar wordt. */
-  .hero .inner>.shots{flex:0 0 auto;margin-top:0;overflow:hidden;
-    height:clamp(300px,50svh,640px);
+    height:calc(100vh - var(--tk3-boven,109px));
+    height:calc(100svh - var(--tk3-boven,109px))}
+  /* De tekst houdt zijn eigen hoogte en krijgt lucht van boven; de foto slokt
+     op wat er overblijft. Zo past de balie altijd binnen het eerste scherm. */
+  .hero .inner>.wrap{flex:0 0 auto;padding-top:clamp(30px,6svh,96px);
+    padding-bottom:clamp(16px,2.4svh,40px)}
+  /* De foto ontleende zijn hoogte aan de bréédte van het scherm en werd
+     daardoor te hoog. Hij vult nu de rest en wordt van onderaf bijgesneden,
+     dus de balie blijft staan. De bovenrand vervaagt zodat de snede niet als
+     een lijn zichtbaar wordt. */
+  .hero .inner>.shots{flex:1 1 auto;min-height:220px;margin-top:0;overflow:hidden;
     -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 90px);
     mask-image:linear-gradient(to bottom,transparent 0,#000 90px)}
   .hero .inner>.shots img{width:100%;height:100%;object-fit:cover;object-position:center bottom}

@@ -158,9 +158,9 @@ html,body{overflow-x:clip}
   background:linear-gradient(112deg,#fbfbfc 0%,#fcf6f8 48%,#fbecf0 100%)}
 .tk3 .hero .inner{padding:56px 0 0;position:relative;z-index:2}
 @media(min-width:901px) and (min-height:700px){.tk3 .hero .inner{display:flex;flex-direction:column;padding-top:0;
-    min-height:calc(100vh - 64px);min-height:calc(100svh - 64px)}.tk3 .hero .inner>.wrap{flex:1 1 auto;display:flex;flex-direction:column;
-    justify-content:center;padding-top:34px;padding-bottom:28px}.tk3 .hero .inner>.shots{flex:0 0 auto;margin-top:0;overflow:hidden;
-    height:clamp(300px,50svh,640px);
+    height:calc(100vh - var(--tk3-boven,109px));
+    height:calc(100svh - var(--tk3-boven,109px))}.tk3 .hero .inner>.wrap{flex:0 0 auto;padding-top:clamp(30px,6svh,96px);
+    padding-bottom:clamp(16px,2.4svh,40px)}.tk3 .hero .inner>.shots{flex:1 1 auto;min-height:220px;margin-top:0;overflow:hidden;
     -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 90px);
     mask-image:linear-gradient(to bottom,transparent 0,#000 90px)}.tk3 .hero .inner>.shots img{width:100%;height:100%;object-fit:cover;object-position:center bottom}}
 .tk3 .hero h1{max-width:720px;margin:0 auto 14px;font-size:clamp(32px,3.4vw,44px)}

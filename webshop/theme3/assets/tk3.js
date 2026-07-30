@@ -149,7 +149,23 @@
     apply();
   }
 
+  // Hoeveel er boven de hero staat: de loopbalk plus de header. De hero rekent
+  // daarmee zijn hoogte uit, zodat hij precies het eerste scherm vult en de
+  // balie op de foto nooit onder de vouw valt. Meten in plaats van een vast
+  // getal aannemen: de loopbalk kan uit staan of een andere regelhoogte hebben.
+  function meetBoven() {
+    var balk = document.querySelector('.tk3 .marquee');
+    var kop = document.querySelector('.tk3 .hdr');
+    var hoog = 0;
+    if (balk) hoog += Math.round(balk.getBoundingClientRect().height);
+    if (kop) hoog += Math.round(kop.getBoundingClientRect().height);
+    if (hoog > 0) document.documentElement.style.setProperty('--tk3-boven', hoog + 'px');
+  }
+
   function init() {
+    meetBoven();
+    window.addEventListener('resize', meetBoven, { passive: true });
+
     document.querySelectorAll('.tk3 [data-tk3-count]').forEach(function (el) {
       syncCount(el);
       el.addEventListener('scroll', function () { syncCount(el); }, { passive: true });

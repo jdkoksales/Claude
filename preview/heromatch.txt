@@ -1,12 +1,5 @@
-GEVONDEN: 8 punten
+GEVONDEN: 1 punten
  - tel-klein: kop staat 35px lager dan de referentie
- - klein-liggend: foto loopt 85px onder het venster door, de tafel wordt afgesneden
- - laptop-smal: foto loopt 154px onder het venster door, de tafel wordt afgesneden
- - laptop-laag: foto loopt 216px onder het venster door, de tafel wordt afgesneden
- - laptop: foto loopt 159px onder het venster door, de tafel wordt afgesneden
- - breed-laag: foto loopt 189px onder het venster door, de tafel wordt afgesneden
- - groot: foto loopt 36px onder het venster door, de tafel wordt afgesneden
- - heel-groot: foto eindigt 78px boven de onderrand, er blijft een gat
 
 formaat           venster     kop-top          kopgrootte       onderkop      knop-top   foto
                               ons / ref  ver   ons / ref        ons / ref     ons        onderkant
@@ -52,45 +45,45 @@ tablet-laag     820x900     201 / 201     0      51px /   51px    17px / 17px   
      shots h=270.078px (270px) min=0px flex=0 1 auto overflow=visible
      img   h=270.078px fit=fill aspect=auto 1600 / 527
      --tk3-boven=109px  --tk3-kop=249px  shots is kind van inner: true
-klein-liggend   1024x768    147 / 147     0      51px /   51px    17px / 17px    385 /  395    853/768
+klein-liggend   1024x768    147 / 147     0      51px /   51px    17px / 17px    385 /  395    768/768
      inner h=659px padTop=38px box=border-box display=flex
      wrap  h=369 flex=0 0 auto padBottom=18.432px
      shots h=252.297px (252px) min=220px flex=1 1 auto overflow=hidden
-     img   h=337.266px fit=cover aspect=auto 1600 / 527
+     img   h=252.297px fit=cover aspect=auto
      --tk3-boven=109px  --tk3-kop=237px  shots is kind van inner: true
-laptop-smal     1280x800    163 / 163     0      51px /   51px    17px / 17px    401 /  411    954/800
+laptop-smal     1280x800    163 / 163     0      51px /   51px    17px / 17px    401 /  411    800/800
      inner h=691px padTop=54px box=border-box display=flex
      wrap  h=369 flex=0 0 auto padBottom=19.2px
      shots h=267.531px (268px) min=220px flex=1 1 auto overflow=hidden
-     img   h=421.594px fit=cover aspect=auto 1600 / 527
+     img   h=267.531px fit=cover aspect=auto
      --tk3-boven=109px  --tk3-kop=237px  shots is kind van inner: true
-laptop-laag     1440x780    153 / 153     0      51px /   51px    17px / 17px    391 /  401    996/780
+laptop-laag     1440x780    153 / 153     0      51px /   51px    17px / 17px    391 /  401    780/780
      inner h=671px padTop=44px box=border-box display=flex
      wrap  h=369 flex=0 0 auto padBottom=18.72px
      shots h=258px (258px) min=220px flex=1 1 auto overflow=hidden
-     img   h=474.297px fit=cover aspect=auto 1600 / 527
+     img   h=258px fit=cover aspect=auto
      --tk3-boven=109px  --tk3-kop=237px  shots is kind van inner: true
-laptop          1440x900    213 / 213     0      51px /   51px    17px / 17px    451 /  461   1059/900
+laptop          1440x900    213 / 213     0      51px /   51px    17px / 17px    451 /  461    900/900
      inner h=791px padTop=104px box=border-box display=flex
      wrap  h=372 flex=0 0 auto padBottom=21.6px
      shots h=315.125px (315px) min=220px flex=1 1 auto overflow=hidden
-     img   h=474.297px fit=cover aspect=auto 1600 / 527
+     img   h=315.125px fit=cover aspect=auto
      --tk3-boven=109px  --tk3-kop=237px  shots is kind van inner: true
-breed-laag      1900x880    203 / 203     0      51px /   51px    17px / 17px    441 /  451   1069/880
+breed-laag      1900x880    203 / 203     0      51px /   51px    17px / 17px    441 /  451    880/880
      inner h=771px padTop=94px box=border-box display=flex
      wrap  h=371 flex=0 0 auto padBottom=21.12px
      shots h=305.609px (306px) min=220px flex=1 1 auto overflow=hidden
-     img   h=494.062px fit=cover aspect=auto 1600 / 527
+     img   h=305.609px fit=cover aspect=auto
      --tk3-boven=109px  --tk3-kop=237px  shots is kind van inner: true
-groot           1920x1200   363 / 363     0      51px /   51px    17px / 17px    601 /  611   1236/1200
+groot           1920x1200   363 / 363     0      51px /   51px    17px / 17px    601 /  611   1200/1200
      inner h=1091px padTop=254px box=border-box display=flex
      wrap  h=379 flex=0 0 auto padBottom=28.8px
      shots h=457.922px (458px) min=220px flex=1 1 auto overflow=hidden
-     img   h=494.062px fit=cover aspect=auto 1600 / 527
+     img   h=457.922px fit=cover aspect=auto
      --tk3-boven=109px  --tk3-kop=237px  shots is kind van inner: true
-heel-groot      2560x1440   483 / 483     0      51px /   51px    17px / 17px    721 /  731   1362/1440
+heel-groot      2560x1440   483 / 483     0      51px /   51px    17px / 17px    721 /  731   1440/1440
      inner h=1331px padTop=374px box=border-box display=flex
      wrap  h=385 flex=0 0 auto padBottom=34.56px
      shots h=572.172px (572px) min=220px flex=1 1 auto overflow=hidden
-     img   h=494.062px fit=cover aspect=auto 1600 / 527
+     img   h=572.172px fit=cover aspect=auto
      --tk3-boven=109px  --tk3-kop=237px  shots is kind van inner: true

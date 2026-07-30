@@ -1,12 +1,12 @@
 GEVONDEN: 8 punten
  - tel-klein: kop staat 35px lager dan de referentie
- - tel-breed: kop staat 19px hoger dan de referentie
  - klein-liggend: foto loopt 85px onder het venster door, de tafel wordt afgesneden
  - laptop-smal: foto loopt 154px onder het venster door, de tafel wordt afgesneden
  - laptop-laag: foto loopt 216px onder het venster door, de tafel wordt afgesneden
  - laptop: foto loopt 159px onder het venster door, de tafel wordt afgesneden
  - breed-laag: foto loopt 189px onder het venster door, de tafel wordt afgesneden
  - groot: foto loopt 36px onder het venster door, de tafel wordt afgesneden
+ - heel-groot: foto eindigt 78px boven de onderrand, er blijft een gat
 
 formaat           venster     kop-top          kopgrootte       onderkop      knop-top   foto
                               ons / ref  ver   ons / ref        ons / ref     ons        onderkant
@@ -28,12 +28,12 @@ tel-hoog        390x932     223 / 223     0      36px /   36px    16px / 16px   
      shots h=128.453px (128px) min=0px flex=0 1 auto overflow=visible
      img   h=128.453px fit=fill aspect=auto 1600 / 527
      --tk3-boven=109px  --tk3-kop=niet gezet  shots is kind van inner: true
-tel-breed       430x932     223 / 242   -19      36px /   36px    16px / 16px    448 /  476    711/932
-     inner h=601.812px padTop=114px box=border-box display=block
+tel-breed       430x932     242 / 242     0      36px /   36px    16px / 16px    467 /  476    730/932
+     inner h=620.812px padTop=133px box=border-box display=block
      wrap  h=338 flex=0 1 auto padBottom=0px
      shots h=141.625px (142px) min=0px flex=0 1 auto overflow=visible
      img   h=141.625px fit=fill aspect=auto 1600 / 527
-     --tk3-boven=109px  --tk3-kop=niet gezet  shots is kind van inner: true
+     --tk3-boven=109px  --tk3-kop=224px  shots is kind van inner: true
 tablet-staand   768x1024    263 / 263     0      51px /   51px    17px / 17px    501 /  536    874/1024
      inner h=765.234px padTop=154px box=border-box display=block
      wrap  h=350 flex=0 1 auto padBottom=0px
@@ -88,9 +88,9 @@ groot           1920x1200   363 / 363     0      51px /   51px    17px / 17px   
      shots h=457.922px (458px) min=220px flex=1 1 auto overflow=hidden
      img   h=494.062px fit=cover aspect=auto 1600 / 527
      --tk3-boven=109px  --tk3-kop=237px  shots is kind van inner: true
-heel-groot      2560x1440   483 / 483     0      51px /   51px    17px / 17px    721 /  731   1440/1440
+heel-groot      2560x1440   483 / 483     0      51px /   51px    17px / 17px    721 /  731   1362/1440
      inner h=1331px padTop=374px box=border-box display=flex
      wrap  h=385 flex=0 0 auto padBottom=34.56px
      shots h=572.172px (572px) min=220px flex=1 1 auto overflow=hidden
-     img   h=572.172px fit=cover aspect=auto 1600 / 527
+     img   h=494.062px fit=cover aspect=auto 1600 / 527
      --tk3-boven=109px  --tk3-kop=237px  shots is kind van inner: true

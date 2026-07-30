@@ -1,0 +1,60 @@
+GEVONDEN: 3 punten
+ - winkelwagen niet uit te lezen
+ - lade: JS Unexpected token '<', "<!DOCTYPE "... is not valid JSON
+ - winkelwagen niet uit te lezen rond de staffelduw
+
+== 1. hero
+   telefoon 390x844: kop 56px onder de rand, speling tekst/foto 8px, foto eindigt op 636 van 844 (binnen beeld)
+   tablet 820x1180: kop 56px onder de rand, speling tekst/foto 8px, foto eindigt op 688 van 1180 (binnen beeld)
+   laptop-laag 1440x780: kop 47px onder de rand, speling tekst/foto 19px, foto eindigt op 780 van 780 (binnen beeld)
+   laptop 1440x900: kop 54px onder de rand, speling tekst/foto 22px, foto eindigt op 900 van 900 (binnen beeld)
+   breed-laag 1900x880: kop 53px onder de rand, speling tekst/foto 21px, foto eindigt op 880 van 880 (binnen beeld)
+   groot 1920x1200: kop 72px onder de rand, speling tekst/foto 29px, foto eindigt op 1200 van 1200 (binnen beeld)
+
+== 2. pagina voor pagina
+   home (/) 200 h1=1
+   collectie (/collections/alle-tapkaarten) 200 h1=1
+   pakketten (/collections/pakketten) 200 h1=1
+   google-wit (/products/tapkaarten-google-review-standaard) 200 h1=1
+      links zonder doel: 1
+   google-zwart (/products/tapkaarten-google-review-standaard-zwart) 200 h1=1
+      links zonder doel: 1
+   instagram (/products/tapkaarten-instagram-standaard) 200 h1=1
+      links zonder doel: 1
+   facebook (/products/tapkaarten-facebook-standaard) 200 h1=1
+      links zonder doel: 1
+   sticker (/products/tapkaarten-google-review-sticker) 200 h1=1
+      links zonder doel: 1
+   startpakket (/products/tapkaarten-startpakket) 200 h1=1
+      links zonder doel: 1
+   balie-compleet (/products/tapkaarten-balie-compleet) 200 h1=1
+      links zonder doel: 1
+   meerdere-plekken (/products/tapkaarten-meerdere-plekken) 200 h1=1
+      links zonder doel: 1
+   winkelwagen (/cart) 200 h1=1
+   koppelen (/pages/koppelen) 200 h1=1
+   offerte (/pages/offerte) 200 h1=1
+   verzending (/pages/verzending) 200 h1=1
+   retour (/pages/retourbeleid) 200 h1=1
+   voorwaarden (/pages/algemene-voorwaarden) 200 h1=1
+   vragen (/pages/veelgestelde-vragen) 200 h1=1
+   over (/pages/over-ons) 200 h1=1
+   contact (/pages/contact) 200 h1=1
+   privacy (/policies/privacy-policy) 200 h1=1
+   404 (/pages/bestaat-niet-abc) 404 h1=1
+
+== 3. verzendklok op de productpagina
+   zichtbaar: true | "Besteld binnen 8 uur en 35 min? Dan gaat hij vandaag nog op de post."
+   modus vandaag-verzenden: true | staat 137px boven de koopknop
+
+== 4. winkelwagenlade en staffel
+   1 stuks: winkelwagen niet uit te lezen
+   2 stuks: winkelwagen niet uit te lezen
+   3 stuks: winkelwagen niet uit te lezen
+   4 stuks: winkelwagen niet uit te lezen
+   /checkout: 200
+
+== 5. mobiel (390px)
+   home: overloop 0px
+   product: overloop 0px, klok zichtbaar: true
+   collectie: overloop 0px

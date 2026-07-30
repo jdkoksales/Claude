@@ -1,4 +1,19 @@
 
+=== tel-klein 390x667
+   venster 390x667
+   bovenbalk: 56px hoog, onderkant op 56, position:absolute
+   TITEL <h1> "Transform your foot traffic into followers."
+      top 90  bodem 209  hoog 119  breed 334
+      font 36px / regelhoogte 39.6px / gewicht 700 / spatiering -0.9px
+      marge boven 0px onder 12px / maxWidth none
+   ONDERKOP "Our real-time Counter grabs attention, builds trust, and helps grow yo"
+      top 229  bodem 277  breed 334
+      font 16px / regelhoogte 24px / marge onder 36px
+   knop "Buy" top 363 hoog 34 breed 71 font 14px gewicht 750
+   knop "NL" top 639 hoog 24 breed 58 font 12px gewicht 600
+   FOTO top -26 bodem 667 hoog 693 breed 390
+   lettertype body: "Inter Variable", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"
+
 === telefoon 390x844
    venster 390x844
    bovenbalk: 56px hoog, onderkant op 56, position:absolute
@@ -14,6 +29,51 @@
    FOTO top 151 bodem 844 hoog 693 breed 390
    lettertype body: "Inter Variable", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"
 
+=== tel-hoog 390x932
+   venster 390x932
+   bovenbalk: 56px hoog, onderkant op 56, position:absolute
+   TITEL <h1> "Transform your foot traffic into followers."
+      top 223  bodem 341  hoog 119  breed 334
+      font 36px / regelhoogte 39.6px / gewicht 700 / spatiering -0.9px
+      marge boven 0px onder 12px / maxWidth none
+   ONDERKOP "Our real-time Counter grabs attention, builds trust, and helps grow yo"
+      top 361  bodem 409  breed 334
+      font 16px / regelhoogte 24px / marge onder 36px
+   knop "Buy" top 495 hoog 34 breed 71 font 14px gewicht 750
+   knop "NL" top 904 hoog 24 breed 58 font 12px gewicht 600
+   FOTO top 239 bodem 932 hoog 693 breed 390
+   lettertype body: "Inter Variable", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"
+
+=== tel-breed 430x932
+   venster 430x932
+   bovenbalk: 56px hoog, onderkant op 56, position:absolute
+   TITEL <h1> "Transform your foot traffic into followers."
+      top 242  bodem 322  hoog 79  breed 374
+      font 36px / regelhoogte 39.6px / gewicht 700 / spatiering -0.9px
+      marge boven 0px onder 12px / maxWidth none
+   ONDERKOP "Our real-time Counter grabs attention, builds trust, and helps grow yo"
+      top 342  bodem 390  breed 374
+      font 16px / regelhoogte 24px / marge onder 36px
+   knop "Buy" top 476 hoog 34 breed 71 font 14px gewicht 750
+   knop "NL" top 904 hoog 24 breed 58 font 12px gewicht 600
+   FOTO top 168 bodem 932 hoog 764 breed 430
+   lettertype body: "Inter Variable", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"
+
+=== tablet-staand 768x1024
+   venster 768x1024
+   bovenbalk: 60px hoog, onderkant op 60, position:absolute
+   TITEL <h1> "Transform your foot traffic into followers."
+      top 263  bodem 375  hoog 112  breed 598
+      font 51px / regelhoogte 56.1px / gewicht 700 / spatiering -1.275px
+      marge boven 0px onder 12.75px / maxWidth none
+   ONDERKOP "Our real-time Counter grabs attention, builds trust, and helps grow yo"
+      top 396  bodem 447  breed 598
+      font 17px / regelhoogte 25.5px / marge onder 38.25px
+   knop "Buy" top 536 hoog 34 breed 74 font 14.875px gewicht 750
+   knop "Netherlands" top 994 hoog 26 breed 120 font 12.75px gewicht 600
+   FOTO top 448 bodem 1024 hoog 576 breed 768
+   lettertype body: "Inter Variable", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"
+
 === tablet 820x1180
    venster 820x1180
    bovenbalk: 60px hoog, onderkant op 60, position:absolute
@@ -27,6 +87,51 @@
    knop "Buy" top 614 hoog 34 breed 74 font 14.875px gewicht 750
    knop "Netherlands" top 1150 hoog 26 breed 120 font 12.75px gewicht 600
    FOTO top 565 bodem 1180 hoog 615 breed 820
+   lettertype body: "Inter Variable", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"
+
+=== tablet-laag 820x900
+   venster 820x900
+   bovenbalk: 60px hoog, onderkant op 60, position:absolute
+   TITEL <h1> "Transform your foot traffic into followers."
+      top 201  bodem 313  hoog 112  breed 650
+      font 51px / regelhoogte 56.1px / gewicht 700 / spatiering -1.275px
+      marge boven 0px onder 12.75px / maxWidth none
+   ONDERKOP "Our real-time Counter grabs attention, builds trust, and helps grow yo"
+      top 334  bodem 385  breed 650
+      font 17px / regelhoogte 25.5px / marge onder 38.25px
+   knop "Buy" top 474 hoog 34 breed 74 font 14.875px gewicht 750
+   knop "Netherlands" top 870 hoog 26 breed 120 font 12.75px gewicht 600
+   FOTO top 285 bodem 900 hoog 615 breed 820
+   lettertype body: "Inter Variable", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"
+
+=== klein-liggend 1024x768
+   venster 1024x768
+   bovenbalk: 60px hoog, onderkant op 60, position:absolute
+   TITEL <h1> "Transform your foot traffic into followers."
+      top 147  bodem 259  hoog 112  breed 768
+      font 51px / regelhoogte 56.1px / gewicht 700 / spatiering -1.275px
+      marge boven 0px onder 12.75px / maxWidth 768px
+   ONDERKOP "Our real-time Counter grabs attention, builds trust, and helps grow yo"
+      top 281  bodem 306  breed 689
+      font 17px / regelhoogte 25.5px / marge onder 38.25px
+   knop "Buy" top 395 hoog 34 breed 74 font 14.875px gewicht 750
+   knop "Netherlands" top 738 hoog 26 breed 120 font 12.75px gewicht 600
+   FOTO top -19 bodem 768 hoog 788 breed 1400
+   lettertype body: "Inter Variable", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"
+
+=== laptop-smal 1280x800
+   venster 1280x800
+   bovenbalk: 60px hoog, onderkant op 60, position:absolute
+   TITEL <h1> "Transform your foot traffic into followers."
+      top 163  bodem 275  hoog 112  breed 768
+      font 51px / regelhoogte 56.1px / gewicht 700 / spatiering -1.275px
+      marge boven 0px onder 12.75px / maxWidth 768px
+   ONDERKOP "Our real-time Counter grabs attention, builds trust, and helps grow yo"
+      top 297  bodem 322  breed 689
+      font 17px / regelhoogte 25.5px / marge onder 38.25px
+   knop "Buy" top 411 hoog 34 breed 74 font 14.875px gewicht 750
+   knop "Netherlands" top 770 hoog 26 breed 120 font 12.75px gewicht 600
+   FOTO top 13 bodem 800 hoog 788 breed 1400
    lettertype body: "Inter Variable", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"
 
 === laptop-laag 1440x780
@@ -87,4 +192,19 @@
    knop "Buy" top 611 hoog 34 breed 74 font 14.875px gewicht 750
    knop "Netherlands" top 1170 hoog 26 breed 120 font 12.75px gewicht 600
    FOTO top 413 bodem 1200 hoog 788 breed 1400
+   lettertype body: "Inter Variable", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"
+
+=== heel-groot 2560x1440
+   venster 2560x1440
+   bovenbalk: 60px hoog, onderkant op 60, position:absolute
+   TITEL <h1> "Transform your foot traffic into followers."
+      top 483  bodem 595  hoog 112  breed 768
+      font 51px / regelhoogte 56.1px / gewicht 700 / spatiering -1.275px
+      marge boven 0px onder 12.75px / maxWidth 768px
+   ONDERKOP "Our real-time Counter grabs attention, builds trust, and helps grow yo"
+      top 617  bodem 642  breed 689
+      font 17px / regelhoogte 25.5px / marge onder 38.25px
+   knop "Buy" top 731 hoog 34 breed 74 font 14.875px gewicht 750
+   knop "Netherlands" top 1410 hoog 26 breed 120 font 12.75px gewicht 600
+   FOTO top 653 bodem 1440 hoog 788 breed 1400
    lettertype body: "Inter Variable", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"

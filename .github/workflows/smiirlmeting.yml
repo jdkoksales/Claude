@@ -1,0 +1,186 @@
+name: Hero van smiirl opmeten
+
+# Meet de hero van smiirl.com op zes schermformaten: hoe groot de titel is en
+# op welke hoogte hij staat, plus de onderkop, de knoppenrij en de foto.
+# Daarna kunnen we die maten exact overnemen.
+on:
+  workflow_dispatch:
+  push:
+    branches: [claude/3d-product-animations-btyc7y]
+    paths: ['.github/workflows/smiirlmeting.yml', 'preview/smiirl-trigger.txt']
+
+permissions:
+  contents: write
+
+jobs:
+  meten:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: claude/3d-product-animations-btyc7y
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Playwright installeren
+        run: npm i -D playwright && npx playwright install --with-deps chromium
+
+      - name: Meten
+        run: |
+          mkdir -p preview
+          cat > meet.mjs <<'JS'
+          import { chromium } from 'playwright';
+          import fs from 'fs';
+
+          const MATEN = [
+            ['telefoon', 390, 844],
+            ['tablet', 820, 1180],
+            ['laptop-laag', 1440, 780],
+            ['laptop', 1440, 900],
+            ['breed-laag', 1900, 880],
+            ['groot', 1920, 1200],
+          ];
+
+          const log = [];
+          const data = {};
+
+          const b = await chromium.launch();
+
+          for (const [naam, w, h] of MATEN) {
+            const ctx = await b.newContext({
+              viewport: { width: w, height: h },
+              deviceScaleFactor: 1,
+              locale: 'nl-NL',
+              userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36',
+            });
+            const p = await ctx.newPage();
+            try {
+              await p.goto('https://smiirl.com/', { waitUntil: 'domcontentloaded', timeout: 45000 });
+            } catch (e) {
+              log.push(`${naam}: pagina laadt niet — ${e.message}`);
+              await ctx.close();
+              continue;
+            }
+            await p.waitForTimeout(4000);
+
+            // cookiemelding wegklikken als die er is
+            for (const s of ['#onetrust-accept-btn-handler', 'button:has-text("Accept")',
+                             'button:has-text("Accepteren")', '[aria-label*="accept" i]',
+                             '.cky-btn-accept', '#CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll']) {
+              try { await p.click(s, { timeout: 900 }); await p.waitForTimeout(700); break; } catch {}
+            }
+            await p.evaluate(() => window.scrollTo(0, 0));
+            await p.waitForTimeout(900);
+
+            const m = await p.evaluate(() => {
+              const zicht = (el) => {
+                const r = el.getBoundingClientRect();
+                const s = getComputedStyle(el);
+                return r.width > 1 && r.height > 1 && s.visibility !== 'hidden' && s.opacity !== '0';
+              };
+              const stijl = (el) => {
+                if (!el) return null;
+                const r = el.getBoundingClientRect();
+                const s = getComputedStyle(el);
+                return {
+                  tekst: (el.innerText || '').trim().slice(0, 70),
+                  top: Math.round(r.top), bodem: Math.round(r.bottom),
+                  breed: Math.round(r.width), hoog: Math.round(r.height),
+                  fontSize: s.fontSize, lineHeight: s.lineHeight, fontWeight: s.fontWeight,
+                  letterSpacing: s.letterSpacing, marginTop: s.marginTop,
+                  marginBottom: s.marginBottom, textAlign: s.textAlign,
+                  maxWidth: s.maxWidth, tag: el.tagName.toLowerCase(),
+                };
+              };
+
+              // de bovenbalk: het hoogste vaste of eerste nav-element
+              const nav = document.querySelector('header, nav, [class*="header" i]');
+
+              // de titel: de zichtbare h1 met de grootste letter
+              const koppen = [...document.querySelectorAll('h1, h2, [class*="title" i], [class*="heading" i]')]
+                .filter(zicht)
+                .filter((el) => el.getBoundingClientRect().top < window.innerHeight)
+                .map((el) => ({ el, px: parseFloat(getComputedStyle(el).fontSize) }))
+                .sort((a, c) => c.px - a.px);
+              const h1 = koppen.length ? koppen[0].el : null;
+
+              // de onderkop: eerste zichtbare alinea na de titel
+              let sub = null;
+              if (h1) {
+                const alles = [...document.querySelectorAll('p, [class*="sub" i], [class*="lead" i]')]
+                  .filter(zicht)
+                  .filter((el) => el.getBoundingClientRect().top > h1.getBoundingClientRect().bottom - 4
+                               && el.getBoundingClientRect().top < window.innerHeight);
+                sub = alles.length ? alles[0] : null;
+              }
+
+              // knoppen onder de onderkop, binnen beeld
+              const grens = sub ? sub.getBoundingClientRect().bottom - 4
+                          : (h1 ? h1.getBoundingClientRect().bottom : 0);
+              const knoppen = [...document.querySelectorAll('a, button')]
+                .filter(zicht)
+                .filter((el) => {
+                  const r = el.getBoundingClientRect();
+                  return r.top > grens && r.top < window.innerHeight && r.height > 22 && r.width > 40;
+                })
+                .slice(0, 6)
+                .map(stijl);
+
+              // de grootste afbeelding in beeld = de heroafbeelding
+              const beelden = [...document.querySelectorAll('img, video, picture img')]
+                .filter(zicht)
+                .map((el) => ({ el, r: el.getBoundingClientRect() }))
+                .filter((o) => o.r.top < window.innerHeight && o.r.width > 200)
+                .sort((a, c) => (c.r.width * c.r.height) - (a.r.width * a.r.height));
+              const foto = beelden.length ? stijl(beelden[0].el) : null;
+
+              return {
+                venster: { w: window.innerWidth, h: window.innerHeight },
+                nav: nav ? { hoog: Math.round(nav.getBoundingClientRect().height),
+                             bodem: Math.round(nav.getBoundingClientRect().bottom),
+                             positie: getComputedStyle(nav).position } : null,
+                h1: stijl(h1), sub: stijl(sub), knoppen, foto,
+                bodyFont: getComputedStyle(document.body).fontFamily,
+              };
+            });
+
+            data[naam] = m;
+            log.push(`\n=== ${naam} ${w}x${h}`);
+            log.push(`   venster ${m.venster.w}x${m.venster.h}`);
+            if (m.nav) log.push(`   bovenbalk: ${m.nav.hoog}px hoog, onderkant op ${m.nav.bodem}, position:${m.nav.positie}`);
+            if (m.h1) log.push(`   TITEL <${m.h1.tag}> "${m.h1.tekst}"\n`
+              + `      top ${m.h1.top}  bodem ${m.h1.bodem}  hoog ${m.h1.hoog}  breed ${m.h1.breed}\n`
+              + `      font ${m.h1.fontSize} / regelhoogte ${m.h1.lineHeight} / gewicht ${m.h1.fontWeight} / spatiering ${m.h1.letterSpacing}\n`
+              + `      marge boven ${m.h1.marginTop} onder ${m.h1.marginBottom} / maxWidth ${m.h1.maxWidth}`);
+            if (m.sub) log.push(`   ONDERKOP "${m.sub.tekst}"\n`
+              + `      top ${m.sub.top}  bodem ${m.sub.bodem}  breed ${m.sub.breed}\n`
+              + `      font ${m.sub.fontSize} / regelhoogte ${m.sub.lineHeight} / marge onder ${m.sub.marginBottom}`);
+            for (const k of m.knoppen) log.push(`   knop "${k.tekst}" top ${k.top} hoog ${k.hoog} breed ${k.breed} font ${k.fontSize} gewicht ${k.fontWeight}`);
+            if (m.foto) log.push(`   FOTO top ${m.foto.top} bodem ${m.foto.bodem} hoog ${m.foto.hoog} breed ${m.foto.breed}`);
+            log.push(`   lettertype body: ${m.bodyFont}`);
+
+            await p.screenshot({ path: `preview/smiirl-${naam}.png` });
+            await ctx.close();
+          }
+
+          await b.close();
+          fs.writeFileSync('preview/smiirl-meting.txt', log.join('\n') + '\n');
+          fs.writeFileSync('preview/smiirl-meting.json', JSON.stringify(data, null, 1));
+          console.log(log.join('\n'));
+          JS
+          node meet.mjs
+
+      - name: Uitkomst vastleggen
+        if: always()
+        run: |
+          git config user.name Claude
+          git config user.email noreply@anthropic.com
+          git add preview/smiirl-meting.txt preview/smiirl-meting.json preview/smiirl-*.png || true
+          git commit -m "Meting van de hero van smiirl" || exit 0
+          for poging in 1 2 3 4; do
+            git pull --rebase origin claude/3d-product-animations-btyc7y && \
+              git push origin HEAD:claude/3d-product-animations-btyc7y && break
+            sleep $((poging * 4))
+          done

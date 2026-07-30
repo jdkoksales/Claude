@@ -34,13 +34,24 @@ jobs:
           import { chromium } from 'playwright';
           import fs from 'fs';
 
+          // Meerdere hoogtes per breedte, want alleen zo valt af te leiden of
+          // hun tekst meeschuift met de schermhoogte of op een vaste afstand
+          // van de bovenkant blijft staan.
           const MATEN = [
+            ['tel-klein', 390, 667],
             ['telefoon', 390, 844],
+            ['tel-hoog', 390, 932],
+            ['tel-breed', 430, 932],
+            ['tablet-staand', 768, 1024],
             ['tablet', 820, 1180],
+            ['tablet-laag', 820, 900],
+            ['klein-liggend', 1024, 768],
+            ['laptop-smal', 1280, 800],
             ['laptop-laag', 1440, 780],
             ['laptop', 1440, 900],
             ['breed-laag', 1900, 880],
             ['groot', 1920, 1200],
+            ['heel-groot', 2560, 1440],
           ];
 
           const log = [];

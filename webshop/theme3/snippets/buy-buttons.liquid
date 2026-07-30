@@ -127,6 +127,17 @@
 </div>
 
 <script>
+  // Het thema zet bovenaan de productpagina een link "Terug naar collectie"
+  // zonder bestemming. Die geven we er een: de collectie waar dit product in
+  // zit, of anders de winkel. Een link die niets doet hoort er niet.
+  (function () {
+    var terug = document.querySelector('.product-back-nav__link');
+    if (!terug) return;
+    var doel = terug.getAttribute('href');
+    if (doel && doel !== '#') return;
+    terug.setAttribute('href', {{ collection.url | default: routes.all_products_collection_url | json }});
+  })();
+
   // Aflopende klok tot de verzendgrens. Rekent in de tijdzone van de winkel,
   // niet in die van de bezoeker: iemand in Spanje moet dezelfde grens zien als
   // wij hier hanteren, anders belooft de klok iets wat niet klopt.

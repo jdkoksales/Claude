@@ -179,15 +179,29 @@ jobs:
               await p.screenshot({ path: 'preview/lade-sticker.png' });
             } else { fouten.push('winkelwagen niet uit te lezen rond de bijverkoop'); }
 
-            // knop "kaart erbij" indrukken vanaf twee kaarten
+            // Knop "kaart erbij" indrukken vanaf precies twee kaarten. De lade
+            // sluiten en de pagina herladen is nodig: met een open lade vangt de
+            // overlay de klik op de winkelwagenknop op, en dan verversen de
+            // regels niet. Dat sloopte de vorige meting.
+            await p.click('.cart-drawer__close').catch(() => {});
+            await rust();
+            await kar('/cart/clear.js', { method: 'POST' });
             await rust();
             await kar('/cart/update.js', {
               method: 'POST', headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ updates: { [KAART]: 2 } }),
             });
             await rust();
+            await p.reload({ waitUntil: 'domcontentloaded' });
+            await p.waitForTimeout(3500);
+            await p.evaluate(() => {
+              document.querySelectorAll('#preview-bar-iframe, #shopify-pc__banner').forEach((el) => el.remove());
+            });
             await p.click('[data-cart-toggle]').catch(() => {});
-            await p.waitForTimeout(3000);
+            await p.waitForTimeout(3500);
+            const vooraf = await lees();
+            log.push(`\nvoor de klik: ${vooraf.duwKop} | knop: ${vooraf.duwKnop}`);
+            if (!vooraf.duwKnop) fouten.push('knop "kaart erbij" staat er niet bij twee kaarten');
             const v2 = await kar('/cart.js');
             await p.click('[data-tk3-staffelduw-knop]').catch(() => {});
             await p.waitForTimeout(7000);

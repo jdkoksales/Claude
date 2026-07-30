@@ -1,0 +1,140 @@
+name: Hero naast de referentie leggen
+
+# Meet onze eigen hero op dezelfde veertien schermformaten en legt de uitkomst
+# naast de eerder opgeslagen meting van smiirl. Een verschil in pixels is het
+# enige antwoord dat telt.
+on:
+  workflow_dispatch:
+  push:
+    branches: [claude/3d-product-animations-btyc7y]
+    paths: ['.github/workflows/heromatch.yml', 'preview/heromatch-trigger.txt']
+
+permissions:
+  contents: write
+
+jobs:
+  vergelijken:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: claude/3d-product-animations-btyc7y
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Playwright installeren
+        run: npm i -D playwright && npx playwright install --with-deps chromium
+
+      - name: Meten en vergelijken
+        run: |
+          mkdir -p preview
+          cat > match.mjs <<'JS'
+          import { chromium } from 'playwright';
+          import fs from 'fs';
+
+          const BASE = 'https://ikep5e-3q.myshopify.com';
+          const PV = '?preview_theme_id=196665213305';
+          const REF = JSON.parse(fs.readFileSync('preview/smiirl-meting.json', 'utf8'));
+
+          const MATEN = [
+            ['tel-klein', 390, 667], ['telefoon', 390, 844], ['tel-hoog', 390, 932],
+            ['tel-breed', 430, 932], ['tablet-staand', 768, 1024], ['tablet', 820, 1180],
+            ['tablet-laag', 820, 900], ['klein-liggend', 1024, 768], ['laptop-smal', 1280, 800],
+            ['laptop-laag', 1440, 780], ['laptop', 1440, 900], ['breed-laag', 1900, 880],
+            ['groot', 1920, 1200], ['heel-groot', 2560, 1440],
+          ];
+
+          const log = [];
+          const fouten = [];
+          const b = await chromium.launch();
+
+          log.push('formaat           venster     kop-top          kopgrootte       onderkop      knop-top   foto');
+          log.push('                              ons / ref  ver   ons / ref        ons / ref     ons        onderkant');
+
+          for (const [naam, w, h] of MATEN) {
+            const ctx = await b.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: 1 });
+            const p = await ctx.newPage();
+            await p.goto(BASE + '/' + PV, { waitUntil: 'domcontentloaded' });
+            await p.waitForTimeout(3200);
+            await p.evaluate(() => {
+              document.querySelectorAll('#preview-bar-iframe, #shopify-pc__banner').forEach((el) => el.remove());
+              window.scrollTo(0, 0);
+            });
+            await p.waitForTimeout(900);
+
+            const m = await p.evaluate(() => {
+              const pak = (sel) => {
+                const el = document.querySelector(sel);
+                if (!el) return null;
+                const r = el.getBoundingClientRect();
+                const s = getComputedStyle(el);
+                return {
+                  top: Math.round(r.top), bodem: Math.round(r.bottom),
+                  hoog: Math.round(r.height), breed: Math.round(r.width),
+                  fontSize: s.fontSize, lineHeight: s.lineHeight,
+                  fontWeight: s.fontWeight, letterSpacing: s.letterSpacing,
+                };
+              };
+              const foto = document.querySelector('.tk3 .hero .shots img.on') || document.querySelector('.tk3 .hero .shots img');
+              const fr = foto ? foto.getBoundingClientRect() : null;
+              return {
+                venster: { w: innerWidth, h: innerHeight },
+                h1: pak('.tk3 .hero h1'),
+                sub: pak('.tk3 .hero .sub'),
+                knop: pak('.tk3 .hero .buy'),
+                calc: pak('.tk3 .hero-calc'),
+                boven: getComputedStyle(document.documentElement).getPropertyValue('--tk3-boven').trim(),
+                foto: fr ? { top: Math.round(fr.top), bodem: Math.round(fr.bottom) } : null,
+                overloop: Math.max(0, document.documentElement.scrollWidth - innerWidth),
+              };
+            });
+
+            const r = REF[naam] || {};
+            const rh1 = r.h1 || {}; const rsub = r.sub || {};
+            const rknop = (r.knoppen || [])[0] || {};
+            const ver = (m.h1 && rh1.top != null) ? m.h1.top - rh1.top : null;
+
+            log.push(
+              `${naam.padEnd(16)}${String(w + 'x' + h).padEnd(11)}` +
+              `${String(m.h1 ? m.h1.top : '?').padStart(4)} /${String(rh1.top ?? '?').padStart(4)} ` +
+              `${String(ver === null ? '?' : (ver > 0 ? '+' + ver : ver)).padStart(5)}  ` +
+              `${String(m.h1 ? m.h1.fontSize : '?').padStart(8)} /${String(rh1.fontSize ?? '?').padStart(7)}  ` +
+              `${String(m.sub ? m.sub.fontSize : '?').padStart(6)} /${String(rsub.fontSize ?? '?').padStart(5)}  ` +
+              `${String(m.knop ? m.knop.top : '?').padStart(5)} /${String(rknop.top ?? '?').padStart(5)}  ` +
+              `${String(m.foto ? m.foto.bodem : '?').padStart(5)}/${h}`
+            );
+
+            if (ver !== null && Math.abs(ver) > 2) fouten.push(`${naam}: kop staat ${ver > 0 ? ver + 'px lager' : -ver + 'px hoger'} dan de referentie`);
+            if (m.h1 && rh1.fontSize && m.h1.fontSize !== rh1.fontSize) fouten.push(`${naam}: kop ${m.h1.fontSize} in plaats van ${rh1.fontSize}`);
+            if (m.sub && rsub.fontSize && m.sub.fontSize !== rsub.fontSize) fouten.push(`${naam}: onderkop ${m.sub.fontSize} in plaats van ${rsub.fontSize}`);
+            if (m.overloop > 0) fouten.push(`${naam}: ${m.overloop}px horizontale overloop`);
+            if (m.h1 && m.h1.top < 4) fouten.push(`${naam}: kop valt achter de header (top ${m.h1.top})`);
+            if (m.foto && m.foto.bodem < h - 2) fouten.push(`${naam}: foto eindigt op ${m.foto.bodem} van ${h}, de tafel valt weg`);
+
+            await p.screenshot({ path: `preview/match-${naam}.png` });
+            await ctx.close();
+          }
+
+          await b.close();
+          const kop = fouten.length
+            ? `GEVONDEN: ${fouten.length} punten\n` + fouten.map((f) => ' - ' + f).join('\n')
+            : 'GEEN AFWIJKINGEN GEVONDEN';
+          fs.writeFileSync('preview/heromatch.txt', kop + '\n\n' + log.join('\n') + '\n');
+          console.log(kop + '\n\n' + log.join('\n'));
+          JS
+          node match.mjs
+
+      - name: Uitkomst vastleggen
+        if: always()
+        run: |
+          git config user.name Claude
+          git config user.email noreply@anthropic.com
+          git add preview/heromatch.txt preview/match-*.png || true
+          git commit -m "Uitkomst van de heromatch" || exit 0
+          for poging in 1 2 3 4; do
+            git pull --rebase origin claude/3d-product-animations-btyc7y && \
+              git push origin HEAD:claude/3d-product-animations-btyc7y && break
+            sleep $((poging * 4))
+          done

@@ -111,7 +111,7 @@ jobs:
                   shots: doos('.tk3 .hero .inner > .shots'),
                   img: doos('.tk3 .hero .shots img.on'),
                 },
-                foto: fr ? { top: Math.round(fr.top), bodem: Math.round(fr.bottom) } : null,
+                foto: fr ? { top: Math.round(fr.top), bodem: Math.round(fr.bottom), breed: Math.round(fr.width) } : null,
                 overloop: Math.max(0, document.documentElement.scrollWidth - innerWidth),
               };
             });
@@ -130,6 +130,14 @@ jobs:
               `${String(m.knop ? m.knop.top : '?').padStart(5)} /${String(rknop.top ?? '?').padStart(5)}  ` +
               `${String(m.foto ? m.foto.bodem : '?').padStart(5)}/${h}`
             );
+            // De maat van de foto zelf: daar ging de klacht over. De tafel is de
+            // onderste 40% van het doek, dus die 40% is wat er te zien is.
+            const rf = r.foto || {};
+            if (m.foto) {
+              const hoog = m.foto.bodem - m.foto.top;
+              const tafel = Math.round(hoog * 0.4);
+              log.push(`     foto ${m.foto.breed || '?'}x${hoog} (top ${m.foto.top}) — referentie ${rf.breed ?? '?'}x${rf.hoog ?? '?'} (top ${rf.top ?? '?'}) | tafel ongeveer ${tafel}px hoog`);
+            }
 
             if (ver !== null && Math.abs(ver) > 2) fouten.push(`${naam}: kop staat ${ver > 0 ? ver + 'px lager' : -ver + 'px hoger'} dan de referentie`);
             if (m.h1 && rh1.fontSize && m.h1.fontSize !== rh1.fontSize) fouten.push(`${naam}: kop ${m.h1.fontSize} in plaats van ${rh1.fontSize}`);

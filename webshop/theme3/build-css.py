@@ -199,9 +199,43 @@ def transform(css):
     return css
 
 
+def keur(bron, css):
+    """Weiger stil door te bouwen als er iets niet klopt.
+
+    Twee keer op rij heb ik bij het uitbreiden van een commentaarblok een
+    tweede `*/` laten staan. De regel eronder werd dan geen regel meer, kreeg
+    dus geen `.tk3` voor zich en deed op de winkel helemaal niets — zonder dat
+    er iets zichtbaar misging. Dat is precies het soort fout waar een script
+    voor is.
+    """
+    klachten = []
+
+    if bron.count("/*") != bron.count("*/"):
+        klachten.append(f"commentaarmarkeringen niet in balans: "
+                        f"{bron.count('/*')}x /* tegen {bron.count('*/')}x */")
+
+    # Elke selector in het omgezette deel moet met .tk3 beginnen of een at-regel
+    # zijn. Staat er iets anders, dan is de omzetting eroverheen gelopen.
+    for head, _ in split_rules(css):
+        head = head.strip()
+        if not head or head.startswith("@"):
+            continue
+        for sel in head.split(","):
+            sel = sel.strip()
+            if sel and not sel.startswith(".tk3"):
+                klachten.append(f"selector zonder .tk3-voorvoegsel: {sel[:70]!r}")
+
+    if klachten:
+        for k in klachten:
+            print("AFGEKEURD:", k, file=sys.stderr)
+        sys.exit(1)
+
+
 if __name__ == "__main__":
     os.makedirs(os.path.dirname(DST), exist_ok=True)
-    css = transform(open(SRC).read())
+    bron = open(SRC).read()
+    css = transform(bron)
+    keur(bron, css)
     header = ("/* tk3 — gegenereerd uit webshop/clone/style.css door build-css.py.\n"
               "   Niet met de hand aanpassen: pas de bron aan en draai het script. */\n")
     open(DST, "w").write(header + TAIL + css + "\n")

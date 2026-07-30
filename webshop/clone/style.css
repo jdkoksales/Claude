@@ -163,11 +163,16 @@ footer .brand img{height:29px}
    kaartje in het midden. Per breedte krijgt het venster dezelfde verhouding als
    bij hen, en object-fit:cover snijdt de zijkanten weg — precies de uitsnede
    die zij vooraf op de server maken. Het kaartje staat op x=800 van 1600, dus
-   het valt altijd binnen die uitsnede. */
+   het valt altijd binnen die uitsnede.
+
+   Vanaf 992px houdt de referentie de foto op een vaste 1400px breed, ook als
+   het venster smaller is: dan loopt hij aan weerszijden over de rand heen en
+   klipt .hero hem af. Zo blijft de tafel op elk desktopformaat dezelfde
+   fysieke maat in plaats van mee te krimpen met het venster. */
 .hero .shots{position:absolute;bottom:0;left:50%;transform:translateX(-50%);
-  z-index:1;width:min(100%,1400px);margin:0;display:block;pointer-events:none;
+  z-index:1;width:1400px;margin:0;display:block;pointer-events:none;
   aspect-ratio:1600/900}
-@media(max-width:991px){.hero .shots{aspect-ratio:768/576}}
+@media(max-width:991px){.hero .shots{width:100%;aspect-ratio:768/576}}
 @media(max-width:767px){.hero .shots{aspect-ratio:480/640}}
 @media(max-width:479px){.hero .shots{aspect-ratio:480/853}}
 /* Het thema zet height:auto met !important op elke img, en de browser zet zelf

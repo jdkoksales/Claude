@@ -181,9 +181,9 @@ html,body{overflow-x:clip}
 @media(min-width:768px){.tk3{--tk3-kop:249px}}
 @media(min-width:1024px){.tk3{--tk3-kop:237px}}
 .tk3 .hero .shots{position:absolute;bottom:0;left:50%;transform:translateX(-50%);
-  z-index:1;width:min(100%,1400px);margin:0;display:block;pointer-events:none;
+  z-index:1;width:1400px;margin:0;display:block;pointer-events:none;
   aspect-ratio:1600/900}
-@media(max-width:991px){.tk3 .hero .shots{aspect-ratio:768/576}}
+@media(max-width:991px){.tk3 .hero .shots{width:100%;aspect-ratio:768/576}}
 @media(max-width:767px){.tk3 .hero .shots{aspect-ratio:480/640}}
 @media(max-width:479px){.tk3 .hero .shots{aspect-ratio:480/853}}
 .tk3 .hero .shots img{position:absolute;inset:0;width:100%;height:100%!important;

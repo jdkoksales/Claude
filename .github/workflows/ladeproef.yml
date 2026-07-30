@@ -70,7 +70,13 @@ jobs:
             const balk = document.querySelector('[data-tk3-verzendbalk]');
             const vak = document.querySelector('[data-tk3-bijverkoop]');
             const knop = document.querySelector('.cart-drawer__checkout-button');
+            const duw = document.querySelector('[data-tk3-staffelduw]');
             return {
+              duwZichtbaar: duw ? !duw.hidden : null,
+              duwKop: duw?.querySelector('[data-tk3-staffelduw-kop]')?.textContent.trim() || null,
+              duwSub: duw?.querySelector('[data-tk3-staffelduw-sub]')?.textContent.trim() || null,
+              duwKnop: duw ? !duw.querySelector('[data-tk3-staffelduw-knop]').hidden : null,
+              duwMax: duw ? duw.classList.contains('is-max') : null,
               balk: balk ? !balk.hidden : null,
               tekst: balk ? balk.innerText.replace(/\s+/g, ' ').trim() : null,
               vulling: balk?.querySelector('[data-tk3-verzendvulling]')?.style.width || null,
@@ -121,7 +127,7 @@ jobs:
             await kar('/cart/clear.js', { method: 'POST' });
             await rust();
 
-            for (const n of [1, 2]) {
+            for (const n of [1, 2, 3, 4]) {
               const c = await kar('/cart/update.js', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -135,7 +141,17 @@ jobs:
               log.push(`   balk zichtbaar: ${m.balk}   "${m.tekst}"`);
               log.push(`   vulling ${m.vulling}   gehaald: ${m.gehaald}`);
               log.push(`   bijverkoop: ${m.bij} — ${m.bijtekst}`);
+              log.push(`   staffelduw: ${m.duwZichtbaar} | ${m.duwKop}`);
+              log.push(`               ${m.duwSub} | knop: ${m.duwKnop} | max: ${m.duwMax}`);
               log.push(`   afrekenknop eindigt op ${m.knopOnder}px van 1000`);
+              if (!m.duwZichtbaar) fouten.push(`staffelduw niet zichtbaar bij ${n}`);
+              if (n < 4 && !m.duwKnop) fouten.push(`geen knop "kaart erbij" bij ${n}`);
+              if (n < 4 && m.duwSub && !/€/.test(m.duwSub)) fouten.push(`geen bedrag in de staffelduw bij ${n}`);
+              if (n === 4 && !m.duwMax) fouten.push('bij 4 stuks geen melding dat de korting maximaal is');
+              if (n === 4 && m.duwKnop) fouten.push('bij 4 stuks staat er nog een knop "kaart erbij"');
+              const pct = { 1: 0, 2: 10, 3: 15, 4: 20 }[n];
+              const verwacht = 3495 * n - Math.floor(3495 * (pct / 100)) * n;
+              if (c.total_price !== verwacht) fouten.push(`staffelprijs bij ${n} stuks: ${(c.total_price / 100).toFixed(2)} in plaats van ${(verwacht / 100).toFixed(2)}`);
               if (!m.balk) fouten.push(`verzendbalk niet zichtbaar bij ${n}`);
               if (n === 2 && m.gehaald) fouten.push('balk zegt gehaald bij 62,92');
               if (n === 2 && m.tekst && m.tekst.indexOf('7,08') === -1) fouten.push('balk noemt niet het juiste tekort van 7,08');
@@ -162,6 +178,43 @@ jobs:
               if (na.total_price >= 7000 && !m2.gehaald) fouten.push('balk springt niet naar gehaald boven de 70');
               await p.screenshot({ path: 'preview/lade-sticker.png' });
             } else { fouten.push('winkelwagen niet uit te lezen rond de bijverkoop'); }
+
+            // knop "kaart erbij" indrukken vanaf twee kaarten
+            await rust();
+            await kar('/cart/update.js', {
+              method: 'POST', headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ updates: { [KAART]: 2 } }),
+            });
+            await rust();
+            await p.click('[data-cart-toggle]').catch(() => {});
+            await p.waitForTimeout(3000);
+            const v2 = await kar('/cart.js');
+            await p.click('[data-tk3-staffelduw-knop]').catch(() => {});
+            await p.waitForTimeout(7000);
+            const n2 = await kar('/cart.js');
+            if (v2 && n2) {
+              log.push(`\nknop "kaart erbij": ${v2.item_count} → ${n2.item_count} stuks, ` +
+                `${(v2.total_price / 100).toFixed(2)} → ${(n2.total_price / 100).toFixed(2)}`);
+              if (n2.item_count <= v2.item_count) fouten.push('knop "kaart erbij" voegt niets toe');
+              const verw = 3495 * 3 - Math.floor(3495 * 0.15) * 3;
+              if (n2.total_price !== verw) fouten.push(`na toevoegen ${(n2.total_price / 100).toFixed(2)} in plaats van ${(verw / 100).toFixed(2)}`);
+              const m3 = await lees();
+              log.push(`   duw daarna: ${m3.duwKop} | ${m3.duwSub}`);
+            } else { fouten.push('winkelwagen niet uit te lezen rond de knop kaart erbij'); }
+            await p.screenshot({ path: 'preview/lade-erbij.png' });
+
+            // welke link op de productpagina heeft geen doel?
+            const leeg = await p.evaluate(() =>
+              [...document.querySelectorAll('a')]
+                .filter((a) => { const h = a.getAttribute('href'); return h === '' || h === '#' || h === null; })
+                .map((a) => ({
+                  klasse: (a.className || '').toString().slice(0, 60),
+                  tekst: (a.innerText || '').replace(/\s+/g, ' ').trim().slice(0, 40),
+                  ouder: (a.parentElement?.className || '').toString().slice(0, 50),
+                }))
+            );
+            log.push('\nlinks zonder doel op de productpagina:');
+            leeg.forEach((l) => log.push(`   klasse "${l.klasse}" tekst "${l.tekst}" in "${l.ouder}"`));
 
             await rust();
             await kar('/cart/clear.js', { method: 'POST' });

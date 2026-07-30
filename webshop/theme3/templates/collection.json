@@ -26,7 +26,7 @@
           "type": "stap",
           "settings": {
             "asset": "stap-2",
-            "title": "Je klant houdt zijn telefoon ertegenaan",
+            "title": "Je klant houdt de telefoon ertegenaan",
             "text": "Eén tik. Geen app, geen account, geen uitleg nodig."
           }
         },
@@ -61,7 +61,7 @@
         "badge": "Meest gekozen",
         "knop": "Bekijk dit pakket",
         "drempel": 7000,
-        "note": "Liever zelf samenstellen? Kies hieronder je losse kaarten; vanaf twee stuks loopt de korting automatisch op tot 20%."
+        "note": "Liever zelf samenstellen? Kies hieronder je losse kaarten. Vanaf twee stuks loopt de korting automatisch op tot 20% — elke standaard én elke sticker telt mee."
       }
     }
   },

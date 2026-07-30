@@ -32,7 +32,7 @@
         "t3": {
           "type": "item",
           "settings": {
-            "text": "🛡️ 14 dagen bedenktijd"
+            "text": "🛡️ Niet tevreden? 14 dagen retour, geld terug"
           }
         },
         "t4": {
@@ -61,7 +61,7 @@
       "type": "tk3-statement",
       "settings": {
         "lead": "Reviews bepalen wie er binnenkomt.",
-        "rest": "98% van de consumenten leest ze voordat ze een lokale zaak bezoeken."
+        "rest": "76% van de consumenten leest ze altijd of vaak voordat ze een lokale zaak kiest."
       }
     },
     "producten": {
@@ -83,7 +83,7 @@
           "settings": {
             "label": "Café",
             "quote": "Naast de kassa of op de bar.",
-            "who": "Terwijl je klant pint of op zijn koffie wacht, heeft hij zijn telefoon al in zijn hand.",
+            "who": "Terwijl je klant pint of op de koffie wacht, ligt de telefoon al in de hand.",
             "asset": "cafe"
           }
         },
@@ -119,7 +119,7 @@
           "settings": {
             "label": "Garage",
             "quote": "Op de servicebalie, bij de sleuteloverdracht.",
-            "who": "Werkt NFC niet op een ouder toestel? Dan scant je klant gewoon de QR-code.",
+            "who": "Werkt NFC niet op een ouder toestel? Dan scant je klant de QR-code.",
             "asset": "garage"
           }
         },
@@ -137,7 +137,7 @@
           "settings": {
             "label": "Tandarts",
             "quote": "In de wachtkamer of bij de balie.",
-            "who": "Geen mailtjes achteraf die niemand opent — gewoon één tik voor vertrek.",
+            "who": "Geen mailtjes achteraf die niemand opent — één tik voor vertrek.",
             "asset": "tandarts"
           }
         },
@@ -179,7 +179,7 @@
       "type": "tk3-design",
       "settings": {
         "heading": "Gemaakt om neergezet te worden.",
-        "note": "Gebogen acrylaat met een vaste voet, 7,6 × 12,75 cm. Groot genoeg om op te vallen op de balie, klein genoeg om nergens in de weg te staan. Wit of mat zwart.",
+        "note": "Gebogen plexiglas met een vaste voet, 7,6 × 12,75 cm. Groot genoeg om op te vallen op de balie, klein genoeg om nergens in de weg te staan. Wit of mat zwart.",
         "btn_text": "Bekijk alle specificaties",
         "btn_url": "/#specs"
       }
@@ -190,8 +190,8 @@
         "s1": {
           "type": "stat",
           "settings": {
-            "value": "98%",
-            "text": "van de consumenten leest online reviews voordat ze een lokale zaak bezoeken."
+            "value": "76%",
+            "text": "van de consumenten leest altijd of vaak online reviews voordat ze een lokale zaak kiest."
           }
         },
         "s2": {
@@ -205,7 +205,7 @@
           "type": "stat",
           "settings": {
             "value": "0",
-            "text": "abonnementen. Je betaalt eenmalig en de standaard blijft werken."
+            "text": "abonnementen. Je betaalt één keer en je TapKaart blijft werken."
           }
         },
         "s4": {
@@ -223,7 +223,7 @@
         "s4"
       ],
       "settings": {
-        "heading": "In cijfers.",
+        "heading": "Wat reviews opleveren.",
         "sub": "Waarom reviews je goedkoopste marketing zijn.",
         "source": "Bron: BrightLocal, Local Consumer Review Survey."
       }
@@ -231,9 +231,9 @@
     "verhaal": {
       "type": "tk3-story",
       "settings": {
-        "heading": "Het verhaal.",
-        "sub": "Waarom we dit maken.",
-        "body": "<p>Vraag een ondernemer wat hij van online reviews vindt en je krijgt twee antwoorden tegelijk: dat ze belangrijk zijn, en dat hij er nooit om durft te vragen. Dat ongemak is precies het probleem. De klant is tevreden, staat af te rekenen, heeft zijn telefoon al in zijn hand — en er gebeurt niets.</p><p>Een TapKaart stelt die vraag voor je. Eén tik en je klant staat op je Google-, Instagram- of Facebookpagina. Jij hoeft niets te zeggen.</p><p>Wat we niet doen: reviews verkopen. Wij verkopen het moment waarop iemand er een kan achterlaten. Daarom staan er op deze site ook geen verzonnen klantverhalen en geen ‘nog 3 op voorraad’-meldingen. Staat er een cijfer, dan kunnen we uitleggen waar het vandaan komt.</p>"
+        "heading": "Waarom we dit maken.",
+        "sub": "Het verhaal achter TapKaarten.",
+        "body": "<p>Vraag een ondernemer naar online reviews en je krijgt twee antwoorden tegelijk: dat ze belangrijk zijn, en dat je er nooit om durft te vragen. Dat ongemak is precies het probleem. De klant is tevreden, staat af te rekenen, heeft de telefoon al in de hand — en er gebeurt niets.</p><p>Een TapKaart stelt die vraag voor je. Eén tik en je klant staat op je Google-, Instagram- of Facebookpagina. Jij hoeft niets te zeggen.</p><p>Wat we niet doen: reviews verkopen. Wij verkopen het moment waarop iemand er een kan achterlaten. Daarom staan er op deze site ook geen verzonnen klantverhalen en geen ‘nog 3 op voorraad’-meldingen. Staat er een cijfer, dan kunnen we uitleggen waar het vandaan komt.</p>"
       }
     },
     "specs": {
@@ -261,9 +261,9 @@
           "type": "row",
           "settings": {
             "label": "Materiaal",
-            "value_a": "Gebogen acrylaat",
+            "value_a": "Gebogen plexiglas",
             "note_a": "Glanzend afgewerkt",
-            "value_b": "Gebogen acrylaat",
+            "value_b": "Gebogen plexiglas",
             "note_b": "Glanzend afgewerkt"
           }
         },
@@ -316,7 +316,7 @@
           "type": "stap",
           "settings": {
             "asset": "stap-2",
-            "title": "Je klant houdt zijn telefoon ertegenaan",
+            "title": "Je klant houdt de telefoon ertegenaan",
             "text": "Eén tik. Geen app, geen account, geen uitleg nodig."
           }
         },
@@ -346,13 +346,13 @@
       "type": "tk3-configurator",
       "settings": {
         "heading": "Reken uit wat het jouw zaak oplevert.",
-        "sub": "Schuif naar het aantal bezoekers dat je per dag ontvangt en zie hoeveel reviews en volgers dat per maand kan schelen.",
+        "sub": "Schuif naar het aantal bezoekers dat je per dag ontvangt en zie hoeveel reviews en volgers dat per maand kan opleveren.",
         "q1": "Hoeveel bezoekers ontvangt jouw bedrijf gemiddeld per dag?",
         "q2": "Stel jouw TapKaart-pakket samen",
         "results_intro": "Geschatte opbrengst per maand op basis van jouw gemiddelde aantal bezoekers per dag.",
-        "cta_text": "Wij koppelen je pagina · Gratis verzending vanaf € 70 · 14 dagen bedenktijd",
+        "cta_text": "Wij koppelen je pagina · Gratis verzending vanaf € 70 · 14 dagen retour",
         "cta_button": "Bestel mijn TapKaarten",
-        "disclaimer": "De berekening is een indicatieve schatting op basis van gemiddelde conversiepercentages. Werkelijke aantallen hangen af van je zaak, je klanten en waar je de kaarten neerzet."
+        "disclaimer": "Dit is een schatting op basis van gemiddelden. Wat het bij jou wordt, hangt af van je zaak, je klanten en waar je de kaarten neerzet."
       }
     },
     "koppelen": {
@@ -395,7 +395,7 @@
       ],
       "settings": {
         "heading": "Instellen hoef je niet te doen.",
-        "sub": "Je hoeft geen link op te zoeken en geen app te installeren. Wij koppelen je pagina’s voordat je bestelling verstuurd wordt.",
+        "sub": "Je hoeft geen link op te zoeken en geen app te installeren. Wij koppelen je pagina’s voordat je bestelling de deur uit gaat.",
         "note": "Wil je er later een andere pagina op zetten? Dat doe je zelf in ongeveer twee minuten met de gratis app NFC Tools — onbeperkt, zo vaak je wilt.",
         "pdf_url": "https://cdn.shopify.com/s/files/1/1025/4997/9513/files/tapkaarten-handleiding.pdf?v=1785309994"
       }
@@ -403,13 +403,13 @@
     "pakketten": {
       "type": "tk3-bundels",
       "settings": {
-        "heading": "Pakketten.",
+        "heading": "Pakketten: meer plekken, minder per kaart.",
         "sub": "Meerdere plekken in je zaak, één bestelling. Altijd voordeliger dan de losse kaarten.",
         "collection": "pakketten",
         "badge": "Meest gekozen",
         "knop": "Bekijk dit pakket",
         "drempel": 7000,
-        "note": "Liever zelf samenstellen? Bij twee kaarten krijg je 10% korting, bij drie 15% en vanaf vier 20% — dat wordt automatisch verrekend in de winkelwagen."
+        "note": "Liever zelf samenstellen? Vanaf twee TapKaarten rekent de winkelwagen automatisch korting: 10% bij twee, 15% bij drie, 20% vanaf vier. Bij vier standaards scheelt dat € 27,96. Elke standaard én elke sticker telt mee."
       }
     }
   },

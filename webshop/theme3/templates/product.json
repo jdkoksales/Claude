@@ -30,9 +30,9 @@
             "text_color": "#1A202C",
             "icon_size": 22,
             "icon_1_url": "",
-            "text_1": "Prijzen exclusief btw — wij leveren aan bedrijven",
+            "text_1": "Alle prijzen zijn zonder btw — als ondernemer krijg je die terug",
             "icon_2_url": "",
-            "text_2": "Geen app en geen abonnement — eenmalig betalen",
+            "text_2": "Geen app en geen abonnement — je betaalt één keer",
             "icon_3_url": "",
             "text_3": "Wij koppelen je pagina — jij hoeft niets in te stellen",
             "placement": "info"
@@ -60,7 +60,7 @@
           "type": "accordion",
           "settings": {
             "heading": "Hoe werkt het?",
-            "content": "<p>Je klant houdt zijn telefoon tegen de kaart. De NFC-chip opent meteen jouw pagina — geen app, geen account, geen uitleg nodig. Werkt de NFC niet, dan scant hij de QR-code op de voorkant; dat werkt met elke camera-app.</p><p><strong>Instellen hoef je zelf niet te doen.</strong> Direct na je bestelling krijg je een mail met een kort formulier: je bedrijfsnaam, je vestigingsplaats en welke pagina’s je gebruikt. Wij zoeken je Google-, Instagram- of Facebookpagina op en zetten die op je kaarten voordat ze verstuurd worden. Zo werkt dat: <a href=\"/pages/koppelen\">tapkaarten.nl/pages/koppelen</a>.</p><p><strong>Eén kaart wijst naar één pagina tegelijk.</strong> Je kunt hem onbeperkt herprogrammeren — in ongeveer twee minuten met de gratis app NFC Tools, de handleiding krijg je erbij — maar hij kan niet tegelijk naar Google én Instagram wijzen. Wil je allebei vragen, dan heb je twee kaarten nodig. Kijk anders bij de <a href=\"/collections/pakketten\">pakketten</a>.</p>",
+            "content": "<p>Je klant houdt de telefoon tegen de kaart. De NFC-chip opent meteen jouw pagina — geen app, geen account, geen uitleg nodig. Werkt de NFC niet, dan is er de QR-code op de voorkant; die werkt met elke camera-app.</p><p><strong>Instellen hoef je zelf niet te doen.</strong> Direct na je bestelling krijg je een mail met een kort formulier: je bedrijfsnaam, je vestigingsplaats en welke pagina’s je gebruikt. Wij zoeken je Google-, Instagram- of Facebookpagina op en zetten die op je kaarten voordat ze verstuurd worden. Zo werkt dat: <a href=\"/pages/koppelen\">tapkaarten.nl/pages/koppelen</a>.</p><p><strong>Eén kaart wijst naar één pagina tegelijk.</strong> Je kunt hem onbeperkt herprogrammeren — in ongeveer twee minuten met de gratis app NFC Tools, de handleiding krijg je erbij — maar hij kan niet tegelijk naar Google én Instagram wijzen. Wil je allebei vragen, dan heb je twee kaarten nodig. Kijk anders bij de <a href=\"/collections/pakketten\">pakketten</a>.</p>",
             "open_by_default": false
           }
         },
@@ -68,7 +68,7 @@
           "type": "accordion",
           "settings": {
             "heading": "Verzending en retour",
-            "content": "<p>Nederland € 6,95, gratis vanaf € 70. België en de rest van de EU € 12,95, daarbuiten € 19,95. Op werkdagen voor 16:00 uur besteld gaat dezelfde dag op de post; in Nederland is dat doorgaans de volgende werkdag in huis. Wachten we op dat moment nog op je koppelformulier, dan gaat je pakket de eerstvolgende werkdag na je antwoord weg.</p><p>Alle bedragen zijn exclusief btw. De btw wordt in de kassa berekend en staat apart op je factuur. Je kunt daar ook je btw-nummer opgeven.</p><p>Niet tevreden? Je hebt 14 dagen bedenktijd. Lees het volledige <a href=\"/pages/retourbeleid\">retourbeleid</a> of bekijk de <a href=\"/pages/verzending\">verzendinformatie</a>.</p>",
+            "content": "<p>Nederland € 6,95, gratis vanaf € 70. België en de rest van de EU € 12,95, daarbuiten € 19,95. Op werkdagen voor 16:00 uur besteld gaat dezelfde dag op de post; in Nederland is dat meestal de volgende werkdag in huis. Wachten we op dat moment nog op je koppelformulier, dan gaat je pakket de eerstvolgende werkdag na je antwoord weg.</p><p>Alle bedragen zijn exclusief btw. De btw komt er in de kassa bij en staat apart op je factuur. Je kunt daar ook je btw-nummer opgeven.</p><p>Niet tevreden? Je hebt 14 dagen om hem terug te sturen, en je krijgt je geld terug. Lees het volledige <a href=\"/pages/retourbeleid\">retourbeleid</a> of bekijk de <a href=\"/pages/verzending\">verzendinformatie</a>.</p>",
             "open_by_default": false
           }
         },
@@ -76,7 +76,7 @@
           "type": "accordion",
           "settings": {
             "heading": "Specificaties",
-            "content": "<ul><li>Paneel 7,6 × 12,75 cm, voet 5 cm diep</li><li>Gebogen acrylaat met vaste voet</li><li>NFC-chip (NTAG) plus gedrukte QR-code</li><li>Werkt op iPhone (XR en nieuwer) en op vrijwel elke Android</li><li>Onbeperkt herprogrammeerbaar naar elke link</li><li>Gewicht circa 60 gram</li><li>Geen batterij, geen onderhoud, geen abonnement</li></ul>",
+            "content": "<ul><li>Paneel 7,6 × 12,75 cm, voet 5 cm diep</li><li>Gebogen plexiglas met vaste voet</li><li>NFC-chip plus gedrukte QR-code</li><li>Werkt op iPhone (XR en nieuwer) en op vrijwel elke Android</li><li>Later zelf een andere pagina erop zetten kan, zo vaak je wilt</li><li>Gewicht circa 60 gram</li><li>Geen batterij, geen onderhoud, geen abonnement</li></ul>",
             "open_by_default": false
           }
         },
@@ -84,7 +84,7 @@
           "type": "accordion",
           "settings": {
             "heading": "Veelgestelde vragen",
-            "content": "<p><strong>Moet ik zelf iets instellen?</strong><br>Nee. Na je bestelling vul je een kort formulier in met je bedrijfsnaam en plaats; wij zoeken je pagina’s op en koppelen ze.</p><p><strong>Heb ik er meer dan één nodig?</strong><br>Dat hangt af van wat je wilt vragen. Eén kaart wijst naar één pagina tegelijk, dus voor Google én Instagram heb je er twee. En hoe vaker je klant er een tegenkomt — bar, kassa, rekening — hoe vaker hij tikt.</p><p><strong>Moet mijn klant een app installeren?</strong><br>Nee. De telefoon opent gewoon de webpagina.</p><p><strong>Kan ik de link later veranderen?</strong><br>Ja, onbeperkt. Met de meegeleverde handleiding en de gratis app NFC Tools doe je dat in twee minuten.</p><p><strong>Mag ik klanten belonen voor een review?</strong><br>Nee. Dat is in strijd met de voorwaarden van Google en Meta en met de Nederlandse wet. Vragen mag wel — daar is dit product voor.</p><p>Meer vragen? Kijk bij de <a href=\"/pages/veelgestelde-vragen\">veelgestelde vragen</a>.</p>",
+            "content": "<p><strong>Moet ik zelf iets instellen?</strong><br>Nee. Na je bestelling vul je een kort formulier in met je bedrijfsnaam en plaats; wij zoeken je pagina’s op en koppelen ze.</p><p><strong>Heb ik er meer dan één nodig?</strong><br>Dat hangt af van wat je wilt vragen. Eén kaart wijst naar één pagina tegelijk, dus voor Google én Instagram heb je er twee. En hoe vaker je klant er een tegenkomt — bar, kassa, rekening — hoe vaker je klant tikt.</p><p><strong>Moet mijn klant een app installeren?</strong><br>Nee. De telefoon opent de webpagina.</p><p><strong>Kan ik de link later veranderen?</strong><br>Ja, onbeperkt. Met de meegeleverde handleiding en de gratis app NFC Tools doe je dat in twee minuten.</p><p><strong>Mag ik klanten belonen voor een review?</strong><br>Nee. Dat is in strijd met de voorwaarden van Google en Meta en met de Nederlandse wet. Vragen mag wel — daar is dit product voor.</p><p>Meer vragen? Kijk bij de <a href=\"/pages/veelgestelde-vragen\">veelgestelde vragen</a>.</p>",
             "open_by_default": false
           }
         }
@@ -128,7 +128,7 @@
           "type": "stap",
           "settings": {
             "asset": "stap-2",
-            "title": "Je klant houdt zijn telefoon ertegenaan",
+            "title": "Je klant houdt de telefoon ertegenaan",
             "text": "Eén tik. Geen app, geen account, geen uitleg nodig."
           }
         },
@@ -162,9 +162,9 @@
         "q1": "Hoeveel bezoekers ontvangt jouw bedrijf gemiddeld per dag?",
         "q2": "Stel jouw TapKaart-pakket samen",
         "results_intro": "Geschatte opbrengst per maand op basis van jouw gemiddelde aantal bezoekers per dag.",
-        "cta_text": "Wij koppelen je pagina · Gratis verzending vanaf € 70 · 14 dagen bedenktijd",
+        "cta_text": "Wij koppelen je pagina · Gratis verzending vanaf € 70 · 14 dagen retour",
         "cta_button": "Bestel mijn TapKaarten",
-        "disclaimer": "De berekening is een indicatieve schatting op basis van gemiddelde conversiepercentages. Werkelijke aantallen hangen af van je zaak, je klanten en waar je de kaarten neerzet."
+        "disclaimer": "Dit is een schatting op basis van gemiddelden. Wat het bij jou wordt, hangt af van je zaak, je klanten en waar je de kaarten neerzet."
       }
     }
   },

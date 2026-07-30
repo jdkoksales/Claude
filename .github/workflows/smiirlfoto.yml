@@ -1,0 +1,127 @@
+name: Herofoto van de referentie uitpluizen
+
+# Hoe is hun herofoto opgebouwd: een afbeelding met object-fit, of per
+# schermformaat een andere bron? En hoe staat hij vast aan de onderkant?
+on:
+  workflow_dispatch:
+  push:
+    branches: [claude/3d-product-animations-btyc7y]
+    paths: ['.github/workflows/smiirlfoto.yml', 'preview/smiirlfoto-trigger.txt']
+
+permissions:
+  contents: write
+
+jobs:
+  foto:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: claude/3d-product-animations-btyc7y
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Playwright installeren
+        run: npm i -D playwright && npx playwright install --with-deps chromium
+
+      - name: Uitpluizen
+        run: |
+          mkdir -p preview
+          cat > foto.mjs <<'JS'
+          import { chromium } from 'playwright';
+          import fs from 'fs';
+
+          const MATEN = [
+            ['telefoon', 390, 844], ['tel-klein', 390, 667],
+            ['tablet', 820, 1180], ['laptop', 1440, 900], ['laptop-laag', 1440, 780],
+          ];
+
+          const log = [];
+          const b = await chromium.launch();
+
+          for (const [naam, w, h] of MATEN) {
+            const ctx = await b.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: 1 });
+            const p = await ctx.newPage();
+            await p.goto('https://www.smiirl.com/', { waitUntil: 'domcontentloaded' });
+            await p.waitForTimeout(4000);
+            await p.evaluate(() => window.scrollTo(0, 0));
+            await p.waitForTimeout(1200);
+
+            const m = await p.evaluate(() => {
+              // Alle plaatjes in het bovenste scherm, grootste eerst.
+              const alles = [...document.querySelectorAll('img, picture, video, [style*="background-image"]')]
+                .map((el) => {
+                  const r = el.getBoundingClientRect();
+                  const s = getComputedStyle(el);
+                  return { el, r, s };
+                })
+                .filter((o) => o.r.width > 200 && o.r.top < innerHeight && o.r.bottom > 0)
+                .sort((a, b) => (b.r.width * b.r.height) - (a.r.width * a.r.height))
+                .slice(0, 4)
+                .map(({ el, r, s }) => ({
+                  tag: el.tagName.toLowerCase(),
+                  klas: (el.className || '').toString().slice(0, 60),
+                  src: (el.currentSrc || el.src || s.backgroundImage || '').slice(-110),
+                  natuurlijk: el.naturalWidth ? `${el.naturalWidth}x${el.naturalHeight}` : '-',
+                  srcset: (el.getAttribute && (el.getAttribute('srcset') || '') || '').slice(0, 160),
+                  sizes: (el.getAttribute && (el.getAttribute('sizes') || '') || ''),
+                  rect: `${Math.round(r.left)},${Math.round(r.top)} ${Math.round(r.width)}x${Math.round(r.height)} bodem=${Math.round(r.bottom)}`,
+                  position: s.position, inset: `${s.top}/${s.right}/${s.bottom}/${s.left}`,
+                  objectFit: s.objectFit, objectPosition: s.objectPosition,
+                  hoogte: s.height, breedte: s.width, aspect: s.aspectRatio,
+                  bgSize: s.backgroundSize, bgPos: s.backgroundPosition,
+                  zIndex: s.zIndex,
+                }));
+              // Bronnen in een <picture> met media-queries?
+              const bronnen = [...document.querySelectorAll('picture source')]
+                .slice(0, 6)
+                .map((s) => `${s.media || '(geen media)'} -> ${(s.srcset || '').slice(-90)}`);
+              const h1 = document.querySelector('h1');
+              const hr = h1 ? h1.getBoundingClientRect() : null;
+              return {
+                venster: { w: innerWidth, h: innerHeight },
+                kopTop: hr ? Math.round(hr.top) : null,
+                plaatjes: alles, bronnen,
+              };
+            });
+
+            log.push(`\n=== ${naam} ${w}x${h}  (kop op ${m.kopTop})`);
+            m.plaatjes.forEach((i, n) => {
+              log.push(`  [${n}] <${i.tag}> class="${i.klas}"`);
+              log.push(`      src ...${i.src}`);
+              log.push(`      natuurlijk ${i.natuurlijk}  rect ${i.rect}`);
+              log.push(`      position:${i.position} inset:${i.inset} z:${i.zIndex}`);
+              log.push(`      breedte:${i.breedte} hoogte:${i.hoogte} aspect:${i.aspect}`);
+              log.push(`      object-fit:${i.objectFit} object-position:${i.objectPosition}`);
+              if (i.srcset) log.push(`      srcset ${i.srcset}`);
+              if (i.sizes) log.push(`      sizes ${i.sizes}`);
+            });
+            if (m.bronnen.length) {
+              log.push('  <picture> bronnen:');
+              m.bronnen.forEach((s) => log.push('      ' + s));
+            }
+
+            await p.screenshot({ path: `preview/smiirlfoto-${naam}.png` });
+            await ctx.close();
+          }
+
+          await b.close();
+          fs.writeFileSync('preview/smiirlfoto.txt', log.join('\n') + '\n');
+          console.log(log.join('\n'));
+          JS
+          node foto.mjs
+
+      - name: Uitkomst vastleggen
+        if: always()
+        run: |
+          git config user.name Claude
+          git config user.email noreply@anthropic.com
+          git add preview/smiirlfoto.txt preview/smiirlfoto-*.png || true
+          git commit -m "Opbouw van de herofoto bij de referentie" || exit 0
+          for poging in 1 2 3 4; do
+            git pull --rebase origin claude/3d-product-animations-btyc7y && \
+              git push origin HEAD:claude/3d-product-animations-btyc7y && break
+            sleep $((poging * 4))
+          done

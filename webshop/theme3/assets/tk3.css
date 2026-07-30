@@ -174,13 +174,15 @@ html,body{overflow-x:clip}
   background:linear-gradient(112deg,#fbfbfc 0%,#fcf6f8 48%,#fbecf0 100%)}
 .tk3 .hero .inner{position:relative;z-index:2;
   padding-top:max(16px,calc(50svh - var(--tk3-kop,243px) - var(--tk3-boven,109px)))}
+@media(min-width:415px){.tk3{--tk3-kop:224px}}
 @media(min-width:768px){.tk3{--tk3-kop:249px}}
 @media(min-width:1024px){.tk3{--tk3-kop:237px}}
 @media(min-width:901px) and (min-height:700px){.tk3 .hero .inner{display:flex;flex-direction:column;
     height:calc(100vh - var(--tk3-boven,109px));
-    height:calc(100svh - var(--tk3-boven,109px))}.tk3 .hero .inner>.wrap{flex:0 0 auto;padding-bottom:clamp(16px,2.4svh,40px)}.tk3 .hero .inner>.shots{flex:1 1 auto;min-height:220px;margin-top:0;overflow:hidden;
+    height:calc(100svh - var(--tk3-boven,109px))}.tk3 .hero .inner>.wrap{flex:0 0 auto;padding-bottom:clamp(16px,2.4svh,40px)}.tk3 .hero .inner>.shots{position:relative;flex:1 1 auto;min-height:220px;margin-top:0;overflow:hidden;
     -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 90px);
-    mask-image:linear-gradient(to bottom,transparent 0,#000 90px)}.tk3 .hero .inner>.shots img{width:100%;height:100%;object-fit:cover;object-position:center bottom}}
+    mask-image:linear-gradient(to bottom,transparent 0,#000 90px)}.tk3 .hero .inner>.shots img{position:absolute;inset:0;width:100%;
+    object-fit:cover;object-position:center bottom}}
 .tk3 .hero h1{max-width:768px;margin:0 auto 22px;font-size:36px;
   line-height:1.1;font-weight:700;letter-spacing:-.025em}
 .tk3 .hero .sub{font-size:16px;line-height:1.5;color:var(--ink-64);max-width:689px;margin:0 auto 36px}

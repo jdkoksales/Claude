@@ -182,6 +182,7 @@ html,body{overflow-x:clip}
     height:calc(100svh - var(--tk3-boven,109px))}.tk3 .hero .inner>.wrap{flex:0 0 auto;padding-bottom:clamp(16px,2.4svh,40px)}.tk3 .hero .inner>.shots{position:relative;flex:1 1 auto;min-height:220px;margin-top:0;overflow:hidden;
     -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 90px);
     mask-image:linear-gradient(to bottom,transparent 0,#000 90px)}.tk3 .hero .inner>.shots img{position:absolute;inset:0;width:100%;
+    height:100%!important;aspect-ratio:auto;
     object-fit:cover;object-position:center bottom}}
 .tk3 .hero h1{max-width:768px;margin:0 auto 22px;font-size:36px;
   line-height:1.1;font-weight:700;letter-spacing:-.025em}

@@ -165,8 +165,12 @@ footer .brand img{height:29px}
      werd van onderaf afgeknipt — precies daar staat de tafel.
      Met absolute positionering en inset:0 bepaalt niet de height-eigenschap
      maar de afstand tussen boven- en onderrand de hoogte, dus die !important
-     heeft er niets meer over te zeggen. */
+     heeft er niets meer over te zeggen.
+     Ook aspect-ratio moet uit: die zet de browser zelf op de width- en
+     height-attributen in de HTML, en zolang die geldt rekent hij de hoogte uit
+     de breedte in plaats van hem tussen de randen te strekken. */
   .hero .inner>.shots img{position:absolute;inset:0;width:100%;
+    height:100%!important;aspect-ratio:auto;
     object-fit:cover;object-position:center bottom}
 }
 /* Lettermaten exact als bij de referentie. Hun basismaat is 17px en alles is

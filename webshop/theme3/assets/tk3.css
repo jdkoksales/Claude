@@ -172,15 +172,19 @@ html,body{overflow-x:clip}
 @media(max-width:900px){.tk3 .hdr nav,.tk3 .hdr .deskonly{display:none}.tk3 .hdr .row{height:64px;gap:14px}.tk3 .hdr .right{margin-left:auto;gap:16px}.tk3 .mobmenu{display:block}.tk3 .brand img{height:21px}}
 .tk3 .hero{position:relative;text-align:center;overflow:hidden;
   background:linear-gradient(112deg,#fbfbfc 0%,#fcf6f8 48%,#fbecf0 100%)}
-.tk3 .hero .inner{padding:56px 0 0;position:relative;z-index:2}
-@media(min-width:901px) and (min-height:700px){.tk3 .hero .inner{display:flex;flex-direction:column;padding-top:0;
+.tk3 .hero .inner{position:relative;z-index:2;
+  padding-top:max(16px,calc(50svh - var(--tk3-kop,243px) - var(--tk3-boven,109px)))}
+@media(min-width:768px){.tk3{--tk3-kop:249px}}
+@media(min-width:1024px){.tk3{--tk3-kop:237px}}
+@media(min-width:901px) and (min-height:700px){.tk3 .hero .inner{display:flex;flex-direction:column;
     height:calc(100vh - var(--tk3-boven,109px));
-    height:calc(100svh - var(--tk3-boven,109px))}.tk3 .hero .inner>.wrap{flex:0 0 auto;padding-top:clamp(30px,6svh,96px);
-    padding-bottom:clamp(16px,2.4svh,40px)}.tk3 .hero .inner>.shots{flex:1 1 auto;min-height:220px;margin-top:0;overflow:hidden;
+    height:calc(100svh - var(--tk3-boven,109px))}.tk3 .hero .inner>.wrap{flex:0 0 auto;padding-bottom:clamp(16px,2.4svh,40px)}.tk3 .hero .inner>.shots{flex:1 1 auto;min-height:220px;margin-top:0;overflow:hidden;
     -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 90px);
     mask-image:linear-gradient(to bottom,transparent 0,#000 90px)}.tk3 .hero .inner>.shots img{width:100%;height:100%;object-fit:cover;object-position:center bottom}}
-.tk3 .hero h1{max-width:720px;margin:0 auto 14px;font-size:clamp(32px,3.4vw,44px)}
-.tk3 .hero .sub{font-size:clamp(15.5px,1.3vw,18px);color:var(--ink-64);max-width:54ch;margin:0 auto 22px}
+.tk3 .hero h1{max-width:768px;margin:0 auto 22px;font-size:36px;
+  line-height:1.1;font-weight:700;letter-spacing:-.025em}
+.tk3 .hero .sub{font-size:16px;line-height:1.5;color:var(--ink-64);max-width:689px;margin:0 auto 36px}
+@media(min-width:768px){.tk3 .hero h1{font-size:51px}.tk3 .hero .sub{font-size:17px;margin-bottom:38.25px}}
 .tk3 .hero .shots{display:grid;width:min(100%,1500px);margin:8px auto 0}
 .tk3 .hero .shots img{grid-area:1/1;width:100%;opacity:0;transition:opacity .3s ease}
 .tk3 .hero .shots img.on{opacity:1}
@@ -207,7 +211,8 @@ html,body{overflow-x:clip}
 .tk3 .seg button[aria-selected="true"]{background:#fff;color:#000;box-shadow:0 1px 3px rgba(0,0,0,.1)}
 .tk3 .seg.tabs{border-radius:14px;padding:4px}
 .tk3 .seg.tabs button{border-radius:12.75px;padding:11px 21px}
-.tk3 .hero .controls{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;align-items:center;margin-top:26px}
+.tk3 .hero .controls{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;align-items:center;margin-top:50px}
+.tk3 .hero .buy,.tk3 .hero-calc{font-size:14.875px;font-weight:750}
 .tk3 .seg[data-tk3-disabled]{opacity:.35;pointer-events:none}
 .tk3 .hero .seg button svg{filter:grayscale(1);opacity:.45;transition:filter .2s,opacity .2s}
 .tk3 .hero .seg button[aria-selected="true"] svg{filter:none;opacity:1}
@@ -429,7 +434,7 @@ html,body{overflow-x:clip}
 .tk3 .f-cols a:hover{color:var(--ink)}
 .tk3 .f-legal{margin-top:36px;font-size:var(--fs-xs);color:var(--ink-48)}
 @media(max-width:900px){.tk3 .f-top{grid-template-columns:1fr;gap:26px}.tk3 .f-cols{grid-template-columns:1fr 1fr;gap:18px}}
-@media(max-width:900px){.tk3 h1{font-size:36px;letter-spacing:-.025em}.tk3 h2{font-size:29px}.tk3 h3{font-size:21px}.tk3 .statement p{font-size:27px;max-width:16ch}.tk3 section.blk{padding:78px 0}.tk3 .statement{padding:96px 0}.tk3 .hero .inner{padding:56px 0 0}.tk3 .hero .sub{font-size:var(--fs-md)}.tk3 .vcard{width:230px}.tk3 .statcard{width:250px}.tk3 .revcard{width:275px}.tk3 .press{gap:30px;font-size:var(--fs-md)}}
+@media(max-width:900px){.tk3 h1{font-size:36px;letter-spacing:-.025em}.tk3 h2{font-size:29px}.tk3 h3{font-size:21px}.tk3 .statement p{font-size:27px;max-width:16ch}.tk3 section.blk{padding:78px 0}.tk3 .statement{padding:96px 0}.tk3 .vcard{width:230px}.tk3 .statcard{width:250px}.tk3 .revcard{width:275px}.tk3 .press{gap:30px;font-size:var(--fs-md)}}
 .tk3 .calc{--accent:#4285F4;--accent-2:#34A853;--tint:rgba(66,133,244,.08)}
 .tk3 .calc .shell{background:#fff;border:1px solid var(--line);border-radius:26px;
   padding:46px 44px;box-shadow:0 24px 60px rgba(0,0,0,.05)}

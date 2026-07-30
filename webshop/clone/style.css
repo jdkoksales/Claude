@@ -126,23 +126,28 @@ footer .brand img{height:29px}
 /* ---------- hero ---------- */
 .hero{position:relative;text-align:center;overflow:hidden;
   background:linear-gradient(112deg,#fbfbfc 0%,#fcf6f8 48%,#fbecf0 100%)}
-.hero .inner{padding:56px 0 0;position:relative;z-index:2}
-/* Op een ruim scherm hangt de tekst in het midden van de ruimte boven de
-   foto in plaats van tegen de header aan. Alleen als er hoogte over is:
-   op een telefoon of een lage laptop zou centreren de foto wegdrukken,
-   dus daar blijft de kop gewoon bovenin staan. */
+/* De titel staat op exact dezelfde hoogte als bij de referentie. Die zet zijn
+   kop op de helft van de schermhoogte min de halve hoogte van het tekstblok;
+   over veertien schermformaten opgemeten is dat een vaste afstand: 237px vanaf
+   1024px breed, 249px op tablet en 243px op de telefoon. Het verschil tussen
+   249 en 237 is precies een halve regel onderkop, wat bevestigt dat het om
+   centreren gaat en niet om een toevallig getal.
+
+   Bij ons komt daar de loopbalk plus de header nog vanaf: bij de referentie
+   hangt de navigatie over de hero heen, bij ons staat hij erboven. tk3.js meet
+   die twee samen op in --tk3-boven. */
+.hero .inner{position:relative;z-index:2;
+  padding-top:max(16px,calc(50svh - var(--tk3-kop,243px) - var(--tk3-boven,109px)))}
+@media(min-width:768px){:root{--tk3-kop:249px}}
+@media(min-width:1024px){:root{--tk3-kop:237px}}
 @media(min-width:901px) and (min-height:700px){
-  /* De hero vult precies het eerste scherm. Wat daarboven staat is de
-     loopbalk plus de header; tk3.js meet die samen op en zet de uitkomst in
-     --tk3-boven. Eerder rekende dit met alleen de header, en dan valt de
-     onderkant van de foto er net zoveel onderuit als de loopbalk hoog is. */
-  .hero .inner{display:flex;flex-direction:column;padding-top:0;
+  /* De hero vult precies het eerste scherm. */
+  .hero .inner{display:flex;flex-direction:column;
     height:calc(100vh - var(--tk3-boven,109px));
     height:calc(100svh - var(--tk3-boven,109px))}
-  /* De tekst houdt zijn eigen hoogte en krijgt lucht van boven; de foto slokt
-     op wat er overblijft. Zo past de balie altijd binnen het eerste scherm. */
-  .hero .inner>.wrap{flex:0 0 auto;padding-top:clamp(30px,6svh,96px);
-    padding-bottom:clamp(16px,2.4svh,40px)}
+  /* De tekst houdt zijn eigen hoogte; de foto slokt op wat er overblijft, zo
+     past de balie altijd binnen het eerste scherm. */
+  .hero .inner>.wrap{flex:0 0 auto;padding-bottom:clamp(16px,2.4svh,40px)}
   /* De foto ontleende zijn hoogte aan de bréédte van het scherm en werd
      daardoor te hoog. Hij vult nu de rest en wordt van onderaf bijgesneden,
      dus de balie blijft staan. De bovenrand vervaagt zodat de snede niet als
@@ -152,8 +157,19 @@ footer .brand img{height:29px}
     mask-image:linear-gradient(to bottom,transparent 0,#000 90px)}
   .hero .inner>.shots img{width:100%;height:100%;object-fit:cover;object-position:center bottom}
 }
-.hero h1{max-width:720px;margin:0 auto 14px;font-size:clamp(32px,3.4vw,44px)}
-.hero .sub{font-size:clamp(15.5px,1.3vw,18px);color:var(--ink-64);max-width:54ch;margin:0 auto 22px}
+/* Lettermaten exact als bij de referentie. Hun basismaat is 17px en alles is
+   daar een veelvoud van: de kop 3× (51px), de onderkop 1× (17px), de knop
+   0,875× (14,875px). Onder 768px valt de basis terug op 16px en de kop op
+   2,25× (36px). Regelhoogte, gewicht en letterspatiëring stonden al goed in de
+   globale h1-regel; alleen de hero overschreef de grootte met een clamp die
+   op 44px afkapte. */
+.hero h1{max-width:768px;margin:0 auto 22px;font-size:36px;
+  line-height:1.1;font-weight:700;letter-spacing:-.025em}
+.hero .sub{font-size:16px;line-height:1.5;color:var(--ink-64);max-width:689px;margin:0 auto 36px}
+@media(min-width:768px){
+  .hero h1{font-size:51px}
+  .hero .sub{font-size:17px;margin-bottom:38.25px}
+}
 /* De foto draagt zelf hetzelfde verloop; de mask laat de bovenrand
    naadloos in de sectieachtergrond oplossen. */
 .hero .shots{display:grid;width:min(100%,1500px);margin:8px auto 0}
@@ -189,7 +205,12 @@ footer .brand img{height:29px}
 .seg button[aria-selected="true"]{background:#fff;color:#000;box-shadow:0 1px 3px rgba(0,0,0,.1)}
 .seg.tabs{border-radius:14px;padding:4px}
 .seg.tabs button{border-radius:12.75px;padding:11px 21px}
-.hero .controls{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;align-items:center;margin-top:26px}
+/* Bij de referentie zit er 89px tussen de onderkant van de onderkop en de
+   bovenkant van de knoppenrij, op elk schermformaat. Met een ondermarge van
+   38,25px op de onderkop komt daar 50px bij. */
+.hero .controls{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;align-items:center;margin-top:50px}
+/* De koopknop heeft dezelfde maat als hun Buy: 0,875 × 17px, gewicht 750. */
+.hero .buy,.hero-calc{font-size:14.875px;font-weight:750}
 .seg[data-tk3-disabled]{opacity:.35;pointer-events:none}
 /* platformkeuze: het gekozen logo in kleur, de rest grijs */
 .hero .seg button svg{filter:grayscale(1);opacity:.45;transition:filter .2s,opacity .2s}
@@ -485,8 +506,9 @@ footer{background:linear-gradient(115deg,#fdfdfe,#fdf1f5);padding:88px 0 44px}
   .statement p{font-size:27px;max-width:16ch}
   section.blk{padding:78px 0}
   .statement{padding:96px 0}
-  .hero .inner{padding:56px 0 0}
-  .hero .sub{font-size:var(--fs-md)}
+  /* De hero regelt zijn eigen bovenruimte nu zelf, uitgerekend vanaf de
+     schermhoogte. Een vaste 56px zou dat overschrijven. De onderkop houdt
+     onder 768px de mobiele maat van de referentie: 16px. */
   .vcard{width:230px}
   .statcard{width:250px}
   .revcard{width:275px}

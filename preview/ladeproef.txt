@@ -1,12 +1,10 @@
-GEVONDEN: 2 punten
- - 2 kaarten: voettekst is niet zichtbaar, meting op de telefoon zegt niets
- - 2 kaarten: artikelenlijst maar 0px hoog op een telefoon
+GEEN AFWIJKINGEN GEVONDEN
 
 == wat geeft de winkelwagen-API terug?
    /cart.js: status=200 type=text/javascript; charset=utf-8
-      {"token":"458b31583bdb962281fccbef3eb32565","note":null,"attributes":{},"original_total_price":0,"total_price":0,"total_discount":0,"total_weight":0.0,"item_count":0,"items":[],"requires_shipping":false,"currency":"EUR",
+      {"token":"686d0ee112e02b1be0b9726383021573","note":null,"attributes":{},"original_total_price":0,"total_price":0,"total_discount":0,"total_weight":0.0,"item_count":0,"items":[],"requires_shipping":false,"currency":"EUR",
    /cart/update.js: status=200 type=text/javascript; charset=utf-8
-      {"token":"hWNF7xW3kTvj1utMKlt0bTWM?key=4cbc4a136d33e26de4b150b64c680580","note":null,"attributes":{},"original_total_price":0,"total_price":0,"total_discount":0,"total_weight":0.0,"item_count":0,"items":[],"requires_ship
+      {"token":"hWNF7y2MlMUcPM1wS0qOWSZO?key=ebc2b0d08f12b2d44e6559500b36b062","note":null,"attributes":{},"original_total_price":0,"total_price":0,"total_discount":0,"total_weight":0.0,"item_count":0,"items":[],"requires_ship
 
 1 kaart(en) — totaal 34.95
    balk zichtbaar: true   "Nog € 35,05 tot gratis verzending"
@@ -49,7 +47,7 @@ knop "kaart erbij": 2 → 3 stuks, 62.92 → 89.13
 links zonder doel op de productpagina:
 
 == de lade op een telefoon (411x750)
-   2 kaart(en): artikelenlijst 0px, voettekst 0px van 750px venster
+   2 kaart(en): artikelenlijst 478px, voettekst 190px van 750px venster
       staffelduw 0px (verborgen), bijverkoop 0px (verborgen), verzendbalk 0px
    4 kaart(en): artikelenlijst 264px, voettekst 404px van 750px venster
       staffelduw 0px (verborgen), bijverkoop 100px (zichtbaar), verzendbalk 32px

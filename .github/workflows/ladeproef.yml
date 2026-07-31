@@ -248,17 +248,23 @@ jobs:
             });
 
             for (const aantal of [2, 4]) {
-              await mp.evaluate(async (n) => {
+              // Via de winkelwagen-API en niet via de koopknop: een klik in
+              // evaluate() liep niet door de afhandeling van het thema heen,
+              // waardoor de wagen leeg bleef en de meting nul teruggaf.
+              await mp.evaluate(async (d) => {
                 await fetch('/cart/clear.js', { method: 'POST' });
-                const knop = document.querySelector('[data-add-to-cart]');
-                for (let i = 0; i < n; i++) {
-                  if (knop) knop.click();
-                  await new Promise((r) => setTimeout(r, 700));
-                }
-              }, aantal);
+                await fetch('/cart/update.js', {
+                  method: 'POST', headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ updates: { [d.id]: d.n } }),
+                });
+              }, { id: KAART, n: aantal });
+              await mp.reload({ waitUntil: 'domcontentloaded' });
               await mp.waitForTimeout(3500);
+              await mp.evaluate(() => {
+                document.querySelectorAll('#preview-bar-iframe, #shopify-pc__banner').forEach((el) => el.remove());
+              });
               await mp.click('[data-cart-toggle]').catch(() => {});
-              await mp.waitForTimeout(3000);
+              await mp.waitForTimeout(3500);
 
               const m = await mp.evaluate(() => {
                 const h = (el) => (el && !el.hidden ? Math.round(el.getBoundingClientRect().height) : 0);
@@ -281,6 +287,7 @@ jobs:
               log.push(`   ${aantal} kaart(en): artikelenlijst ${m.lijst}px, voettekst ${m.voet}px van ${m.venster}px venster`);
               log.push(`      staffelduw ${m.duw}px (${m.duwZichtbaar ? 'zichtbaar' : 'verborgen'}), ` +
                 `bijverkoop ${m.vak}px (${m.vakZichtbaar ? 'zichtbaar' : 'verborgen'}), verzendbalk ${m.balk}px`);
+              if (m.voet === 0) fouten.push(`${aantal} kaarten: voettekst is niet zichtbaar, meting op de telefoon zegt niets`);
               if (m.duwZichtbaar && m.vakZichtbaar) fouten.push(`${aantal} kaarten: beide aanbiedingen staan tegelijk op een telefoon`);
               if (m.lijst < 200) fouten.push(`${aantal} kaarten: artikelenlijst maar ${m.lijst}px hoog op een telefoon`);
               if (m.knopOnder && m.knopOnder > m.venster) fouten.push(`${aantal} kaarten: afrekenknop valt onder het scherm`);

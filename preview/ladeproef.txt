@@ -4,9 +4,9 @@ GEVONDEN: 2 punten
 
 == wat geeft de winkelwagen-API terug?
    /cart.js: status=200 type=text/javascript; charset=utf-8
-      {"token":"9ca1129d67b4a3448d40d8df019bf4bb","note":null,"attributes":{},"original_total_price":0,"total_price":0,"total_discount":0,"total_weight":0.0,"item_count":0,"items":[],"requires_shipping":false,"currency":"EUR",
+      {"token":"ea1961a6a5b52c79a53becd688743455","note":null,"attributes":{},"original_total_price":0,"total_price":0,"total_discount":0,"total_weight":0.0,"item_count":0,"items":[],"requires_shipping":false,"currency":"EUR",
    /cart/update.js: status=200 type=text/javascript; charset=utf-8
-      {"token":"hWNF7yl55vWsZ2VXvB2AhFZ4?key=5d9cc77737984c5e9e733ed85232432d","note":null,"attributes":{},"original_total_price":0,"total_price":0,"total_discount":0,"total_weight":0.0,"item_count":0,"items":[],"requires_ship
+      {"token":"hWNF7zNRPGZtYEuBoL8D3r0s?key=8f044a5c71ae764b1bd03282b59abb77","note":null,"attributes":{},"original_total_price":0,"total_price":0,"total_discount":0,"total_weight":0.0,"item_count":0,"items":[],"requires_ship
 
 1 kaart(en) — totaal 34.95
    balk zichtbaar: true   "Nog € 35,05 tot gratis verzending"
@@ -49,6 +49,8 @@ knop "kaart erbij": 2 → 3 stuks, 62.92 → 89.13
 links zonder doel op de productpagina:
 
 == de lade op een telefoon (411x750)
+      (lade nog leeg — /cart.js: {"status":200,"type":"text/javascript; charset=utf-8","begin":"{\"token\":\"hWNF7zWaFoS3I37DKYeQIVCE?key=3c131a09576259cb1925d3960cc9aae5\",\"note\":\"\",\"attrib"})
+      (lade nog leeg — /cart.js: {"status":200,"type":"text/javascript; charset=utf-8","begin":"{\"token\":\"hWNF7zWaFoS3I37DKYeQIVCE?key=3c131a09576259cb1925d3960cc9aae5\",\"note\":\"\",\"attrib"})
    2 kaart(en): artikelenlijst 478px, voettekst 190px van 750px venster
       staffelduw 0px (verborgen), bijverkoop 0px (verborgen), verzendbalk 0px
    4 kaart(en): artikelenlijst 264px, voettekst 404px van 750px venster

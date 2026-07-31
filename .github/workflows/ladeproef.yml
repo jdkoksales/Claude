@@ -275,6 +275,19 @@ jobs:
                 await mp.click('[data-cart-toggle]').catch(() => {});
                 await mp.waitForTimeout(3000);
               }
+              // Openstaan is niet genoeg: de blokken worden pas gevuld nadat de
+              // winkelwagen is uitgelezen. Meet ik daarvoor, dan lijkt alles
+              // netjes verborgen terwijl het er alleen nog niet is. De
+              // verzendbalk hoort er altijd te staan bij een gevulde wagen, dus
+              // die is het teken dat het tekenen klaar is.
+              for (let poging = 0; poging < 10; poging++) {
+                const klaar = await mp.evaluate(() => {
+                  const b = document.querySelector('[data-tk3-verzendbalk]');
+                  return !!(b && b.getBoundingClientRect().height > 0);
+                });
+                if (klaar) break;
+                await mp.waitForTimeout(1200);
+              }
 
               const m = await mp.evaluate(() => {
                 // De werkelijk gerenderde hoogte, niet het hidden-attribuut.
@@ -307,6 +320,10 @@ jobs:
               log.push(`      staffelduw ${m.duw}px (${m.duwZichtbaar ? 'zichtbaar' : 'verborgen'}), ` +
                 `bijverkoop ${m.vak}px (${m.vakZichtbaar ? 'zichtbaar' : 'verborgen'}), verzendbalk ${m.balk}px`);
               if (m.voet === 0) fouten.push(`${aantal} kaarten: voettekst is niet zichtbaar, meting op de telefoon zegt niets`);
+              // Zonder deze twee zegt een schone uitslag niets: als de blokken
+              // er domweg nog niet zijn, is alles "netjes verborgen".
+              if (m.balk === 0) fouten.push(`${aantal} kaarten: verzendbalk ontbreekt, de lade is niet uitgelezen`);
+              if (!m.duwZichtbaar && !m.vakZichtbaar) fouten.push(`${aantal} kaarten: geen enkele aanbieding zichtbaar`);
               if (m.duwLiegt) fouten.push(`${aantal} kaarten: staffelduw staat op hidden maar is toch zichtbaar`);
               if (m.vakLiegt) fouten.push(`${aantal} kaarten: bijverkoop staat op hidden maar is toch zichtbaar`);
               if (m.duwZichtbaar && m.vakZichtbaar) fouten.push(`${aantal} kaarten: beide aanbiedingen staan tegelijk op een telefoon`);

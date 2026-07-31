@@ -280,13 +280,38 @@ jobs:
               // netjes verborgen terwijl het er alleen nog niet is. De
               // verzendbalk hoort er altijd te staan bij een gevulde wagen, dus
               // die is het teken dat het tekenen klaar is.
-              for (let poging = 0; poging < 10; poging++) {
-                const klaar = await mp.evaluate(() => {
-                  const b = document.querySelector('[data-tk3-verzendbalk]');
-                  return !!(b && b.getBoundingClientRect().height > 0);
-                });
+              const balkErIs = () => mp.evaluate(() => {
+                const b = document.querySelector('[data-tk3-verzendbalk]');
+                return !!(b && b.getBoundingClientRect().height > 0);
+              });
+              for (let ronde = 0; ronde < 2; ronde++) {
+                let klaar = false;
+                for (let poging = 0; poging < 8; poging++) {
+                  if (await balkErIs()) { klaar = true; break; }
+                  await mp.waitForTimeout(1200);
+                }
                 if (klaar) break;
-                await mp.waitForTimeout(1200);
+                // Niet gevuld. Eerst opschrijven wat de winkelwagen teruggeeft —
+                // eerder in deze proef bleek /cart.js na genoeg verkeer HTML te
+                // sturen in plaats van JSON, en dan tekent de lade niets.
+                const wat = await mp.evaluate(async () => {
+                  try {
+                    const r = await fetch('/cart.js', { headers: { Accept: 'application/json' } });
+                    const t = await r.text();
+                    return { status: r.status, type: r.headers.get('content-type'), begin: t.slice(0, 90) };
+                  } catch (e) { return { fout: String(e.message).slice(0, 80) }; }
+                });
+                log.push(`      (lade nog leeg — /cart.js: ${JSON.stringify(wat)})`);
+                await mp.reload({ waitUntil: 'domcontentloaded' });
+                await mp.waitForTimeout(4000);
+                await mp.evaluate(() => {
+                  document.querySelectorAll('#preview-bar-iframe, #shopify-pc__banner').forEach((el) => el.remove());
+                });
+                for (let poging = 0; poging < 4; poging++) {
+                  if (await isOpen()) break;
+                  await mp.click('[data-cart-toggle]').catch(() => {});
+                  await mp.waitForTimeout(3000);
+                }
               }
 
               const m = await mp.evaluate(() => {

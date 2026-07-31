@@ -1,22 +1,17 @@
-GEVONDEN: 8 punten
- - android-klein: tekst en tafel botsen of raken elkaar (speling -71px)
+GEVONDEN: 3 punten
+ - android-klein: tekst en tafel botsen of raken elkaar (speling -21px)
  - android-krap: tekst en tafel botsen of raken elkaar (speling 8px)
- - tel-klein: tekst en tafel botsen of raken elkaar (speling -12px)
  - tel-klein: kop staat 35px lager dan de referentie
- - klein-liggend: tekst en tafel botsen of raken elkaar (speling -43px)
- - laptop-smal: tekst en tafel botsen of raken elkaar (speling -27px)
- - laptop-laag: tekst en tafel botsen of raken elkaar (speling -37px)
- - breed-laag: tekst en tafel botsen of raken elkaar (speling 13px)
 
 formaat           venster     kop-top          kopgrootte       onderkop      knop-top   foto
                               ons / ref  ver   ons / ref        ons / ref     ons        onderkant
 android-klein   360x640     125 /   ?     ?      36px /      ?    16px /    ?    374 /    ?    640/640
-     foto 360x640 (top 0) — referentie ?x? (top ?)
-     tafel begint op 440, tekst eindigt op 511 — speling -71px
+     foto 360x480 (top 160) — referentie ?x? (top ?)
+     tafel begint op 490, tekst eindigt op 511 — speling -21px
      inner h=531px padTop=16px box=border-box display=block
      wrap  h=386 flex=0 1 auto padBottom=0px
-     shots h=639.75px (640px) min=0px flex=0 1 auto overflow=visible
-     img   h=639.75px fit=cover aspect=auto
+     shots h=480px (480px) min=0px flex=0 1 auto overflow=visible
+     img   h=480px fit=cover aspect=auto
      --tk3-boven=109px  --tk3-kop=niet gezet  shots is kind van inner: true
 android         411x750     132 /   ?     ?      36px /      ?    16px /    ?    357 /    ?    750/750
      foto 411x730 (top 20) — referentie ?x? (top ?)
@@ -35,12 +30,12 @@ android-krap    412x700     125 /   ?     ?      36px /      ?    16px /    ?   
      img   h=732.156px fit=cover aspect=auto
      --tk3-boven=109px  --tk3-kop=niet gezet  shots is kind van inner: true
 tel-klein       390x667     125 /  90   +35      36px /   36px    16px / 16px    350 /  363    667/667
-     foto 390x693 (top -26) — referentie 390x693 (top -26)
-     tafel begint op 451, tekst eindigt op 463 — speling -12px
+     foto 390x520 (top 147) — referentie 390x693 (top -26)
+     tafel begint op 505, tekst eindigt op 463 — speling 42px
      inner h=558px padTop=16px box=border-box display=block
      wrap  h=338 flex=0 1 auto padBottom=0px
-     shots h=693.062px (693px) min=0px flex=0 1 auto overflow=visible
-     img   h=693.062px fit=cover aspect=auto
+     shots h=520px (520px) min=0px flex=0 1 auto overflow=visible
+     img   h=520px fit=cover aspect=auto
      --tk3-boven=109px  --tk3-kop=niet gezet  shots is kind van inner: true
 telefoon        390x844     179 / 179     0      36px /   36px    16px / 16px    404 /  451    844/844
      foto 390x693 (top 151) — referentie 390x693 (top 151)
@@ -91,58 +86,58 @@ tablet-laag     820x900     201 / 201     0      51px /   51px    17px / 17px   
      img   h=615px fit=cover aspect=auto
      --tk3-boven=109px  --tk3-kop=249px  shots is kind van inner: true
 klein-liggend   1024x768    147 / 147     0      51px /   51px    17px / 17px    385 /  395    768/768
-     foto 1400x787 (top -19) — referentie 1400x788 (top -19)
-     tafel begint op 454, tekst eindigt op 497 — speling -43px
+     foto 998x717 (top 51) — referentie 1400x788 (top -19)
+     tafel begint op 544, tekst eindigt op 497 — speling 47px
      inner h=659px padTop=38px box=border-box display=block
      wrap  h=350 flex=0 1 auto padBottom=0px
-     shots h=787.5px (788px) min=0px flex=0 1 auto overflow=visible
-     img   h=787.5px fit=cover aspect=auto
+     shots h=717.578px (718px) min=0px flex=0 1 auto overflow=visible
+     img   h=717.578px fit=cover aspect=auto
      --tk3-boven=109px  --tk3-kop=237px  shots is kind van inner: true
 laptop-smal     1280x800    163 / 163     0      51px /   51px    17px / 17px    401 /  411    800/800
-     foto 1400x787 (top 13) — referentie 1400x788 (top 13)
-     tafel begint op 486, tekst eindigt op 513 — speling -27px
+     foto 1040x747 (top 53) — referentie 1400x788 (top 13)
+     tafel begint op 567, tekst eindigt op 513 — speling 54px
      inner h=691px padTop=54px box=border-box display=block
      wrap  h=350 flex=0 1 auto padBottom=0px
-     shots h=787.5px (788px) min=0px flex=0 1 auto overflow=visible
-     img   h=787.5px fit=cover aspect=auto
+     shots h=747.5px (748px) min=0px flex=0 1 auto overflow=visible
+     img   h=747.5px fit=cover aspect=auto
      --tk3-boven=109px  --tk3-kop=237px  shots is kind van inner: true
 laptop-laag     1440x780    153 / 153     0      51px /   51px    17px / 17px    391 /  401    780/780
-     foto 1400x787 (top -7) — referentie 1400x788 (top -7)
-     tafel begint op 466, tekst eindigt op 503 — speling -37px
+     foto 1014x729 (top 51) — referentie 1400x788 (top -7)
+     tafel begint op 552, tekst eindigt op 503 — speling 49px
      inner h=671px padTop=44px box=border-box display=block
      wrap  h=350 flex=0 1 auto padBottom=0px
-     shots h=787.5px (788px) min=0px flex=0 1 auto overflow=visible
-     img   h=787.5px fit=cover aspect=auto
+     shots h=728.812px (729px) min=0px flex=0 1 auto overflow=visible
+     img   h=728.812px fit=cover aspect=auto
      --tk3-boven=109px  --tk3-kop=237px  shots is kind van inner: true
 laptop          1440x900    213 / 213     0      51px /   51px    17px / 17px    451 /  461    900/900
-     foto 1400x787 (top 113) — referentie 1400x788 (top 113)
-     tafel begint op 586, tekst eindigt op 563 — speling 23px
+     foto 1170x841 (top 59) — referentie 1400x788 (top 113)
+     tafel begint op 637, tekst eindigt op 563 — speling 74px
      inner h=791px padTop=104px box=border-box display=block
      wrap  h=350 flex=0 1 auto padBottom=0px
-     shots h=787.5px (788px) min=0px flex=0 1 auto overflow=visible
-     img   h=787.5px fit=cover aspect=auto
+     shots h=840.938px (841px) min=0px flex=0 1 auto overflow=visible
+     img   h=840.938px fit=cover aspect=auto
      --tk3-boven=109px  --tk3-kop=237px  shots is kind van inner: true
 breed-laag      1900x880    203 / 203     0      51px /   51px    17px / 17px    441 /  451    880/880
-     foto 1400x787 (top 93) — referentie 1400x788 (top 93)
-     tafel begint op 566, tekst eindigt op 553 — speling 13px
+     foto 1144x822 (top 58) — referentie 1400x788 (top 93)
+     tafel begint op 623, tekst eindigt op 553 — speling 70px
      inner h=771px padTop=94px box=border-box display=block
      wrap  h=350 flex=0 1 auto padBottom=0px
-     shots h=787.5px (788px) min=0px flex=0 1 auto overflow=visible
-     img   h=787.5px fit=cover aspect=auto
+     shots h=822.25px (822px) min=0px flex=0 1 auto overflow=visible
+     img   h=822.25px fit=cover aspect=auto
      --tk3-boven=109px  --tk3-kop=237px  shots is kind van inner: true
 groot           1920x1200   363 / 363     0      51px /   51px    17px / 17px    601 /  611   1200/1200
-     foto 1400x787 (top 413) — referentie 1400x788 (top 413)
+     foto 1400x1006 (top 194) — referentie 1400x788 (top 413)
      tafel begint op 886, tekst eindigt op 713 — speling 173px
      inner h=1091px padTop=254px box=border-box display=block
      wrap  h=350 flex=0 1 auto padBottom=0px
-     shots h=787.5px (788px) min=0px flex=0 1 auto overflow=visible
-     img   h=787.5px fit=cover aspect=auto
+     shots h=1006.25px (1006px) min=0px flex=0 1 auto overflow=visible
+     img   h=1006.25px fit=cover aspect=auto
      --tk3-boven=109px  --tk3-kop=237px  shots is kind van inner: true
 heel-groot      2560x1440   483 / 483     0      51px /   51px    17px / 17px    721 /  731   1440/1440
-     foto 1400x787 (top 653) — referentie 1400x788 (top 653)
+     foto 1400x1006 (top 434) — referentie 1400x788 (top 653)
      tafel begint op 1126, tekst eindigt op 833 — speling 293px
      inner h=1331px padTop=374px box=border-box display=block
      wrap  h=350 flex=0 1 auto padBottom=0px
-     shots h=787.5px (788px) min=0px flex=0 1 auto overflow=visible
-     img   h=787.5px fit=cover aspect=auto
+     shots h=1006.25px (1006px) min=0px flex=0 1 auto overflow=visible
+     img   h=1006.25px fit=cover aspect=auto
      --tk3-boven=109px  --tk3-kop=237px  shots is kind van inner: true

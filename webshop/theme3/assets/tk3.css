@@ -55,6 +55,14 @@ html,body{overflow-x:clip}
 .tk3-bijverkoop-knop{flex:0 0 auto;border:1px solid #1A202C;border-radius:100px;padding:8px 15px;font-size:12.5px;font-weight:700;background:#fff;color:#1A202C;cursor:pointer;transition:background .15s,color .15s}
 .tk3-bijverkoop-knop:hover{background:#1A202C;color:#fff}
 .tk3-bijverkoop-knop[disabled]{opacity:.55;cursor:default}
+@media(max-width:749px){
+  .tk3-bijverkoop,.tk3-staffelduw{gap:10px;padding:10px;margin-bottom:10px}
+  .tk3-bijverkoop img{width:40px;height:40px}
+  .tk3-bijverkoop-knop,.tk3-staffelduw-knop{padding:8px 12px;font-size:12px}
+  .tk3-bijverkoop-tekst,.tk3-staffelduw-tekst{line-height:1.3}
+  .tk3-verzendbalk{margin-bottom:10px}
+  .tk3-verzendbalk p{margin-bottom:5px}
+}
 .product-sticky-bar__price{color:#E23B1E}
 .tk3-staffel{flex:1 0 100%;width:100%;margin:0 0 18px}
 .tk3-staffel-kop{font-size:14px;font-weight:600;letter-spacing:-.01em;margin-bottom:8px}

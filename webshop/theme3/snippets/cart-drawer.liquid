@@ -248,6 +248,13 @@
       var el = lade();
       if (!el || !kar) return;
 
+      // Op een telefoon is er onder de artikelen maar een paar honderd pixel
+      // over. Twee aanbiedingen boven de afrekenknop drukken de winkelwagen
+      // zelf dan weg tot een strookje van zestig pixel. Er wordt er dus één
+      // getoond, en wel degene waar iets te doen valt.
+      var smal = window.matchMedia('(max-width:749px)').matches;
+      var duwHeeftActie = false;
+
       // ---- staffelduw: wat scheelt een kaart erbij? ----
       var duw = document.querySelector('[data-tk3-staffelduw]');
       if (duw) {
@@ -303,6 +310,7 @@
           duwknop.hidden = !drukst;
           if (drukst) duwknop.setAttribute('data-variant', drukst.variant_id);
         }
+        duwHeeftActie = !duw.hidden && !duwknop.hidden;
       }
 
       var drempel = parseInt(el.getAttribute('data-tk3-drempel'), 10) || 0;
@@ -332,6 +340,15 @@
         var id = parseInt(el.getAttribute('data-tk3-sticker-id'), 10);
         var erin = (kar.items || []).some(function (i) { return i.variant_id === id; });
         vak.hidden = kar.item_count === 0 || erin || !id;
+
+        // Smal scherm: hoogstens één aanbieding. Kan er een kaart bij met
+        // korting, dan wint die van de sticker — dat levert meer op en het is
+        // de eerstvolgende stap. Is de hoogste staffel al bereikt, dan valt er
+        // aan die melding niets te doen en maakt hij plaats voor de sticker.
+        if (smal && !vak.hidden && duw) {
+          if (duwHeeftActie) vak.hidden = true;
+          else duw.hidden = true;
+        }
       }
     };
 

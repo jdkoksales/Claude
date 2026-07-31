@@ -104,6 +104,19 @@ TAIL = ("html{scroll-behavior:smooth}\n"
         "transition:background .15s,color .15s}\n"
         ".tk3-bijverkoop-knop:hover{background:#1A202C;color:#fff}\n"
         ".tk3-bijverkoop-knop[disabled]{opacity:.55;cursor:default}\n"
+        # Op een telefoon brak de tekst van deze twee blokken over vier of vijf
+        # regels, waardoor ze samen ruim 260px hoog werden en de artikelenlijst
+        # nog maar een strookje overhield. Kleinere afbeelding, kleinere knop en
+        # minder tussenruimte geven de tekst genoeg breedte om op één regel te
+        # blijven; dat scheelt ongeveer de helft van de hoogte.
+        "@media(max-width:749px){\n"
+        "  .tk3-bijverkoop,.tk3-staffelduw{gap:10px;padding:10px;margin-bottom:10px}\n"
+        "  .tk3-bijverkoop img{width:40px;height:40px}\n"
+        "  .tk3-bijverkoop-knop,.tk3-staffelduw-knop{padding:8px 12px;font-size:12px}\n"
+        "  .tk3-bijverkoop-tekst,.tk3-staffelduw-tekst{line-height:1.3}\n"
+        "  .tk3-verzendbalk{margin-bottom:10px}\n"
+        "  .tk3-verzendbalk p{margin-bottom:5px}\n"
+        "}\n"
         # De meeloopbalk onderaan de productpagina toont dezelfde actieprijs;
         # die moet dus ook rood zijn en niet zwart.
         ".product-sticky-bar__price{color:#E23B1E}\n"

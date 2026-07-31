@@ -1,12 +1,12 @@
 GEVONDEN: 2 punten
- - 2 kaarten: verzendbalk ontbreekt, de lade is niet uitgelezen
- - 2 kaarten: geen enkele aanbieding zichtbaar
+ - 2 kaarten: winkelwagen bleef op -1 staan, meting overgeslagen
+ - 4 kaarten: winkelwagen bleef op -1 staan, meting overgeslagen
 
 == wat geeft de winkelwagen-API terug?
    /cart.js: status=200 type=text/javascript; charset=utf-8
-      {"token":"ea1961a6a5b52c79a53becd688743455","note":null,"attributes":{},"original_total_price":0,"total_price":0,"total_discount":0,"total_weight":0.0,"item_count":0,"items":[],"requires_shipping":false,"currency":"EUR",
+      {"token":"8ddd54646544531ab494121853a09f75","note":null,"attributes":{},"original_total_price":0,"total_price":0,"total_discount":0,"total_weight":0.0,"item_count":0,"items":[],"requires_shipping":false,"currency":"EUR",
    /cart/update.js: status=200 type=text/javascript; charset=utf-8
-      {"token":"hWNF7zNRPGZtYEuBoL8D3r0s?key=8f044a5c71ae764b1bd03282b59abb77","note":null,"attributes":{},"original_total_price":0,"total_price":0,"total_discount":0,"total_weight":0.0,"item_count":0,"items":[],"requires_ship
+      {"token":"hWNF803Vxb9ImKMMBM1OsSn4?key=e44898173b51a223eb0492be3f47659a","note":null,"attributes":{},"original_total_price":0,"total_price":0,"total_discount":0,"total_weight":0.0,"item_count":0,"items":[],"requires_ship
 
 1 kaart(en) — totaal 34.95
    balk zichtbaar: true   "Nog € 35,05 tot gratis verzending"
@@ -49,9 +49,5 @@ knop "kaart erbij": 2 → 3 stuks, 62.92 → 89.13
 links zonder doel op de productpagina:
 
 == de lade op een telefoon (411x750)
-      (lade nog leeg — /cart.js: {"status":200,"type":"text/javascript; charset=utf-8","begin":"{\"token\":\"hWNF7zWaFoS3I37DKYeQIVCE?key=3c131a09576259cb1925d3960cc9aae5\",\"note\":\"\",\"attrib"})
-      (lade nog leeg — /cart.js: {"status":200,"type":"text/javascript; charset=utf-8","begin":"{\"token\":\"hWNF7zWaFoS3I37DKYeQIVCE?key=3c131a09576259cb1925d3960cc9aae5\",\"note\":\"\",\"attrib"})
-   2 kaart(en): artikelenlijst 478px, voettekst 190px van 750px venster
-      staffelduw 0px (verborgen), bijverkoop 0px (verborgen), verzendbalk 0px
-   4 kaart(en): artikelenlijst 264px, voettekst 404px van 750px venster
-      staffelduw 0px (verborgen), bijverkoop 100px (zichtbaar), verzendbalk 32px
+   2 kaart(en): winkelwagen niet te vullen (bleef -1)
+   4 kaart(en): winkelwagen niet te vullen (bleef -1)

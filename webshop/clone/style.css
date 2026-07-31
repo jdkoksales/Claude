@@ -205,16 +205,7 @@ footer .brand img{height:29px}
    tafel. Dan gaat eerst de lucht tussen de regels eruit, voordat de knoppen op
    het kaartje belanden. Scheelt 42px, precies genoeg op een telefoon van 667px
    hoog. */
-@media(max-height:720px){
-  .hero .sub{margin-bottom:20px}
-  .hero .controls{margin-top:24px}
-  .hero-calc{margin-top:10px}
-}
-/* Op een scherm van 700px of lager gaat de tweede knop weg. Die kost 54px en
-   dat is precies wat er tekortkomt voordat de tekst op het kaartje valt. Een
-   knop die je niet ziet is beter dan een knop die over het product heen ligt;
-   Kopen blijft gewoon staan. */
-@media(max-height:700px){.hero-calc{display:none}}
+@media(max-height:720px){.hero .sub{margin-bottom:20px}}
 /* De foto draagt zelf hetzelfde verloop; de mask laat de bovenrand
    naadloos in de sectieachtergrond oplossen. */
 /* Boven de gekozen knop stijgt het teken op dat bij dat platform hoort:
@@ -252,6 +243,7 @@ footer .brand img{height:29px}
 .hero .controls{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;align-items:center;margin-top:50px}
 /* De koopknop heeft dezelfde maat als hun Buy: 0,875 × 17px, gewicht 750. */
 .hero .buy,.hero-calc{font-size:14.875px;font-weight:750}
+@media(max-height:720px){.hero .controls{margin-top:24px}}
 .seg[data-tk3-disabled]{opacity:.35;pointer-events:none}
 /* platformkeuze: het gekozen logo in kleur, de rest grijs */
 .hero .seg button svg{filter:grayscale(1);opacity:.45;transition:filter .2s,opacity .2s}
@@ -273,6 +265,13 @@ footer .brand img{height:29px}
 .hero-calc svg{opacity:.6;transition:transform .18s,opacity .16s}
 .hero-calc:hover svg{transform:translateY(2px);opacity:.9}
 @media(prefers-reduced-motion:reduce){.hero-calc svg{transition:none}}
+/* Deze twee moeten na de definitie hierboven staan: gelijke specificiteit, dus
+   de laatste regel wint. Stonden ze eerder in het bestand, dan deden ze niets.
+   Op een laag scherm eerst de marge eruit; onder 700px verdwijnt de knop
+   helemaal, want die 54px is precies wat er tekortkomt voordat de tekst op het
+   kaartje valt. Kopen blijft staan. */
+@media(max-height:720px){.hero-calc{margin-top:10px}}
+@media(max-height:700px){.hero-calc{display:none}}
 
 .buy{background:rgba(26,26,26,.1);border-radius:9999px;padding:11px 20px;font-size:var(--fs-sm);
   font-weight:750;display:inline-flex;align-items:center;gap:9px;transition:background .18s}

@@ -196,8 +196,7 @@ html,body{overflow-x:clip}
   line-height:1.1;font-weight:700;letter-spacing:-.025em}
 .tk3 .hero .sub{font-size:16px;line-height:1.5;color:var(--ink-64);max-width:689px;margin:0 auto 36px}
 @media(min-width:768px){.tk3 .hero h1{font-size:51px}.tk3 .hero .sub{font-size:17px;margin-bottom:38.25px}}
-@media(max-height:720px){.tk3 .hero .sub{margin-bottom:20px}.tk3 .hero .controls{margin-top:24px}.tk3 .hero-calc{margin-top:10px}}
-@media(max-height:700px){.tk3 .hero-calc{display:none}}
+@media(max-height:720px){.tk3 .hero .sub{margin-bottom:20px}}
 .tk3 .hero .seg button{position:relative}
 .tk3 .hero .vonk{
   position:absolute;left:50%;bottom:100%;margin-bottom:5px;
@@ -222,6 +221,7 @@ html,body{overflow-x:clip}
 .tk3 .seg.tabs button{border-radius:12.75px;padding:11px 21px}
 .tk3 .hero .controls{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;align-items:center;margin-top:50px}
 .tk3 .hero .buy,.tk3 .hero-calc{font-size:14.875px;font-weight:750}
+@media(max-height:720px){.tk3 .hero .controls{margin-top:24px}}
 .tk3 .seg[data-tk3-disabled]{opacity:.35;pointer-events:none}
 .tk3 .hero .seg button svg{filter:grayscale(1);opacity:.45;transition:filter .2s,opacity .2s}
 .tk3 .hero .seg button[aria-selected="true"] svg{filter:none;opacity:1}
@@ -237,6 +237,8 @@ html,body{overflow-x:clip}
 .tk3 .hero-calc svg{opacity:.6;transition:transform .18s,opacity .16s}
 .tk3 .hero-calc:hover svg{transform:translateY(2px);opacity:.9}
 @media(prefers-reduced-motion:reduce){.tk3 .hero-calc svg{transition:none}}
+@media(max-height:720px){.tk3 .hero-calc{margin-top:10px}}
+@media(max-height:700px){.tk3 .hero-calc{display:none}}
 .tk3 .buy{background:rgba(26,26,26,.1);border-radius:9999px;padding:11px 20px;font-size:var(--fs-sm);
   font-weight:750;display:inline-flex;align-items:center;gap:9px;transition:background .18s}
 .tk3 .buy:hover{background:rgba(26,26,26,.18)}

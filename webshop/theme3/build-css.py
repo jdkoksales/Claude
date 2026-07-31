@@ -225,6 +225,38 @@ def keur(bron, css):
             if sel and not sel.startswith(".tk3"):
                 klachten.append(f"selector zonder .tk3-voorvoegsel: {sel[:70]!r}")
 
+    # Een regel in een media query die verderop nog eens onvoorwaardelijk wordt
+    # gezet, verliest: gelijke specificiteit, latere regel wint. Dan staat er
+    # netjes CSS die niets doet. Overkwam me met .hero-calc{display:none}, dat
+    # tachtig regels verderop weer op inline-flex werd gezet.
+    def eigenschappen(blok):
+        namen = set()
+        for stuk in blok.split(";"):
+            if ":" in stuk:
+                namen.add(stuk.split(":", 1)[0].strip().lower())
+        return {n for n in namen if n and not n.startswith("--")}
+
+    in_media = []          # (selector, eigenschappen, volgnummer)
+    plat = []              # (selector, eigenschappen, volgnummer)
+    for n, (head, body) in enumerate(split_rules(css)):
+        head = head.strip()
+        if head.startswith("@media") or head.startswith("@supports"):
+            for h, b in split_rules(body):
+                for sel in h.split(","):
+                    in_media.append((sel.strip(), eigenschappen(b), n))
+        elif not head.startswith("@"):
+            for sel in head.split(","):
+                plat.append((sel.strip(), eigenschappen(body), n))
+
+    for sel, eig, n in in_media:
+        for sel2, eig2, n2 in plat:
+            if sel2 == sel and n2 > n:
+                botsend = eig & eig2
+                if botsend:
+                    klachten.append(
+                        f"media query op {sel[:44]!r} zet {sorted(botsend)}, "
+                        f"maar een gewone regel verderop zet dat opnieuw — de media query verliest")
+
     if klachten:
         for k in klachten:
             print("AFGEKEURD:", k, file=sys.stderr)

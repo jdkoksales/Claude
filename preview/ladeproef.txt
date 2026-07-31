@@ -1,12 +1,10 @@
-GEVONDEN: 2 punten
- - 2 kaarten: winkelwagen bleef op -1 staan, meting overgeslagen
- - 4 kaarten: winkelwagen bleef op -1 staan, meting overgeslagen
+GEEN AFWIJKINGEN GEVONDEN
 
 == wat geeft de winkelwagen-API terug?
    /cart.js: status=200 type=text/javascript; charset=utf-8
-      {"token":"8ddd54646544531ab494121853a09f75","note":null,"attributes":{},"original_total_price":0,"total_price":0,"total_discount":0,"total_weight":0.0,"item_count":0,"items":[],"requires_shipping":false,"currency":"EUR",
+      {"token":"19f02d9e8488f24ffa61e0677420ebb0","note":null,"attributes":{},"original_total_price":0,"total_price":0,"total_discount":0,"total_weight":0.0,"item_count":0,"items":[],"requires_shipping":false,"currency":"EUR",
    /cart/update.js: status=200 type=text/javascript; charset=utf-8
-      {"token":"hWNF803Vxb9ImKMMBM1OsSn4?key=e44898173b51a223eb0492be3f47659a","note":null,"attributes":{},"original_total_price":0,"total_price":0,"total_discount":0,"total_weight":0.0,"item_count":0,"items":[],"requires_ship
+      {"token":"hWNF80bix6Fh8fEP2toNswFu?key=65928e4c1a4100f67b2208f138fcd67d","note":null,"attributes":{},"original_total_price":0,"total_price":0,"total_discount":0,"total_weight":0.0,"item_count":0,"items":[],"requires_ship
 
 1 kaart(en) — totaal 34.95
    balk zichtbaar: true   "Nog € 35,05 tot gratis verzending"
@@ -49,5 +47,9 @@ knop "kaart erbij": 2 → 3 stuks, 62.92 → 89.13
 links zonder doel op de productpagina:
 
 == de lade op een telefoon (411x750)
-   2 kaart(en): winkelwagen niet te vullen (bleef -1)
-   4 kaart(en): winkelwagen niet te vullen (bleef -1)
+   2 kaart(en): artikelenlijst 264px, voettekst 404px van 750px venster
+      staffelduw 100px (zichtbaar), bijverkoop 0px (verborgen), verzendbalk 32px
+      duw: Nog 1 kaart erbij: 15% korting in plaats van 10%
+   4 kaart(en): artikelenlijst 264px, voettekst 404px van 750px venster
+      staffelduw 0px (verborgen), bijverkoop 100px (zichtbaar), verzendbalk 32px
+      duw: Hoogste korting bereikt: 20% op alle TapKaarten

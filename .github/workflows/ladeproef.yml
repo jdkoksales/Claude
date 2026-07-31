@@ -263,16 +263,17 @@ jobs:
               await mp.evaluate(() => {
                 document.querySelectorAll('#preview-bar-iframe, #shopify-pc__banner').forEach((el) => el.remove());
               });
-              // De eerste ronde ging de lade niet open en de meting gaf toen
-              // overal nul terug. Dus openen tot hij daadwerkelijk hoogte heeft.
-              for (let poging = 0; poging < 3; poging++) {
+              // Eerst kijken of hij al openstaat en pas dan klikken. De knop is
+              // een schakelaar: blind herhalen deed hem net zo vaak weer dicht
+              // als open, en dat is waarom de eerste ronde nul teruggaf.
+              const isOpen = () => mp.evaluate(() => {
+                const v = document.querySelector('[data-cart-drawer-footer]');
+                return !!(v && v.getBoundingClientRect().height > 0);
+              });
+              for (let poging = 0; poging < 4; poging++) {
+                if (await isOpen()) break;
                 await mp.click('[data-cart-toggle]').catch(() => {});
-                await mp.waitForTimeout(2500);
-                const open = await mp.evaluate(() => {
-                  const v = document.querySelector('[data-cart-drawer-footer]');
-                  return !!(v && v.getBoundingClientRect().height > 0);
-                });
-                if (open) break;
+                await mp.waitForTimeout(3000);
               }
 
               const m = await mp.evaluate(() => {

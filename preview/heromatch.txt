@@ -1,15 +1,13 @@
-GEVONDEN: 3 punten
- - android-klein: tekst en tafel botsen of raken elkaar (speling -21px)
- - android-krap: tekst en tafel botsen of raken elkaar (speling 8px)
+GEVONDEN: 1 punten
  - tel-klein: kop staat 35px lager dan de referentie
 
 formaat           venster     kop-top          kopgrootte       onderkop      knop-top   foto
                               ons / ref  ver   ons / ref        ons / ref     ons        onderkant
-android-klein   360x640     125 /   ?     ?      36px /      ?    16px /    ?    374 /    ?    640/640
+android-klein   360x640     125 /   ?     ?      36px /      ?    16px /    ?    348 /    ?    640/640
      foto 360x480 (top 160) — referentie ?x? (top ?)
-     tafel begint op 490, tekst eindigt op 511 — speling -21px
+     tafel begint op 490, tekst eindigt op 399 — speling 91px
      inner h=531px padTop=16px box=border-box display=block
-     wrap  h=386 flex=0 1 auto padBottom=0px
+     wrap  h=274 flex=0 1 auto padBottom=0px
      shots h=480px (480px) min=0px flex=0 1 auto overflow=visible
      img   h=480px fit=cover aspect=auto
      --tk3-boven=109px  --tk3-kop=niet gezet  shots is kind van inner: true
@@ -21,19 +19,19 @@ android         411x750     132 /   ?     ?      36px /      ?    16px /    ?   
      shots h=730.375px (730px) min=0px flex=0 1 auto overflow=visible
      img   h=730.375px fit=cover aspect=auto
      --tk3-boven=109px  --tk3-kop=niet gezet  shots is kind van inner: true
-android-krap    412x700     125 /   ?     ?      36px /      ?    16px /    ?    350 /    ?    700/700
+android-krap    412x700     125 /   ?     ?      36px /      ?    16px /    ?    324 /    ?    700/700
      foto 412x732 (top -32) — referentie ?x? (top ?)
-     tafel begint op 471, tekst eindigt op 463 — speling 8px
+     tafel begint op 471, tekst eindigt op 375 — speling 96px
      inner h=591px padTop=16px box=border-box display=block
-     wrap  h=338 flex=0 1 auto padBottom=0px
+     wrap  h=250 flex=0 1 auto padBottom=0px
      shots h=732.156px (732px) min=0px flex=0 1 auto overflow=visible
      img   h=732.156px fit=cover aspect=auto
      --tk3-boven=109px  --tk3-kop=niet gezet  shots is kind van inner: true
-tel-klein       390x667     125 /  90   +35      36px /   36px    16px / 16px    350 /  363    667/667
+tel-klein       390x667     125 /  90   +35      36px /   36px    16px / 16px    324 /  363    667/667
      foto 390x520 (top 147) — referentie 390x693 (top -26)
-     tafel begint op 505, tekst eindigt op 463 — speling 42px
+     tafel begint op 505, tekst eindigt op 375 — speling 130px
      inner h=558px padTop=16px box=border-box display=block
-     wrap  h=338 flex=0 1 auto padBottom=0px
+     wrap  h=250 flex=0 1 auto padBottom=0px
      shots h=520px (520px) min=0px flex=0 1 auto overflow=visible
      img   h=520px fit=cover aspect=auto
      --tk3-boven=109px  --tk3-kop=niet gezet  shots is kind van inner: true

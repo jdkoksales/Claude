@@ -262,9 +262,16 @@ jobs:
                 document.querySelectorAll('#preview-bar-iframe, #shopify-pc__banner').forEach((el) => el.remove());
               });
 
+              // Staat het paneel echt binnen het scherm? De lade sluit met een
+              // transform en niet met display:none, dus hoogte meten zegt niets
+              // over open of dicht: die is ook buiten beeld gewoon berekend.
+              // Daardoor was mijn vorige test meteen waar en werd er nooit
+              // geklikt — de metingen klopten, maar van een lade die dichtzat.
               const isOpen = () => p.evaluate(() => {
-                const v = document.querySelector('[data-cart-drawer-footer]');
-                return !!(v && v.getBoundingClientRect().height > 0);
+                const paneel = document.querySelector('.cart-drawer__panel');
+                if (!paneel) return false;
+                const r = paneel.getBoundingClientRect();
+                return r.width > 0 && r.left < window.innerWidth - 20 && r.right > 20;
               });
               for (let poging = 0; poging < 4; poging++) {
                 if (await isOpen()) break;
@@ -309,6 +316,7 @@ jobs:
                 `bijverkoop ${m.vak}px (${m.vakZichtbaar ? 'zichtbaar' : 'verborgen'}), verzendbalk ${m.balk}px`);
               if (m.duwKop) log.push(`      duw: ${m.duwKop}`);
 
+              if (!(await isOpen())) fouten.push(`${aantal} kaarten: lade ging niet open, meting zegt niets`);
               if (m.voet === 0) fouten.push(`${aantal} kaarten: voettekst niet zichtbaar, meting zegt niets`);
               if (m.balk === 0) fouten.push(`${aantal} kaarten: verzendbalk ontbreekt, de lade is niet uitgelezen`);
               if (!m.duwZichtbaar && !m.vakZichtbaar) fouten.push(`${aantal} kaarten: geen enkele aanbieding zichtbaar`);

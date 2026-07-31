@@ -258,6 +258,35 @@ jobs:
                   body: JSON.stringify({ updates: { [d.id]: d.n } }),
                 });
               }, { id: KAART, n: aantal });
+
+              // Bevestigen dat de wagen ook echt gevuld is voordat we verder
+              // gaan. In een verse browsercontext gaf /cart.js een ander,
+              // leeg winkelwagentje terug dan waarmee de pagina was opgebouwd;
+              // de lade verbergt dan terecht alles en de meting zegt niets.
+              let telling = 0;
+              for (let poging = 0; poging < 5; poging++) {
+                telling = await mp.evaluate(async () => {
+                  try {
+                    const r = await fetch('/cart.js', { headers: { Accept: 'application/json' } });
+                    const d = await r.json();
+                    return d.item_count;
+                  } catch (e) { return -1; }
+                });
+                if (telling === aantal) break;
+                await mp.evaluate(async (d) => {
+                  await fetch('/cart/update.js', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ updates: { [d.id]: d.n } }),
+                  });
+                }, { id: KAART, n: aantal });
+                await mp.waitForTimeout(1500);
+              }
+              if (telling !== aantal) {
+                fouten.push(`${aantal} kaarten: winkelwagen bleef op ${telling} staan, meting overgeslagen`);
+                log.push(`   ${aantal} kaart(en): winkelwagen niet te vullen (bleef ${telling})`);
+                continue;
+              }
+
               await mp.reload({ waitUntil: 'domcontentloaded' });
               await mp.waitForTimeout(3500);
               await mp.evaluate(() => {

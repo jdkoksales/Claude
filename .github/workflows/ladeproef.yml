@@ -263,11 +263,25 @@ jobs:
               await mp.evaluate(() => {
                 document.querySelectorAll('#preview-bar-iframe, #shopify-pc__banner').forEach((el) => el.remove());
               });
-              await mp.click('[data-cart-toggle]').catch(() => {});
-              await mp.waitForTimeout(3500);
+              // De eerste ronde ging de lade niet open en de meting gaf toen
+              // overal nul terug. Dus openen tot hij daadwerkelijk hoogte heeft.
+              for (let poging = 0; poging < 3; poging++) {
+                await mp.click('[data-cart-toggle]').catch(() => {});
+                await mp.waitForTimeout(2500);
+                const open = await mp.evaluate(() => {
+                  const v = document.querySelector('[data-cart-drawer-footer]');
+                  return !!(v && v.getBoundingClientRect().height > 0);
+                });
+                if (open) break;
+              }
 
               const m = await mp.evaluate(() => {
-                const h = (el) => (el && !el.hidden ? Math.round(el.getBoundingClientRect().height) : 0);
+                // De werkelijk gerenderde hoogte, niet het hidden-attribuut.
+                // Die twee liepen uiteen: het attribuut stond aan terwijl het
+                // blok gewoon in beeld stond, omdat display:flex de
+                // [hidden]-regel van de browser versloeg.
+                const h = (el) => (el ? Math.round(el.getBoundingClientRect().height) : 0);
+                const zichtbaar = (el) => !!(el && el.getBoundingClientRect().height > 0);
                 const body = document.querySelector('[data-cart-drawer-body]');
                 const duw = document.querySelector('[data-tk3-staffelduw]');
                 const vak = document.querySelector('[data-tk3-bijverkoop]');
@@ -277,8 +291,12 @@ jobs:
                 return {
                   lijst: h(body), voet: h(voet),
                   duw: h(duw), vak: h(vak), balk: h(balk),
-                  duwZichtbaar: duw ? !duw.hidden : null,
-                  vakZichtbaar: vak ? !vak.hidden : null,
+                  duwZichtbaar: zichtbaar(duw),
+                  vakZichtbaar: zichtbaar(vak),
+                  // Staat het attribuut aan terwijl het blok toch in beeld
+                  // staat? Dan doet het verbergen niets.
+                  duwLiegt: !!(duw && duw.hidden && zichtbaar(duw)),
+                  vakLiegt: !!(vak && vak.hidden && zichtbaar(vak)),
                   knopOnder: knop ? Math.round(knop.getBoundingClientRect().bottom) : null,
                   venster: innerHeight,
                 };
@@ -288,6 +306,8 @@ jobs:
               log.push(`      staffelduw ${m.duw}px (${m.duwZichtbaar ? 'zichtbaar' : 'verborgen'}), ` +
                 `bijverkoop ${m.vak}px (${m.vakZichtbaar ? 'zichtbaar' : 'verborgen'}), verzendbalk ${m.balk}px`);
               if (m.voet === 0) fouten.push(`${aantal} kaarten: voettekst is niet zichtbaar, meting op de telefoon zegt niets`);
+              if (m.duwLiegt) fouten.push(`${aantal} kaarten: staffelduw staat op hidden maar is toch zichtbaar`);
+              if (m.vakLiegt) fouten.push(`${aantal} kaarten: bijverkoop staat op hidden maar is toch zichtbaar`);
               if (m.duwZichtbaar && m.vakZichtbaar) fouten.push(`${aantal} kaarten: beide aanbiedingen staan tegelijk op een telefoon`);
               if (m.lijst < 200) fouten.push(`${aantal} kaarten: artikelenlijst maar ${m.lijst}px hoog op een telefoon`);
               if (m.knopOnder && m.knopOnder > m.venster) fouten.push(`${aantal} kaarten: afrekenknop valt onder het scherm`);

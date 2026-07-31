@@ -20,6 +20,14 @@ UNIVERSAL = {"*", "*,*::before,*::after"}
 TAIL = ("html{scroll-behavior:smooth}\n"
         "html,body{overflow-x:clip}\n"
         ".tk3 [hidden]{display:none!important}\n"
+        # Deze blokken hangen in de winkelwagenlade van het thema en dus buiten
+        # de .tk3-wrapper, waardoor de regel hierboven ze niet raakt. Hun eigen
+        # display:flex verslaat de [hidden]{display:none} van de browser, dus
+        # het hidden-attribuut zetten deed visueel niets: de staffelduw en de
+        # stickeraanbieding bleven staan terwijl de code dacht ze te verbergen.
+        ".tk3-staffelduw[hidden],.tk3-bijverkoop[hidden],.tk3-verzendbalk[hidden],"
+        ".tk3-klok[hidden],.tk3-koppelmelding[hidden],.tk3-staffelduw-knop[hidden],"
+        ".tk3-bijverkoop-knop[hidden]{display:none!important}\n"
         # Concept zet 10px zijmarge op elke .shopify-section; onze secties zijn
         # full-bleed en moeten die kwijt.
         ".shopify-section:has(>.tk3){display:block!important;padding:0!important;margin:0!important;border:0!important;max-width:none!important;width:auto!important}\n"

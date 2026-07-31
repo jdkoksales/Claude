@@ -170,11 +170,15 @@ footer .brand img{height:29px}
    klipt .hero hem af. Zo blijft de tafel op elk desktopformaat dezelfde
    fysieke maat in plaats van mee te krimpen met het venster. */
 .hero .shots{position:absolute;bottom:0;left:50%;transform:translateX(-50%);
-  z-index:1;width:1400px;margin:0;display:block;pointer-events:none;
-  aspect-ratio:1600/900}
+  z-index:1;width:min(1400px,130svh);margin:0;display:block;pointer-events:none;
+  aspect-ratio:1600/1150}
 @media(max-width:991px){.hero .shots{width:100%;aspect-ratio:768/576}}
 @media(max-width:767px){.hero .shots{aspect-ratio:480/640}}
 @media(max-width:479px){.hero .shots{aspect-ratio:480/853}}
+/* Onder de 680px hoogte is er geen ruimte meer voor de staande uitsnede: dan
+   raakt het kaartje de knoppen. De liggende uitsnede houdt de tafel kleiner
+   maar heel. */
+@media(max-height:680px){.hero .shots{aspect-ratio:480/640}}
 /* Het thema zet height:auto met !important op elke img, en de browser zet zelf
    aspect-ratio op de width- en height-attributen. Beide moeten wijken, anders
    rekent hij de hoogte uit de breedte in plaats van hem tussen de randen van
@@ -206,6 +210,11 @@ footer .brand img{height:29px}
   .hero .controls{margin-top:24px}
   .hero-calc{margin-top:10px}
 }
+/* Op een scherm van 700px of lager gaat de tweede knop weg. Die kost 54px en
+   dat is precies wat er tekortkomt voordat de tekst op het kaartje valt. Een
+   knop die je niet ziet is beter dan een knop die over het product heen ligt;
+   Kopen blijft gewoon staan. */
+@media(max-height:700px){.hero-calc{display:none}}
 /* De foto draagt zelf hetzelfde verloop; de mask laat de bovenrand
    naadloos in de sectieachtergrond oplossen. */
 /* Boven de gekozen knop stijgt het teken op dat bij dat platform hoort:

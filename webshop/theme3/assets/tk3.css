@@ -181,11 +181,12 @@ html,body{overflow-x:clip}
 @media(min-width:768px){.tk3{--tk3-kop:249px}}
 @media(min-width:1024px){.tk3{--tk3-kop:237px}}
 .tk3 .hero .shots{position:absolute;bottom:0;left:50%;transform:translateX(-50%);
-  z-index:1;width:1400px;margin:0;display:block;pointer-events:none;
-  aspect-ratio:1600/900}
+  z-index:1;width:min(1400px,130svh);margin:0;display:block;pointer-events:none;
+  aspect-ratio:1600/1150}
 @media(max-width:991px){.tk3 .hero .shots{width:100%;aspect-ratio:768/576}}
 @media(max-width:767px){.tk3 .hero .shots{aspect-ratio:480/640}}
 @media(max-width:479px){.tk3 .hero .shots{aspect-ratio:480/853}}
+@media(max-height:680px){.tk3 .hero .shots{aspect-ratio:480/640}}
 .tk3 .hero .shots img{position:absolute;inset:0;width:100%;height:100%!important;
   aspect-ratio:auto;object-fit:cover;object-position:center bottom;
   opacity:0;transition:opacity .3s ease}
@@ -196,6 +197,7 @@ html,body{overflow-x:clip}
 .tk3 .hero .sub{font-size:16px;line-height:1.5;color:var(--ink-64);max-width:689px;margin:0 auto 36px}
 @media(min-width:768px){.tk3 .hero h1{font-size:51px}.tk3 .hero .sub{font-size:17px;margin-bottom:38.25px}}
 @media(max-height:720px){.tk3 .hero .sub{margin-bottom:20px}.tk3 .hero .controls{margin-top:24px}.tk3 .hero-calc{margin-top:10px}}
+@media(max-height:700px){.tk3 .hero-calc{display:none}}
 .tk3 .hero .seg button{position:relative}
 .tk3 .hero .vonk{
   position:absolute;left:50%;bottom:100%;margin-bottom:5px;

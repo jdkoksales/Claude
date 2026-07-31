@@ -38,7 +38,11 @@ jobs:
           const PV = '?preview_theme_id=196665213305';
           const REF = JSON.parse(fs.readFileSync('preview/smiirl-meting.json', 'utf8'));
 
+          // 411x750 is het toestel waarop de fout gemeld werd: een Samsung van
+          // 1080px breed, na aftrek van status-, adres- en navigatiebalk. Die
+          // maat ontbrak, en juist daar botsten tekst en tafel.
           const MATEN = [
+            ['android-klein', 360, 640], ['android', 411, 750], ['android-krap', 412, 700],
             ['tel-klein', 390, 667], ['telefoon', 390, 844], ['tel-hoog', 390, 932],
             ['tel-breed', 430, 932], ['tablet-staand', 768, 1024], ['tablet', 820, 1180],
             ['tablet-laag', 820, 900], ['klein-liggend', 1024, 768], ['laptop-smal', 1280, 800],
@@ -112,6 +116,16 @@ jobs:
                   img: doos('.tk3 .hero .shots img.on'),
                 },
                 foto: fr ? { top: Math.round(fr.top), bodem: Math.round(fr.bottom), breed: Math.round(fr.width) } : null,
+                // Onderkant van alles wat tekst of knop is in de hero.
+                tekstOnder: (() => {
+                  const els = document.querySelectorAll('.tk3 .hero .wrap h1, .tk3 .hero .wrap .sub, .tk3 .hero .wrap .controls, .tk3 .hero .wrap .hero-calc');
+                  let laagste = null;
+                  els.forEach((el) => {
+                    const b = el.getBoundingClientRect().bottom;
+                    if (laagste === null || b > laagste) laagste = b;
+                  });
+                  return laagste === null ? null : Math.round(laagste);
+                })(),
                 overloop: Math.max(0, document.documentElement.scrollWidth - innerWidth),
               };
             });
@@ -130,13 +144,24 @@ jobs:
               `${String(m.knop ? m.knop.top : '?').padStart(5)} /${String(rknop.top ?? '?').padStart(5)}  ` +
               `${String(m.foto ? m.foto.bodem : '?').padStart(5)}/${h}`
             );
-            // De maat van de foto zelf: daar ging de klacht over. De tafel is de
-            // onderste 40% van het doek, dus die 40% is wat er te zien is.
+            // Waar de tafel begint, niet waar de fotodoos begint. Dit is de
+            // meting die ontbrak: de doos stond netjes, maar het kaartje erin
+            // botste met de knoppen en dat zag niemand.
+            //
+            // Het doek is 1600x1150 met de inhoud in de onderste 359px. De foto
+            // staat met object-position:bottom vastgezet aan zijn onderrand, dus
+            // een bronregel y landt op: onderrand - (1150 - y) * schaal.
             const rf = r.foto || {};
-            if (m.foto) {
+            if (m.foto && m.tekstOnder != null) {
               const hoog = m.foto.bodem - m.foto.top;
-              const tafel = Math.round(hoog * 0.4);
-              log.push(`     foto ${m.foto.breed || '?'}x${hoog} (top ${m.foto.top}) — referentie ${rf.breed ?? '?'}x${rf.hoog ?? '?'} (top ${rf.top ?? '?'}) | tafel ongeveer ${tafel}px hoog`);
+              const schaal = Math.max(m.foto.breed / 1600, hoog / 1150);
+              const inhoudTop = Math.round(m.foto.bodem - 359 * schaal);
+              const speling = inhoudTop - m.tekstOnder;
+              log.push(`     foto ${m.foto.breed}x${hoog} (top ${m.foto.top}) — referentie ${rf.breed ?? '?'}x${rf.hoog ?? '?'} (top ${rf.top ?? '?'})`);
+              log.push(`     tafel begint op ${inhoudTop}, tekst eindigt op ${m.tekstOnder} — speling ${speling}px`);
+              if (speling < 16) {
+                fouten.push(`${naam}: tekst en tafel botsen of raken elkaar (speling ${speling}px)`);
+              }
             }
 
             if (ver !== null && Math.abs(ver) > 2) fouten.push(`${naam}: kop staat ${ver > 0 ? ver + 'px lager' : -ver + 'px hoger'} dan de referentie`);

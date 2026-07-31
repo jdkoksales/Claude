@@ -68,7 +68,7 @@
         {%- for key in shots -%}
           <img data-shot="{{ key }}"{% if forloop.first %} class="on"{% endif %}
             src="{{ 'tk3-hero-' | append: key | append: '.png' | asset_url }}"
-            alt="{{ alts[forloop.index0] }}" width="1600" height="900"
+            alt="{{ alts[forloop.index0] }}" width="1600" height="1150"
             {% unless forloop.first %}loading="lazy"{% endunless %}>
         {%- endfor -%}
       </div>

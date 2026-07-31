@@ -197,6 +197,15 @@ footer .brand img{height:29px}
   .hero h1{font-size:51px}
   .hero .sub{font-size:17px;margin-bottom:38.25px}
 }
+/* Op een laag scherm is er domweg minder hoogte te verdelen tussen de kop en de
+   tafel. Dan gaat eerst de lucht tussen de regels eruit, voordat de knoppen op
+   het kaartje belanden. Scheelt 42px, precies genoeg op een telefoon van 667px
+   hoog. */
+@media(max-height:720px){
+  .hero .sub{margin-bottom:20px}
+  .hero .controls{margin-top:24px}
+  .hero-calc{margin-top:10px}
+}
 /* De foto draagt zelf hetzelfde verloop; de mask laat de bovenrand
    naadloos in de sectieachtergrond oplossen. */
 /* Boven de gekozen knop stijgt het teken op dat bij dat platform hoort:

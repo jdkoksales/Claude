@@ -195,6 +195,7 @@ html,body{overflow-x:clip}
   line-height:1.1;font-weight:700;letter-spacing:-.025em}
 .tk3 .hero .sub{font-size:16px;line-height:1.5;color:var(--ink-64);max-width:689px;margin:0 auto 36px}
 @media(min-width:768px){.tk3 .hero h1{font-size:51px}.tk3 .hero .sub{font-size:17px;margin-bottom:38.25px}}
+@media(max-height:720px){.tk3 .hero .sub{margin-bottom:20px}.tk3 .hero .controls{margin-top:24px}.tk3 .hero-calc{margin-top:10px}}
 .tk3 .hero .seg button{position:relative}
 .tk3 .hero .vonk{
   position:absolute;left:50%;bottom:100%;margin-bottom:5px;

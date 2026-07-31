@@ -2,9 +2,9 @@ GEEN AFWIJKINGEN GEVONDEN
 
 == wat geeft de winkelwagen-API terug?
    /cart.js: status=200 type=text/javascript; charset=utf-8
-      {"token":"19f02d9e8488f24ffa61e0677420ebb0","note":null,"attributes":{},"original_total_price":0,"total_price":0,"total_discount":0,"total_weight":0.0,"item_count":0,"items":[],"requires_shipping":false,"currency":"EUR",
+      {"token":"be35e44535599b2d4e36bca10d6bd761","note":null,"attributes":{},"original_total_price":0,"total_price":0,"total_discount":0,"total_weight":0.0,"item_count":0,"items":[],"requires_shipping":false,"currency":"EUR",
    /cart/update.js: status=200 type=text/javascript; charset=utf-8
-      {"token":"hWNF80bix6Fh8fEP2toNswFu?key=65928e4c1a4100f67b2208f138fcd67d","note":null,"attributes":{},"original_total_price":0,"total_price":0,"total_discount":0,"total_weight":0.0,"item_count":0,"items":[],"requires_ship
+      {"token":"hWNF813GLoG4RAJVCTqW8xVK?key=6375e1e892f0257becf749be25498567","note":null,"attributes":{},"original_total_price":0,"total_price":0,"total_discount":0,"total_weight":0.0,"item_count":0,"items":[],"requires_ship
 
 1 kaart(en) — totaal 34.95
    balk zichtbaar: true   "Nog € 35,05 tot gratis verzending"

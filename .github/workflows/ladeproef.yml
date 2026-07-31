@@ -234,120 +234,57 @@ jobs:
             await kar('/cart/clear.js', { method: 'POST' });
 
             // ---- de lade op een telefoon ----
-            // Deze proef draaide altijd op 1440x1000 en zag daarom nooit dat de
-            // drie blokken onder de artikelen op een telefoon de winkelwagen
-            // zelf wegdrukten tot een strookje. Hier telt maar één ding: hoeveel
-            // hoogte houdt de artikelenlijst over?
+            // Bewust hetzelfde tabblad: een verse browsercontext kreeg een
+            // ander, leeg winkelwagentje dan waarmee de pagina was opgebouwd,
+            // en dan verbergt de lade terecht alles. Door alleen het venster
+            // te verkleinen blijft de sessie die hierboven aantoonbaar werkt
+            // gewoon intact.
             log.push('\n== de lade op een telefoon (411x750)');
-            const mctx = await b.newContext({ viewport: { width: 411, height: 750 }, locale: 'nl-NL' });
-            const mp = await mctx.newPage();
-            await mp.goto(BASE + '/products/tapkaarten-google-review-standaard' + PV, { waitUntil: 'domcontentloaded', timeout: 60000 });
-            await mp.waitForTimeout(3000);
-            await mp.evaluate(() => {
-              document.querySelectorAll('#preview-bar-iframe, #shopify-pc__banner').forEach((el) => el.remove());
-            });
+            await p.evaluate(() => document.querySelector('.cart-drawer__close')?.click());
+            await rust();
+            await p.setViewportSize({ width: 411, height: 750 });
 
             for (const aantal of [2, 4]) {
-              // Via de winkelwagen-API en niet via de koopknop: een klik in
-              // evaluate() liep niet door de afhandeling van het thema heen,
-              // waardoor de wagen leeg bleef en de meting nul teruggaf.
-              await mp.evaluate(async (d) => {
-                await fetch('/cart/clear.js', { method: 'POST' });
-                await fetch('/cart/update.js', {
-                  method: 'POST', headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ updates: { [d.id]: d.n } }),
-                });
-              }, { id: KAART, n: aantal });
-
-              // Bevestigen dat de wagen ook echt gevuld is voordat we verder
-              // gaan. In een verse browsercontext gaf /cart.js een ander,
-              // leeg winkelwagentje terug dan waarmee de pagina was opgebouwd;
-              // de lade verbergt dan terecht alles en de meting zegt niets.
-              let telling = 0;
-              for (let poging = 0; poging < 5; poging++) {
-                telling = await mp.evaluate(async () => {
-                  try {
-                    const r = await fetch('/cart.js', { headers: { Accept: 'application/json' } });
-                    const d = await r.json();
-                    return d.item_count;
-                  } catch (e) { return -1; }
-                });
-                if (telling === aantal) break;
-                await mp.evaluate(async (d) => {
-                  await fetch('/cart/update.js', {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ updates: { [d.id]: d.n } }),
-                  });
-                }, { id: KAART, n: aantal });
-                await mp.waitForTimeout(1500);
-              }
-              if (telling !== aantal) {
-                fouten.push(`${aantal} kaarten: winkelwagen bleef op ${telling} staan, meting overgeslagen`);
-                log.push(`   ${aantal} kaart(en): winkelwagen niet te vullen (bleef ${telling})`);
+              await kar('/cart/update.js', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ updates: { [KAART]: aantal } }),
+              });
+              await rust();
+              const nu = await kar('/cart.js');
+              if (!nu || nu.item_count !== aantal) {
+                fouten.push(`${aantal} kaarten: winkelwagen bleef op ${nu ? nu.item_count : '?'} staan, meting overgeslagen`);
                 continue;
               }
 
-              await mp.reload({ waitUntil: 'domcontentloaded' });
-              await mp.waitForTimeout(3500);
-              await mp.evaluate(() => {
+              await p.reload({ waitUntil: 'domcontentloaded' });
+              await p.waitForTimeout(3500);
+              await p.evaluate(() => {
                 document.querySelectorAll('#preview-bar-iframe, #shopify-pc__banner').forEach((el) => el.remove());
               });
-              // Eerst kijken of hij al openstaat en pas dan klikken. De knop is
-              // een schakelaar: blind herhalen deed hem net zo vaak weer dicht
-              // als open, en dat is waarom de eerste ronde nul teruggaf.
-              const isOpen = () => mp.evaluate(() => {
+
+              const isOpen = () => p.evaluate(() => {
                 const v = document.querySelector('[data-cart-drawer-footer]');
                 return !!(v && v.getBoundingClientRect().height > 0);
               });
               for (let poging = 0; poging < 4; poging++) {
                 if (await isOpen()) break;
-                await mp.click('[data-cart-toggle]').catch(() => {});
-                await mp.waitForTimeout(3000);
+                await p.click('[data-cart-toggle]').catch(() => {});
+                await p.waitForTimeout(3000);
               }
-              // Openstaan is niet genoeg: de blokken worden pas gevuld nadat de
-              // winkelwagen is uitgelezen. Meet ik daarvoor, dan lijkt alles
-              // netjes verborgen terwijl het er alleen nog niet is. De
-              // verzendbalk hoort er altijd te staan bij een gevulde wagen, dus
-              // die is het teken dat het tekenen klaar is.
-              const balkErIs = () => mp.evaluate(() => {
-                const b = document.querySelector('[data-tk3-verzendbalk]');
-                return !!(b && b.getBoundingClientRect().height > 0);
-              });
-              for (let ronde = 0; ronde < 2; ronde++) {
-                let klaar = false;
-                for (let poging = 0; poging < 8; poging++) {
-                  if (await balkErIs()) { klaar = true; break; }
-                  await mp.waitForTimeout(1200);
-                }
+              // De blokken worden pas gevuld nadat de wagen is uitgelezen.
+              for (let poging = 0; poging < 8; poging++) {
+                const klaar = await p.evaluate(() => {
+                  const b = document.querySelector('[data-tk3-verzendbalk]');
+                  return !!(b && b.getBoundingClientRect().height > 0);
+                });
                 if (klaar) break;
-                // Niet gevuld. Eerst opschrijven wat de winkelwagen teruggeeft —
-                // eerder in deze proef bleek /cart.js na genoeg verkeer HTML te
-                // sturen in plaats van JSON, en dan tekent de lade niets.
-                const wat = await mp.evaluate(async () => {
-                  try {
-                    const r = await fetch('/cart.js', { headers: { Accept: 'application/json' } });
-                    const t = await r.text();
-                    return { status: r.status, type: r.headers.get('content-type'), begin: t.slice(0, 90) };
-                  } catch (e) { return { fout: String(e.message).slice(0, 80) }; }
-                });
-                log.push(`      (lade nog leeg — /cart.js: ${JSON.stringify(wat)})`);
-                await mp.reload({ waitUntil: 'domcontentloaded' });
-                await mp.waitForTimeout(4000);
-                await mp.evaluate(() => {
-                  document.querySelectorAll('#preview-bar-iframe, #shopify-pc__banner').forEach((el) => el.remove());
-                });
-                for (let poging = 0; poging < 4; poging++) {
-                  if (await isOpen()) break;
-                  await mp.click('[data-cart-toggle]').catch(() => {});
-                  await mp.waitForTimeout(3000);
-                }
+                await p.waitForTimeout(1200);
               }
 
-              const m = await mp.evaluate(() => {
-                // De werkelijk gerenderde hoogte, niet het hidden-attribuut.
-                // Die twee liepen uiteen: het attribuut stond aan terwijl het
-                // blok gewoon in beeld stond, omdat display:flex de
-                // [hidden]-regel van de browser versloeg.
+              const m = await p.evaluate(() => {
+                // De werkelijk gerenderde hoogte, niet het hidden-attribuut:
+                // die twee liepen uiteen omdat display:flex de [hidden]-regel
+                // van de browser versloeg.
                 const h = (el) => (el ? Math.round(el.getBoundingClientRect().height) : 0);
                 const zichtbaar = (el) => !!(el && el.getBoundingClientRect().height > 0);
                 const body = document.querySelector('[data-cart-drawer-body]');
@@ -357,12 +294,9 @@ jobs:
                 const voet = document.querySelector('[data-cart-drawer-footer]');
                 const knop = document.querySelector('.cart-drawer__checkout-button');
                 return {
-                  lijst: h(body), voet: h(voet),
-                  duw: h(duw), vak: h(vak), balk: h(balk),
-                  duwZichtbaar: zichtbaar(duw),
-                  vakZichtbaar: zichtbaar(vak),
-                  // Staat het attribuut aan terwijl het blok toch in beeld
-                  // staat? Dan doet het verbergen niets.
+                  lijst: h(body), voet: h(voet), duw: h(duw), vak: h(vak), balk: h(balk),
+                  duwZichtbaar: zichtbaar(duw), vakZichtbaar: zichtbaar(vak),
+                  duwKop: duw?.querySelector('[data-tk3-staffelduw-kop]')?.textContent.trim() || null,
                   duwLiegt: !!(duw && duw.hidden && zichtbaar(duw)),
                   vakLiegt: !!(vak && vak.hidden && zichtbaar(vak)),
                   knopOnder: knop ? Math.round(knop.getBoundingClientRect().bottom) : null,
@@ -373,21 +307,21 @@ jobs:
               log.push(`   ${aantal} kaart(en): artikelenlijst ${m.lijst}px, voettekst ${m.voet}px van ${m.venster}px venster`);
               log.push(`      staffelduw ${m.duw}px (${m.duwZichtbaar ? 'zichtbaar' : 'verborgen'}), ` +
                 `bijverkoop ${m.vak}px (${m.vakZichtbaar ? 'zichtbaar' : 'verborgen'}), verzendbalk ${m.balk}px`);
-              if (m.voet === 0) fouten.push(`${aantal} kaarten: voettekst is niet zichtbaar, meting op de telefoon zegt niets`);
-              // Zonder deze twee zegt een schone uitslag niets: als de blokken
-              // er domweg nog niet zijn, is alles "netjes verborgen".
+              if (m.duwKop) log.push(`      duw: ${m.duwKop}`);
+
+              if (m.voet === 0) fouten.push(`${aantal} kaarten: voettekst niet zichtbaar, meting zegt niets`);
               if (m.balk === 0) fouten.push(`${aantal} kaarten: verzendbalk ontbreekt, de lade is niet uitgelezen`);
               if (!m.duwZichtbaar && !m.vakZichtbaar) fouten.push(`${aantal} kaarten: geen enkele aanbieding zichtbaar`);
+              if (m.duwZichtbaar && m.vakZichtbaar) fouten.push(`${aantal} kaarten: beide aanbiedingen staan tegelijk op een telefoon`);
               if (m.duwLiegt) fouten.push(`${aantal} kaarten: staffelduw staat op hidden maar is toch zichtbaar`);
               if (m.vakLiegt) fouten.push(`${aantal} kaarten: bijverkoop staat op hidden maar is toch zichtbaar`);
-              if (m.duwZichtbaar && m.vakZichtbaar) fouten.push(`${aantal} kaarten: beide aanbiedingen staan tegelijk op een telefoon`);
               if (m.lijst < 200) fouten.push(`${aantal} kaarten: artikelenlijst maar ${m.lijst}px hoog op een telefoon`);
               if (m.knopOnder && m.knopOnder > m.venster) fouten.push(`${aantal} kaarten: afrekenknop valt onder het scherm`);
-              await mp.screenshot({ path: `preview/lade-mobiel-${aantal}.png` });
-              await mp.evaluate(() => document.querySelector('.cart-drawer__close')?.click());
-              await mp.waitForTimeout(800);
+
+              await p.screenshot({ path: `preview/lade-mobiel-${aantal}.png` });
+              await p.evaluate(() => document.querySelector('.cart-drawer__close')?.click());
+              await p.waitForTimeout(800);
             }
-            await mctx.close();
           } catch (e) {
             log.push('AFGEBROKEN: ' + String(e.message).split('\n')[0].slice(0, 140));
             fouten.push('proef afgebroken');

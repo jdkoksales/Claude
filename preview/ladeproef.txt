@@ -2,9 +2,9 @@ GEEN AFWIJKINGEN GEVONDEN
 
 == wat geeft de winkelwagen-API terug?
    /cart.js: status=200 type=text/javascript; charset=utf-8
-      {"token":"8b2cf7d15827908b3d3c5bd83f8d7fd8","note":null,"attributes":{},"original_total_price":0,"total_price":0,"total_discount":0,"total_weight":0.0,"item_count":0,"items":[],"requires_shipping":false,"currency":"EUR",
+      {"token":"e554060c83e1c8b4609333a2582d65ee","note":null,"attributes":{},"original_total_price":0,"total_price":0,"total_discount":0,"total_weight":0.0,"item_count":0,"items":[],"requires_shipping":false,"currency":"EUR",
    /cart/update.js: status=200 type=text/javascript; charset=utf-8
-      {"token":"hWNF45gq3UqR8IiOGTY9vzLm?key=214338a4a5ae3b26d4f909d68c4e7397","note":null,"attributes":{},"original_total_price":0,"total_price":0,"total_discount":0,"total_weight":0.0,"item_count":0,"items":[],"requires_ship
+      {"token":"hWNF7waU9rLD748RIQwg4JrW?key=bda7abdd2684ba92a97b3fd70703fbc4","note":null,"attributes":{},"original_total_price":0,"total_price":0,"total_discount":0,"total_weight":0.0,"item_count":0,"items":[],"requires_ship
 
 1 kaart(en) — totaal 34.95
    balk zichtbaar: true   "Nog € 35,05 tot gratis verzending"
@@ -45,3 +45,9 @@ knop "kaart erbij": 2 → 3 stuks, 62.92 → 89.13
    duw daarna: Nog 1 kaart erbij: 20% korting in plaats van 15% | Dat scheelt € 5,25 op wat er nu in je winkelwagen ligt
 
 links zonder doel op de productpagina:
+
+== de lade op een telefoon (411x750)
+   2 kaart(en): artikelenlijst 304px, voettekst 0px van 750px venster
+      staffelduw 0px (verborgen), bijverkoop 0px (verborgen), verzendbalk 0px
+   4 kaart(en): artikelenlijst 304px, voettekst 0px van 750px venster
+      staffelduw 0px (verborgen), bijverkoop 0px (verborgen), verzendbalk 0px

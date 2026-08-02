@@ -205,19 +205,30 @@ jobs:
             const vooraf = await lees();
             log.push(`\nvoor de klik: ${vooraf.duwKop} | knop: ${vooraf.duwKnop}`);
             if (!vooraf.duwKnop) fouten.push('knop "kaart erbij" staat er niet bij twee kaarten');
+            // De knop voegt sinds vandaag niet meer blind dezelfde kaart toe
+            // maar opent een keuze. Hier dus alleen nog: gaat die open, en zit
+            // de kaart die al in de wagen ligt er ook in?
             const v2 = await kar('/cart.js');
             await p.click('[data-tk3-staffelduw-knop]').catch(() => {});
-            await p.waitForTimeout(7000);
+            await p.waitForTimeout(2000);
+            const kd = await p.evaluate(() => {
+              const kies = document.querySelector('[data-tk3-kies]');
+              if (!kies) return { bestaat: false };
+              const r = kies.getBoundingClientRect();
+              return {
+                bestaat: true, hoog: Math.round(r.height),
+                aantal: kies.querySelectorAll('[data-tk3-kies-item]').length,
+              };
+            });
             const n2 = await kar('/cart.js');
-            if (v2 && n2) {
-              log.push(`\nknop "kaart erbij": ${v2.item_count} → ${n2.item_count} stuks, ` +
-                `${(v2.total_price / 100).toFixed(2)} → ${(n2.total_price / 100).toFixed(2)}`);
-              if (n2.item_count <= v2.item_count) fouten.push('knop "kaart erbij" voegt niets toe');
-              const verw = 3495 * 3 - Math.floor(3495 * 0.15) * 3;
-              if (n2.total_price !== verw) fouten.push(`na toevoegen ${(n2.total_price / 100).toFixed(2)} in plaats van ${(verw / 100).toFixed(2)}`);
-              const m3 = await lees();
-              log.push(`   duw daarna: ${m3.duwKop} | ${m3.duwSub}`);
-            } else { fouten.push('winkelwagen niet uit te lezen rond de knop kaart erbij'); }
+            log.push(`\nknop "kaart erbij" opent de keuze: ${kd.bestaat ? kd.hoog + 'px met ' + kd.aantal + ' kaarten' : 'staat er niet'}`);
+            if (!kd.bestaat || kd.hoog < 100) fouten.push('keuzelaag opent niet vanaf de knop');
+            if (kd.aantal < 2) fouten.push('keuzelaag toont minder dan twee kaarten');
+            if (v2 && n2 && n2.item_count !== v2.item_count) {
+              fouten.push('de knop voegt nog steeds rechtstreeks toe in plaats van te laten kiezen');
+            }
+            await p.evaluate(() => document.querySelector('[data-tk3-kies-sluit]')?.click());
+            await p.waitForTimeout(800);
             await p.screenshot({ path: 'preview/lade-erbij.png' });
 
             // welke link op de productpagina heeft geen doel?
@@ -369,11 +380,35 @@ jobs:
                   if (!anders) {
                     fouten.push('keuzelaag biedt geen andere kaart dan die al in de wagen ligt');
                   } else {
-                    await p.click(`[data-tk3-kies-item][data-variant="${anders.variant}"]`).catch(() => {});
+                    // De fout niet wegslikken: een klik die niet aankomt en een
+                    // winkelwagen die de variant weigert zien er anders identiek uit.
+                    let klikfout = null;
+                    await p.click(`[data-tk3-kies-item][data-variant="${anders.variant}"]`, { timeout: 8000 })
+                      .catch((err) => { klikfout = String(err.message).split('\n')[0].slice(0, 120); });
+                    if (klikfout) log.push(`      klik kwam niet aan: ${klikfout}`);
                     await p.waitForTimeout(5000);
                     const na = await kar('/cart.js');
                     const soorten = na ? na.items.length : 0;
                     log.push(`      "${anders.naam}" aangewezen — wagen heeft nu ${na ? na.item_count : '?'} stuks in ${soorten} soorten`);
+
+                    if (soorten < 2) {
+                      // Accepteert de winkelwagen die variant überhaupt? Dat
+                      // scheidt een probleem in de afhandeling van een probleem
+                      // met het product zelf.
+                      const proef = await p.evaluate(async (id) => {
+                        try {
+                          const r = await fetch('/cart/add.js', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+                            body: JSON.stringify({ items: [{ id: Number(id), quantity: 1 }] }),
+                          });
+                          const tekst = await r.text();
+                          return { status: r.status, begin: tekst.slice(0, 140).replace(/\s+/g, ' ') };
+                        } catch (e) { return { fout: String(e.message).slice(0, 120) }; }
+                      }, anders.variant);
+                      log.push(`      rechtstreeks toevoegen gaf: ${JSON.stringify(proef)}`);
+                    }
+
                     if (!na || na.item_count !== 3) fouten.push(`na kiezen ${na ? na.item_count : '?'} stuks in plaats van 3`);
                     if (soorten < 2) fouten.push('de gekozen kaart is niet toegevoegd, het bleef bij één soort');
                   }

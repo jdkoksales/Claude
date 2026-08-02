@@ -38,7 +38,10 @@ jobs:
           import fs from 'fs';
 
           const BASE = 'https://ikep5e-3q.myshopify.com';
-          const PV = '?preview_theme_id=196665213305';
+          // Het concept-thema staat sinds vandaag live, dus daar mag ik niet meer
+          // in schrijven. Deze proef kijkt naar de kopie waar de wijzigingen in
+          // staan; die publiceert de eigenaar zelf.
+          const PV = '?preview_theme_id=196964024697';
           const KAART = 64057218662777;
           const log = [];
           const fouten = [];

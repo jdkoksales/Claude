@@ -1,14 +1,13 @@
-GEVONDEN: 4 punten
- - knop "kaart erbij" voegt niets toe
- - na toevoegen 62.92 in plaats van 89.13
+GEVONDEN: 3 punten
  - na kiezen 2 stuks in plaats van 3
  - de gekozen kaart is niet toegevoegd, het bleef bij één soort
+ - 4 kaarten: winkelwagen bleef op 5 staan, meting overgeslagen
 
 == wat geeft de winkelwagen-API terug?
    /cart.js: status=200 type=text/javascript; charset=utf-8
-      {"token":"25aeb2bfdc55df03586917ad5d9bfecb","note":null,"attributes":{},"original_total_price":0,"total_price":0,"total_discount":0,"total_weight":0.0,"item_count":0,"items":[],"requires_shipping":false,"currency":"EUR",
+      {"token":"1a2d6986d7ced67ecf0459dfeab85068","note":null,"attributes":{},"original_total_price":0,"total_price":0,"total_discount":0,"total_weight":0.0,"item_count":0,"items":[],"requires_shipping":false,"currency":"EUR",
    /cart/update.js: status=200 type=text/javascript; charset=utf-8
-      {"token":"hWNFBJyZnGFtrIpmYGrHoRe6?key=014a2d52d4d3dc804d424ed9f99f0921","note":null,"attributes":{},"original_total_price":0,"total_price":0,"total_discount":0,"total_weight":0.0,"item_count":0,"items":[],"requires_ship
+      {"token":"hWNFBKUbjyIQiW4yzqzalI8Y?key=a7acb17b53fb9522cd35c01a775fff12","note":null,"attributes":{},"original_total_price":0,"total_price":0,"total_discount":0,"total_weight":0.0,"item_count":0,"items":[],"requires_ship
 
 1 kaart(en) — totaal 34.95
    balk zichtbaar: true   "Nog € 35,05 tot gratis verzending"
@@ -45,8 +44,7 @@ sticker toevoegen: 4 → 5 stuks, 111.84 → 127.80
 
 voor de klik: Nog 1 kaart erbij: 15% korting in plaats van 10% | knop: true
 
-knop "kaart erbij": 2 → 2 stuks, 62.92 → 62.92
-   duw daarna: Nog 1 kaart erbij: 15% korting in plaats van 10% | Dat scheelt € 3,50 op wat er nu in je winkelwagen ligt
+knop "kaart erbij" opent de keuze: 1000px met 5 kaarten
 
 links zonder doel op de productpagina:
 
@@ -60,7 +58,6 @@ links zonder doel op de productpagina:
          TapKaarten Instagram-standaard
          TapKaarten Facebook-standaard
          TapKaarten Google Review-sticker
+      klik kwam niet aan: page.click: Timeout 8000ms exceeded.
       "TapKaarten Google Review-standaard — zwart" aangewezen — wagen heeft nu 2 stuks in 1 soorten
-   4 kaart(en): artikelenlijst 264px, voettekst 404px van 750px venster
-      staffelduw 0px (verborgen), bijverkoop 100px (zichtbaar), verzendbalk 32px
-      duw: Hoogste korting bereikt: 20% op alle TapKaarten
+      rechtstreeks toevoegen gaf: {"status":200,"begin":"{\"items\":[{\"id\":64057254248825,\"properties\":{},\"quantity\":1,\"variant_id\":64057254248825,\"key\":\"64057254248825:2457593c88e8a66ec1ee79545db773"}

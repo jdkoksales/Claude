@@ -327,6 +327,46 @@ jobs:
               if (m.knopOnder && m.knopOnder > m.venster) fouten.push(`${aantal} kaarten: afrekenknop valt onder het scherm`);
 
               await p.screenshot({ path: `preview/lade-mobiel-${aantal}.png` });
+
+              // De keuzelaag: opent hij, staan er meerdere soorten in, en voegt
+              // hij toe wat je aanwijst in plaats van nog eens dezelfde kaart?
+              if (aantal === 2 && m.duwZichtbaar) {
+                await p.click('[data-tk3-staffelduw-knop]').catch(() => {});
+                await p.waitForTimeout(1200);
+                const k = await p.evaluate(() => {
+                  const kies = document.querySelector('[data-tk3-kies]');
+                  if (!kies) return null;
+                  const r = kies.getBoundingClientRect();
+                  const items = [...kies.querySelectorAll('[data-tk3-kies-item]')].map((el) => ({
+                    naam: el.querySelector('.tk3-kies-naam')?.textContent.trim(),
+                    variant: el.getAttribute('data-variant'),
+                  }));
+                  return { hoog: Math.round(r.height), breed: Math.round(r.width), items };
+                });
+                if (!k || k.hoog < 100) {
+                  fouten.push('keuzelaag gaat niet open');
+                } else {
+                  log.push(`      keuzelaag ${k.breed}x${k.hoog} met ${k.items.length} kaarten:`);
+                  k.items.forEach((i) => log.push(`         ${i.naam}`));
+                  if (k.items.length < 2) fouten.push('keuzelaag toont minder dan twee kaarten');
+                  await p.screenshot({ path: 'preview/lade-keuze.png' });
+
+                  // Een ándere kaart aanwijzen dan die al in de wagen ligt.
+                  const anders = k.items.find((i) => String(i.variant) !== String(KAART));
+                  if (!anders) {
+                    fouten.push('keuzelaag biedt geen andere kaart dan die al in de wagen ligt');
+                  } else {
+                    await p.click(`[data-tk3-kies-item][data-variant="${anders.variant}"]`).catch(() => {});
+                    await p.waitForTimeout(5000);
+                    const na = await kar('/cart.js');
+                    const soorten = na ? na.items.length : 0;
+                    log.push(`      "${anders.naam}" aangewezen — wagen heeft nu ${na ? na.item_count : '?'} stuks in ${soorten} soorten`);
+                    if (!na || na.item_count !== 3) fouten.push(`na kiezen ${na ? na.item_count : '?'} stuks in plaats van 3`);
+                    if (soorten < 2) fouten.push('de gekozen kaart is niet toegevoegd, het bleef bij één soort');
+                  }
+                }
+              }
+
               await p.evaluate(() => document.querySelector('.cart-drawer__close')?.click());
               await p.waitForTimeout(800);
             }

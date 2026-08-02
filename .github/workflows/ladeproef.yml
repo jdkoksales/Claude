@@ -259,6 +259,10 @@ jobs:
             await p.setViewportSize({ width: 411, height: 750 });
 
             for (const aantal of [2, 4]) {
+              // Eerst leegmaken: de vorige ronde zet er via de keuzelaag een
+              // tweede soort in, en die telt anders mee in het volgende aantal.
+              await kar('/cart/clear.js', { method: 'POST' });
+              await rust();
               await kar('/cart/update.js', {
                 method: 'POST', headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ updates: { [KAART]: aantal } }),

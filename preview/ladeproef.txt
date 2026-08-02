@@ -1,11 +1,10 @@
-GEVONDEN: 1 punten
- - 4 kaarten: winkelwagen bleef op 5 staan, meting overgeslagen
+GEEN AFWIJKINGEN GEVONDEN
 
 == wat geeft de winkelwagen-API terug?
    /cart.js: status=200 type=text/javascript; charset=utf-8
-      {"token":"0789c9b9f4fbf9c49bddef93aaca1c2b","note":null,"attributes":{},"original_total_price":0,"total_price":0,"total_discount":0,"total_weight":0.0,"item_count":0,"items":[],"requires_shipping":false,"currency":"EUR",
+      {"token":"abb75f174be09df19def740b6a58723f","note":null,"attributes":{},"original_total_price":0,"total_price":0,"total_discount":0,"total_weight":0.0,"item_count":0,"items":[],"requires_shipping":false,"currency":"EUR",
    /cart/update.js: status=200 type=text/javascript; charset=utf-8
-      {"token":"hWNFBKwrbPirlOAGM3td6GqA?key=bb9337cb3c990799b64113b891babe9a","note":null,"attributes":{},"original_total_price":0,"total_price":0,"total_discount":0,"total_weight":0.0,"item_count":0,"items":[],"requires_ship
+      {"token":"hWNFBLH0dKA2nuU3O0etwpyE?key=7466a3b0fba9fdfb3073288a0ae09c21","note":null,"attributes":{},"original_total_price":0,"total_price":0,"total_discount":0,"total_weight":0.0,"item_count":0,"items":[],"requires_ship
 
 1 kaart(en) — totaal 34.95
    balk zichtbaar: true   "Nog € 35,05 tot gratis verzending"
@@ -57,3 +56,6 @@ links zonder doel op de productpagina:
          TapKaarten Facebook-standaard
          TapKaarten Google Review-sticker
       "TapKaarten Google Review-standaard — zwart" aangewezen — wagen heeft nu 3 stuks in 2 soorten
+   4 kaart(en): artikelenlijst 264px, voettekst 404px van 750px venster
+      staffelduw 0px (verborgen), bijverkoop 100px (zichtbaar), verzendbalk 32px
+      duw: Hoogste korting bereikt: 20% op alle TapKaarten

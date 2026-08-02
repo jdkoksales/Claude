@@ -228,38 +228,43 @@
       </div>
     </div>
 
-    {%- comment -%}
-      Wie een Google-standaard heeft wil er meestal geen tweede van dezelfde
-      bij, maar een Instagram of een Facebook. De knop "Kaart erbij" voegde
-      blind de kaart toe waarvan er al de meeste in de wagen lagen; nu opent
-      hij deze keuze. Hij ligt over de lade heen in plaats van erin, zodat de
-      artikelenlijst er geen hoogte aan kwijtraakt.
-    {%- endcomment -%}
-    <div class="tk3-kies" data-tk3-kies hidden role="dialog" aria-modal="true" aria-label="Kies een kaart">
-      <div class="tk3-kies-kop">
-        <b>Welke kaart doe je erbij?</b>
-        <button type="button" class="tk3-kies-sluit" data-tk3-kies-sluit aria-label="Sluiten">&times;</button>
-      </div>
-      <p class="tk3-kies-uitleg">De korting geldt over alle TapKaarten samen, dus je mag gerust een andere soort kiezen.</p>
-      <ul class="tk3-kies-lijst">
-        {%- for kaart in collections['alle-tapkaarten'].products -%}
-          {%- assign v = kaart.selected_or_first_available_variant -%}
-          {%- if v.available -%}
-            <li>
-              <button type="button" class="tk3-kies-item" data-tk3-kies-item data-variant="{{ v.id }}">
-                {%- if kaart.featured_image -%}
-                  <img src="{{ kaart.featured_image | image_url: width: 132 }}" alt="" width="44" height="44" loading="lazy">
-                {%- endif -%}
-                <span class="tk3-kies-naam">{{ kaart.title }}</span>
-                <span class="tk3-kies-prijs">{{ v.price | money }}</span>
-              </button>
-            </li>
-          {%- endif -%}
-        {%- endfor -%}
-      </ul>
-    </div>
   </div>
 </aside>
+
+{%- comment -%}
+  Wie een Google-standaard heeft wil er meestal geen tweede van dezelfde bij,
+  maar een Instagram of een Facebook. De knop "Kaart erbij" voegde blind de
+  kaart toe waarvan er al de meeste in de wagen lagen; nu opent hij deze keuze.
+
+  Bewust buiten de lade: die vervangt bij het verversen de inhoud van zijn
+  paneel, en een laag daarbinnen verdwijnt dan zodra hij opengaat.
+{%- endcomment -%}
+<div class="tk3-kies" data-tk3-kies hidden>
+  <div class="tk3-kies-doos" role="dialog" aria-modal="true" aria-label="Kies een kaart">
+        <div class="tk3-kies-kop">
+          <b>Welke kaart doe je erbij?</b>
+          <button type="button" class="tk3-kies-sluit" data-tk3-kies-sluit aria-label="Sluiten">&times;</button>
+        </div>
+        <p class="tk3-kies-uitleg">De korting geldt over alle TapKaarten samen, dus je mag gerust een andere soort kiezen.</p>
+        <ul class="tk3-kies-lijst">
+          {%- for kaart in collections['alle-tapkaarten'].products -%}
+            {%- assign v = kaart.selected_or_first_available_variant -%}
+            {%- if v.available -%}
+              <li>
+                <button type="button" class="tk3-kies-item" data-tk3-kies-item data-variant="{{ v.id }}">
+                  {%- if kaart.featured_image -%}
+                    <img src="{{ kaart.featured_image | image_url: width: 132 }}" alt="" width="44" height="44" loading="lazy">
+                  {%- endif -%}
+                  <span class="tk3-kies-naam">{{ kaart.title }}</span>
+                  <span class="tk3-kies-prijs">{{ v.price | money }}</span>
+                </button>
+              </li>
+            {%- endif -%}
+          {%- endfor -%}
+        </ul>
+  </div>
+</div>
+
 
 <script>
   // Alles wat de bestelwaarde omhoog helpt in de lade: hoeveel er nog tot
@@ -413,6 +418,9 @@
     document.addEventListener('click', function (e) {
       if (!e.target || !e.target.closest) return;
       if (e.target.closest('[data-tk3-kies-sluit]')) { keuzeDicht(); return; }
+      // Naast de doos klikken sluit ook.
+      var laag = keuze();
+      if (laag && e.target === laag) { keuzeDicht(); return; }
 
       var item = e.target.closest('[data-tk3-kies-item]');
       if (!item) return;

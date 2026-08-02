@@ -28,11 +28,17 @@ TAIL = ("html{scroll-behavior:smooth}\n"
         ".tk3-staffelduw[hidden],.tk3-bijverkoop[hidden],.tk3-verzendbalk[hidden],"
         ".tk3-klok[hidden],.tk3-koppelmelding[hidden],.tk3-staffelduw-knop[hidden],"
         ".tk3-bijverkoop-knop[hidden],.tk3-kies[hidden]{display:none!important}\n"
-        # Kiezen welke kaart erbij komt. Ligt over de lade heen en niet erin,
-        # zodat de artikelenlijst er geen hoogte aan kwijtraakt — dat was
-        # precies het probleem dat we net hebben verholpen.
-        ".tk3-kies{position:absolute;inset:0;z-index:6;display:flex;flex-direction:column;"
-        "background:#fff;padding:18px 16px 16px}\n"
+        # Kiezen welke kaart erbij komt. Een vaste laag over het hele scherm en
+        # buiten de lade: die vervangt bij het verversen de inhoud van zijn
+        # paneel, en een laag daarbinnen verdwijnt dan zodra hij opengaat.
+        # Op een telefoon komt hij van onderen op, op een breed scherm midden.
+        ".tk3-kies{position:fixed;inset:0;z-index:2147483000;display:flex;"
+        "align-items:flex-end;justify-content:center;background:rgba(0,0,0,.45)}\n"
+        ".tk3-kies-doos{background:#fff;width:100%;max-width:460px;max-height:82vh;"
+        "border-radius:16px 16px 0 0;padding:18px 16px 16px;display:flex;flex-direction:column;"
+        "box-shadow:0 -8px 40px rgba(0,0,0,.22)}\n"
+        "@media(min-width:750px){.tk3-kies{align-items:center}"
+        ".tk3-kies-doos{border-radius:16px;max-height:72vh}}\n"
         ".tk3-kies-kop{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:6px}\n"
         ".tk3-kies-kop b{font-size:16px;color:#1A202C}\n"
         ".tk3-kies-sluit{flex:0 0 auto;width:34px;height:34px;border:1px solid rgba(0,0,0,.14);"

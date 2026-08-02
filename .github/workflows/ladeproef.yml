@@ -338,16 +338,26 @@ jobs:
                 await p.waitForTimeout(1200);
                 const k = await p.evaluate(() => {
                   const kies = document.querySelector('[data-tk3-kies]');
-                  if (!kies) return null;
+                  // Onderscheid maken tussen "staat er niet", "staat er maar is
+                  // verborgen" en "staat er met nul hoogte" — anders weet ik bij
+                  // een mislukking nog steeds niet waar ik moet kijken.
+                  if (!kies) return { bestaat: false };
                   const r = kies.getBoundingClientRect();
+                  const s = getComputedStyle(kies);
                   const items = [...kies.querySelectorAll('[data-tk3-kies-item]')].map((el) => ({
                     naam: el.querySelector('.tk3-kies-naam')?.textContent.trim(),
                     variant: el.getAttribute('data-variant'),
                   }));
-                  return { hoog: Math.round(r.height), breed: Math.round(r.width), items };
+                  return {
+                    bestaat: true, verborgen: kies.hidden, display: s.display,
+                    positie: s.position, zIndex: s.zIndex,
+                    hoog: Math.round(r.height), breed: Math.round(r.width), items,
+                  };
                 });
-                if (!k || k.hoog < 100) {
-                  fouten.push('keuzelaag gaat niet open');
+                if (!k.bestaat) {
+                  fouten.push('keuzelaag staat niet in de pagina');
+                } else if (k.hoog < 100) {
+                  fouten.push(`keuzelaag gaat niet open (hidden=${k.verborgen}, display=${k.display}, hoogte=${k.hoog})`);
                 } else {
                   log.push(`      keuzelaag ${k.breed}x${k.hoog} met ${k.items.length} kaarten:`);
                   k.items.forEach((i) => log.push(`         ${i.naam}`));

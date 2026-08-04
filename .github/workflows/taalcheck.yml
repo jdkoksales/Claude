@@ -94,7 +94,9 @@ jobs:
             await p.waitForTimeout(2200);
             const status = r.status();
             const tekst = await p.evaluate(() => document.body.innerText);
-            log.push(`\n${naam} (${pad}) ${status}`);
+            const themaId = await p.evaluate(() =>
+              (window.Shopify && Shopify.theme && Shopify.theme.id) || 'onbekend');
+            log.push(`\n${naam} (${pad}) ${status} — thema ${themaId}`);
             if (status !== 200) fouten.push(`${naam}: status ${status}`);
 
             for (const s of moet) {
@@ -109,9 +111,15 @@ jobs:
               }
             }
             for (const s of VERBODEN) {
-              if (tekst.includes(s)) {
-                log.push(`   VERBODEN WOORD: "${s}"`);
-                fouten.push(`${naam}: verboden woord "${s}"`);
+              if (!tekst.includes(s)) continue;
+              log.push(`   VERBODEN WOORD: "${s}"`);
+              fouten.push(`${naam}: verboden woord "${s}"`);
+              // Zonder de omliggende zin weet je alleen dát het woord er staat,
+              // niet uit welke sectie het komt — en dan patch je de verkeerde.
+              let i = -1;
+              while ((i = tekst.indexOf(s, i + 1)) !== -1) {
+                const rond = tekst.slice(Math.max(0, i - 90), i + s.length + 90);
+                log.push(`      omgeving: …${rond.replace(/\s+/g, ' ')}…`);
               }
             }
           }

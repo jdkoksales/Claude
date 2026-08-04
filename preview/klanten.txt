@@ -1,5 +1,6 @@
-desktop 1440x900: sectie 1279px, 4 kaarten, 4 foto's geladen, waarschuwing staat er, overloop 0px
+desktop 1440x900: sectie 1279px, 8 kaarten, 4 foto's geladen, waarschuwing staat er, overloop 0px
    eerste kaart: ★★★★★ 165 → 540 volgers in 2 maanden Eerlijk gezegd was ik sceptisch. Maar mensen staan toch te wachten op hun
-telefoon 411x750: sectie 1153px, 4 kaarten, 2 foto's geladen, waarschuwing staat er, overloop 0px
+   LET OP: 4 foto('s) laden niet
+telefoon 411x750: sectie 1153px, 8 kaarten, 2 foto's geladen, waarschuwing staat er, overloop 0px
    eerste kaart: ★★★★★ 165 → 540 volgers in 2 maanden Eerlijk gezegd was ik sceptisch. Maar mensen staan toch te wachten op hun
-   LET OP: 2 foto('s) laden niet
+   LET OP: 6 foto('s) laden niet

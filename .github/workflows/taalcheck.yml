@@ -94,6 +94,24 @@ jobs:
             await p.waitForTimeout(2200);
             const status = r.status();
             const tekst = await p.evaluate(() => document.body.innerText);
+            // Klantquotes zijn spreektaal. Woorden die in verkooptekst slap
+            // klinken ("gewoon") zijn in een citaat juist echt, dus die sectie
+            // telt niet mee voor de stijllijst. Feitelijke fouten wel: die
+            // horen ook in een quote niet thuis.
+            const verkooptekst = await p.evaluate(() => {
+              const quotes = [...document.querySelectorAll('.klanten')];
+              const oud = quotes.map((el) => el.style.display);
+              quotes.forEach((el) => { el.style.display = 'none'; });
+              const t = document.body.innerText;
+              quotes.forEach((el, i) => { el.style.display = oud[i]; });
+              return t;
+            });
+            // Als het verbergen meer wegneemt dan de klantverhalen, meet de
+            // stijlcontrole een lege pagina en slaagt hij om de verkeerde reden.
+            if (verkooptekst.length < tekst.length * 0.5) {
+              fouten.push(`${naam}: verbergen van de klantverhalen haalde te veel weg ` +
+                `(${tekst.length} → ${verkooptekst.length} tekens)`);
+            }
             const themaId = await p.evaluate(() =>
               (window.Shopify && Shopify.theme && Shopify.theme.id) || 'onbekend');
             log.push(`\n${naam} (${pad}) ${status} — thema ${themaId}`);
@@ -105,7 +123,7 @@ jobs:
               if (!ok) fouten.push(`${naam}: "${s}" ontbreekt`);
             }
             for (const s of mag_niet) {
-              if (tekst.includes(s)) {
+              if (verkooptekst.includes(s)) {
                 log.push(`   NOG AANWEZIG: "${s}"`);
                 fouten.push(`${naam}: "${s}" staat er nog`);
               }

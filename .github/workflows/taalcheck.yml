@@ -35,7 +35,9 @@ jobs:
           import fs from 'fs';
 
           const BASE = 'https://ikep5e-3q.myshopify.com';
-          const PV = '?preview_theme_id=196665213305';
+          // Het conceptthema, niet het gepubliceerde. Schrijven naar het
+          // gepubliceerde thema mag niet, dus de tekstwijzigingen staan hier.
+          const PV = '?preview_theme_id=196964024697';
 
           // Woorden die nergens meer thuishoren op de verkooppagina's. De
           // juridische pagina's staan er niet bij: daar hoort "bedenktijd" wel.

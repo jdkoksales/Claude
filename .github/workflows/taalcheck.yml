@@ -40,7 +40,7 @@ jobs:
           // Woorden die nergens meer thuishoren op de verkooppagina's. De
           // juridische pagina's staan er niet bij: daar hoort "bedenktijd" wel.
           const VERBODEN = [
-            'acrylaat', 'herprogrammeerbaar', 'NTAG', 'Zomerkorting',
+            'acrylaat', 'plexiglas', 'herprogrammeerbaar', 'NTAG', 'Zomerkorting',
             'Verstuurd vanuit', 'indicatieve schatting', 'contactmoment',
             'kan schelen', 'staffel van 20%',
           ];
@@ -49,14 +49,14 @@ jobs:
             ['home', '/', [
               '76%', 'Wat reviews opleveren', 'Vanaf 2 kaarten automatisch korting',
               'Verzonden vanuit Nederland', 'Niet tevreden? 14 dagen retour, geld terug',
-              'Gebogen plexiglas', 'Waarom we dit maken',
+              'Gebogen pvc', 'Waarom we dit maken',
               'Pakketten: meer plekken, minder per kaart',
               '€ 27,96', 'Elke standaard én elke sticker telt mee',
               'ligt de telefoon al in de hand', 'Je klant houdt de telefoon ertegenaan',
             ], ['98%', 'In cijfers', 'Het verhaal.', 'gewoon ']],
             ['product-google', '/products/tapkaarten-google-review-standaard', [
               'Alle prijzen zijn zonder btw', 'je betaalt één keer',
-              'Gebogen plexiglas met vaste voet', 'werkt op iPhone en Android',
+              'Gebogen pvc met vaste voet', 'werkt op iPhone en Android',
               'Je klant houdt de telefoon tegen de kaart',
               'De btw komt er in de kassa bij',
               'je krijgt je geld terug',
@@ -73,7 +73,7 @@ jobs:
               'Meer plekken leveren meer op', 'je krijgt je geld terug',
             ], ['gewoon ', 'Ja, onbeperkt']],
             ['over', '/pages/over-ons', [
-              'Gebogen plexiglas', 'heeft de telefoon al in de hand',
+              'Gebogen pvc', 'heeft de telefoon al in de hand',
               'zo vaak je wilt',
             ], ['wat hij van online reviews vindt', 'Mail gerust']],
             ['contact', '/pages/contact', ['Weet je niet welke kaart'], ['Twijfel je welke']],

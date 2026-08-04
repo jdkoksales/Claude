@@ -179,7 +179,7 @@
       "type": "tk3-design",
       "settings": {
         "heading": "Gemaakt om neergezet te worden.",
-        "note": "Gebogen plexiglas met een vaste voet, 7,6 × 12,75 cm. Groot genoeg om op te vallen op de balie, klein genoeg om nergens in de weg te staan. Wit of mat zwart.",
+        "note": "Gebogen pvc met een vaste voet, 7,6 × 12,75 cm. Groot genoeg om op te vallen op de balie, klein genoeg om nergens in de weg te staan. Wit of mat zwart.",
         "btn_text": "Bekijk alle specificaties",
         "btn_url": "/#specs"
       }
@@ -261,9 +261,9 @@
           "type": "row",
           "settings": {
             "label": "Materiaal",
-            "value_a": "Gebogen plexiglas",
+            "value_a": "Gebogen pvc",
             "note_a": "Glanzend afgewerkt",
-            "value_b": "Gebogen plexiglas",
+            "value_b": "Gebogen pvc",
             "note_b": "Glanzend afgewerkt"
           }
         },

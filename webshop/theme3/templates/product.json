@@ -76,7 +76,7 @@
           "type": "accordion",
           "settings": {
             "heading": "Specificaties",
-            "content": "<ul><li>Paneel 7,6 × 12,75 cm, voet 5 cm diep</li><li>Gebogen plexiglas met vaste voet</li><li>NFC-chip plus gedrukte QR-code</li><li>Werkt op iPhone (XR en nieuwer) en op vrijwel elke Android</li><li>Later zelf een andere pagina erop zetten kan, zo vaak je wilt</li><li>Gewicht circa 60 gram</li><li>Geen batterij, geen onderhoud, geen abonnement</li></ul>",
+            "content": "<ul><li>Paneel 7,6 × 12,75 cm, voet 5 cm diep</li><li>Gebogen pvc met vaste voet</li><li>NFC-chip plus gedrukte QR-code</li><li>Werkt op iPhone (XR en nieuwer) en op vrijwel elke Android</li><li>Later zelf een andere pagina erop zetten kan, zo vaak je wilt</li><li>Gewicht circa 60 gram</li><li>Geen batterij, geen onderhoud, geen abonnement</li></ul>",
             "open_by_default": false
           }
         },

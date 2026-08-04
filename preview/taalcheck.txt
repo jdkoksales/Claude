@@ -1,5 +1,4 @@
-GEVONDEN: 1 punten
- - home: "gewoon " staat er nog
+GEEN AFWIJKINGEN GEVONDEN
 
 home (/) 200 — thema 196964024697
    staat er: "76%"
@@ -14,7 +13,6 @@ home (/) 200 — thema 196964024697
    staat er: "Elke standaard én elke sticker telt mee"
    staat er: "ligt de telefoon al in de hand"
    staat er: "Je klant houdt de telefoon ertegenaan"
-   NOG AANWEZIG: "gewoon "
 
 product-google (/products/tapkaarten-google-review-standaard) 200 — thema 196964024697
    staat er: "Alle prijzen zijn zonder btw"

@@ -1,0 +1,95 @@
+name: Klantverhalen bekijken
+
+# Maakt alleen een afbeelding van de nieuwe sectie in het conceptthema, op
+# desktop en op een telefoon.
+on:
+  workflow_dispatch:
+  push:
+    branches: [claude/3d-product-animations-btyc7y]
+    paths: ['.github/workflows/klantcheck.yml', 'preview/klant-trigger.txt']
+
+permissions:
+  contents: write
+
+jobs:
+  kijken:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: claude/3d-product-animations-btyc7y
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Playwright installeren
+        run: npm i -D playwright && npx playwright install --with-deps chromium
+
+      - name: Afbeelding maken
+        run: |
+          mkdir -p preview
+          cat > klant.mjs <<'JS'
+          import { chromium } from 'playwright';
+          import fs from 'fs';
+
+          const BASE = 'https://ikep5e-3q.myshopify.com';
+          const PV = '?preview_theme_id=196964024697';
+          const log = [];
+
+          const b = await chromium.launch();
+          for (const [naam, w, h] of [['desktop', 1440, 900], ['telefoon', 411, 750]]) {
+            const ctx = await b.newContext({ viewport: { width: w, height: h }, locale: 'nl-NL' });
+            const p = await ctx.newPage();
+            await p.goto(BASE + '/' + PV, { waitUntil: 'domcontentloaded', timeout: 60000 });
+            await p.waitForTimeout(4000);
+            await p.evaluate(() => {
+              document.querySelectorAll('#preview-bar-iframe, #shopify-pc__banner').forEach((el) => el.remove());
+            });
+            const sectie = await p.$('.tk3 .klanten');
+            if (!sectie) { log.push(`${naam}: sectie niet gevonden`); await ctx.close(); continue; }
+            await sectie.scrollIntoViewIfNeeded();
+            await p.waitForTimeout(2500);
+
+            const m = await p.evaluate(() => {
+              const s = document.querySelector('.tk3 .klanten');
+              const kaarten = [...s.querySelectorAll('.kl-kaart')];
+              const rect = s.getBoundingClientRect();
+              return {
+                hoog: Math.round(rect.height),
+                kaarten: kaarten.length,
+                fotos: kaarten.filter((k) => {
+                  const i = k.querySelector('img');
+                  return i && i.naturalWidth > 0;
+                }).length,
+                eerste: kaarten[0] ? kaarten[0].innerText.replace(/\s+/g, ' ').slice(0, 110) : null,
+                waarschuwing: !!s.querySelector('.kl-let-op'),
+                overloop: Math.max(0, document.documentElement.scrollWidth - innerWidth),
+              };
+            });
+            log.push(`${naam} ${w}x${h}: sectie ${m.hoog}px, ${m.kaarten} kaarten, ${m.fotos} foto's geladen, ` +
+              `waarschuwing ${m.waarschuwing ? 'staat er' : 'ONTBREEKT'}, overloop ${m.overloop}px`);
+            log.push(`   eerste kaart: ${m.eerste}`);
+            if (m.fotos < m.kaarten) log.push(`   LET OP: ${m.kaarten - m.fotos} foto('s) laden niet`);
+
+            await sectie.screenshot({ path: `preview/klanten-${naam}.png` });
+            await ctx.close();
+          }
+          await b.close();
+          fs.writeFileSync('preview/klanten.txt', log.join('\n') + '\n');
+          console.log(log.join('\n'));
+          JS
+          node klant.mjs
+
+      - name: Vastleggen
+        if: always()
+        run: |
+          git config user.name Claude
+          git config user.email noreply@anthropic.com
+          git add preview/klanten.txt preview/klanten-*.png || true
+          git commit -m "Afbeelding van de klantverhalen" || exit 0
+          for poging in 1 2 3 4; do
+            git pull --rebase origin claude/3d-product-animations-btyc7y && \
+              git push origin HEAD:claude/3d-product-animations-btyc7y && break
+            sleep $((poging * 4))
+          done

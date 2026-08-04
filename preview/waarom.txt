@@ -1,0 +1,25 @@
+GEEN AFWIJKINGEN GEVONDEN
+
+desktop 1440x900 — thema 196964024697
+   sectie 1552px hoog, 6 kaarten waarvan 6 volledig gevuld
+   kop: "Je concurrent is niet beter. Hij vraagt het alleen wél."
+   kolommen 3, lijstregels 3, knop → /#producten
+   getal: background-clip text, kleur rgba(0, 0, 0, 0)
+   kicker true, punch true, knop true, bronnen true
+   overloop 0px, klantverhalen nog aanwezig: false
+
+tablet 900x800 — thema 196964024697
+   sectie 1823px hoog, 6 kaarten waarvan 6 volledig gevuld
+   kop: "Je concurrent is niet beter. Hij vraagt het alleen wél."
+   kolommen 2, lijstregels 3, knop → /#producten
+   getal: background-clip text, kleur rgba(0, 0, 0, 0)
+   kicker true, punch true, knop true, bronnen true
+   overloop 0px, klantverhalen nog aanwezig: false
+
+telefoon 411x750 — thema 196964024697
+   sectie 2604px hoog, 6 kaarten waarvan 6 volledig gevuld
+   kop: "Je concurrent is niet beter. Hij vraagt het alleen wél."
+   kolommen 1, lijstregels 3, knop → /#producten
+   getal: background-clip text, kleur rgba(0, 0, 0, 0)
+   kicker true, punch true, knop true, bronnen true
+   overloop 0px, klantverhalen nog aanwezig: false

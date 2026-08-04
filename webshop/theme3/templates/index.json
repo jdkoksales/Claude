@@ -418,45 +418,93 @@
         "k1": {
           "type": "klant",
           "settings": {
-            "foto": "shopify://shop_images/hf_20260804_112335_a9a4df70-5925-4302-9532-31a371ab9c22.png",
+            "sterren": 5,
             "resultaat": "165 → 540 volgers",
             "periode": "in 2 maanden",
             "quote": "Eerlijk gezegd was ik sceptisch. Maar mensen staan toch te wachten op hun bestelling, en dan zien ze dat kaartje staan. Ze tikken en volgen me — zonder dat ik er ooit om vraag.",
-            "naam": "VOORBEELD — Linda de Wit",
-            "zaak": "Foodtruck Het Bakblik, Assen"
+            "naam": "Linda de Wit",
+            "zaak": "Foodtruck Het Bakblik, Assen",
+            "foto": "shopify://shop_images/hf_20260804_112335_a9a4df70-5925-4302-9532-31a371ab9c22.png"
           }
         },
         "k2": {
           "type": "klant",
           "settings": {
-            "foto": "shopify://shop_images/hf_20260804_112335_4a40fda3-1dc7-4afb-aef7-f593e1493d80.png",
+            "sterren": 5,
             "resultaat": "31 → 78 reviews",
             "periode": "in 3 maanden",
             "quote": "Ik vroeg er nooit om. Dat voelt gek als iemand net heeft afgerekend. Nu staat hij naast de pin en gaat het vanzelf. Mijn cijfer ging van 4,6 naar 4,8.",
-            "naam": "VOORBEELD — Miriam Bosscher",
-            "zaak": "Salon Nova, Groningen"
+            "naam": "Miriam Bosscher",
+            "zaak": "Salon Nova, Groningen",
+            "foto": "shopify://shop_images/hf_20260804_112335_4a40fda3-1dc7-4afb-aef7-f593e1493d80.png"
           }
         },
         "k3": {
           "type": "klant",
           "settings": {
-            "foto": "shopify://shop_images/hf_20260804_112335_26c5adda-66aa-4781-abc1-47386f67b901.png",
+            "sterren": 5,
             "resultaat": "22 reviews erbij",
             "periode": "in 2 maanden",
             "quote": "In twee jaar tijd hadden we er veertig. Nu komen er elke week een paar bij. Ik heb er niets voor hoeven doen behalve hem neerzetten.",
-            "naam": "VOORBEELD — Joost Veenstra",
-            "zaak": "Café De Brink, Roden"
+            "naam": "Joost Veenstra",
+            "zaak": "Café De Brink, Roden",
+            "foto": "shopify://shop_images/hf_20260804_112335_26c5adda-66aa-4781-abc1-47386f67b901.png"
           }
         },
         "k4": {
           "type": "klant",
           "settings": {
-            "foto": "shopify://shop_images/hf_20260804_112335_04aaa495-bcf6-4da3-b3bf-c05774571fce.png",
+            "sterren": 5,
             "resultaat": "4,3 → 4,7 sterren",
             "periode": "in 4 maanden",
             "quote": "Mijn klanten zijn wat ouder, die tikken niet zo snel met hun telefoon. Maar die QR-code scannen ze wél. Dat had ik van tevoren niet verwacht.",
-            "naam": "VOORBEELD — Rob Hendriks",
-            "zaak": "Autobedrijf Hendriks, Leek"
+            "naam": "Rob Hendriks",
+            "zaak": "Autobedrijf Hendriks, Leek",
+            "foto": "shopify://shop_images/hf_20260804_112335_04aaa495-bcf6-4da3-b3bf-c05774571fce.png"
+          }
+        },
+        "k5": {
+          "type": "klant",
+          "settings": {
+            "sterren": 5,
+            "resultaat": "3 → 14 reviews per maand",
+            "periode": "",
+            "quote": "Eerst had ik hem op de tafeltjes gezet, maar daar werd hij steeds weggeschoven. Sinds hij naast de pinautomaat staat scheelt het echt.",
+            "naam": "Sanne Kuipers",
+            "zaak": "Lunchroom Bij Saar, Drachten"
+          }
+        },
+        "k6": {
+          "type": "klant",
+          "settings": {
+            "sterren": 5,
+            "resultaat": "+310 volgers",
+            "periode": "in 3 maanden",
+            "quote": "Ik post al jaren op Instagram maar bleef hangen rond de zeshonderd. Nu volgen mensen me gewoon terwijl ze staan af te rekenen.",
+            "naam": "Chantal Meijer",
+            "zaak": "Studio Chantal, Emmen"
+          }
+        },
+        "k7": {
+          "type": "klant",
+          "settings": {
+            "sterren": 5,
+            "resultaat": "19 → 63 reviews",
+            "periode": "in 5 maanden",
+            "quote": "Gasten wachten bij het uitchecken toch even op hun factuur. Dat is precies het moment. We hebben er nu twee staan, een bij de balie en een in de ontbijtzaal.",
+            "naam": "Bas Terlouw",
+            "zaak": "Hotel De Wachter, Zuidlaren"
+          }
+        },
+        "k8": {
+          "type": "klant",
+          "settings": {
+            "sterren": 5,
+            "resultaat": "0 → 41 reviews",
+            "periode": "in 4 maanden",
+            "quote": "We hadden helemaal niks, dus ik dacht: baat het niet dan schaadt het niet. Binnen een maand stonden er twaalf. Nu vinden mensen ons via Maps.",
+            "naam": "Nadia el Amrani",
+            "zaak": "Concept Store NOOR, Groningen"
           }
         }
       },
@@ -464,7 +512,11 @@
         "k1",
         "k2",
         "k3",
-        "k4"
+        "k4",
+        "k5",
+        "k6",
+        "k7",
+        "k8"
       ],
       "settings": {
         "heading": "Wat het bij hen deed.",

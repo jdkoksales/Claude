@@ -1,16 +1,15 @@
 {{ 'tk3.css' | asset_url | stylesheet_tag }}
 
+{%- assign rail_id = 'tk3-kl-' | append: section.id -%}
+
 {%- comment -%}
-  Klantverhalen met een foto en een uitkomst.
+  Klantverhalen als carousel.
 
-  De opzet is bewust anders dan een sterrenrijtje: bij dit product is het bewijs
-  niet "vijf sterren" maar "van 165 naar 540 volgers". Een getal dat iemand
-  herkent uit zijn eigen zaak overtuigt meer dan een cijfer dat iedereen kan
-  neerzetten.
+  Een grote foto per kaart, in de verhouding van een telefoonfoto. De bedoeling
+  is dat het eruitziet alsof de ondernemer zelf een kiekje heeft opgestuurd met
+  zijn kaartje erbij — dat overtuigt hier meer dan een strak portret.
 
-  Elk blok is een instelling in de thema-editor, dus je vervangt tekst en foto
-  zonder code aan te raken. De volgorde van de velden volgt hoe iemand leest:
-  eerst de uitkomst, dan het verhaal, dan wie het zegt.
+  De uitkomst staat boven de quote omdat wie scrolt alleen die regel leest.
 {%- endcomment -%}
 
 <div class="tk3">
@@ -22,45 +21,54 @@
       {%- endif -%}
 
       {%- if section.settings.voorbeeld -%}
-        <p class="kl-let-op">
-          Voorbeeldinhoud — vervangen voordat deze pagina live gaat.
-        </p>
+        <p class="kl-let-op">Voorbeeldinhoud — vervangen voordat deze pagina live gaat.</p>
       {%- endif -%}
 
-      <div class="kl-rij">
+      <div class="rail kl-rail" id="{{ rail_id }}">
         {%- for block in section.blocks -%}
           <figure class="kl-kaart" {{ block.shopify_attributes }}>
             {%- if block.settings.foto -%}
               <div class="kl-foto">
                 {{
                   block.settings.foto
-                  | image_url: width: 720
-                  | image_tag: loading: 'lazy', alt: block.settings.naam, widths: '360,540,720'
+                  | image_url: width: 760
+                  | image_tag: loading: 'lazy', alt: block.settings.naam, widths: '380,570,760'
                 }}
               </div>
             {%- endif -%}
 
-            <figcaption class="kl-tekst">
-              {%- if block.settings.resultaat != blank -%}
-                <p class="kl-resultaat">
-                  <span class="kl-cijfer">{{ block.settings.resultaat }}</span>
-                  {%- if block.settings.periode != blank -%}
-                    <span class="kl-periode">{{ block.settings.periode }}</span>
-                  {%- endif -%}
-                </p>
-              {%- endif -%}
+            {%- if block.settings.sterren > 0 -%}
+              <div class="kl-sterren" aria-label="{{ block.settings.sterren }} van 5 sterren">
+                {%- for i in (1..block.settings.sterren) -%}★{%- endfor -%}
+              </div>
+            {%- endif -%}
 
-              <blockquote>{{ block.settings.quote }}</blockquote>
+            {%- if block.settings.resultaat != blank -%}
+              <p class="kl-resultaat">
+                <span class="kl-cijfer">{{ block.settings.resultaat }}</span>
+                {%- if block.settings.periode != blank -%}
+                  <span class="kl-periode">{{ block.settings.periode }}</span>
+                {%- endif -%}
+              </p>
+            {%- endif -%}
 
-              <p class="kl-wie">
+            <blockquote>{{ block.settings.quote }}</blockquote>
+
+            <figcaption class="kl-wie">
+              <span class="kl-wie-tekst">
                 <b>{{ block.settings.naam }}</b>
                 {%- if block.settings.zaak != blank -%}
                   <span>{{ block.settings.zaak }}</span>
                 {%- endif -%}
-              </p>
+              </span>
             </figcaption>
           </figure>
         {%- endfor -%}
+      </div>
+
+      <div class="arrows">
+        <button type="button" onclick="tk3ScrollRail('{{ rail_id }}',-1)" aria-label="Vorige">←</button>
+        <button type="button" onclick="tk3ScrollRail('{{ rail_id }}',1)" aria-label="Volgende">→</button>
       </div>
     </div>
   </section>
@@ -80,13 +88,14 @@
       "info": "Zet dit uit zodra je echte klantverhalen met toestemming hebt ingevuld."
     }
   ],
-  "max_blocks": 6,
+  "max_blocks": 16,
   "blocks": [
     {
       "type": "klant",
       "name": "Klantverhaal",
       "settings": [
         { "type": "image_picker", "id": "foto", "label": "Foto" },
+        { "type": "range", "id": "sterren", "label": "Sterren", "min": 0, "max": 5, "step": 1, "default": 5 },
         { "type": "text", "id": "resultaat", "label": "Uitkomst", "info": "Bijvoorbeeld: van 165 naar 540 volgers" },
         { "type": "text", "id": "periode", "label": "In hoeveel tijd", "info": "Bijvoorbeeld: in 2 maanden" },
         { "type": "textarea", "id": "quote", "label": "Wat ze zegt" },

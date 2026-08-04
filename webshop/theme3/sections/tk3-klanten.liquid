@@ -1,0 +1,100 @@
+{{ 'tk3.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  Klantverhalen met een foto en een uitkomst.
+
+  De opzet is bewust anders dan een sterrenrijtje: bij dit product is het bewijs
+  niet "vijf sterren" maar "van 165 naar 540 volgers". Een getal dat iemand
+  herkent uit zijn eigen zaak overtuigt meer dan een cijfer dat iedereen kan
+  neerzetten.
+
+  Elk blok is een instelling in de thema-editor, dus je vervangt tekst en foto
+  zonder code aan te raken. De volgorde van de velden volgt hoe iemand leest:
+  eerst de uitkomst, dan het verhaal, dan wie het zegt.
+{%- endcomment -%}
+
+<div class="tk3">
+  <section class="blk klanten">
+    <div class="wrap">
+      <h2 class="sec-title center">{{ section.settings.heading }}</h2>
+      {%- if section.settings.sub != blank -%}
+        <p class="sec-sub center">{{ section.settings.sub }}</p>
+      {%- endif -%}
+
+      {%- if section.settings.voorbeeld -%}
+        <p class="kl-let-op">
+          Voorbeeldinhoud — vervangen voordat deze pagina live gaat.
+        </p>
+      {%- endif -%}
+
+      <div class="kl-rij">
+        {%- for block in section.blocks -%}
+          <figure class="kl-kaart" {{ block.shopify_attributes }}>
+            {%- if block.settings.foto -%}
+              <div class="kl-foto">
+                {{
+                  block.settings.foto
+                  | image_url: width: 720
+                  | image_tag: loading: 'lazy', alt: block.settings.naam, widths: '360,540,720'
+                }}
+              </div>
+            {%- endif -%}
+
+            <figcaption class="kl-tekst">
+              {%- if block.settings.resultaat != blank -%}
+                <p class="kl-resultaat">
+                  <span class="kl-cijfer">{{ block.settings.resultaat }}</span>
+                  {%- if block.settings.periode != blank -%}
+                    <span class="kl-periode">{{ block.settings.periode }}</span>
+                  {%- endif -%}
+                </p>
+              {%- endif -%}
+
+              <blockquote>{{ block.settings.quote }}</blockquote>
+
+              <p class="kl-wie">
+                <b>{{ block.settings.naam }}</b>
+                {%- if block.settings.zaak != blank -%}
+                  <span>{{ block.settings.zaak }}</span>
+                {%- endif -%}
+              </p>
+            </figcaption>
+          </figure>
+        {%- endfor -%}
+      </div>
+    </div>
+  </section>
+</div>
+
+{% schema %}
+{
+  "name": "TK3 klantverhalen",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Kop", "default": "Wat het bij hen deed." },
+    { "type": "textarea", "id": "sub", "label": "Onderkop", "default": "Ondernemers die een TapKaart op de balie hebben staan." },
+    {
+      "type": "checkbox",
+      "id": "voorbeeld",
+      "label": "Waarschuwing tonen dat dit voorbeeldinhoud is",
+      "default": true,
+      "info": "Zet dit uit zodra je echte klantverhalen met toestemming hebt ingevuld."
+    }
+  ],
+  "max_blocks": 6,
+  "blocks": [
+    {
+      "type": "klant",
+      "name": "Klantverhaal",
+      "settings": [
+        { "type": "image_picker", "id": "foto", "label": "Foto" },
+        { "type": "text", "id": "resultaat", "label": "Uitkomst", "info": "Bijvoorbeeld: van 165 naar 540 volgers" },
+        { "type": "text", "id": "periode", "label": "In hoeveel tijd", "info": "Bijvoorbeeld: in 2 maanden" },
+        { "type": "textarea", "id": "quote", "label": "Wat ze zegt" },
+        { "type": "text", "id": "naam", "label": "Naam" },
+        { "type": "text", "id": "zaak", "label": "Zaak en plaats" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "TK3 klantverhalen" }]
+}
+{% endschema %}

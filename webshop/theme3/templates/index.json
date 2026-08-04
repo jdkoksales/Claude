@@ -411,6 +411,66 @@
         "drempel": 7000,
         "note": "Liever zelf samenstellen? Vanaf twee TapKaarten rekent de winkelwagen automatisch korting: 10% bij twee, 15% bij drie, 20% vanaf vier. Bij vier standaards scheelt dat € 27,96. Elke standaard én elke sticker telt mee."
       }
+    },
+    "klanten": {
+      "type": "tk3-klanten",
+      "blocks": {
+        "k1": {
+          "type": "klant",
+          "settings": {
+            "foto": "shopify://shop_images/hf_20260804_112335_a9a4df70-5925-4302-9532-31a371ab9c22.png",
+            "resultaat": "165 → 540 volgers",
+            "periode": "in 2 maanden",
+            "quote": "Eerlijk gezegd was ik sceptisch. Maar mensen staan toch te wachten op hun bestelling, en dan zien ze dat kaartje staan. Ze tikken en volgen me — zonder dat ik er ooit om vraag.",
+            "naam": "VOORBEELD — Linda de Wit",
+            "zaak": "Foodtruck Het Bakblik, Assen"
+          }
+        },
+        "k2": {
+          "type": "klant",
+          "settings": {
+            "foto": "shopify://shop_images/hf_20260804_112335_4a40fda3-1dc7-4afb-aef7-f593e1493d80.png",
+            "resultaat": "31 → 78 reviews",
+            "periode": "in 3 maanden",
+            "quote": "Ik vroeg er nooit om. Dat voelt gek als iemand net heeft afgerekend. Nu staat hij naast de pin en gaat het vanzelf. Mijn cijfer ging van 4,6 naar 4,8.",
+            "naam": "VOORBEELD — Miriam Bosscher",
+            "zaak": "Salon Nova, Groningen"
+          }
+        },
+        "k3": {
+          "type": "klant",
+          "settings": {
+            "foto": "shopify://shop_images/hf_20260804_112335_26c5adda-66aa-4781-abc1-47386f67b901.png",
+            "resultaat": "22 reviews erbij",
+            "periode": "in 2 maanden",
+            "quote": "In twee jaar tijd hadden we er veertig. Nu komen er elke week een paar bij. Ik heb er niets voor hoeven doen behalve hem neerzetten.",
+            "naam": "VOORBEELD — Joost Veenstra",
+            "zaak": "Café De Brink, Roden"
+          }
+        },
+        "k4": {
+          "type": "klant",
+          "settings": {
+            "foto": "shopify://shop_images/hf_20260804_112335_04aaa495-bcf6-4da3-b3bf-c05774571fce.png",
+            "resultaat": "4,3 → 4,7 sterren",
+            "periode": "in 4 maanden",
+            "quote": "Mijn klanten zijn wat ouder, die tikken niet zo snel met hun telefoon. Maar die QR-code scannen ze wél. Dat had ik van tevoren niet verwacht.",
+            "naam": "VOORBEELD — Rob Hendriks",
+            "zaak": "Autobedrijf Hendriks, Leek"
+          }
+        }
+      },
+      "block_order": [
+        "k1",
+        "k2",
+        "k3",
+        "k4"
+      ],
+      "settings": {
+        "heading": "Wat het bij hen deed.",
+        "sub": "Ondernemers die een TapKaart op de balie hebben staan.",
+        "voorbeeld": true
+      }
     }
   },
   "order": [
@@ -418,6 +478,7 @@
     "trust",
     "hoe",
     "koppelen",
+    "klanten",
     "configurator",
     "statement",
     "pakketten",

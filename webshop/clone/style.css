@@ -878,3 +878,32 @@ footer{background:linear-gradient(115deg,#fdfdfe,#fdf1f5);padding:88px 0 44px}
   :root{--gut:18px}
   .cfg-presets{margin-left:-14px;margin-right:-14px}
 }
+
+/* ---------- klantverhalen ----------
+   De uitkomst staat boven de quote en niet eronder: bij dit product is het
+   bewijs een getal dat een ondernemer herkent uit zijn eigen zaak. Wie snel
+   scant leest alleen die regel, en dat is precies genoeg. */
+.klanten .sec-sub{margin-bottom:40px}
+.kl-let-op{max-width:640px;margin:0 auto 34px;padding:11px 16px;text-align:center;
+  border:1px dashed var(--oranje);border-radius:10px;background:rgba(244,128,31,.07);
+  font-size:var(--fs-sm);font-weight:650;color:var(--oranje-diep)}
+.kl-rij{display:grid;grid-template-columns:repeat(auto-fit,minmax(272px,1fr));gap:26px;align-items:start}
+.kl-kaart{margin:0;background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden;
+  display:flex;flex-direction:column}
+.kl-foto{aspect-ratio:4/5;overflow:hidden;background:var(--grey-bg)}
+.kl-foto img{width:100%;height:100%;object-fit:cover;display:block}
+.kl-tekst{padding:20px 22px 22px;display:flex;flex-direction:column;gap:12px;flex:1 1 auto}
+.kl-resultaat{margin:0;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.kl-cijfer{font-size:var(--fs-lg);font-weight:750;line-height:1.25;letter-spacing:-.02em;color:var(--oranje-diep)}
+.kl-periode{font-size:var(--fs-sm);color:var(--ink-48)}
+.kl-kaart blockquote{margin:0;font-size:var(--fs-sm);line-height:1.6;color:var(--ink-64)}
+.kl-kaart blockquote::before{content:"\201C"}
+.kl-kaart blockquote::after{content:"\201D"}
+.kl-wie{margin:auto 0 0;padding-top:12px;border-top:1px solid var(--line);
+  display:flex;flex-direction:column;gap:2px;font-size:var(--fs-xs)}
+.kl-wie b{font-weight:700;color:var(--ink)}
+.kl-wie span{color:var(--ink-48)}
+@media(max-width:900px){
+  .kl-rij{grid-template-columns:repeat(auto-fit,minmax(238px,1fr));gap:18px}
+  .kl-tekst{padding:16px 18px 18px}
+}

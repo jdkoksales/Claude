@@ -125,6 +125,44 @@ jobs:
             if (m.overloop > 0) fouten.push(`${naam}: pagina schuift ${m.overloop}px opzij`);
 
             await sectie.screenshot({ path: `preview/waarom-${naam}.png` });
+
+            // De lichte uitvoering staat in de themabewerker als optie klaar.
+            // Als die niet klopt staat er lichte tekst op een lichte achtergrond
+            // en ziet de eigenaar dat pas nadat hij de knop heeft omgezet. Dus
+            // zetten we hem hier zelf even om en meten we of het leesbaar blijft.
+            if (naam === 'desktop') {
+              const licht = await p.evaluate(() => {
+                const s = document.querySelector('.tk3 .waarom');
+                s.classList.remove('dark');
+                s.classList.add('licht');
+                const helderheid = (kleur) => {
+                  const [r, g, bl] = (kleur.match(/[\d.]+/g) || []).map(Number);
+                  return 0.2126 * r + 0.7152 * g + 0.0722 * bl;
+                };
+                const meet = (sel) => {
+                  const el = s.querySelector(sel);
+                  return el ? { kleur: getComputedStyle(el).color, h: helderheid(getComputedStyle(el).color) } : null;
+                };
+                const kaart = s.querySelector('.wrm-kaart');
+                return {
+                  tekst: meet('.wrm-tekst'),
+                  punch: meet('.wrm-punch'),
+                  bron: meet('.wrm-bron'),
+                  kaartAchtergrond: kaart ? getComputedStyle(kaart).backgroundColor : null,
+                };
+              });
+              log.push(`   licht: tekst ${licht.tekst && licht.tekst.kleur}, punch ${licht.punch && licht.punch.kleur}, ` +
+                `bron ${licht.bron && licht.bron.kleur}, kaart ${licht.kaartAchtergrond}`);
+              for (const [wat, meting] of [['tekst', licht.tekst], ['punch', licht.punch], ['bron', licht.bron]]) {
+                if (!meting) fouten.push(`licht: ${wat} niet gevonden`);
+                else if (meting.h > 140) fouten.push(`licht: ${wat} is te licht (${meting.kleur}) op een lichte achtergrond`);
+              }
+              await p.evaluate(() => {
+                const s = document.querySelector('.tk3 .waarom');
+                s.classList.remove('licht');
+                s.classList.add('dark');
+              });
+            }
             await ctx.close();
           }
           await b.close();

@@ -7,6 +7,7 @@ desktop 1440x900 — thema 196964024697
    getal: background-clip text, kleur rgba(0, 0, 0, 0)
    kicker true, punch true, knop true, bronnen true
    overloop 0px, klantverhalen nog aanwezig: false
+   licht: tekst rgba(0, 0, 0, 0.64), punch rgb(26, 32, 44), bron rgba(0, 0, 0, 0.36), kaart rgb(255, 255, 255)
 
 tablet 900x800 — thema 196964024697
    sectie 1823px hoog, 6 kaarten waarvan 6 volledig gevuld

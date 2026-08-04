@@ -691,3 +691,39 @@ html,body{overflow-x:clip}
 .tk3 .kl-wie-tekst b{font-weight:700;color:var(--ink)}
 .tk3 .kl-wie-tekst span{color:var(--ink-48)}
 @media(max-width:600px){.tk3 .kl-kaart{width:274px}.tk3 .kl-kaart>.kl-sterren,.tk3 .kl-kaart>.kl-resultaat,.tk3 .kl-kaart>blockquote{margin-left:18px;margin-right:18px}.tk3 .kl-wie{margin-left:18px;margin-right:18px}}
+.tk3 .waarom{padding:120px 0}
+.tk3 .wrm-kicker{display:inline-flex;align-items:center;margin-bottom:20px;
+  padding:6px 15px;border-radius:9999px;background:rgba(244,128,31,.17);
+  color:#FFA83F;font-size:var(--fs-xs);font-weight:750}
+.tk3 .wrm-kop{max-width:18ch;margin:0 auto 20px;font-size:var(--fs-4xl);font-weight:700;
+  line-height:1.08;letter-spacing:-.04em}
+.tk3 .wrm-sub{max-width:58ch;margin:0 auto;font-size:var(--fs-lg);line-height:1.55;
+  color:rgba(255,255,255,.62)}
+.tk3 .wrm-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:56px}
+.tk3 .wrm-kaart{display:flex;flex-direction:column;padding:30px 28px 24px;border-radius:18px;
+  background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.1)}
+.tk3 .wrm-cijfer{font-size:var(--fs-4xl);font-weight:700;letter-spacing:-.05em;line-height:1.05;
+  background:linear-gradient(90deg,#FFA83F,var(--oranje));
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.tk3 .wrm-tekst{margin-top:12px;font-size:var(--fs-sm);line-height:1.55;color:rgba(255,255,255,.74)}
+.tk3 .wrm-bron{margin-top:auto;padding-top:20px;font-size:11.5px;letter-spacing:.05em;
+  text-transform:uppercase;color:rgba(255,255,255,.32)}
+.tk3 .wrm-slot{margin-top:52px;padding:38px 40px;border-radius:22px;
+  border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04)}
+.tk3 .wrm-slot h3{margin-bottom:20px}
+.tk3 .wrm-lijst{display:grid;gap:11px;margin:0 0 26px;padding:0;list-style:none}
+.tk3 .wrm-lijst li{position:relative;padding-left:27px;font-size:var(--fs-sm);line-height:1.55;
+  color:rgba(255,255,255,.66)}
+.tk3 .wrm-lijst li::before{content:"\2715";position:absolute;left:0;top:0;
+  color:var(--oranje);font-weight:700}
+.tk3 .wrm-punch{max-width:64ch;margin:0 0 28px;font-size:var(--fs-lg);font-weight:600;
+  line-height:1.45;color:#fff}
+.tk3 .wrm-knop{display:inline-flex;align-items:center;gap:10px;border-radius:9999px;
+  padding:15px 30px;font-size:var(--fs-sm);font-weight:700;color:#fff;
+  background:linear-gradient(90deg,var(--oranje-diep),var(--oranje));
+  transition:transform .18s,opacity .18s}
+.tk3 .wrm-knop:hover{transform:translateY(-1px);opacity:.92}
+.tk3 .wrm-bronnen{margin-top:30px;text-align:center;font-size:var(--fs-xs);line-height:1.5;
+  color:rgba(255,255,255,.32)}
+@media(max-width:980px){.tk3 .wrm-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:640px){.tk3 .waarom{padding:84px 0}.tk3 .wrm-kop{max-width:none;font-size:var(--fs-3xl)}.tk3 .wrm-grid{grid-template-columns:1fr;gap:14px;margin-top:40px}.tk3 .wrm-kaart{padding:24px 22px 20px}.tk3 .wrm-cijfer{font-size:var(--fs-3xl)}.tk3 .wrm-slot{margin-top:38px;padding:28px 22px}}

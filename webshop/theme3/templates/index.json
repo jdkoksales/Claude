@@ -412,116 +412,76 @@
         "note": "Liever zelf samenstellen? Vanaf twee TapKaarten rekent de winkelwagen automatisch korting: 10% bij twee, 15% bij drie, 20% vanaf vier. Bij vier standaards scheelt dat € 27,96. Elke standaard én elke sticker telt mee."
       }
     },
-    "klanten": {
-      "type": "tk3-klanten",
+    "waarom": {
+      "type": "tk3-waarom",
       "blocks": {
-        "k1": {
-          "type": "klant",
+        "w1": {
+          "type": "punt",
           "settings": {
-            "sterren": 5,
-            "resultaat": "165 → 540 volgers",
-            "periode": "in 2 maanden",
-            "quote": "Eerlijk gezegd was ik sceptisch. Maar mensen staan toch te wachten op hun bestelling, en dan zien ze dat kaartje staan. Ze tikken en volgen me — zonder dat ik er ooit om vraag.",
-            "naam": "Linda de Wit",
-            "zaak": "Foodtruck Het Bakblik, Assen",
-            "foto": "shopify://shop_images/hf_20260804_112335_a9a4df70-5925-4302-9532-31a371ab9c22.png"
+            "cijfer": "83%",
+            "tekst": "van de mensen die om een review gevraagd wordt, laat er ook een achter. Bijna niemand vraagt het. Daar zit jouw kans.",
+            "bron": "BrightLocal 2026"
           }
         },
-        "k2": {
-          "type": "klant",
+        "w2": {
+          "type": "punt",
           "settings": {
-            "sterren": 5,
-            "resultaat": "31 → 78 reviews",
-            "periode": "in 3 maanden",
-            "quote": "Ik vroeg er nooit om. Dat voelt gek als iemand net heeft afgerekend. Nu staat hij naast de pin en gaat het vanzelf. Mijn cijfer ging van 4,6 naar 4,8.",
-            "naam": "Miriam Bosscher",
-            "zaak": "Salon Nova, Groningen",
-            "foto": "shopify://shop_images/hf_20260804_112335_4a40fda3-1dc7-4afb-aef7-f593e1493d80.png"
+            "cijfer": "68%",
+            "tekst": "kiest geen zaak met minder dan vier sterren. Een jaar eerder was dat nog 55%. De lat gaat elk jaar omhoog.",
+            "bron": "BrightLocal 2026"
           }
         },
-        "k3": {
-          "type": "klant",
+        "w3": {
+          "type": "punt",
           "settings": {
-            "sterren": 5,
-            "resultaat": "22 reviews erbij",
-            "periode": "in 2 maanden",
-            "quote": "In twee jaar tijd hadden we er veertig. Nu komen er elke week een paar bij. Ik heb er niets voor hoeven doen behalve hem neerzetten.",
-            "naam": "Joost Veenstra",
-            "zaak": "Café De Brink, Roden",
-            "foto": "shopify://shop_images/hf_20260804_112335_26c5adda-66aa-4781-abc1-47386f67b901.png"
+            "cijfer": "74%",
+            "tekst": "kijkt alleen naar reviews van de laatste drie maanden. Je mooie reviews uit 2023 tellen niet meer mee.",
+            "bron": "BrightLocal 2026"
           }
         },
-        "k4": {
-          "type": "klant",
+        "w4": {
+          "type": "punt",
           "settings": {
-            "sterren": 5,
-            "resultaat": "4,3 → 4,7 sterren",
-            "periode": "in 4 maanden",
-            "quote": "Mijn klanten zijn wat ouder, die tikken niet zo snel met hun telefoon. Maar die QR-code scannen ze wél. Dat had ik van tevoren niet verwacht.",
-            "naam": "Rob Hendriks",
-            "zaak": "Autobedrijf Hendriks, Leek",
-            "foto": "shopify://shop_images/hf_20260804_112335_04aaa495-bcf6-4da3-b3bf-c05774571fce.png"
+            "cijfer": "5 tot 9%",
+            "tekst": "meer omzet per extra ster. Dat effect is het grootst bij zelfstandige zaken, niet bij ketens.",
+            "bron": "Harvard Business School"
           }
         },
-        "k5": {
-          "type": "klant",
+        "w5": {
+          "type": "punt",
           "settings": {
-            "sterren": 5,
-            "resultaat": "3 → 14 reviews per maand",
-            "periode": "",
-            "quote": "Eerst had ik hem op de tafeltjes gezet, maar daar werd hij steeds weggeschoven. Sinds hij naast de pinautomaat staat scheelt het echt.",
-            "naam": "Sanne Kuipers",
-            "zaak": "Lunchroom Bij Saar, Drachten"
+            "cijfer": "1 op de 5",
+            "tekst": "van je positie in Google Maps hangt aan je reviews. Alleen je bedrijfsprofiel zelf weegt zwaarder.",
+            "bron": "Whitespark 2026"
           }
         },
-        "k6": {
-          "type": "klant",
+        "w6": {
+          "type": "punt",
           "settings": {
-            "sterren": 5,
-            "resultaat": "+310 volgers",
-            "periode": "in 3 maanden",
-            "quote": "Ik post al jaren op Instagram maar bleef hangen rond de zeshonderd. Nu volgen mensen me gewoon terwijl ze staan af te rekenen.",
-            "naam": "Chantal Meijer",
-            "zaak": "Studio Chantal, Emmen"
-          }
-        },
-        "k7": {
-          "type": "klant",
-          "settings": {
-            "sterren": 5,
-            "resultaat": "19 → 63 reviews",
-            "periode": "in 5 maanden",
-            "quote": "Gasten wachten bij het uitchecken toch even op hun factuur. Dat is precies het moment. We hebben er nu twee staan, een bij de balie en een in de ontbijtzaal.",
-            "naam": "Bas Terlouw",
-            "zaak": "Hotel De Wachter, Zuidlaren"
-          }
-        },
-        "k8": {
-          "type": "klant",
-          "settings": {
-            "sterren": 5,
-            "resultaat": "0 → 41 reviews",
-            "periode": "in 4 maanden",
-            "quote": "We hadden helemaal niks, dus ik dacht: baat het niet dan schaadt het niet. Binnen een maand stonden er twaalf. Nu vinden mensen ons via Maps.",
-            "naam": "Nadia el Amrani",
-            "zaak": "Concept Store NOOR, Groningen"
+            "cijfer": "76%",
+            "tekst": "van wie ‘in de buurt’ zoekt, staat binnen een dag in een zaak. De enige vraag is: in die van jou of van de buurman.",
+            "bron": "Google"
           }
         }
       },
       "block_order": [
-        "k1",
-        "k2",
-        "k3",
-        "k4",
-        "k5",
-        "k6",
-        "k7",
-        "k8"
+        "w1",
+        "w2",
+        "w3",
+        "w4",
+        "w5",
+        "w6"
       ],
       "settings": {
-        "heading": "Wat het bij hen deed.",
-        "sub": "Ondernemers die een TapKaart op de balie hebben staan.",
-        "voorbeeld": true
+        "kicker": "Waarom je dit nodig hebt",
+        "heading": "Je concurrent is niet beter. Hij vraagt het alleen wél.",
+        "sub": "Zoek je eigen zaak op in Google Maps en kijk wie er boven je staat. Meestal is het verschil niet de kwaliteit van het werk. Het is het aantal recente reviews.",
+        "slot_kop": "Wat je nu doet, werkt niet.",
+        "slot_lijst": "Erom vragen aan de balie voelt ongemakkelijk. Dus je doet het niet.|Een mailtje achteraf komt binnen als je klant je alweer vergeten is.|Alleen een QR-code betekent: camera pakken, richten, wachten. Elke handeling erbij kost je klanten.",
+        "punch": "Een TapKaart stelt de vraag voor je, op het enige moment dat het werkt: als je klant tevreden voor je staat met de telefoon al in de hand.",
+        "knop_tekst": "Bekijk de TapKaarten",
+        "knop_url": "/#producten",
+        "bronnen": "Cijfers: BrightLocal, Local Consumer Review Survey 2026 · Michael Luca, Harvard Business School · Whitespark, Local Search Ranking Factors 2026 · Google."
       }
     }
   },
@@ -530,7 +490,7 @@
     "trust",
     "hoe",
     "koppelen",
-    "klanten",
+    "waarom",
     "configurator",
     "statement",
     "pakketten",

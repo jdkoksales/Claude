@@ -1,0 +1,175 @@
+{{ 'tk3.css' | asset_url | stylesheet_tag }}
+
+{%- comment -%}
+  Waarom je dit nodig hebt.
+
+  Deze sectie moet de bezoeker even ongemakkelijk maken. Niet met verzonnen
+  klantverhalen, maar met cijfers die hij zelf kan nazoeken — bij elk cijfer
+  staat daarom de bron. Dat is ook wat de sectie "Waarom we dit maken"
+  belooft: staat er een cijfer, dan kunnen we uitleggen waar het vandaan komt.
+
+  De lijst met "wat je nu doet" gebruikt een sluisteken als scheiding, net als
+  de geruststellingen in de hoe-werkt-het-sectie.
+{%- endcomment -%}
+
+<div class="tk3">
+  <section class="waarom dark">
+    <div class="wrap center">
+      {%- if section.settings.kicker != blank -%}
+        <span class="wrm-kicker">{{ section.settings.kicker }}</span>
+      {%- endif -%}
+
+      <h2 class="wrm-kop">{{ section.settings.heading }}</h2>
+
+      {%- if section.settings.sub != blank -%}
+        <p class="wrm-sub">{{ section.settings.sub }}</p>
+      {%- endif -%}
+    </div>
+
+    <div class="wrap">
+      <div class="wrm-grid">
+        {%- for block in section.blocks -%}
+          <div class="wrm-kaart" {{ block.shopify_attributes }}>
+            <span class="wrm-cijfer">{{ block.settings.cijfer }}</span>
+            <p class="wrm-tekst">{{ block.settings.tekst }}</p>
+            {%- if block.settings.bron != blank -%}
+              <span class="wrm-bron">{{ block.settings.bron }}</span>
+            {%- endif -%}
+          </div>
+        {%- endfor -%}
+      </div>
+
+      {%- if section.settings.slot_kop != blank -%}
+        <div class="wrm-slot">
+          <h3>{{ section.settings.slot_kop }}</h3>
+
+          {%- assign regels = section.settings.slot_lijst | split: '|' -%}
+          {%- if regels.size > 0 -%}
+            <ul class="wrm-lijst">
+              {%- for regel in regels -%}
+                <li>{{ regel | strip }}</li>
+              {%- endfor -%}
+            </ul>
+          {%- endif -%}
+
+          {%- if section.settings.punch != blank -%}
+            <p class="wrm-punch">{{ section.settings.punch }}</p>
+          {%- endif -%}
+
+          {%- if section.settings.knop_tekst != blank -%}
+            <a class="wrm-knop" href="{{ section.settings.knop_url }}">{{ section.settings.knop_tekst }}</a>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      {%- if section.settings.bronnen != blank -%}
+        <p class="wrm-bronnen">{{ section.settings.bronnen }}</p>
+      {%- endif -%}
+    </div>
+  </section>
+</div>
+
+{% schema %}
+{
+  "name": "TK3 waarom",
+  "settings": [
+    { "type": "text", "id": "kicker", "label": "Labeltje boven de kop", "default": "Waarom je dit nodig hebt" },
+    { "type": "text", "id": "heading", "label": "Kop", "default": "Je concurrent is niet beter. Hij vraagt het alleen wél." },
+    {
+      "type": "textarea",
+      "id": "sub",
+      "label": "Onderkop",
+      "default": "Zoek je eigen zaak op in Google Maps en kijk wie er boven je staat. Meestal is het verschil niet de kwaliteit van het werk. Het is het aantal recente reviews."
+    },
+    { "type": "header", "content": "Het blok onder de cijfers" },
+    { "type": "text", "id": "slot_kop", "label": "Kop", "default": "Wat je nu doet, werkt niet." },
+    {
+      "type": "textarea",
+      "id": "slot_lijst",
+      "label": "Regels, gescheiden door een |",
+      "default": "Erom vragen aan de balie voelt ongemakkelijk. Dus je doet het niet.|Een mailtje achteraf komt binnen als je klant je alweer vergeten is.|Alleen een QR-code betekent: camera pakken, richten, wachten. Elke handeling erbij kost je klanten."
+    },
+    {
+      "type": "textarea",
+      "id": "punch",
+      "label": "Afsluitende zin",
+      "default": "Een TapKaart stelt de vraag voor je, op het enige moment dat het werkt: als je klant tevreden voor je staat met de telefoon al in de hand."
+    },
+    { "type": "text", "id": "knop_tekst", "label": "Knoptekst", "default": "Bekijk de TapKaarten" },
+    { "type": "url", "id": "knop_url", "label": "Knoplink" },
+    {
+      "type": "textarea",
+      "id": "bronnen",
+      "label": "Bronvermelding",
+      "default": "Cijfers: BrightLocal, Local Consumer Review Survey 2026 · Michael Luca, Harvard Business School · Whitespark, Local Search Ranking Factors 2026 · Google."
+    }
+  ],
+  "max_blocks": 9,
+  "blocks": [
+    {
+      "type": "punt",
+      "name": "Cijfer",
+      "settings": [
+        { "type": "text", "id": "cijfer", "label": "Getal", "default": "83%" },
+        { "type": "textarea", "id": "tekst", "label": "Toelichting" },
+        { "type": "text", "id": "bron", "label": "Bron", "info": "Komt klein onder de toelichting te staan." }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "TK3 waarom",
+      "blocks": [
+        {
+          "type": "punt",
+          "settings": {
+            "cijfer": "83%",
+            "tekst": "van de mensen die om een review gevraagd wordt, laat er ook een achter. Bijna niemand vraagt het. Daar zit jouw kans.",
+            "bron": "BrightLocal 2026"
+          }
+        },
+        {
+          "type": "punt",
+          "settings": {
+            "cijfer": "68%",
+            "tekst": "kiest geen zaak met minder dan vier sterren. Een jaar eerder was dat nog 55%. De lat gaat elk jaar omhoog.",
+            "bron": "BrightLocal 2026"
+          }
+        },
+        {
+          "type": "punt",
+          "settings": {
+            "cijfer": "74%",
+            "tekst": "kijkt alleen naar reviews van de laatste drie maanden. Je mooie reviews uit 2023 tellen niet meer mee.",
+            "bron": "BrightLocal 2026"
+          }
+        },
+        {
+          "type": "punt",
+          "settings": {
+            "cijfer": "5 tot 9%",
+            "tekst": "meer omzet per extra ster. Dat effect is het grootst bij zelfstandige zaken, niet bij ketens.",
+            "bron": "Harvard Business School"
+          }
+        },
+        {
+          "type": "punt",
+          "settings": {
+            "cijfer": "1 op de 5",
+            "tekst": "van je positie in Google Maps hangt aan je reviews. Alleen je bedrijfsprofiel zelf weegt zwaarder.",
+            "bron": "Whitespark 2026"
+          }
+        },
+        {
+          "type": "punt",
+          "settings": {
+            "cijfer": "76%",
+            "tekst": "van wie ‘in de buurt’ zoekt, staat binnen een dag in een zaak. De enige vraag is: in die van jou of van de buurman.",
+            "bron": "Google"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

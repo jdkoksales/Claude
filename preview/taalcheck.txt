@@ -1,65 +1,58 @@
-GEVONDEN: 6 punten
- - home: "Niet tevreden? 14 dagen retour, geld terug" ontbreekt
- - home: "Gebogen pvc" ontbreekt
- - home: verboden woord "plexiglas"
- - product-google: "Gebogen pvc met vaste voet" ontbreekt
- - product-google: verboden woord "plexiglas"
- - hele-zaak: verboden woord "plexiglas"
+GEVONDEN: 1 punten
+ - home: "gewoon " staat er nog
 
-home (/) 200
+home (/) 200 — thema 196964024697
    staat er: "76%"
    staat er: "Wat reviews opleveren"
    staat er: "Vanaf 2 kaarten automatisch korting"
    staat er: "Verzonden vanuit Nederland"
-   ONTBREEKT: "Niet tevreden? 14 dagen retour, geld terug"
-   ONTBREEKT: "Gebogen pvc"
+   staat er: "Niet tevreden? 14 dagen retour, geld terug"
+   staat er: "Gebogen pvc"
    staat er: "Waarom we dit maken"
    staat er: "Pakketten: meer plekken, minder per kaart"
    staat er: "€ 27,96"
    staat er: "Elke standaard én elke sticker telt mee"
    staat er: "ligt de telefoon al in de hand"
    staat er: "Je klant houdt de telefoon ertegenaan"
-   VERBODEN WOORD: "plexiglas"
+   NOG AANWEZIG: "gewoon "
 
-product-google (/products/tapkaarten-google-review-standaard) 200
+product-google (/products/tapkaarten-google-review-standaard) 200 — thema 196964024697
    staat er: "Alle prijzen zijn zonder btw"
    staat er: "je betaalt één keer"
-   ONTBREEKT: "Gebogen pvc met vaste voet"
+   staat er: "Gebogen pvc met vaste voet"
    staat er: "werkt op iPhone en Android"
    staat er: "Je klant houdt de telefoon tegen de kaart"
    staat er: "De btw komt er in de kassa bij"
    staat er: "je krijgt je geld terug"
-   VERBODEN WOORD: "plexiglas"
 
-collectie (/collections/alle-tapkaarten) 200
+collectie (/collections/alle-tapkaarten) 200 — thema 196964024697
    staat er: "elke standaard én elke sticker telt mee"
 
-pakketten (/collections/pakketten) 200
+pakketten (/collections/pakketten) 200 — thema 196964024697
    staat er: "Hele zaak"
 
-hele-zaak (/products/tapkaarten-meerdere-plekken) 200
+hele-zaak (/products/tapkaarten-meerdere-plekken) 200 — thema 196964024697
    staat er: "Hele zaak"
    staat er: "op meer dan één plek langskomt"
    staat er: "dat er getikt wordt"
-   VERBODEN WOORD: "plexiglas"
 
-vragen (/pages/veelgestelde-vragen) 200
+vragen (/pages/veelgestelde-vragen) 200 — thema 196964024697
    staat er: "€ 27,96"
    staat er: "Ja, zo vaak je wilt"
    staat er: "Je betaalt één keer"
    staat er: "Meer plekken leveren meer op"
    staat er: "je krijgt je geld terug"
 
-over (/pages/over-ons) 200
+over (/pages/over-ons) 200 — thema 196964024697
    staat er: "Gebogen pvc"
    staat er: "heeft de telefoon al in de hand"
    staat er: "zo vaak je wilt"
 
-contact (/pages/contact) 200
+contact (/pages/contact) 200 — thema 196964024697
    staat er: "Weet je niet welke kaart"
 
-koppelen (/pages/koppelen) 200
+koppelen (/pages/koppelen) 200 — thema 196964024697
    staat er: "voordat ze de deur uit gaan"
 
-offerte (/pages/offerte) 200
+offerte (/pages/offerte) 200 — thema 196964024697
    staat er: "Scherpere prijs dan de 20% uit de winkel"

@@ -961,3 +961,15 @@ footer{background:linear-gradient(115deg,#fdfdfe,#fdf1f5);padding:88px 0 44px}
   .wrm-cijfer{font-size:var(--fs-3xl)}
   .wrm-slot{margin-top:38px;padding:28px 22px}
 }
+
+/* Lichte uitvoering van de waarom-sectie. De donkere is de standaard; deze
+   staat klaar voor als twee zwarte blokken op één pagina te veel wordt. */
+.waarom.licht .wrm-kicker{background:rgba(244,128,31,.14);color:var(--oranje-diep)}
+.waarom.licht .wrm-sub{color:var(--ink-64)}
+.waarom.licht .wrm-kaart{background:#fff;border-color:var(--line)}
+.waarom.licht .wrm-tekst{color:var(--ink-64)}
+.waarom.licht .wrm-bron{color:var(--ink-36)}
+.waarom.licht .wrm-slot{background:#fff;border-color:var(--line)}
+.waarom.licht .wrm-lijst li{color:var(--ink-64)}
+.waarom.licht .wrm-punch{color:var(--ink)}
+.waarom.licht .wrm-bronnen{color:var(--ink-36)}

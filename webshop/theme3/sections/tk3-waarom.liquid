@@ -13,7 +13,13 @@
 {%- endcomment -%}
 
 <div class="tk3">
-  <section class="waarom dark">
+  {%- case section.settings.achtergrond -%}
+    {%- when 'grijs' -%}{%- assign vlak = 'grey licht' -%}
+    {%- when 'wit' -%}{%- assign vlak = 'licht' -%}
+    {%- else -%}{%- assign vlak = 'dark' -%}
+  {%- endcase -%}
+
+  <section class="waarom {{ vlak }}">
     <div class="wrap center">
       {%- if section.settings.kicker != blank -%}
         <span class="wrm-kicker">{{ section.settings.kicker }}</span>
@@ -73,6 +79,18 @@
 {
   "name": "TK3 waarom",
   "settings": [
+    {
+      "type": "select",
+      "id": "achtergrond",
+      "label": "Achtergrond",
+      "options": [
+        { "value": "donker", "label": "Donker" },
+        { "value": "grijs", "label": "Lichtgrijs" },
+        { "value": "wit", "label": "Wit" }
+      ],
+      "default": "donker",
+      "info": "Donker laat de cijfers het hardst aankomen, maar je pagina heeft verderop al een donkere sectie."
+    },
     { "type": "text", "id": "kicker", "label": "Labeltje boven de kop", "default": "Waarom je dit nodig hebt" },
     { "type": "text", "id": "heading", "label": "Kop", "default": "Je concurrent is niet beter. Hij vraagt het alleen wél." },
     {

@@ -1,0 +1,131 @@
+name: Google-weergave nakijken
+
+# Haalt de live homepage op zoals een crawler dat doet en leest eruit wat
+# Google gebruikt voor de zoekresultaten: titel, omschrijving, deelafbeelding
+# en favicon. Ook wordt gecontroleerd of die bestanden echt bereikbaar zijn —
+# een meta-tag die naar een 404 wijst levert geen plaatje op.
+on:
+  workflow_dispatch:
+  push:
+    branches: [claude/3d-product-animations-btyc7y]
+    paths: ['.github/workflows/seocheck.yml', 'preview/seo-trigger.txt']
+
+permissions:
+  contents: write
+
+jobs:
+  kijken:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: claude/3d-product-animations-btyc7y
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Ophalen en nalezen
+        run: |
+          mkdir -p preview
+          cat > seo.mjs <<'JS'
+          import fs from 'fs';
+
+          const log = [];
+          const fouten = [];
+
+          const haal = async (url, opties = {}) => {
+            try {
+              const r = await fetch(url, { redirect: 'follow', ...opties });
+              return { ok: true, status: r.status, url: r.url, r };
+            } catch (e) {
+              return { ok: false, fout: String(e) };
+            }
+          };
+
+          const pak = (html, re) => {
+            const m = html.match(re);
+            return m ? m[1].trim() : null;
+          };
+
+          for (const start of ['http://tapkaarten.nl/', 'https://tapkaarten.nl/', 'https://www.tapkaarten.nl/']) {
+            const res = await haal(start, {
+              headers: { 'user-agent': 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)' },
+            });
+            if (!res.ok) { log.push(`\n${start} → onbereikbaar: ${res.fout}`); fouten.push(`${start} onbereikbaar`); continue; }
+            const html = await res.r.text();
+
+            const titel = pak(html, /<title[^>]*>([\s\S]*?)<\/title>/i);
+            const omschrijving = pak(html, /<meta\s+name=["']description["']\s+content=["']([\s\S]*?)["']/i);
+            const ogImage = pak(html, /<meta\s+property=["']og:image["']\s+content=["']([^"']*)["']/i);
+            const ogTitel = pak(html, /<meta\s+property=["']og:title["']\s+content=["']([^"']*)["']/i);
+            const icon = pak(html, /<link\s+rel=["']icon["'][^>]*href=["']([^"']*)["']/i);
+            const robots = pak(html, /<meta\s+name=["']robots["']\s+content=["']([^"']*)["']/i);
+            const wachtwoord = /Opening soon|Kom snel terug|storefront_access|password/i.test(html)
+              && html.length < 20000;
+
+            log.push(`\n${start}`);
+            log.push(`   → ${res.status} ${res.url}, ${html.length} tekens HTML`);
+            log.push(`   titel:        ${titel ? titel.replace(/\s+/g, ' ') : 'ONTBREEKT'}`);
+            log.push(`   omschrijving: ${omschrijving || 'ONTBREEKT'}`);
+            log.push(`   og:title:     ${ogTitel || 'ONTBREEKT'}`);
+            log.push(`   og:image:     ${ogImage || 'ONTBREEKT'}`);
+            log.push(`   favicon:      ${icon || 'ONTBREEKT'}`);
+            log.push(`   robots-meta:  ${robots || 'geen (dus indexeerbaar)'}`);
+            log.push(`   lijkt wachtwoordpagina: ${wachtwoord}`);
+
+            // Alleen de eerste (http) uitgebreid narekenen; de rest is een
+            // controle of alle varianten op dezelfde pagina uitkomen.
+            if (start.startsWith('http://')) {
+              if (!titel) fouten.push('geen titel op de homepage');
+              if (!omschrijving) fouten.push('geen metabeschrijving op de homepage');
+              if (!ogImage) fouten.push('geen og:image op de homepage');
+              if (!icon) fouten.push('geen favicon-link op de homepage');
+              if (robots && /noindex/i.test(robots)) fouten.push(`robots-meta staat op ${robots}`);
+              if (wachtwoord) fouten.push('de winkel lijkt achter een wachtwoord te staan');
+
+              for (const [wat, adres] of [['og:image', ogImage], ['favicon', icon]]) {
+                if (!adres) continue;
+                const vol = adres.startsWith('http') ? adres : new URL(adres, res.url).href;
+                const c = await haal(vol, { method: 'GET' });
+                const type = c.ok ? c.r.headers.get('content-type') : null;
+                const lengte = c.ok ? (await c.r.arrayBuffer()).byteLength : 0;
+                log.push(`   ${wat} bestand: ${c.ok ? c.status : c.fout} ${type || ''} ${lengte} bytes`);
+                if (!c.ok || c.status !== 200) fouten.push(`${wat} is niet op te halen (${vol})`);
+                else if (lengte < 200) fouten.push(`${wat} is verdacht klein (${lengte} bytes)`);
+              }
+            }
+          }
+
+          const rt = await haal('https://tapkaarten.nl/robots.txt');
+          if (rt.ok) {
+            const t = await rt.r.text();
+            log.push(`\nrobots.txt (${rt.status}):`);
+            log.push(t.split('\n').slice(0, 25).map((r) => '   ' + r).join('\n'));
+            if (/^Disallow: \/$/m.test(t)) fouten.push('robots.txt sluit de hele site uit');
+          }
+
+          const sm = await haal('https://tapkaarten.nl/sitemap.xml');
+          log.push(`\nsitemap.xml: ${sm.ok ? sm.status : sm.fout}`);
+          if (!sm.ok || sm.status !== 200) fouten.push('sitemap.xml is niet bereikbaar');
+
+          const kop = fouten.length
+            ? `GEVONDEN: ${fouten.length} punten\n` + fouten.map((f) => ' - ' + f).join('\n')
+            : 'GEEN AFWIJKINGEN GEVONDEN';
+          fs.writeFileSync('preview/seo.txt', kop + '\n' + log.join('\n') + '\n');
+          console.log(kop);
+          JS
+          node seo.mjs
+
+      - name: Vastleggen
+        if: always()
+        run: |
+          git config user.name Claude
+          git config user.email noreply@anthropic.com
+          git add preview/seo.txt || true
+          git commit -m "Uitkomst van de Google-weergave" || exit 0
+          for poging in 1 2 3 4; do
+            git pull --rebase origin claude/3d-product-animations-btyc7y && \
+              git push origin HEAD:claude/3d-product-animations-btyc7y && break
+            sleep $((poging * 4))
+          done

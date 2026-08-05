@@ -1,9 +1,13 @@
 name: Google-weergave nakijken
 
-# Haalt de live homepage op zoals een crawler dat doet en leest eruit wat
-# Google gebruikt voor de zoekresultaten: titel, omschrijving, deelafbeelding
-# en favicon. Ook wordt gecontroleerd of die bestanden echt bereikbaar zijn —
-# een meta-tag die naar een 404 wijst levert geen plaatje op.
+# Leest uit wat Google op de homepage aantreft: titel, omschrijving,
+# deelafbeelding, logo en favicon. De bestanden worden daarna echt opgehaald —
+# een meta-tag die naar een 404 wijst levert geen plaatje op, en een favicon
+# die niet vierkant is wordt door Google genegeerd.
+#
+# Het gepubliceerde thema en het conceptthema worden allebei bekeken. De
+# strenge controles gelden voor het concept: daar staan de correcties in,
+# want schrijven naar het gepubliceerde thema mag niet.
 on:
   workflow_dispatch:
   push:
@@ -25,12 +29,17 @@ jobs:
         with:
           node-version: '22'
 
+      - name: Playwright installeren
+        run: npm i -D playwright && npx playwright install --with-deps chromium
+
       - name: Ophalen en nalezen
         run: |
           mkdir -p preview
           cat > seo.mjs <<'JS'
+          import { chromium } from 'playwright';
           import fs from 'fs';
 
+          const CONCEPT = '196964024697';
           const log = [];
           const fouten = [];
 
@@ -42,71 +51,112 @@ jobs:
               return { ok: false, fout: String(e) };
             }
           };
-
           const pak = (html, re) => {
             const m = html.match(re);
             return m ? m[1].trim() : null;
           };
 
-          for (const start of ['http://tapkaarten.nl/', 'https://tapkaarten.nl/', 'https://www.tapkaarten.nl/']) {
+          // Leest de tags uit een stuk HTML. Zelfde functie voor de live pagina
+          // en voor het concept, zodat een verschil echt een verschil is.
+          const lees = (html) => ({
+            titel: pak(html, /<title[^>]*>([\s\S]*?)<\/title>/i),
+            omschrijving: pak(html, /<meta\s+name=["']description["']\s+content=["']([\s\S]*?)["']/i),
+            ogTitel: pak(html, /<meta\s+property=["']og:title["']\s+content=["']([^"']*)["']/i),
+            ogImage: pak(html, /<meta\s+property=["']og:image["']\s+content=["']([^"']*)["']/i),
+            robots: pak(html, /<meta\s+name=["']robots["']\s+content=["']([^"']*)["']/i),
+            logo: pak(html, /"logo":\s*"([^"]+)"/),
+            iconen: [...html.matchAll(/<link\s+rel=["'](?:icon|apple-touch-icon)["'][^>]*href=["']([^"']*)["']/gi)]
+              .map((m) => m[1]),
+          });
+
+          const noem = (naam, t) => {
+            log.push(`   titel:        ${t.titel ? t.titel.replace(/\s+/g, ' ') : 'ONTBREEKT'}`);
+            log.push(`   omschrijving: ${t.omschrijving || 'ONTBREEKT'}`);
+            log.push(`   og:title:     ${t.ogTitel || 'ONTBREEKT'}`);
+            log.push(`   og:image:     ${t.ogImage || 'ONTBREEKT'}`);
+            log.push(`   logo:         ${t.logo || 'ONTBREEKT'}`);
+            log.push(`   iconen:       ${t.iconen.length ? t.iconen.join(' | ') : 'ONTBREEKT'}`);
+            log.push(`   robots-meta:  ${t.robots || 'geen (dus indexeerbaar)'}`);
+          };
+
+          // Haalt elk plaatje echt op en meet het na.
+          const keurBestanden = async (t, basis, waar) => {
+            const lijst = [['og:image', t.ogImage], ['logo uit bedrijfsgegevens', t.logo]]
+              .concat(t.iconen.map((h, i) => [`favicon ${i + 1}`, h]));
+            for (const [wat, adres] of lijst) {
+              if (!adres) { fouten.push(`${waar}: ${wat} ontbreekt in de HTML`); continue; }
+              const vol = adres.startsWith('http') ? adres : new URL(adres, basis).href;
+              const c = await haal(vol);
+              const type = c.ok ? c.r.headers.get('content-type') : null;
+              const bytes = c.ok ? Buffer.from(await c.r.arrayBuffer()) : Buffer.alloc(0);
+
+              // Breedte en hoogte staan bij een PNG op vaste plekken in de kop.
+              let maat = null;
+              if (bytes.length > 24 && bytes.slice(1, 4).toString() === 'PNG') {
+                maat = { b: bytes.readUInt32BE(16), h: bytes.readUInt32BE(20) };
+              }
+              log.push(`   ${wat}: ${c.ok ? c.status : c.fout} ${type || ''} ${bytes.length} bytes` +
+                (maat ? ` ${maat.b}x${maat.h}` : ''));
+
+              if (!c.ok || c.status !== 200) { fouten.push(`${waar}: ${wat} geeft geen 200 (${vol})`); continue; }
+              if (!/^image\//.test(type || '')) fouten.push(`${waar}: ${wat} is geen afbeelding maar ${type}`);
+              if (bytes.length < 200) fouten.push(`${waar}: ${wat} is verdacht klein (${bytes.length} bytes)`);
+              if (wat.startsWith('favicon')) {
+                if (!maat) fouten.push(`${waar}: ${wat} is geen PNG, maat niet te meten`);
+                else {
+                  if (maat.b !== maat.h) fouten.push(`${waar}: ${wat} is niet vierkant (${maat.b}x${maat.h})`);
+                  if (maat.b < 48) fouten.push(`${waar}: ${wat} is ${maat.b}px, Google wil minstens 48px`);
+                }
+              }
+            }
+          };
+
+          // ---- 1. Het gepubliceerde thema, zoals een crawler het ziet ----
+          for (const start of ['http://tapkaarten.nl/', 'https://www.tapkaarten.nl/']) {
             const res = await haal(start, {
               headers: { 'user-agent': 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)' },
             });
-            if (!res.ok) { log.push(`\n${start} → onbereikbaar: ${res.fout}`); fouten.push(`${start} onbereikbaar`); continue; }
+            if (!res.ok) { log.push(`\nLIVE ${start} → onbereikbaar: ${res.fout}`); fouten.push(`${start} onbereikbaar`); continue; }
             const html = await res.r.text();
-
-            const titel = pak(html, /<title[^>]*>([\s\S]*?)<\/title>/i);
-            const omschrijving = pak(html, /<meta\s+name=["']description["']\s+content=["']([\s\S]*?)["']/i);
-            const ogImage = pak(html, /<meta\s+property=["']og:image["']\s+content=["']([^"']*)["']/i);
-            const ogTitel = pak(html, /<meta\s+property=["']og:title["']\s+content=["']([^"']*)["']/i);
-            const icon = pak(html, /<link\s+rel=["']icon["'][^>]*href=["']([^"']*)["']/i);
-            const robots = pak(html, /<meta\s+name=["']robots["']\s+content=["']([^"']*)["']/i);
-            const wachtwoord = /Opening soon|Kom snel terug|storefront_access|password/i.test(html)
-              && html.length < 20000;
-
-            log.push(`\n${start}`);
-            log.push(`   → ${res.status} ${res.url}, ${html.length} tekens HTML`);
-            log.push(`   titel:        ${titel ? titel.replace(/\s+/g, ' ') : 'ONTBREEKT'}`);
-            log.push(`   omschrijving: ${omschrijving || 'ONTBREEKT'}`);
-            log.push(`   og:title:     ${ogTitel || 'ONTBREEKT'}`);
-            log.push(`   og:image:     ${ogImage || 'ONTBREEKT'}`);
-            log.push(`   favicon:      ${icon || 'ONTBREEKT'}`);
-            log.push(`   robots-meta:  ${robots || 'geen (dus indexeerbaar)'}`);
-            log.push(`   lijkt wachtwoordpagina: ${wachtwoord}`);
-
-            // Alleen de eerste (http) uitgebreid narekenen; de rest is een
-            // controle of alle varianten op dezelfde pagina uitkomen.
-            if (start.startsWith('http://')) {
-              if (!titel) fouten.push('geen titel op de homepage');
-              if (!omschrijving) fouten.push('geen metabeschrijving op de homepage');
-              if (!ogImage) fouten.push('geen og:image op de homepage');
-              if (!icon) fouten.push('geen favicon-link op de homepage');
-              if (robots && /noindex/i.test(robots)) fouten.push(`robots-meta staat op ${robots}`);
-              if (wachtwoord) fouten.push('de winkel lijkt achter een wachtwoord te staan');
-
-              for (const [wat, adres] of [['og:image', ogImage], ['favicon', icon]]) {
-                if (!adres) continue;
-                const vol = adres.startsWith('http') ? adres : new URL(adres, res.url).href;
-                const c = await haal(vol, { method: 'GET' });
-                const type = c.ok ? c.r.headers.get('content-type') : null;
-                const lengte = c.ok ? (await c.r.arrayBuffer()).byteLength : 0;
-                log.push(`   ${wat} bestand: ${c.ok ? c.status : c.fout} ${type || ''} ${lengte} bytes`);
-                if (!c.ok || c.status !== 200) fouten.push(`${wat} is niet op te halen (${vol})`);
-                else if (lengte < 200) fouten.push(`${wat} is verdacht klein (${lengte} bytes)`);
-              }
-            }
+            const t = lees(html);
+            log.push(`\nLIVE ${start} → ${res.status} ${res.url}, ${html.length} tekens`);
+            noem(start, t);
+            if (!t.titel) fouten.push(`live: geen titel`);
+            if (!t.omschrijving) fouten.push(`live: geen metabeschrijving`);
+            if (t.robots && /noindex/i.test(t.robots)) fouten.push(`live: robots-meta staat op ${t.robots}`);
           }
 
+          // ---- 2. Het conceptthema: hier horen de correcties te staan ----
+          const b = await chromium.launch();
+          const ctx = await b.newContext({ locale: 'nl-NL' });
+          const p = await ctx.newPage();
+          await p.goto(`https://tapkaarten.nl/?preview_theme_id=${CONCEPT}`, { waitUntil: 'domcontentloaded', timeout: 60000 });
+          await p.waitForTimeout(2500);
+          const themaId = await p.evaluate(() => (window.Shopify && Shopify.theme && Shopify.theme.id) || 'onbekend');
+          const conceptHtml = await p.content();
+          await b.close();
+
+          log.push(`\nCONCEPT (thema ${themaId})`);
+          if (String(themaId) !== CONCEPT) {
+            fouten.push(`het concept werd niet geladen, er is thema ${themaId} gemeten`);
+          } else {
+            const t = lees(conceptHtml);
+            noem('concept', t);
+            if (!t.titel) fouten.push('concept: geen titel');
+            if (!t.omschrijving) fouten.push('concept: geen metabeschrijving');
+            await keurBestanden(t, 'https://tapkaarten.nl/', 'concept');
+          }
+
+          // ---- 3. Randvoorwaarden ----
           const rt = await haal('https://tapkaarten.nl/robots.txt');
           if (rt.ok) {
-            const t = await rt.r.text();
-            log.push(`\nrobots.txt (${rt.status}):`);
-            log.push(t.split('\n').slice(0, 25).map((r) => '   ' + r).join('\n'));
-            if (/^Disallow: \/$/m.test(t)) fouten.push('robots.txt sluit de hele site uit');
-          }
+            const tekst = await rt.r.text();
+            if (/^Disallow: \/$/m.test(tekst)) fouten.push('robots.txt sluit de hele site uit');
+            log.push(`\nrobots.txt: ${rt.status}, sluit de site niet uit`);
+          } else fouten.push('robots.txt onbereikbaar');
 
           const sm = await haal('https://tapkaarten.nl/sitemap.xml');
-          log.push(`\nsitemap.xml: ${sm.ok ? sm.status : sm.fout}`);
+          log.push(`sitemap.xml: ${sm.ok ? sm.status : sm.fout}`);
           if (!sm.ok || sm.status !== 200) fouten.push('sitemap.xml is niet bereikbaar');
 
           const kop = fouten.length

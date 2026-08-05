@@ -32,10 +32,20 @@
 
     <meta name="format-detection" content="telephone=no, email=no, address=no">
 
+    {% comment %}
+      Google toont alleen een favicon als die vierkant is en minstens 48px
+      meet; het merkteken zelf is breder dan hoog en werd daarom genegeerd.
+      Vandaar een apart vierkant icoon, in twee maten zodat zowel de
+      zoekresultaten als het tabblad iets scherps te pakken hebben.
+    {% endcomment %}
     {% if settings.favicon %}
-      <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
+      <link rel="icon" type="image/png" sizes="192x192" href="{{ settings.favicon | image_url: width: 192, height: 192 }}">
+      <link rel="icon" type="image/png" sizes="48x48" href="{{ settings.favicon | image_url: width: 48, height: 48 }}">
+      <link rel="apple-touch-icon" href="{{ settings.favicon | image_url: width: 180, height: 180 }}">
     {% else %}
-      <link rel="icon" type="image/svg+xml" href="{{ 'tk3-merk.svg' | asset_url }}">
+      <link rel="icon" type="image/png" sizes="192x192" href="{{ 'tk3-merk-vierkant.png' | asset_url }}">
+      <link rel="icon" type="image/png" sizes="48x48" href="{{ 'tk3-favicon-48.png' | asset_url }}">
+      <link rel="apple-touch-icon" href="{{ 'tk3-merk-vierkant.png' | asset_url }}">
     {% endif %}
 
     {% # Social, title, etc. %}

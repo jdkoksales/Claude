@@ -4,14 +4,14 @@ home desktop status=200
   og     tk3-social.jpg?v=169197354925792053761785174942
 home mobiel status=200
   BREEDTE scroll=390 client=390
-    steekt uit: div.track 0..4947
-    steekt uit: span 295..533
-    steekt uit: i.mq-dot 533..538
-    steekt uit: span 538..820
-    steekt uit: i.mq-dot 820..825
-    steekt uit: span 825..1115
-    steekt uit: i.mq-dot 1115..1120
-    steekt uit: span 1120..1358
+    steekt uit: div.track 0..6087
+    steekt uit: span 295..716
+    steekt uit: i.mq-dot 716..721
+    steekt uit: span 721..1010
+    steekt uit: i.mq-dot 1010..1015
+    steekt uit: span 1015..1305
+    steekt uit: i.mq-dot 1305..1310
+    steekt uit: span 1310..1731
   KLEINE KNOPPEN a 106x20, a.brand 148x21, a.cartlink 26x26, a 354x26, input 324x14, button 39x23, button 54x23, a 203x26
 product desktop status=200
   titel  Google Review-standaard wit — NFC bordje voor meer reviews – TapKaarten
@@ -19,14 +19,14 @@ product desktop status=200
   og     tapkaarten-google-wit-1.png?v=1785095945
 product mobiel status=200
   BREEDTE scroll=390 client=390
-    steekt uit: div.track 0..4947
-    steekt uit: span 295..533
-    steekt uit: i.mq-dot 533..538
-    steekt uit: span 538..820
-    steekt uit: i.mq-dot 820..825
-    steekt uit: span 825..1115
-    steekt uit: i.mq-dot 1115..1120
-    steekt uit: span 1120..1358
+    steekt uit: div.track 0..6087
+    steekt uit: span 295..716
+    steekt uit: i.mq-dot 716..721
+    steekt uit: span 721..1010
+    steekt uit: i.mq-dot 1010..1015
+    steekt uit: span 1015..1305
+    steekt uit: i.mq-dot 1305..1310
+    steekt uit: span 1310..1731
   KLEINE KNOPPEN a 106x20, a.brand 148x21, a.cartlink 26x26, button.product-gallery__dot 14x11, a 169x15, a 81x16, a 236x20, a 79x20
 collectie desktop status=200
   titel  Alle TapKaarten — NFC-bordjes voor reviews en volgers
@@ -34,14 +34,14 @@ collectie desktop status=200
   og     tk3-social.jpg?v=169197354925792053761785174942
 collectie mobiel status=200
   BREEDTE scroll=390 client=390
-    steekt uit: div.track 0..4947
-    steekt uit: span 295..533
-    steekt uit: i.mq-dot 533..538
-    steekt uit: span 538..820
-    steekt uit: i.mq-dot 820..825
-    steekt uit: span 825..1115
-    steekt uit: i.mq-dot 1115..1120
-    steekt uit: span 1120..1358
+    steekt uit: div.track 0..6087
+    steekt uit: span 295..716
+    steekt uit: i.mq-dot 716..721
+    steekt uit: span 721..1010
+    steekt uit: i.mq-dot 1010..1015
+    steekt uit: span 1015..1305
+    steekt uit: i.mq-dot 1305..1310
+    steekt uit: span 1310..1731
   KLEINE KNOPPEN a 106x20, a.brand 148x21, a.cartlink 26x26
 winkelwagen desktop status=200
   titel  Je winkelwagen – TapKaarten
@@ -49,14 +49,14 @@ winkelwagen desktop status=200
   og     tk3-social.jpg?v=169197354925792053761785174942
 winkelwagen mobiel status=200
   BREEDTE scroll=390 client=390
-    steekt uit: div.track 0..4947
-    steekt uit: span 295..533
-    steekt uit: i.mq-dot 533..538
-    steekt uit: span 538..820
-    steekt uit: i.mq-dot 820..825
-    steekt uit: span 825..1115
-    steekt uit: i.mq-dot 1115..1120
-    steekt uit: span 1120..1358
+    steekt uit: div.track 0..6087
+    steekt uit: span 295..716
+    steekt uit: i.mq-dot 716..721
+    steekt uit: span 721..1010
+    steekt uit: i.mq-dot 1010..1015
+    steekt uit: span 1015..1305
+    steekt uit: i.mq-dot 1305..1310
+    steekt uit: span 1310..1731
   KLEINE KNOPPEN a 106x20, a.brand 148x21, a.cartlink 26x26
 verzending desktop status=200
   titel  Verzending – TapKaarten
@@ -64,14 +64,14 @@ verzending desktop status=200
   og     tk3-social.jpg?v=169197354925792053761785174942
 verzending mobiel status=200
   BREEDTE scroll=390 client=390
-    steekt uit: div.track 0..4947
-    steekt uit: span 295..533
-    steekt uit: i.mq-dot 533..538
-    steekt uit: span 538..820
-    steekt uit: i.mq-dot 820..825
-    steekt uit: span 825..1115
-    steekt uit: i.mq-dot 1115..1120
-    steekt uit: span 1120..1358
+    steekt uit: div.track 0..6087
+    steekt uit: span 295..716
+    steekt uit: i.mq-dot 716..721
+    steekt uit: span 721..1010
+    steekt uit: i.mq-dot 1010..1015
+    steekt uit: span 1015..1305
+    steekt uit: i.mq-dot 1305..1310
+    steekt uit: span 1310..1731
   KLEINE KNOPPEN a 106x20, a.brand 148x21, a.cartlink 26x26, a 236x20, a 149x20
 contact desktop status=200
   titel  Contact – TapKaarten
@@ -79,14 +79,14 @@ contact desktop status=200
   og     tk3-social.jpg?v=169197354925792053761785174942
 contact mobiel status=200
   BREEDTE scroll=390 client=390
-    steekt uit: div.track 0..4947
-    steekt uit: span 295..533
-    steekt uit: i.mq-dot 533..538
-    steekt uit: span 538..820
-    steekt uit: i.mq-dot 820..825
-    steekt uit: span 825..1115
-    steekt uit: i.mq-dot 1115..1120
-    steekt uit: span 1120..1358
+    steekt uit: div.track 0..6087
+    steekt uit: span 295..716
+    steekt uit: i.mq-dot 716..721
+    steekt uit: span 721..1010
+    steekt uit: i.mq-dot 1010..1015
+    steekt uit: span 1015..1305
+    steekt uit: i.mq-dot 1305..1310
+    steekt uit: span 1310..1731
   KLEINE KNOPPEN a 106x20, a.brand 148x21, a.cartlink 26x26, a 135x19, a 105x19
 winkelwagenproef zonder link: 1× TapKaarten Google Review-standaard — wit props={}
 winkelwagenproef MISLUKT: page.fill: Timeout 30000ms exceeded.
@@ -127,15 +127,15 @@ link 200 /policies/privacy-policy
 link 200 /pages/retourbeleid
 
 --- fouten ---
-home/desktop 403 https://shop.app/pay/hop?analytics_trace_id=8be6ee6e-1f8c-4e59-be10-3cc44cefd158&target_origin=https%3A%2F%2Ftapkaarten.
-home/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=3cbe81a4-59d9-4e53-9ee9-192fb3cc074e&target_origin=https%3A%2F%2Ftapkaarten.
-product/desktop 403 https://shop.app/pay/hop?analytics_trace_id=1d8693a5-d44a-4473-a9ca-64448cce9ab0&target_origin=https%3A%2F%2Ftapkaarten.
-product/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=341b9328-613d-4a50-8d3a-63155866c988&target_origin=https%3A%2F%2Ftapkaarten.
-collectie/desktop 403 https://shop.app/pay/hop?analytics_trace_id=bf9ddca7-65eb-449b-8e8f-93df4f2ec6c7&target_origin=https%3A%2F%2Ftapkaarten.
-collectie/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=47bfc46d-ed53-4084-9ce5-4e2ab85c688d&target_origin=https%3A%2F%2Ftapkaarten.
-winkelwagen/desktop 403 https://shop.app/pay/hop?analytics_trace_id=dc0839d1-8d53-4198-bfdd-170f8294daf3&target_origin=https%3A%2F%2Ftapkaarten.
-winkelwagen/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=54c3d039-9be7-4620-8e7a-02276b683e66&target_origin=https%3A%2F%2Ftapkaarten.
-verzending/desktop 403 https://shop.app/pay/hop?analytics_trace_id=b01ea716-75df-4eee-a688-57158b413fe7&target_origin=https%3A%2F%2Ftapkaarten.
-verzending/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=a5e6cdbe-299f-438f-8621-603b45d193c8&target_origin=https%3A%2F%2Ftapkaarten.
-contact/desktop 403 https://shop.app/pay/hop?analytics_trace_id=fb64ab08-2da2-414f-87fd-b9b414ea0734&target_origin=https%3A%2F%2Ftapkaarten.
-contact/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=5c79e7eb-58ab-451e-beae-a567bd443983&target_origin=https%3A%2F%2Ftapkaarten.
+home/desktop 403 https://shop.app/pay/hop?analytics_trace_id=2076b193-6edd-403c-bcea-3a78f4fbedea&target_origin=https%3A%2F%2Ftapkaarten.
+home/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=8acf3325-47e1-4320-9a25-70ffa69f412e&target_origin=https%3A%2F%2Ftapkaarten.
+product/desktop 403 https://shop.app/pay/hop?analytics_trace_id=4ee19b8a-16e7-4da4-a875-d1fdcdfd0273&target_origin=https%3A%2F%2Ftapkaarten.
+product/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=383e5af6-52a2-4760-8cde-d75f790a8e07&target_origin=https%3A%2F%2Ftapkaarten.
+collectie/desktop 403 https://shop.app/pay/hop?analytics_trace_id=81bd2265-2eb3-4029-9bc8-7be8b8b4389e&target_origin=https%3A%2F%2Ftapkaarten.
+collectie/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=f8c6f730-2bb2-4229-a2c2-6613b0bacda3&target_origin=https%3A%2F%2Ftapkaarten.
+winkelwagen/desktop 403 https://shop.app/pay/hop?analytics_trace_id=f37f29f4-7e81-4beb-86ee-1d5a9b56f106&target_origin=https%3A%2F%2Ftapkaarten.
+winkelwagen/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=7ad57d43-edb2-4c0a-9e18-76e7e66aaa61&target_origin=https%3A%2F%2Ftapkaarten.
+verzending/desktop 403 https://shop.app/pay/hop?analytics_trace_id=9272c75b-c6f5-4a24-ac8b-62c9857a6ed7&target_origin=https%3A%2F%2Ftapkaarten.
+verzending/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=c4828d36-a3ef-4015-a44e-438d91b6d06e&target_origin=https%3A%2F%2Ftapkaarten.
+contact/desktop 403 https://shop.app/pay/hop?analytics_trace_id=b6ba1278-bf24-4064-bcbb-786721d3e258&target_origin=https%3A%2F%2Ftapkaarten.
+contact/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=06f59a98-24c1-4cab-85f5-5e1e80c6300d&target_origin=https%3A%2F%2Ftapkaarten.

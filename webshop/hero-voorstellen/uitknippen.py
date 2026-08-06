@@ -58,48 +58,66 @@ def slijp(masker, straal, groei=False):
     return np.array(b) > 127
 
 
-def zonder_schaduw(masker):
-    """De slagschaduw is een ellips die veel breder is dan het bordje.
+def schaduwmasker(a, bg):
+    """Welke pixels zijn slagschaduw en dus geen product.
 
-    Van boven naar beneden blijft de breedte van het masker vrij constant —
-    dat is het paneel met zijn voetje. Waar de ellips begint schiet die
-    breedte omhoog. Op dat punt knippen we, en de schaduw tekenen we later
-    zelf: een grijze schaduw van een grijze ondergrond klopt niet op oranje.
+    De schaduw is niets anders dan de achtergrond, verdonkerd. Hij houdt
+    daarom de kleurverhouding van die achtergrond: die is blauwig, dus blauw
+    ligt er een paar punten boven rood. Het product niet — het witte en het
+    zwarte bordje zijn neutraal (blauw min rood is nul), het roze bordje zit
+    tientallen punten de andere kant op en het blauwe bordje ver de goede
+    kant op. Een smalle band rond de zweem van de achtergrond pikt er dus
+    precies de schaduw uit, en laat de voet van de standaard staan.
+
+    Knippen op breedte werkte niet: de voet is óók breder dan het paneel, dus
+    dan verlies je juist het onderdeel waaraan je ziet dat het een standaard is.
     """
-    breedtes = masker.sum(axis=1).astype(float)
-    gevuld = np.where(breedtes > 0)[0]
-    boven, onder = gevuld[0], gevuld[-1]
-    hoogte = onder - boven
-
-    # De overgang van voet naar schaduw is de scherpste verbreding in het
-    # onderste deel van de vorm: de voet groeit geleidelijk, de ellips schiet
-    # in een paar rijen naar buiten. Zoek dus de grootste sprong, niet een
-    # vaste verhouding — die knipte of de voet eraf of de schaduw er niet af.
-    start = boven + int(hoogte * 0.55)
-    venster = 6
-    sprongen = breedtes[start:onder + 1] - breedtes[start - venster:onder + 1 - venster]
-    grens = onder + 1 if len(sprongen) == 0 else start + int(np.argmax(sprongen)) - venster + 1
-
-    schoon = masker.copy()
-    schoon[grens:, :] = False
-    return schoon, grens
+    zweem_bg = bg[2] - bg[0]
+    zweem = a[:, :, 2] - a[:, :, 0]
+    helderheid = a.mean(axis=2)
+    # Ondergrens op de helderheid: een schaduw is de achtergrond maal een
+    # factor, dus altijd nog een lichte grijstint. Zonder die grens viel het
+    # zwarte bordje weg — dat is bijna zwart en heeft toevallig ook een paar
+    # punten blauwzweem.
+    return (
+        (zweem >= zweem_bg * 0.35)
+        & (zweem <= zweem_bg * 1.9)
+        & (helderheid < bg.mean() - 1.5)
+        & (helderheid > bg.mean() * 0.62)
+    )
 
 
-def knip(pad, tolerantie=9, erosie=3):
+def knip(pad, tolerantie=9, erosie=2):
     a = np.array(Image.open(pad).convert("RGB")).astype(int)
     bg = achtergrondkleur(a)
     d = np.abs(a - bg).sum(axis=-1)
 
     achtergrond = vlakvulling(d <= tolerantie)
-    voorgrond = ~achtergrond               # bordje + schaduw, gaten al gevuld
-    lichaam, grens = zonder_schaduw(voorgrond)
+    lichaam = ~achtergrond & ~schaduwmasker(a, bg)
+
+    # De kleurregel haalt ook grijstinten binnen het bordje weg: de QR-code,
+    # de tekst, het lichte vlak van de sticker. Die liggen ingesloten door de
+    # rand van het bordje, dus alles wat niet vanaf de buitenrand te bereiken
+    # is hoort er gewoon bij. Terugvullen dus.
+    # Tussen het paneel en de voet valt de eigen schaduw van het paneel. Die
+    # heeft schaduwkleur maar hoort bij het product, en hij is niet ingesloten,
+    # dus terugvullen helpt daar niet. Een sluiting (aangroeien, dan weer
+    # terugslijpen) overbrugt zo'n smalle band zonder de vorm te veranderen.
+    lichaam = slijp(slijp(lichaam, 7, groei=True), 7) & ~achtergrond
+    lichaam = ~vlakvulling(~lichaam)
+
+    # Langs de rand van een wit bordje loopt een paar pixels anti-aliasing die
+    # toevallig aan de schaduwregel voldoet; daar hapt hij stukjes uit. Die
+    # randband weer aangroeien, maar nooit verder dan de vlakvulling toestaat,
+    # zodat er geen schaduw terugkruipt.
+    lichaam = slijp(lichaam, 3, groei=True) & ~achtergrond
 
     # Randje wegslijpen zodat er geen lichte zoom van de oude achtergrond
     # blijft staan, daarna zacht maken.
     # De vlakvulling laat een gerafelde rand achter. Even vervagen en opnieuw
     # afkappen haalt de kartels eruit zonder de vorm te veranderen.
-    glad = Image.fromarray((lichaam * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(1.6))
-    lichaam = np.array(glad) > 140
+    glad = Image.fromarray((lichaam * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(2.4))
+    lichaam = np.array(glad) > 132
     lichaam = slijp(lichaam, erosie)
     alpha = Image.fromarray((lichaam * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(0.9))
 
@@ -116,7 +134,7 @@ if __name__ == "__main__":
     import pathlib
     uit = pathlib.Path("/tmp/claude-0/-home-user-Claude/4ed8d6d3-2641-5570-b485-c23a1aa27fe7/scratchpad/uitknip")
     uit.mkdir(exist_ok=True)
-    for naam in ["tk3-prod-wit", "tk3-prod-zwart", "tk3-prod-insta", "tk3-prod-fb", "tk3-prod-sticker"]:
+    for naam in ["tk3-prod-wit", "tk3-prod-zwart", "tk3-prod-insta", "tk3-prod-fb"]:
         bak, dekking = knip(f"/home/user/Claude/webshop/theme3/assets/{naam}.jpg")
         bak.save(uit / f"{naam}.png")
         print(f"{naam:20} {bak.size[0]:4}x{bak.size[1]:<4}  beslaat {dekking*100:.1f}% van het origineel")

@@ -53,6 +53,40 @@ def verloop(breedte, hoogte, hoek=True):
     return vlak
 
 
+def balie(doek, horizon, diepte=None):
+    """Een balieblad onder de bordjes.
+
+    Dit is wat het verschil maakt tussen 'een kaartje' en 'een standaard':
+    zonder vlak om op te staan blijft elk voorwerp een plaatje. Het blad is
+    een lichte warme baan die naar voren toe iets donkerder wordt, met een
+    scherpe lijn op de horizon als voorkant van de balie.
+    """
+    b, hoogte = doek.size
+    diepte = diepte or hoogte - horizon
+    blad = Image.new("RGBA", (b, diepte), (0, 0, 0, 0))
+    tek = ImageDraw.Draw(blad)
+    for i in range(diepte):
+        f = i / max(1, diepte - 1)
+        # vooraan iets donkerder: het blad vangt minder licht naar de kijker toe
+        dek = round(232 - 96 * f)
+        tek.line([(0, i), (b, i)], fill=(255, 246, 238, dek))
+    doek.paste(blad, (0, horizon), blad)
+
+    rand = Image.new("RGBA", doek.size, (0, 0, 0, 0))
+    ImageDraw.Draw(rand).line([(0, horizon), (b, horizon)], fill=(255, 255, 255, 210), width=3)
+    doek.paste(rand, (0, 0), rand)
+
+
+def contactschaduw(doek, midden_x, voet_y, breedte):
+    """Kort en donker, direct onder de voet — dat 'plakt' het bordje vast."""
+    laag = Image.new("L", doek.size, 0)
+    ImageDraw.Draw(laag).ellipse(
+        [midden_x - breedte / 2, voet_y - breedte * 0.055,
+         midden_x + breedte / 2, voet_y + breedte * 0.055], fill=150)
+    laag = laag.filter(ImageFilter.GaussianBlur(breedte * 0.035))
+    doek.paste(Image.new("RGB", doek.size, (150, 92, 48)), (0, 0), laag)
+
+
 def grondschaduw(doek, midden_x, onder_y, breedte, hoogte=None, sterkte=125):
     """Zachte ovale schaduw zodat een bordje op iets lijkt te staan.
 
@@ -72,7 +106,8 @@ def zet(doek, bordje, midden_x, onder_y, hoogte):
     """Bordje op ware verhouding neerzetten, met schaduw eronder."""
     schaal = hoogte / bordje.height
     b = bordje.resize((max(1, round(bordje.width * schaal)), round(hoogte)), Image.LANCZOS)
-    grondschaduw(doek, midden_x, onder_y + 4, b.width * 1.15)
+    grondschaduw(doek, midden_x, onder_y + 10, b.width * 1.6, sterkte=70)
+    contactschaduw(doek, midden_x, onder_y - 8, b.width * 1.02)
     # eigen slagschaduw van het bordje, iets naar rechtsonder
     eigen = Image.new("L", doek.size, 0)
     eigen.paste(b.getchannel("A"), (round(midden_x - b.width / 2) + 10, round(onder_y - b.height) + 14))
@@ -149,7 +184,8 @@ def hero_een():
     ImageDraw.Draw(doek).text((x + 34, 262), "vanaf € 34,95", font=font(600, 24),
                               fill=(255, 255, 255), anchor="lm")
 
-    zet(doek, bordje("tk3-prod-wit"), 620, 858, 500)
+    balie(doek, 640)
+    zet(doek, bordje("tk3-prod-wit"), 560, 806, 470)
 
     # Wat het oplevert: een melding zoals je die op je telefoon krijgt.
     kaart = [1000, 452, 1460, 706]
@@ -176,6 +212,8 @@ def hero_twee():
     tek.text((B / 2, 166), "Zet hem op de balie. Je klant doet de rest — zonder app, zonder gedoe.",
              font=font(400, 27), fill=(255, 255, 255, 220), anchor="ma")
 
+    balie(doek, 640)
+
     for i, (naam, label) in enumerate([
         ("tk3-prod-wit", "Meer Google-reviews"),
         ("tk3-prod-insta", "Meer Instagram-volgers"),
@@ -186,7 +224,7 @@ def hero_twee():
         breed = tek.textlength(label, font=f) + 46
         paneel(doek, [mx - breed / 2, 288, mx + breed / 2, 288 + 46], 23)
         ImageDraw.Draw(doek).text((mx, 311), label, font=f, fill=INKT, anchor="mm")
-        zet(doek, bordje(naam), mx, 830, 430)
+        zet(doek, bordje(naam), mx, 790, 400)
 
     doek.save(UIT / "hero-2-drieluik.png")
 
@@ -205,10 +243,13 @@ def hero_drie():
              font=font(400, 27), fill=(255, 255, 255, 225), spacing=13)
     knop(doek, tek, marge, 546, "Bekijk de TapKaarten")
 
-    b = zet(doek, bordje("tk3-prod-wit"), 1000, 800, 470)
+    balie(doek, 660)
+    b = zet(doek, bordje("tk3-prod-wit"), 985, 812, 440)
 
     # Telefoon rechts met het scherm waar de klant op uitkomt.
     tel = [1236, 300, 1476, 780]
+    grondschaduw(doek, (tel[0] + tel[2]) / 2, tel[3] + 12, (tel[2] - tel[0]) * 1.5, sterkte=70)
+    contactschaduw(doek, (tel[0] + tel[2]) / 2, tel[3] - 4, (tel[2] - tel[0]) * 1.02)
     paneel(doek, tel, 34, (24, 28, 36), schaduw=52)
     scherm = [tel[0] + 12, tel[1] + 12, tel[2] - 12, tel[3] - 12]
     paneel(doek, scherm, 26, (255, 255, 255), schaduw=0)

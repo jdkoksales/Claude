@@ -13,8 +13,8 @@ function bool(value, fallback) {
 export const config = {
   app: {
     port: Number(process.env.PORT || 3000),
-    // Geheim voor het ondertekenen van sessiecookies. Zonder eigen waarde
-    // wordt er per start een willekeurige gebruikt (= uitgelogd na herstart).
+    // Geheim voor het ondertekenen van sessiecookies. Laat je dit leeg, dan
+    // maakt de app er zelf een aan en bewaart die in de opslag.
     sessionSecret: process.env.SESSION_SECRET || '',
     // Sessieduur in dagen: hoe lang je ingelogd blijft op je telefoon.
     sessionDays: Number(process.env.SESSION_DAYS || 90),
@@ -23,9 +23,13 @@ export const config = {
     timezone: process.env.TIMEZONE || 'Europe/Amsterdam',
   },
   db: {
+    // Staat er een Postgres-verbinding ingesteld, dan gaat alles daarheen;
+    // anders naar een bestand op schijf.
+    url: process.env.DATABASE_URL || process.env.POSTGRES_URL || '',
     file: process.env.DB_FILE || 'data/samen.json',
   },
   push: {
+    // Ook deze sleutels maakt de app zelf aan als ze niet zijn ingevuld.
     publicKey: process.env.VAPID_PUBLIC_KEY || '',
     privateKey: process.env.VAPID_PRIVATE_KEY || '',
     contact: process.env.VAPID_CONTACT || 'mailto:noreply@example.com',
@@ -34,6 +38,3 @@ export const config = {
     enabled: bool(process.env.PUSH_ENABLED, true),
   },
 };
-
-export const pushConfigured = () =>
-  config.push.enabled && Boolean(config.push.publicKey && config.push.privateKey);

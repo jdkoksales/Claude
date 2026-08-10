@@ -1,5 +1,5 @@
 import { config } from './config.js';
-import { db, markSent } from './db.js';
+import { db, markSent, withStore } from './db.js';
 import { addDays, minutesOfDay, nowTime, todayKey, zonedToInstant } from './lib/dates.js';
 import { expandEvents } from './lib/recurrence.js';
 import { BOTH, openToday } from './lib/goals.js';
@@ -25,11 +25,11 @@ let timer = null;
 
 export function startScheduler() {
   if (timer) return;
-  timer = setInterval(() => {
-    tick().catch((err) => console.error('[herinneringen] fout:', err.message));
-  }, TICK_MS);
+  const run = () => withStore(true, () => tick())
+    .catch((err) => console.error('[herinneringen] fout:', err.message));
+  timer = setInterval(run, TICK_MS);
   timer.unref?.();
-  tick().catch(() => {});
+  run();
 }
 
 export function stopScheduler() {

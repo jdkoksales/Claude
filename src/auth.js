@@ -1,8 +1,6 @@
-import {
-  createHmac, randomBytes, scryptSync, timingSafeEqual,
-} from 'node:crypto';
+import { createHmac, randomBytes, scryptSync, timingSafeEqual } from 'node:crypto';
 import { config } from './config.js';
-import { db, saveSoon } from './db.js';
+import { db, touch } from './db.js';
 
 /**
  * Inloggen met een eigen pincode per persoon.
@@ -19,12 +17,13 @@ const COOKIE = 'samen_session';
 const MAX_ATTEMPTS = 5;
 const LOCK_MS = 15 * 60 * 1000;
 
-const secret = config.app.sessionSecret || randomBytes(32).toString('hex');
-if (!config.app.sessionSecret) {
-  console.warn(
-    '[auth] Geen SESSION_SECRET ingesteld — er is een tijdelijke gemaakt. ' +
-      'Bij een herstart van de server moeten jullie opnieuw inloggen.',
-  );
+/**
+ * Het geheim komt uit de opslag, niet uit het geheugen van dit proces: bij een
+ * hostingdienst draaien er meerdere exemplaren naast elkaar, en die moeten
+ * elkaars cookies kunnen lezen. Een waarde in de omgeving heeft voorrang.
+ */
+function secret() {
+  return config.app.sessionSecret || db().settings?.sessionSecret || '';
 }
 
 const attempts = new Map(); // sleutel -> { count, until }
@@ -49,14 +48,14 @@ export function isValidPinFormat(pin) {
 
 function sign(payload) {
   const body = Buffer.from(JSON.stringify(payload)).toString('base64url');
-  const mac = createHmac('sha256', secret).update(body).digest('base64url');
+  const mac = createHmac('sha256', secret()).update(body).digest('base64url');
   return `${body}.${mac}`;
 }
 
 function unsign(token) {
   if (typeof token !== 'string' || !token.includes('.')) return null;
   const [body, mac] = token.split('.');
-  const expected = createHmac('sha256', secret).update(body).digest('base64url');
+  const expected = createHmac('sha256', secret()).update(body).digest('base64url');
   const a = Buffer.from(mac || '');
   const b = Buffer.from(expected);
   if (a.length !== b.length || !timingSafeEqual(a, b)) return null;
@@ -138,7 +137,7 @@ export function login(req, res, userId, pin) {
   const exp = Date.now() + days * 86400000;
   setCookie(res, sign({ uid: user.id, exp }), days * 86400);
   user.lastLoginAt = new Date().toISOString();
-  saveSoon();
+  touch();
   return user;
 }
 

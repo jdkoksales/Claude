@@ -2,7 +2,9 @@ import express from 'express';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { config } from './config.js';
-import { db, find, newId, remove, replaceStore, save, saveSoon } from './db.js';
+import {
+  db, find, newId, remove, replaceStore, storeKind, touch, withStore,
+} from './db.js';
 import {
   currentUser, hashPin, isValidPinFormat, login, logout, requireAuth, verifyPin,
 } from './auth.js';
@@ -13,14 +15,53 @@ import {
   InputError, REMINDER_CHOICES, entryInput, eventInput, goalInput, taskInput,
 } from './lib/validate.js';
 import {
-  addSubscription, initPush, notify, publicKey, pushReady, removeSubscription,
+  addSubscription, notify, publicKey, pushReady, removeSubscription,
 } from './push.js';
-import { startScheduler } from './scheduler.js';
+import { startScheduler, tick } from './scheduler.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const app = express();
 app.set('trust proxy', 1);
 app.use(express.json({ limit: '5mb' }));
+
+/**
+ * Elk API-verzoek draait binnen een geladen opslag. Het antwoord gaat pas de
+ * deur uit als de wijziging is weggeschreven — bij een hostingdienst kan het
+ * proces vlak na het antwoord bevriezen, en dan zou het opslaan halverwege
+ * blijven steken.
+ */
+app.use('/api', (req, res, next) => {
+  const mutating = !['GET', 'HEAD', 'OPTIONS'].includes(req.method);
+  const realEnd = res.end.bind(res);
+  let endArgs = null;
+  let settle;
+  const responded = new Promise((resolve) => { settle = resolve; });
+
+  res.end = (...args) => {
+    if (endArgs === null) {
+      endArgs = args;
+      settle();
+      return res;
+    }
+    return realEnd(...args);
+  };
+
+  withStore(mutating, async () => {
+    next();
+    await responded;
+  }).then(
+    () => realEnd(...(endArgs || [])),
+    (err) => {
+      console.error('[opslag]', err);
+      if (res.headersSent) return realEnd(...(endArgs || []));
+      res.statusCode = 503;
+      res.setHeader('Content-Type', 'application/json; charset=utf-8');
+      return realEnd(JSON.stringify({
+        error: 'De opslag is even niet bereikbaar. Probeer het zo opnieuw.',
+      }));
+    },
+  );
+});
 
 // Bewust ver uit elkaar liggende kleuren: in de weekagenda moet je in één
 // oogopslag zien van wie een afspraak is.
@@ -82,7 +123,7 @@ app.post('/api/setup', (req, res, next) => {
         createdAt: new Date().toISOString(),
       };
     });
-    save();
+    touch();
     res.json({ ok: true, users: store.users.map(publicUser) });
   } catch (err) {
     next(err);
@@ -120,7 +161,7 @@ api.patch('/me', (req, res, next) => {
       req.user.name = name;
     }
     if (req.body?.color && PALETTE.includes(req.body.color)) req.user.color = req.body.color;
-    saveSoon();
+    touch();
     res.json({ user: publicUser(req.user) });
   } catch (err) {
     next(err);
@@ -138,7 +179,7 @@ api.patch('/me/pin', (req, res, next) => {
     const { salt, hash } = hashPin(req.body.next);
     req.user.pinSalt = salt;
     req.user.pinHash = hash;
-    save();
+    touch();
     res.json({ ok: true });
   } catch (err) {
     next(err);
@@ -197,7 +238,7 @@ api.post('/events', (req, res, next) => {
       updatedAt: new Date().toISOString(),
     };
     db().events.push(event);
-    saveSoon();
+    touch();
     res.status(201).json({ event });
   } catch (err) {
     next(err);
@@ -210,7 +251,7 @@ api.patch('/events/:id', (req, res, next) => {
     if (!event) return res.status(404).json({ error: 'Afspraak niet gevonden.' });
     const data = eventInput({ ...event, ...req.body }, userIds());
     Object.assign(event, data, { updatedAt: new Date().toISOString() });
-    saveSoon();
+    touch();
     return res.json({ event });
   } catch (err) {
     return next(err);
@@ -239,7 +280,7 @@ api.post('/goals', (req, res, next) => {
     };
     if (goal.kind === 'project' && !goal.startDate) goal.startDate = goal.createdDate;
     db().goals.push(goal);
-    saveSoon();
+    touch();
     res.status(201).json({ goal: { ...goal, stats: goalStats(goal, today()) } });
   } catch (err) {
     next(err);
@@ -254,7 +295,7 @@ api.patch('/goals/:id', (req, res, next) => {
     // opgebouwde geschiedenis betekenisloos maken.
     const data = goalInput({ ...goal, ...req.body, kind: goal.kind }, userIds());
     Object.assign(goal, data, { updatedAt: new Date().toISOString() });
-    saveSoon();
+    touch();
     return res.json({ goal: { ...goal, stats: goalStats(goal, today()) } });
   } catch (err) {
     return next(err);
@@ -284,7 +325,7 @@ api.post('/goals/:id/checkin', (req, res, next) => {
     if (list.size) goal.checkins[date] = [...list];
     else delete goal.checkins[date];
     goal.updatedAt = new Date().toISOString();
-    saveSoon();
+    touch();
     return res.json({ goal: { ...goal, stats: goalStats(goal, today()) } });
   } catch (err) {
     return next(err);
@@ -309,7 +350,7 @@ api.post('/goals/:id/entries', (req, res, next) => {
     });
     goal.entries.sort((a, b) => (a.date < b.date ? -1 : 1));
     goal.updatedAt = new Date().toISOString();
-    saveSoon();
+    touch();
     return res.status(201).json({ goal: { ...goal, stats: goalStats(goal, today()) } });
   } catch (err) {
     return next(err);
@@ -323,7 +364,7 @@ api.delete('/goals/:id/entries/:entryId', (req, res) => {
   goal.entries = (goal.entries || []).filter((e) => e.id !== req.params.entryId);
   if (goal.entries.length === before) return res.status(404).json({ error: 'Bijdrage niet gevonden.' });
   goal.updatedAt = new Date().toISOString();
-  saveSoon();
+  touch();
   return res.json({ goal: { ...goal, stats: goalStats(goal, today()) } });
 });
 
@@ -342,7 +383,7 @@ api.post('/tasks', (req, res, next) => {
       createdAt: new Date().toISOString(),
     };
     db().tasks.push(task);
-    saveSoon();
+    touch();
     res.status(201).json({ task });
   } catch (err) {
     next(err);
@@ -361,7 +402,7 @@ api.patch('/tasks/:id', (req, res, next) => {
     if (req.body?.title != null || req.body?.assigneeId !== undefined || req.body?.dueDate !== undefined) {
       Object.assign(task, taskInput({ ...task, ...req.body }, userIds()));
     }
-    saveSoon();
+    touch();
     return res.json({ task });
   } catch (err) {
     return next(err);
@@ -378,7 +419,7 @@ api.post('/tasks/clear-done', (req, res) => {
   const store = db();
   const before = store.tasks.length;
   store.tasks = store.tasks.filter((t) => !t.done);
-  saveSoon();
+  touch();
   res.json({ removed: before - store.tasks.length });
 });
 
@@ -444,6 +485,24 @@ api.post('/import', (req, res, next) => {
   }
 });
 
+// ── Klopje van buiten ──────────────────────────────────────────────────────
+
+/**
+ * Op een hostingdienst zonder doorlopend proces (Vercel) is er niets dat elke
+ * minuut kan kijken of er een herinnering klaarstaat. Daarom kan iets van
+ * buitenaf — in ons geval een taak in de database zelf — dit adres aanroepen.
+ * Het geheim staat in de opslag en wordt bij de eerste start aangemaakt.
+ */
+app.post('/api/cron/tick', async (req, res) => {
+  const expected = db().settings?.cronSecret;
+  const given = req.get('x-samen-cron') || req.query.key;
+  if (!expected || given !== expected) {
+    return res.status(401).json({ error: 'Onbekende sleutel.' });
+  }
+  const result = await tick();
+  return res.json({ ok: true, ...result });
+});
+
 // ── Statische bestanden en foutafhandeling ─────────────────────────────────
 
 app.use(express.static(join(here, '..', 'public'), { maxAge: '1h', index: 'index.html' }));
@@ -462,11 +521,11 @@ app.use((err, req, res, _next) => {
 
 const isMain = process.argv[1] && import.meta.url.endsWith(process.argv[1].split('/').pop());
 if (isMain) {
-  initPush();
+  // Alleen zinvol bij een proces dat blijft draaien; op Vercel doet de
+  // database dit klopje (zie /api/cron/tick).
   startScheduler();
   app.listen(config.app.port, () => {
-    console.log(`Samen draait op http://localhost:${config.app.port}`);
-    if (db().users.length === 0) console.log('Open de app om hem in te richten.');
+    console.log(`Samen draait op http://localhost:${config.app.port} (opslag: ${storeKind()})`);
   });
 }
 

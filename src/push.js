@@ -1,29 +1,47 @@
 import webpush from 'web-push';
-import { config, pushConfigured } from './config.js';
-import { db, saveSoon } from './db.js';
+import { config } from './config.js';
+import { db, touch } from './db.js';
 
 /**
  * Push-meldingen via de Web Push-standaard. Werkt zonder app-store: je zet de
- * app op je beginscherm en geeft één keer toestemming. Zonder VAPID-sleutels
- * in .env doet dit onderdeel simpelweg niets.
+ * app op je beginscherm en geeft één keer toestemming.
+ *
+ * De VAPID-sleutels hoeven niet met de hand ingesteld te worden. Staan ze niet
+ * in de omgeving, dan maakt de app ze bij het eerste gebruik zelf aan en
+ * bewaart ze bij de rest van de gegevens. Zo is er bij het uitrollen maar één
+ * ding echt nodig: waar de gegevens heen moeten.
  */
 
-let ready = false;
+let configuredFor = null;
 
-export function initPush() {
-  if (!pushConfigured()) {
-    console.log('[push] Geen VAPID-sleutels gevonden — herinneringen staan uit.');
-    return false;
+/** Zorgt dat er sleutels zijn en dat web-push ermee is ingesteld. */
+export function ensurePush() {
+  if (!config.push.enabled) return null;
+
+  const store = db();
+  const settings = store.settings ||= {};
+
+  if (config.push.publicKey && config.push.privateKey) {
+    settings.vapid = { publicKey: config.push.publicKey, privateKey: config.push.privateKey };
+  } else if (!settings.vapid?.publicKey || !settings.vapid?.privateKey) {
+    settings.vapid = webpush.generateVAPIDKeys();
+    touch();
   }
-  webpush.setVapidDetails(config.push.contact, config.push.publicKey, config.push.privateKey);
-  ready = true;
-  return true;
+
+  const { publicKey, privateKey } = settings.vapid;
+  if (configuredFor !== publicKey) {
+    webpush.setVapidDetails(config.push.contact, publicKey, privateKey);
+    configuredFor = publicKey;
+  }
+  return settings.vapid;
 }
 
-export const pushReady = () => ready;
+export function pushReady() {
+  return Boolean(ensurePush());
+}
 
 export function publicKey() {
-  return pushConfigured() ? config.push.publicKey : null;
+  return ensurePush()?.publicKey || null;
 }
 
 export function addSubscription(userId, subscription) {
@@ -33,7 +51,7 @@ export function addSubscription(userId, subscription) {
   );
   if (existing) {
     existing.keys = subscription.keys;
-    saveSoon();
+    touch();
     return existing;
   }
   const row = {
@@ -44,7 +62,7 @@ export function addSubscription(userId, subscription) {
     createdAt: new Date().toISOString(),
   };
   store.pushSubs.push(row);
-  saveSoon();
+  touch();
   return row;
 }
 
@@ -52,7 +70,7 @@ export function removeSubscription(endpoint) {
   const store = db();
   const before = store.pushSubs.length;
   store.pushSubs = store.pushSubs.filter((s) => s.endpoint !== endpoint);
-  if (store.pushSubs.length !== before) saveSoon();
+  if (store.pushSubs.length !== before) touch();
 }
 
 /**
@@ -60,9 +78,8 @@ export function removeSubscription(endpoint) {
  * browser afwijst (uitgelogd, app verwijderd) worden meteen opgeruimd.
  */
 export async function notify(userId, payload) {
-  if (!ready) return 0;
-  const store = db();
-  const subs = store.pushSubs.filter((s) => s.userId === userId);
+  if (!ensurePush()) return 0;
+  const subs = db().pushSubs.filter((s) => s.userId === userId);
   let sent = 0;
   for (const sub of subs) {
     try {
@@ -79,11 +96,5 @@ export async function notify(userId, payload) {
       }
     }
   }
-  return sent;
-}
-
-export async function notifyAll(userIds, payload) {
-  let sent = 0;
-  for (const id of userIds) sent += await notify(id, payload);
   return sent;
 }

@@ -3,94 +3,61 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Mijn Coach</title>
-  <meta name="theme-color" content="#eb6834" />
+  <meta name="theme-color" content="#1d2430" />
+  <title>Samen</title>
   <link rel="manifest" href="/manifest.webmanifest" />
   <link rel="icon" href="/icon.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" href="/icon.svg" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Samen" />
   <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
-
-  <!-- ── Login ── -->
-  <div id="login" class="hidden">
-    <div class="login-card">
-      <div class="login-emoji">🧡</div>
-      <h1>Hoi!</h1>
-      <p>Voer je pincode in om verder te gaan.</p>
-      <div class="pin-dots" id="pinDots"></div>
-      <p class="pin-error" id="pinError"></p>
-      <div class="keypad" id="keypad">
-        <button data-k="1">1</button><button data-k="2">2</button><button data-k="3">3</button>
-        <button data-k="4">4</button><button data-k="5">5</button><button data-k="6">6</button>
-        <button data-k="7">7</button><button data-k="8">8</button><button data-k="9">9</button>
-        <button data-k="back">⌫</button><button data-k="0">0</button>
-        <button data-k="ok" class="key-ok" id="keyOk" disabled>→</button>
+  <div id="app" class="app" hidden>
+    <header class="topbar">
+      <div class="topbar-title">
+        <h1 id="view-title">Vandaag</h1>
+        <p id="view-sub" class="muted"></p>
       </div>
+      <button id="add-btn" class="icon-btn primary" type="button" aria-label="Nieuw item toevoegen">+</button>
+    </header>
+
+    <main id="views">
+      <section class="view" data-view="vandaag"></section>
+      <section class="view" data-view="week" hidden></section>
+      <section class="view" data-view="doelen" hidden></section>
+      <section class="view" data-view="taken" hidden></section>
+      <section class="view" data-view="meer" hidden></section>
+    </main>
+
+    <nav class="tabbar" role="tablist">
+      <button class="tab is-active" data-tab="vandaag" role="tab"><span class="tab-ico">☀</span>Vandaag</button>
+      <button class="tab" data-tab="week" role="tab"><span class="tab-ico">▤</span>Week</button>
+      <button class="tab" data-tab="doelen" role="tab"><span class="tab-ico">◎</span>Doelen</button>
+      <button class="tab" data-tab="taken" role="tab"><span class="tab-ico">✓</span>Taken</button>
+      <button class="tab" data-tab="meer" role="tab"><span class="tab-ico">⋯</span>Meer</button>
+    </nav>
+  </div>
+
+  <div id="gate" class="gate">
+    <div class="gate-card" id="gate-card">
+      <div class="spinner" aria-label="Bezig met laden"></div>
     </div>
   </div>
 
-  <!-- ── App: opent op VANDAAG ── -->
-  <div id="app" class="hidden">
-    <header class="app-header">
-      <div>
-        <h1 id="greeting">Hoi!</h1>
-        <span class="date" id="todayLabel"></span>
+  <div id="sheet" class="sheet" hidden>
+    <div class="sheet-backdrop" data-close="1"></div>
+    <div class="sheet-panel" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
+      <div class="sheet-head">
+        <h2 id="sheet-title">Nieuw</h2>
+        <button class="icon-btn ghost" type="button" data-close="1" aria-label="Sluiten">✕</button>
       </div>
-      <span class="spacer"></span>
-      <span class="overall" id="overallStats"></span>
-    </header>
-
-    <div id="coachCard" class="hidden"></div>
-    <div id="reviewCard" class="hidden"></div>
-
-    <section class="card" id="todayCard">
-      <h2>Vandaag</h2>
-      <div id="todayGoals"></div>
-      <button class="btn-ghost" id="yesterdayToggle" type="button"></button>
-      <div id="yesterdayGoals" class="hidden"></div>
-    </section>
-
-    <section class="card" id="goalsCard">
-      <h2>🎯 Doelen <span class="count" id="goalCount"></span></h2>
-      <div id="goalDetails"></div>
-      <div id="pausedList"></div>
-      <div id="newGoalWrap"></div>
-    </section>
-
-    <section class="card">
-      <h2>✅ Taken <span class="count" id="taskCount"></span></h2>
-      <form class="task-add" id="taskForm">
-        <input id="taskInput" type="text" placeholder="Nieuwe taak… (Enter om toe te voegen)" autocomplete="off" maxlength="200" />
-        <button type="submit" aria-label="Taak toevoegen">＋</button>
-      </form>
-      <ul class="tasks" id="taskList"></ul>
-      <details class="done-today hidden" id="doneWrap">
-        <summary id="doneSummary"></summary>
-        <ul class="tasks" id="doneList"></ul>
-      </details>
-    </section>
-
-    <section class="card" id="backupCard">
-      <h2>💾 Backup &amp; instellingen</h2>
-      <div class="backup-row">
-        <button class="btn-soft" id="exportBtn" type="button">⬇ Exporteer alles (JSON)</button>
-        <label class="btn-soft" for="importFile">⬆ Importeer backup</label>
-        <input type="file" id="importFile" accept="application/json,.json" class="hidden" />
-      </div>
-      <div class="settings-row">
-        <label for="reviewDay">Weekreview op:</label>
-        <select id="reviewDay">
-          <option value="1">maandag</option><option value="2">dinsdag</option>
-          <option value="3">woensdag</option><option value="4">donderdag</option>
-          <option value="5">vrijdag</option><option value="6">zaterdag</option>
-          <option value="0">zondag</option>
-        </select>
-      </div>
-      <p class="hint" id="backupHint">Je data staat lokaal op deze computer. Maak af en toe een export.</p>
-    </section>
+      <div id="sheet-body"></div>
+    </div>
   </div>
 
-  <script src="/app.js"></script>
+  <div id="toast" class="toast" hidden></div>
+
+  <script src="/app.js" type="module"></script>
 </body>
 </html>

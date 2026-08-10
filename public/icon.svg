@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="112" fill="#eb6834"/>
-  <path d="M256 416s-124-77-124-168c0-46 36-80 80-80 26 0 44 16 44 16s18-16 44-16c44 0 80 34 80 80 0 91-124 168-124 168z" fill="#fff"/>
-  <circle cx="256" cy="248" r="26" fill="#eb6834"/>
-  <path d="M256 274v56" stroke="#eb6834" stroke-width="20" stroke-linecap="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Samen">
+  <rect width="512" height="512" rx="112" fill="#1d2430"/>
+  <circle cx="205" cy="256" r="104" fill="none" stroke="#6fd3b4" stroke-width="26"/>
+  <circle cx="307" cy="256" r="104" fill="none" stroke="#e26d5c" stroke-width="26"/>
+  <path d="M226 258l24 26 46-52" fill="none" stroke="#f4f2ee" stroke-width="26" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>

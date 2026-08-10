@@ -1,64 +1,71 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  dayKey, todayKey, yesterdayKey, canLogDay, addDays, diffDays,
-  isoWeek, monthGrid, weekdayOf,
+  addDays, daysBetween, eachDay, isDateKey, isoWeekKey, minutesOfDay,
+  nowTime, todayKey, weekStart, weekday, zonedToInstant,
 } from '../src/lib/dates.js';
 
-test('03:00-grens: 02:59 hoort bij de vorige dag', () => {
-  assert.equal(dayKey(new Date(2026, 6, 15, 2, 59)), '2026-07-14');
+const AMS = 'Europe/Amsterdam';
+
+test('vandaag wordt in de Nederlandse tijdzone bepaald, niet in UTC', () => {
+  // 22:30 UTC op 3 juni is in Amsterdam al 4 juni (zomertijd, UTC+2).
+  const at = new Date('2026-06-03T22:30:00Z');
+  assert.equal(todayKey(AMS, at), '2026-06-04');
+  assert.equal(todayKey('UTC', at), '2026-06-03');
 });
 
-test('03:00-grens: 03:00 hoort bij de nieuwe dag', () => {
-  assert.equal(dayKey(new Date(2026, 6, 15, 3, 0)), '2026-07-15');
+test('de klok leest goed rond middernacht', () => {
+  assert.equal(nowTime(AMS, new Date('2026-06-03T22:00:00Z')), '00:00');
+  assert.equal(nowTime(AMS, new Date('2026-01-03T22:00:00Z')), '23:00');
 });
 
-test('03:00-grens: middag is gewoon dezelfde dag', () => {
-  assert.equal(dayKey(new Date(2026, 6, 15, 14, 0)), '2026-07-15');
+test('een lokale tijd wordt het juiste moment, ook in de winter', () => {
+  // Zomertijd: 09:00 in Amsterdam is 07:00 UTC.
+  assert.equal(zonedToInstant('2026-06-04', '09:00', AMS).toISOString(), '2026-06-04T07:00:00.000Z');
+  // Wintertijd: 09:00 is 08:00 UTC.
+  assert.equal(zonedToInstant('2026-01-04', '09:00', AMS).toISOString(), '2026-01-04T08:00:00.000Z');
 });
 
-test('03:00-grens over maand- en jaargrens heen', () => {
-  assert.equal(dayKey(new Date(2026, 0, 1, 1, 30)), '2025-12-31');
+test('dagen optellen springt correct over maand- en jaargrenzen', () => {
+  assert.equal(addDays('2026-02-28', 1), '2026-03-01');
+  assert.equal(addDays('2024-02-28', 1), '2024-02-29');
+  assert.equal(addDays('2026-01-01', -1), '2025-12-31');
+  assert.equal(daysBetween('2026-03-28', '2026-03-30'), 2);
 });
 
-test('vandaag/gisteren loggen mag, eergisteren niet', () => {
-  const now = new Date(2026, 6, 15, 12, 0);
-  assert.equal(todayKey(now), '2026-07-15');
-  assert.equal(yesterdayKey(now), '2026-07-14');
-  assert.ok(canLogDay('2026-07-15', now));
-  assert.ok(canLogDay('2026-07-14', now));
-  assert.ok(!canLogDay('2026-07-13', now));
-  assert.ok(!canLogDay('2026-07-16', now));
+test('de dag waarop de zomertijd ingaat telt gewoon als één dag', () => {
+  // In 2026 gaat de zomertijd in op 29 maart; die dag heeft 23 uur.
+  assert.equal(addDays('2026-03-29', 1), '2026-03-30');
+  assert.equal(daysBetween('2026-03-28', '2026-03-30'), 2);
 });
 
-test('om 01:00 is "vandaag" nog de dag ervoor, en "gisteren" die daarvoor', () => {
-  const night = new Date(2026, 6, 15, 1, 0);
-  assert.equal(todayKey(night), '2026-07-14');
-  assert.ok(canLogDay('2026-07-13', night)); // gisteren vanuit 03:00-perspectief
-  assert.ok(!canLogDay('2026-07-15', night)); // kalender-vandaag is nog niet begonnen
+test('weken beginnen op maandag', () => {
+  assert.equal(weekday('2026-08-10'), 1);
+  assert.equal(weekday('2026-08-16'), 7);
+  assert.equal(weekStart('2026-08-16'), '2026-08-10');
+  assert.equal(weekStart('2026-08-10'), '2026-08-10');
 });
 
-test('addDays en diffDays', () => {
-  assert.equal(addDays('2026-07-15', -1), '2026-07-14');
-  assert.equal(addDays('2026-07-31', 1), '2026-08-01');
-  assert.equal(diffDays('2026-07-10', '2026-07-15'), 5);
+test('isoWeekKey groepeert dezelfde week onder dezelfde sleutel', () => {
+  assert.equal(isoWeekKey('2026-08-10'), isoWeekKey('2026-08-16'));
+  assert.notEqual(isoWeekKey('2026-08-16'), isoWeekKey('2026-08-17'));
 });
 
-test('isoWeek is stabiel', () => {
-  assert.equal(isoWeek('2026-01-01'), isoWeek('2026-01-01'));
-  assert.match(isoWeek('2026-07-15'), /^2026-W\d{2}$/);
-  assert.notEqual(isoWeek('2026-07-15'), isoWeek('2026-07-22'));
+test('eachDay levert een aaneengesloten reeks inclusief begin en eind', () => {
+  const days = eachDay('2026-08-10', '2026-08-16');
+  assert.equal(days.length, 7);
+  assert.equal(days[0], '2026-08-10');
+  assert.equal(days.at(-1), '2026-08-16');
 });
 
-test('monthGrid geeft juiste maandstructuur (juli 2026)', () => {
-  const g = monthGrid('2026-07-15');
-  assert.equal(g.daysInMonth, 31);
-  assert.equal(g.keys[0], '2026-07-01');
-  assert.equal(g.keys.at(-1), '2026-07-31');
-  // 1 juli 2026 is een woensdag → index 2 (ma=0)
-  assert.equal(g.firstWeekday, 2);
+test('onmogelijke datums worden afgewezen', () => {
+  assert.ok(isDateKey('2024-02-29'));
+  assert.ok(!isDateKey('2026-02-30'));
+  assert.ok(!isDateKey('10-08-2026'));
+  assert.ok(!isDateKey(''));
 });
 
-test('weekdayOf: 2026-07-15 is een woensdag (3)', () => {
-  assert.equal(weekdayOf('2026-07-15'), 3);
+test('minutesOfDay maakt tijden vergelijkbaar', () => {
+  assert.equal(minutesOfDay('00:00'), 0);
+  assert.ok(minutesOfDay('09:30') < minutesOfDay('10:00'));
 });

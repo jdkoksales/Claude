@@ -1,85 +1,131 @@
 /**
- * Datumlogica. Een "dag" loopt tot 03:00 lokale tijd: wie om 01:30 nog logt,
- * logt voor de avond ervoor. Alle functies zijn puur en unit-getest.
+ * Datumhulp. De server draait vaak in UTC terwijl wij in Nederland leven, dus
+ * "vandaag" wordt altijd in een expliciete tijdzone bepaald. Datums zijn
+ * overal strings in de vorm YYYY-MM-DD en tijden HH:MM — nooit Date-objecten
+ * in de opslag, dat voorkomt zomertijd-verrassingen.
  */
 
-export const DAY_BOUNDARY_HOUR = 3;
 const DAY_MS = 86400000;
 
-/** Kalenderdag (YYYY-MM-DD, lokale tijd) waar dit tijdstip bij hoort. */
-export function dayKey(date = new Date()) {
-  const shifted = new Date(date.getTime() - DAY_BOUNDARY_HOUR * 3600000);
-  const off = shifted.getTimezoneOffset() * 60000;
-  return new Date(shifted.getTime() - off).toISOString().slice(0, 10);
-}
+export const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+export const TIME_RE = /^([01]\d|2[0-3]):[0-5]\d$/;
 
-export function todayKey(now = new Date()) {
-  return dayKey(now);
-}
-
-export function yesterdayKey(now = new Date()) {
-  return dayKey(new Date(now.getTime() - DAY_MS));
-}
-
-/** Alleen vandaag en gisteren mogen gelogd worden. */
-export function canLogDay(key, now = new Date()) {
-  return key === todayKey(now) || key === yesterdayKey(now);
-}
-
-/** YYYY-MM-DD → Date op 12:00 lokale tijd (DST-veilig rekenanker). */
-export function keyToDate(key) {
-  const [y, m, d] = key.split('-').map(Number);
-  return new Date(y, m - 1, d, 12, 0, 0);
-}
-
-export function addDays(key, n) {
-  const noon = new Date(keyToDate(key).getTime() + n * DAY_MS);
-  const off = noon.getTimezoneOffset() * 60000;
-  return new Date(noon.getTime() - off).toISOString().slice(0, 10);
-}
-
-/** Hele dagen tussen twee keys (b − a). */
-export function diffDays(a, b) {
-  return Math.round((keyToDate(b) - keyToDate(a)) / DAY_MS);
-}
-
-/** "maandag 6 juli" voor in de UI. */
-export function labelFor(key, opts = {}) {
-  return keyToDate(key).toLocaleDateString('nl-NL', {
-    weekday: 'long',
-    day: 'numeric',
-    month: 'long',
-    ...opts,
+/** Onderdelen van een moment in een bepaalde tijdzone. */
+export function zonedParts(date, timeZone) {
+  const fmt = new Intl.DateTimeFormat('en-CA', {
+    timeZone,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
   });
+  const out = {};
+  for (const { type, value } of fmt.formatToParts(date)) out[type] = value;
+  // 'en-CA' geeft 24 uur, maar middernacht kan als '24' terugkomen.
+  const hour = out.hour === '24' ? '00' : out.hour;
+  return {
+    date: `${out.year}-${out.month}-${out.day}`,
+    time: `${hour}:${out.minute}`,
+  };
 }
 
-/** 0=zondag … 6=zaterdag van een dag-key. */
-export function weekdayOf(key) {
-  return keyToDate(key).getDay();
+/** De datum van vandaag (YYYY-MM-DD) in de gegeven tijdzone. */
+export function todayKey(timeZone, now = new Date()) {
+  return zonedParts(now, timeZone).date;
 }
 
-/** ISO-weeknummer als "2026-W27" (voor weekreviews). */
-export function isoWeek(key) {
-  const d = keyToDate(key);
-  const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
-  const dayNum = t.getUTCDay() || 7;
-  t.setUTCDate(t.getUTCDate() + 4 - dayNum);
-  const yearStart = new Date(Date.UTC(t.getUTCFullYear(), 0, 1));
-  const week = Math.ceil(((t - yearStart) / DAY_MS + 1) / 7);
-  return `${t.getUTCFullYear()}-W${String(week).padStart(2, '0')}`;
+/** De klok van dit moment (HH:MM) in de gegeven tijdzone. */
+export function nowTime(timeZone, now = new Date()) {
+  return zonedParts(now, timeZone).time;
 }
 
-/** Raster voor de maand-heatmap van de maand waarin `key` valt. */
-export function monthGrid(key) {
-  const d = keyToDate(key);
-  const year = d.getFullYear();
-  const month = d.getMonth(); // 0-11
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-  // maandag als eerste kolom (0=ma … 6=zo)
-  const firstWeekday = (new Date(year, month, 1).getDay() + 6) % 7;
-  const keys = [];
-  for (let i = 1; i <= daysInMonth; i++) {
-    keys.push(`${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`);
-  }
-  return { year, month, daysInMonth, firstWeekday, keys };
+/** De offset van een tijdzone op een bepaald moment, in minuten t.o.v. UTC. */
+export function offsetMinutes(timeZone, at) {
+  const fmt = new Intl.DateTimeFormat('en-US', {
+    timeZone,
+    timeZoneName: 'longOffset',
+  });
+  const part = fmt.formatToParts(at).find((p) => p.type === 'timeZoneName');
+  const m = /GMT([+-])(\d{2}):(\d{2})/.exec(part?.value || '');
+  if (!m) return 0;
+  const sign = m[1] === '-' ? -1 : 1;
+  return sign * (Number(m[2]) * 60 + Number(m[3]));
+}
+
+/**
+ * Zet een lokale datum+tijd om naar een echt moment (Date). Twee rondes,
+ * omdat de offset zelf van het moment afhangt (zomer-/wintertijd).
+ */
+export function zonedToInstant(dateKey, time, timeZone) {
+  const [y, mo, d] = dateKey.split('-').map(Number);
+  const [h, mi] = (time || '00:00').split(':').map(Number);
+  const naive = Date.UTC(y, mo - 1, d, h, mi);
+  let guess = new Date(naive - offsetMinutes(timeZone, new Date(naive)) * 60000);
+  guess = new Date(naive - offsetMinutes(timeZone, guess) * 60000);
+  return guess;
+}
+
+/** Datumsleutel n dagen verder (n mag negatief zijn). */
+export function addDays(dateKey, n) {
+  const [y, m, d] = dateKey.split('-').map(Number);
+  const t = Date.UTC(y, m - 1, d) + n * DAY_MS;
+  return new Date(t).toISOString().slice(0, 10);
+}
+
+/** Aantal hele dagen tussen twee datumsleutels (b - a). */
+export function daysBetween(a, b) {
+  const [ay, am, ad] = a.split('-').map(Number);
+  const [by, bm, bd] = b.split('-').map(Number);
+  return Math.round((Date.UTC(by, bm - 1, bd) - Date.UTC(ay, am - 1, ad)) / DAY_MS);
+}
+
+/** 1 = maandag … 7 = zondag. */
+export function weekday(dateKey) {
+  const [y, m, d] = dateKey.split('-').map(Number);
+  const dow = new Date(Date.UTC(y, m - 1, d)).getUTCDay();
+  return dow === 0 ? 7 : dow;
+}
+
+/** De maandag van de week waarin deze datum valt. */
+export function weekStart(dateKey) {
+  return addDays(dateKey, -(weekday(dateKey) - 1));
+}
+
+/** ISO-weeksleutel, bijv. "2026-W33". Handig als groepeersleutel. */
+export function isoWeekKey(dateKey) {
+  const thursday = addDays(weekStart(dateKey), 3);
+  const [y] = thursday.split('-').map(Number);
+  const jan4 = `${y}-01-04`;
+  const week = Math.floor(daysBetween(weekStart(jan4), thursday) / 7) + 1;
+  return `${y}-W${String(week).padStart(2, '0')}`;
+}
+
+/** Alle datumsleutels van `from` t/m `to` (inclusief). */
+export function eachDay(from, to) {
+  const out = [];
+  const n = daysBetween(from, to);
+  for (let i = 0; i <= n; i += 1) out.push(addDays(from, i));
+  return out;
+}
+
+/** Geldige datumsleutel? Ook echt bestaande dagen (31 februari valt af). */
+export function isDateKey(value) {
+  if (typeof value !== 'string' || !DATE_RE.test(value)) return false;
+  const [y, m, d] = value.split('-').map(Number);
+  const dt = new Date(Date.UTC(y, m - 1, d));
+  return (
+    dt.getUTCFullYear() === y && dt.getUTCMonth() === m - 1 && dt.getUTCDate() === d
+  );
+}
+
+export function isTime(value) {
+  return typeof value === 'string' && TIME_RE.test(value);
+}
+
+/** Minuten sinds middernacht, voor het sorteren en vergelijken van tijden. */
+export function minutesOfDay(time) {
+  const [h, m] = time.split(':').map(Number);
+  return h * 60 + m;
 }

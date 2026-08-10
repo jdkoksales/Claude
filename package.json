@@ -1,21 +1,21 @@
 {
-  "name": "claude-coach-app",
-  "version": "4.0.0",
-  "description": "Terugval-bestendige doelen-app met een deterministisch getriggerde AI-coach (Anthropic API): minimum/target-niveaus, dagen actief, comebacks, heatmaps, weekreview, export/import.",
+  "name": "samen-app",
+  "version": "1.0.0",
+  "description": "Gedeelde agenda en doelen voor twee personen: eigen agenda's die je van elkaar kunt inzien, gewoontes, projectdoelen, samen-doelen, een gedeelde takenlijst, weekoverzicht en push-herinneringen.",
   "type": "module",
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
     "dev": "node --watch src/server.js",
     "test": "node --test tests/*.test.mjs",
-    "check": "node scripts/check.mjs"
+    "setup": "node scripts/setup.mjs"
   },
   "engines": {
     "node": ">=20"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.69.0",
     "dotenv": "^16.4.7",
-    "express": "^4.21.2"
+    "express": "^4.21.2",
+    "web-push": "^3.6.7"
   }
 }

@@ -1,0 +1,35 @@
+# Alternatief voor Fly.io. Let op: een schijf die herstarts overleeft zit bij
+# Render niet in het gratis pakket — zonder `disk` ben je jullie gegevens bij
+# elke nieuwe versie kwijt.
+services:
+  - type: web
+    name: samen
+    runtime: node
+    plan: starter
+    region: frankfurt
+    buildCommand: npm ci --omit=dev
+    startCommand: node src/server.js
+    healthCheckPath: /api/health
+    disk:
+      name: samen-data
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DB_FILE
+        value: /var/data/samen.json
+      - key: TIMEZONE
+        value: Europe/Amsterdam
+      - key: SECURE_COOKIES
+        value: "true"
+      # Deze drie zelf invullen in het Render-dashboard; `npm run setup`
+      # drukt de waarden voor je af.
+      - key: SESSION_SECRET
+        sync: false
+      - key: VAPID_PUBLIC_KEY
+        sync: false
+      - key: VAPID_PRIVATE_KEY
+        sync: false
+      - key: VAPID_CONTACT
+        sync: false

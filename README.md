@@ -1,113 +1,164 @@
-# Mijn Coach — doelen volhouden zonder alles-of-niets
+# Samen — gedeelde agenda en doelen voor twee
 
-Een lokale app (op je eigen PC) voor wie gemotiveerd start, rond week 2-3
-afhaakt en na één gemiste dag alles laat vallen. Alles in deze app is daarop
-ontworpen:
+Een kleine web-app voor jullie tweeën. Ieder logt in met een eigen pincode en
+ziet daarna alles van de ander: afspraken, doelen en taken. Je zet hem op je
+beginscherm en hij gedraagt zich als een gewone app, inclusief herinneringen.
 
-- 🚫 **Geen streaks.** Missen is verwacht gedrag. De app telt **dagen actief**
-  en **comebacks** (weer beginnen na een gat) — en viert die comebacks.
-- 🪜 **Twee niveaus per doel.** Een **minimum** (max 2 minuten, onmogelijk te
-  falen) en een **target**. Een minimum-dag is een volwaardig succes.
-- ✍️ **Doelen als implementatie-intentie**, afgedwongen format:
-  *"Na [bestaande gewoonte] doe ik [actie] op [plek]"* — max **3 actieve
-  doelen** (en eigenlijk werkt 1 het best).
-- 👆 **Dagflow zonder frictie.** De app opent op VANDAAG; per doel drie
-  knoppen: **[✓ Minimum] [✓✓ Target] [Vandaag niet]** — één tik, geen
-  bevestigingen. Gisteren mag je alsnog loggen; verder terug niet.
-  Een "dag" loopt tot **03:00**.
-- 🗓️ **Maand-heatmap per doel:** licht = minimum, donker = target, leeg = leeg.
-- 🤖 **AI-coach die je met rust laat.** Deterministische code checkt bij het
-  openen de laatste ~14 dagen (drift naar minimums, oplopende "vandaag niet",
-  gaten, comebacks). Alléén dan gaat er een samenvatting naar de Claude-API en
-  verschijnt er één kort kaartje met 1-3 één-tik-acties. Max één interventie
-  per dag, geen chatvenster. Valt de API uit → statisch welkom-terug-kaartje;
-  de app werkt altijd 100% zonder coach.
-- 📋 **Weekreview:** 4 korte vragen op je eigen gekozen dag, overslaanbaar.
-- 💾 **Export/import** van al je data (JSON), prominent in de app.
-- ✅ Plus een simpele takenlijst, pincode-slot, licht/donker, NL, mobiel.
+Er is geen account bij een dienst nodig, er gaat niets naar buiten en alle
+gegevens staan in één bestand dat je met één klik kunt downloaden.
 
-## Draaien
+## Wat erin zit
+
+**Agenda.** Afspraken met begin- en eindtijd, of voor de hele dag. Elke
+afspraak hoort bij jou, bij haar, of bij jullie samen — te zien aan de kleur.
+Herhalingen (dagelijks, wekelijks, maandelijks, jaarlijks, eventueel met een
+einddatum) en een herinnering vooraf. Jullie kunnen ook in elkaars agenda
+zetten; wie het aanmaakte wordt onthouden.
+
+**Doelen.** Twee soorten:
+
+- *Gewoontes* die je afvinkt: elke dag, of een aantal keer per week. Je ziet je
+  reeks, deze week, en een heatmap van de afgelopen dertien weken.
+- *Projecten* die naar een streefgetal toewerken, bijvoorbeeld "€3000 sparen
+  voor Italië" met een streefdatum. Je schrijft bedragen bij en de app zegt of
+  je op schema ligt.
+
+Beide soorten kunnen van jou zijn, van haar, of van jullie samen. Bij een
+samen-doel telt een dag zodra één van jullie afvinkt, en zie je per persoon wie
+wat heeft bijgedragen.
+
+**Taken.** Een gedeeld lijstje. Toewijzen aan jezelf, aan de ander, aan jullie
+samen, of aan "wie het eerst kan". Met een datum erbij verschijnt de taak op
+Vandaag.
+
+**Weekoverzicht.** Eén scherm met de hele week: alle afspraken van jullie
+beiden onder elkaar per dag, en daaronder hoe elk doel er deze week voor staat.
+
+**Herinneringen.** Een melding op je telefoon vóór een afspraak, en één keer
+per dag een overzicht van doelen die nog openstaan.
+
+## Zo zet je hem op
+
+Je hebt Node.js 20 of nieuwer nodig.
 
 ```bash
 npm install
-npm run check    # controleert je .env
-npm start        # of dubbelklik start-coach.bat (Windows)
-```
-
-Open **http://localhost:3000** en voer je pincode in.
-
-### .env instellen (eenmalig)
-
-Maak een bestand `.env` in de projectmap (zie `.env.example`):
-
-```
-ANTHROPIC_API_KEY=sk-ant-jouw-key
-APP_PIN=4821
-```
-
-- **API-sleutel**: https://console.anthropic.com/ → API Keys (zet ook wat
-  tegoed op Billing). De sleutel blijft op de server (je eigen PC) en komt
-  nooit in de browser terecht.
-- **APP_PIN**: zelfgekozen 4-6 cijfers waarmee je de app opent.
-- Optioneel: `USER_NAME=Julian` (begroeting), `PORT`, `CLAUDE_MODEL`.
-
-## Kom je van de vorige versie? (chat/streaks-versie)
-
-```bash
-git pull
-npm install
+npm run setup     # maakt .env met een sessiegeheim en sleutels voor meldingen
 npm start
 ```
 
-Bij de eerste start gebeurt automatisch:
-1. Er wordt een **backup** van je oude data gemaakt
-   (`data/backup-v1-<datum>.json`).
-2. Je data **migreert zonder verlies**: doelen krijgen een gegenereerd
-   minimum (pas het aan met ✎), je voortgangshistorie telt mee als actieve
-   dagen, en je chat/feed-geschiedenis blijft bewaard in het archief
-   (zit in elke export).
-3. Streaks bestaan niet meer; je historie telt voortaan als dagen actief +
-   comebacks.
+Open daarna http://localhost:3000. De eerste keer vraagt de app om jullie twee
+namen en twee pincodes. Daarna log je in met je eigen pincode.
 
-Het chatvenster en de geplande check-ins zijn bewust verdwenen — zie
-`DECISIONS.md` voor alle keuzes en `UPGRADE_PLAN.md` voor het volledige plan.
+Draaien de tests:
 
-## Mobiel gebruiken
+```bash
+npm test
+```
 
-- **Thuis (zelfde WiFi):** open `http://<ip-van-je-pc>:3000` op je telefoon
-  (IP vinden: `ipconfig` → "IPv4-adres").
-- **Onderweg:** installeer [Tailscale](https://tailscale.com) (gratis) op PC
-  én telefoon, log in met hetzelfde account en draai op de PC:
-  `tailscale serve --bg 3000`. Je krijgt een vast https-adres dat overal
-  werkt (zolang je PC aanstaat). Voeg de pagina toe aan je beginscherm voor
-  een app-icoon.
+## Online zetten
 
-## Backuppen
+Lokaal draaien werkt alleen als de computer aanstaat en jullie op hetzelfde
+netwerk zitten. Om er op je telefoon overal bij te kunnen, moet de app ergens
+draaien die altijd aan staat.
 
-Gebruik **⬇ Exporteer alles (JSON)** onderin de app en bewaar het bestand
-ergens veilig. Terugzetten: **⬆ Importeer backup** — accepteert ook backups
-van de oude versie (migreert automatisch) en maakt vóór het overschrijven
-zelf een reservekopie in `data/`.
+Twee dingen zijn daarbij belangrijk:
 
-## Automatisch starten met Windows
+1. **Een schijf die herstarts overleeft.** De gegevens staan in één
+   JSON-bestand. Veel gratis pakketten geven je een tijdelijke schijf die bij
+   elke nieuwe versie wordt gewist — dan ben je alles kwijt. Zorg voor een
+   volume en zet `DB_FILE` daarnaartoe.
+2. **De app moet blijven draaien.** Slaapstand-instellingen die containers bij
+   inactiviteit stoppen, zetten ook de herinneringen stil.
 
-1. Dubbelklik `start-coach.bat` om te testen (opent vanzelf je browser).
-2. **Win + R** → `shell:startup` → Enter.
-3. Sleep een snelkoppeling naar `start-coach.bat` in die map.
+### Fly.io
 
-## Voor ontwikkelaars
+`fly.toml` en `Dockerfile` staan klaar. Verzin een eigen `app`-naam in
+`fly.toml` en dan:
 
-- `npm test` — 35 unit tests (node:test, geen extra dependencies) over de
-  03:00-daggrens, gisteren-loggen, comeback/drift-detectie, migratie v1→v2
-  en de defensieve coach-parser (incl. kapotte antwoorden → fallback).
-- `npm run dev` — start met auto-herstart bij wijzigingen.
-- Geen build-stap; vanilla JS + Express + één JSON-bestand
-  (`data/coach.json`, schema v2 met versieveld).
+```bash
+fly launch --copy-config --no-deploy
+fly volumes create samen_data --size 1 --region ams
+fly secrets set SESSION_SECRET=... VAPID_PUBLIC_KEY=... VAPID_PRIVATE_KEY=... VAPID_CONTACT=mailto:jij@example.com
+fly deploy
+```
 
-## Kosten & privacy
+De waarden voor die drie sleutels drukt `npm run setup` voor je af.
 
-- De coach doet hoogstens één kleine API-call per dag (alleen bij een
-  trigger): centen per maand.
-- Al je data staat lokaal in `data/` op je eigen PC (staat niet in git).
-  Alleen de compacte log-samenvatting gaat naar de Anthropic-API, en alleen
-  wanneer de coach afgaat.
+### Render
+
+`render.yaml` staat klaar. Koppel de repository, vul in het dashboard
+`SESSION_SECRET`, `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY` en `VAPID_CONTACT`
+in. Let op: de schijf in `render.yaml` zit niet in het gratis pakket.
+
+### Iets anders
+
+Elke plek waar Docker draait volstaat, ook een Raspberry Pi of een oude laptop
+bij jullie thuis. Zet dan wel https ervoor (bijvoorbeeld via Caddy of
+Cloudflare Tunnel): zonder https werken meldingen niet en gaat je pincode
+onversleuteld over de lijn.
+
+## Op je beginscherm zetten
+
+- **Android:** open de app in Chrome → menu → *App installeren*.
+- **iPhone:** open de app in Safari → deelknop → *Zet op beginscherm*. Op iOS
+  werken meldingen alléén als je dit doet.
+
+Ga daarna naar **Meer → Herinneringen** en zet meldingen aan. Dat moet op elk
+apparaat apart.
+
+## Instellingen
+
+Alles staat in `.env` (zie `.env.example`):
+
+| Instelling | Waarvoor |
+| --- | --- |
+| `SESSION_SECRET` | Ondertekent het sessiecookie. Zonder deze waarde moeten jullie na elke herstart opnieuw inloggen. |
+| `VAPID_PUBLIC_KEY` / `VAPID_PRIVATE_KEY` | Nodig voor push-meldingen. Laat `npm run setup` ze maken. |
+| `VAPID_CONTACT` | Een e-mailadres, verplicht onderdeel van de push-standaard. |
+| `DAILY_DIGEST_AT` | Tijd van het dagelijkse overzicht van openstaande doelen. Standaard 20:00. |
+| `TIMEZONE` | Waarin "vandaag" wordt bepaald. Standaard Europe/Amsterdam. |
+| `DB_FILE` | Waar de gegevens staan. Standaard `data/samen.json`. |
+| `SESSION_DAYS` | Hoe lang je ingelogd blijft. Standaard 90 dagen. |
+| `SECURE_COOKIES` | Aan zetten zodra de app achter https draait. |
+| `PORT` | Standaard 3000. |
+
+## Back-up
+
+**Meer → Back-up → Gegevens downloaden** geeft je één JSON-bestand met alles
+erin (zonder pincodes). Terugzetten vervangt agenda, doelen en taken; jullie
+inloggegevens blijven staan. Doe dit af en toe — het is één klik en het scheelt
+verdriet.
+
+## Over privacy en beveiliging
+
+Jullie zien elkaar volledig: er is bewust geen manier om iets voor de ander te
+verbergen. Dat was de opzet.
+
+De pincodes staan alleen versleuteld opgeslagen (scrypt met een eigen salt per
+persoon) en komen nooit mee in een export. Na vijf misgokken gaat het inloggen
+vijftien minuten op slot, per combinatie van apparaat en persoon — dat is wat
+een korte pincode bruikbaar houdt. Wil je het steviger, kies dan een pincode
+van zes cijfers of meer; dat mag tot tien.
+
+## Hoe het in elkaar zit
+
+```
+src/
+  server.js          alle API-routes
+  auth.js            pincodes, sessies, slot na te vaak misgokken
+  db.js              opslag in één JSON-bestand, veilig wegschrijven
+  push.js            versturen van meldingen
+  scheduler.js       elke minuut kijken of er iets verstuurd moet worden
+  config.js          instellingen uit .env
+  lib/
+    dates.js         datums en tijdzones
+    recurrence.js    herhalende afspraken uitrekenen
+    goals.js         reeksen, weekstanden, projectvoortgang
+    validate.js      invoer controleren
+public/              de app zelf: één html, één css, één js, geen bouwstap
+tests/               71 tests over datums, herhalingen, doelen en de API
+```
+
+Geen bouwstap en geen framework. Wat je in `public/` ziet is precies wat de
+browser krijgt, en dat blijft over vijf jaar nog werken.

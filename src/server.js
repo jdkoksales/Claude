@@ -1,297 +1,473 @@
 import express from 'express';
-import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
-import { config, assertEnv } from './config.js';
+import { config } from './config.js';
+import { db, find, newId, remove, replaceStore, save, saveSoon } from './db.js';
 import {
-  raw, replaceStore, goals, dayLogs, tasks, reviews, coachLog, settings, sessions,
-} from './db.js';
+  currentUser, hashPin, isValidPinFormat, login, logout, requireAuth, verifyPin,
+} from './auth.js';
+import { addDays, todayKey, weekStart } from './lib/dates.js';
+import { describeRepeat, expandEvents } from './lib/recurrence.js';
+import { BOTH, goalStats, openToday } from './lib/goals.js';
 import {
-  todayKey, yesterdayKey, labelFor, monthGrid, isoWeek,
-} from './lib/dates.js';
-import { stats, detectTrigger, buildCoachPayload } from './lib/insights.js';
-import { generateCard } from './coach.js';
-import { ensureV2 } from './lib/migrate.js';
+  InputError, REMINDER_CHOICES, entryInput, eventInput, goalInput, taskInput,
+} from './lib/validate.js';
+import {
+  addSubscription, initPush, notify, publicKey, pushReady, removeSubscription,
+} from './push.js';
+import { startScheduler } from './scheduler.js';
 
-assertEnv(['ANTHROPIC_API_KEY', 'APP_PIN']);
-
-if (!/^\d{4,6}$/.test(config.app.pin)) {
-  throw new Error('APP_PIN moet 4 tot 6 cijfers zijn (bv. APP_PIN=4821).');
-}
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
+const here = dirname(fileURLToPath(import.meta.url));
 const app = express();
-app.disable('x-powered-by');
-app.use(express.json({ limit: '2mb' })); // import van een backup moet passen
+app.set('trust proxy', 1);
+app.use(express.json({ limit: '5mb' }));
 
-// ─── Login (ongewijzigd gedrag) ─────────────────────────
-const attempts = new Map();
-const MAX_TRIES = 5;
-const LOCK_MS = 15 * 60 * 1000;
+// Bewust ver uit elkaar liggende kleuren: in de weekagenda moet je in één
+// oogopslag zien van wie een afspraak is.
+const PALETTE = ['#3a7ca5', '#e26d5c', '#c9852b', '#4c8577', '#a05195', '#6c7ae0'];
+const today = () => todayKey(config.app.timezone);
+const userIds = () => db().users.map((u) => u.id);
+const publicUser = (u) => ({ id: u.id, name: u.name, color: u.color });
 
-function pinMatches(pin) {
-  const a = Buffer.from(String(pin ?? '').padEnd(12, '#'));
-  const b = Buffer.from(config.app.pin.padEnd(12, '#'));
-  return crypto.timingSafeEqual(a, b);
-}
+// ── Openbaar: wie zijn we, en is de app al ingericht ────────────────────────
 
-app.post('/api/login', (req, res) => {
-  const ip = req.ip || 'unknown';
-  const entry = attempts.get(ip) || { count: 0, lockedUntil: 0 };
-  if (Date.now() < entry.lockedUntil) {
-    const mins = Math.ceil((entry.lockedUntil - Date.now()) / 60000);
-    return res.status(429).json({ error: `Te vaak geprobeerd. Probeer het over ${mins} minuten opnieuw.` });
-  }
-  if (!pinMatches(req.body?.pin)) {
-    entry.count++;
-    if (entry.count >= MAX_TRIES) {
-      entry.lockedUntil = Date.now() + LOCK_MS;
-      entry.count = 0;
-    }
-    attempts.set(ip, entry);
-    return res.status(401).json({ error: 'Onjuiste pincode.' });
-  }
-  attempts.delete(ip);
-  const token = crypto.randomBytes(32).toString('hex');
-  sessions.add(token);
-  res.json({ token });
-});
+/** Voor de gezondheidscheck van de hostingdienst. */
+app.get('/api/health', (req, res) => res.json({ ok: true, users: db().users.length }));
 
-function auth(req, res, next) {
-  const header = req.get('authorization') || '';
-  const token = header.startsWith('Bearer ') ? header.slice(7) : '';
-  if (!token || !sessions.has(token)) return res.status(401).json({ error: 'Niet ingelogd.' });
-  next();
-}
-
-/** Nette 400's uit db-laag doorgeven, rest als 500 loggen. */
-function guard(handler) {
-  return (req, res) => {
-    Promise.resolve()
-      .then(() => handler(req, res))
-      .catch((err) => {
-        if (err.status) return res.status(err.status).json({ error: err.message });
-        console.error('[server]', err);
-        res.status(500).json({ error: 'Er ging iets mis. Probeer het opnieuw.' });
-      });
-  };
-}
-
-// ─── App-state ──────────────────────────────────────────
-function goalView(g, today) {
-  const logs = dayLogs.forGoal(g.id);
-  const grid = monthGrid(today);
-  const byDay = new Map(logs.map((l) => [l.day, l.level]));
-  return {
-    id: g.id,
-    anchor: g.anchor,
-    action: g.action,
-    place: g.place,
-    minimum: g.minimum,
-    target: g.target,
-    stake: g.stake,
-    status: g.status,
-    paused_until: g.paused_until,
-    todayLevel: dayLogs.get(g.id, today)?.level ?? null,
-    yesterdayLevel: dayLogs.get(g.id, yesterdayKey())?.level ?? null,
-    ...stats(logs),
-    heatmap: {
-      year: grid.year,
-      month: grid.month,
-      firstWeekday: grid.firstWeekday,
-      days: grid.keys.map((k) => ({
-        day: Number(k.slice(-2)),
-        level: byDay.get(k) ?? null,
-        isToday: k === today,
-        future: k > today,
-      })),
-    },
-  };
-}
-
-function stateSnapshot() {
-  const today = todayKey();
-  const active = goals.active();
-  const allLogs = dayLogs.all();
-  const conf = settings.get();
-  return {
-    userName: config.app.userName,
-    today: { key: today, label: labelFor(today) },
-    yesterday: { key: yesterdayKey(), label: labelFor(yesterdayKey()) },
-    goals: active.map((g) => goalView(g, today)),
-    pausedGoals: goals.all().filter((g) => g.status === 'paused').map((g) => ({
-      id: g.id, action: g.action, paused_until: g.paused_until,
-    })),
-    activeCount: active.length,
-    overall: stats(allLogs),
-    doneTodayCount: allLogs.filter(
-      (l) => l.day === today && (l.level === 'minimum' || l.level === 'target'),
-    ).length,
-    tasks: { open: tasks.list('open'), doneToday: tasks.doneToday() },
-    review: {
-      due: reviews.dueFor(today, conf.reviewDay),
-      week: isoWeek(today),
-    },
-    settings: conf,
-  };
-}
-
-app.get('/api/state', auth, guard((req, res) => res.json(stateSnapshot())));
-
-// ─── Dag-logging (één tik) ──────────────────────────────
-app.post('/api/goals/:id/log', auth, guard((req, res) => {
-  const g = goals.byId(req.params.id);
-  if (!g) return res.status(404).json({ error: 'Doel niet gevonden.' });
-  const day = req.body?.day === 'yesterday' ? yesterdayKey() : todayKey();
-  const level = req.body?.level ?? null; // null = wissen (undo)
-  dayLogs.set(g.id, day, level);
-  res.json({ state: stateSnapshot() });
-}));
-
-// ─── Doelen ─────────────────────────────────────────────
-app.post('/api/goals', auth, guard((req, res) => {
-  const { anchor, action, place, minimum, target, stake } = req.body || {};
-  for (const [name, v] of [['gewoonte (na …)', anchor], ['actie', action], ['plek', place], ['minimum', minimum], ['target', target]]) {
-    if (typeof v !== 'string' || !v.trim()) {
-      return res.status(400).json({ error: `Vul "${name}" in — het intentie-format is verplicht.` });
-    }
-  }
-  const clip = (s, n = 200) => s.trim().slice(0, n);
-  goals.addIntention({
-    anchor: clip(anchor), action: clip(action), place: clip(place),
-    minimum: clip(minimum), target: clip(target),
-    stake: stake && String(stake).trim() ? clip(String(stake)) : null,
+app.get('/api/bootstrap', (req, res) => {
+  const store = db();
+  res.json({
+    setupNeeded: store.users.length === 0,
+    users: store.users.map(publicUser),
+    me: currentUser(req)?.id || null,
+    push: { available: pushReady(), key: publicKey() },
+    timezone: config.app.timezone,
+    today: today(),
+    reminderChoices: REMINDER_CHOICES,
   });
-  res.json({ state: stateSnapshot() });
-}));
+});
 
-app.patch('/api/goals/:id', auth, guard((req, res) => {
-  const g = goals.update(req.params.id, req.body || {});
-  if (!g) return res.status(404).json({ error: 'Doel niet gevonden.' });
-  res.json({ state: stateSnapshot() });
-}));
-
-// ─── Taken (ongewijzigd) ────────────────────────────────
-app.post('/api/tasks', auth, guard((req, res) => {
-  const title = String(req.body?.title || '').trim();
-  if (!title) return res.status(400).json({ error: 'Geef een taak op.' });
-  tasks.add(title.slice(0, 200), String(req.body?.due || '').trim() || null);
-  res.json({ state: stateSnapshot() });
-}));
-
-app.post('/api/tasks/:id/toggle', auth, guard((req, res) => {
-  if (!tasks.complete(req.params.id)) tasks.reopen(req.params.id);
-  res.json({ state: stateSnapshot() });
-}));
-
-// ─── Coach: deterministisch getriggerd, max 1/dag ───────
-app.post('/api/coach/evaluate', auth, guard(async (req, res) => {
-  const today = todayKey();
-
-  // Al een interventie vandaag? Toon die (tot hij is weggeklikt), nooit een nieuwe.
-  const existing = coachLog.forDay(today);
-  if (existing) {
-    return res.json({ card: existing.dismissed ? null : existing });
-  }
-
-  const active = goals.active();
-  const conf = settings.get();
-  const trigger = detectTrigger(
-    dayLogs.all(), active, today, reviews.dueFor(today, conf.reviewDay),
-  );
-  if (!trigger) return res.json({ card: null });
-
-  const card = await generateCard(
-    buildCoachPayload({
-      trigger,
-      goals: active,
-      logs: dayLogs.all(),
-      today,
-      lastReview: reviews.latest(),
-    }),
-  );
-  const entry = coachLog.add(today, trigger.type, trigger.goalId ?? null, card);
-  res.json({ card: entry });
-}));
-
-app.post('/api/coach/action', auth, guard((req, res) => {
-  const today = todayKey();
-  const entry = coachLog.forDay(today);
-  const type = String(req.body?.type || '');
-  const goalId = entry?.goal_id ?? req.body?.goal_id ?? null;
-
-  if (type === 'pauzeer_doel' && goalId) {
-    goals.update(goalId, { pause_days: 7 });
-  }
-  // verklein_minimum wordt client-side afgehandeld (opent het minimumveld);
-  // laat_zo doet niets. Alle drie sluiten het kaartje.
-  coachLog.dismiss(today);
-  res.json({ state: stateSnapshot(), focusGoal: type === 'verklein_minimum' ? goalId : null });
-}));
-
-// ─── Weekreview ─────────────────────────────────────────
-app.post('/api/review', auth, guard((req, res) => {
-  const week = isoWeek(todayKey());
-  const skipped = !!req.body?.skipped;
-  let answers = null;
-  if (!skipped) {
-    const a = req.body?.answers || {};
-    answers = {
-      makkelijker: String(a.makkelijker || '').slice(0, 500),
-      zwaarste: String(a.zwaarste || '').slice(0, 500),
-      minimum_gevoel: ['te licht', 'goed', 'te zwaar'].includes(a.minimum_gevoel)
-        ? a.minimum_gevoel : 'goed',
-      anders: String(a.anders || '').slice(0, 500),
-    };
-  }
-  reviews.submit(week, answers, skipped);
-  res.json({ state: stateSnapshot() });
-}));
-
-// ─── Export / import ────────────────────────────────────
-app.get('/api/export', auth, guard((req, res) => {
-  res.setHeader('Content-Type', 'application/json');
-  res.setHeader(
-    'Content-Disposition',
-    `attachment; filename="coach-backup-${todayKey()}.json"`,
-  );
-  res.send(JSON.stringify(raw(), null, 2));
-}));
-
-app.post('/api/import', auth, guard((req, res) => {
-  let incoming;
+/** Eenmalige inrichting: twee (of meer) mensen met elk een eigen pincode. */
+app.post('/api/setup', (req, res, next) => {
   try {
-    incoming = ensureV2(req.body); // accepteert v1 én v2, migreert zo nodig
+    const store = db();
+    if (store.users.length > 0) {
+      throw Object.assign(new Error('De app is al ingericht.'), { status: 409 });
+    }
+    const people = Array.isArray(req.body?.people) ? req.body.people : [];
+    if (people.length < 1 || people.length > 6) {
+      throw new InputError('Vul minstens één en hoogstens zes personen in.');
+    }
+    const names = new Set();
+    const pins = new Set();
+    for (const person of people) {
+      const name = String(person?.name || '').trim();
+      if (!name || name.length > 40) throw new InputError('Vul voor iedereen een naam in.');
+      if (names.has(name.toLowerCase())) throw new InputError('Gebruik verschillende namen.');
+      if (!isValidPinFormat(person?.pin)) {
+        throw new InputError('Elke pincode is 4 tot 10 cijfers.');
+      }
+      if (pins.has(person.pin)) throw new InputError('Kies voor iedereen een andere pincode.');
+      names.add(name.toLowerCase());
+      pins.add(person.pin);
+    }
+    store.users = people.map((person, i) => {
+      const { salt, hash } = hashPin(person.pin);
+      return {
+        id: newId(),
+        name: person.name.trim(),
+        color: PALETTE[i % PALETTE.length],
+        pinSalt: salt,
+        pinHash: hash,
+        createdAt: new Date().toISOString(),
+      };
+    });
+    save();
+    res.json({ ok: true, users: store.users.map(publicUser) });
   } catch (err) {
-    return res.status(400).json({ error: `Import geweigerd: ${err.message}` });
+    next(err);
   }
-  const s = incoming.store;
-  if (!Array.isArray(s.goals) || !Array.isArray(s.dayLogs)) {
-    return res.status(400).json({ error: 'Import geweigerd: dit is geen backup van deze app.' });
-  }
-  // Huidige login-sessies behouden, anders word je door je eigen import uitgelogd.
-  s.sessions = raw().sessions;
-  replaceStore(s); // maakt eerst zelf een backup van de huidige data
-  res.json({ state: stateSnapshot(), migrated: incoming.migrated });
-}));
-
-// ─── Instellingen ───────────────────────────────────────
-app.patch('/api/settings', auth, guard((req, res) => {
-  settings.set(req.body || {});
-  res.json({ state: stateSnapshot() });
-}));
-
-// ─── Statische shell ────────────────────────────────────
-app.use(express.static(join(__dirname, '..', 'public')));
-
-const server = app.listen(config.app.port, '0.0.0.0', () => {
-  console.log('');
-  console.log('  🧡 Je coach-app draait!');
-  console.log(`     Op deze PC:   http://localhost:${config.app.port}`);
-  console.log(`     Op je telefoon (thuis-WiFi): http://<ip-van-je-pc>:${config.app.port}`);
-  console.log('');
 });
 
-process.on('SIGINT', () => {
-  server.close(() => process.exit(0));
+app.post('/api/login', (req, res, next) => {
+  try {
+    const user = login(req, res, req.body?.userId, String(req.body?.pin ?? ''));
+    if (!user) return res.status(401).json({ error: 'Pincode klopt niet.' });
+    return res.json({ user: publicUser(user) });
+  } catch (err) {
+    return next(err);
+  }
 });
+
+app.post('/api/logout', (req, res) => {
+  logout(res);
+  res.json({ ok: true });
+});
+
+// ── Vanaf hier moet je ingelogd zijn ────────────────────────────────────────
+
+const api = express.Router();
+api.use(requireAuth);
+app.use('/api', api);
+
+api.get('/me', (req, res) => res.json({ user: publicUser(req.user) }));
+
+api.patch('/me', (req, res, next) => {
+  try {
+    const name = String(req.body?.name ?? '').trim();
+    if (name) {
+      if (name.length > 40) throw new InputError('Naam mag maximaal 40 tekens zijn.');
+      req.user.name = name;
+    }
+    if (req.body?.color && PALETTE.includes(req.body.color)) req.user.color = req.body.color;
+    saveSoon();
+    res.json({ user: publicUser(req.user) });
+  } catch (err) {
+    next(err);
+  }
+});
+
+api.patch('/me/pin', (req, res, next) => {
+  try {
+    if (!verifyPin(String(req.body?.current ?? ''), req.user)) {
+      throw Object.assign(new Error('Huidige pincode klopt niet.'), { status: 401 });
+    }
+    if (!isValidPinFormat(req.body?.next)) {
+      throw new InputError('De nieuwe pincode is 4 tot 10 cijfers.');
+    }
+    const { salt, hash } = hashPin(req.body.next);
+    req.user.pinSalt = salt;
+    req.user.pinHash = hash;
+    save();
+    res.json({ ok: true });
+  } catch (err) {
+    next(err);
+  }
+});
+
+/**
+ * Alles wat een scherm nodig heeft in één verzoek. De agenda wordt voor de
+ * gevraagde periode uitgerekend (herhalingen worden hier pas losse dagen), de
+ * doelen krijgen hun cijfers meegestuurd zodat de browser niets hoeft te rekenen.
+ */
+api.get('/state', (req, res, next) => {
+  try {
+    const store = db();
+    const now = today();
+    const from = req.query.from || weekStart(now);
+    const to = req.query.to || addDays(from, 41);
+    if (from > to) throw new InputError('De periode loopt achteruit.');
+
+    const goals = store.goals.map((goal) => ({
+      ...goal,
+      stats: goalStats(goal, now),
+      repeatLabel: undefined,
+    }));
+
+    res.json({
+      today: now,
+      range: { from, to },
+      users: store.users.map(publicUser),
+      events: expandEvents(store.events, from, to).map((e) => ({
+        ...e,
+        repeatLabel: describeRepeat(e.repeat),
+      })),
+      goals,
+      tasks: store.tasks,
+      openToday: openToday(
+        store.goals.filter((g) => g.ownerId === req.user.id || g.ownerId === BOTH),
+        now,
+      ).map(({ goal, urgent }) => ({ goalId: goal.id, urgent })),
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// ── Agenda ─────────────────────────────────────────────────────────────────
+
+api.post('/events', (req, res, next) => {
+  try {
+    const data = eventInput(req.body, userIds());
+    const event = {
+      id: newId(),
+      ...data,
+      createdBy: req.user.id,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    db().events.push(event);
+    saveSoon();
+    res.status(201).json({ event });
+  } catch (err) {
+    next(err);
+  }
+});
+
+api.patch('/events/:id', (req, res, next) => {
+  try {
+    const event = find('events', req.params.id);
+    if (!event) return res.status(404).json({ error: 'Afspraak niet gevonden.' });
+    const data = eventInput({ ...event, ...req.body }, userIds());
+    Object.assign(event, data, { updatedAt: new Date().toISOString() });
+    saveSoon();
+    return res.json({ event });
+  } catch (err) {
+    return next(err);
+  }
+});
+
+api.delete('/events/:id', (req, res) => {
+  const ok = remove('events', req.params.id);
+  res.status(ok ? 200 : 404).json(ok ? { ok: true } : { error: 'Afspraak niet gevonden.' });
+});
+
+// ── Doelen ─────────────────────────────────────────────────────────────────
+
+api.post('/goals', (req, res, next) => {
+  try {
+    const data = goalInput(req.body, userIds());
+    const goal = {
+      id: newId(),
+      ...data,
+      checkins: {},
+      entries: [],
+      createdBy: req.user.id,
+      createdDate: today(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    if (goal.kind === 'project' && !goal.startDate) goal.startDate = goal.createdDate;
+    db().goals.push(goal);
+    saveSoon();
+    res.status(201).json({ goal: { ...goal, stats: goalStats(goal, today()) } });
+  } catch (err) {
+    next(err);
+  }
+});
+
+api.patch('/goals/:id', (req, res, next) => {
+  try {
+    const goal = find('goals', req.params.id);
+    if (!goal) return res.status(404).json({ error: 'Doel niet gevonden.' });
+    // De soort ligt vast: van gewoonte naar project overstappen zou de
+    // opgebouwde geschiedenis betekenisloos maken.
+    const data = goalInput({ ...goal, ...req.body, kind: goal.kind }, userIds());
+    Object.assign(goal, data, { updatedAt: new Date().toISOString() });
+    saveSoon();
+    return res.json({ goal: { ...goal, stats: goalStats(goal, today()) } });
+  } catch (err) {
+    return next(err);
+  }
+});
+
+api.delete('/goals/:id', (req, res) => {
+  const ok = remove('goals', req.params.id);
+  res.status(ok ? 200 : 404).json(ok ? { ok: true } : { error: 'Doel niet gevonden.' });
+});
+
+/** Afvinken (of ontvinken) voor een dag. Je vinkt altijd voor jezelf af. */
+api.post('/goals/:id/checkin', (req, res, next) => {
+  try {
+    const goal = find('goals', req.params.id);
+    if (!goal) return res.status(404).json({ error: 'Doel niet gevonden.' });
+    if (goal.kind !== 'habit') throw new InputError('Dit doel werkt met bijdragen, niet afvinken.');
+    const date = req.body?.date || today();
+    if (date > today()) throw new InputError('Je kunt niet vooruit afvinken.');
+    if (date < addDays(today(), -60)) throw new InputError('Zo ver terug kun je niet meer afvinken.');
+
+    goal.checkins ||= {};
+    const list = new Set(goal.checkins[date] || []);
+    const wanted = req.body?.on ?? !list.has(req.user.id);
+    if (wanted) list.add(req.user.id);
+    else list.delete(req.user.id);
+    if (list.size) goal.checkins[date] = [...list];
+    else delete goal.checkins[date];
+    goal.updatedAt = new Date().toISOString();
+    saveSoon();
+    return res.json({ goal: { ...goal, stats: goalStats(goal, today()) } });
+  } catch (err) {
+    return next(err);
+  }
+});
+
+/** Bijdrage aan een projectdoel, bijv. "€120 gespaard". */
+api.post('/goals/:id/entries', (req, res, next) => {
+  try {
+    const goal = find('goals', req.params.id);
+    if (!goal) return res.status(404).json({ error: 'Doel niet gevonden.' });
+    if (goal.kind !== 'project') throw new InputError('Dit doel vink je af, je telt er niet bij op.');
+    const data = entryInput(req.body, userIds());
+    goal.entries ||= [];
+    goal.entries.push({
+      id: newId(),
+      date: data.date || today(),
+      userId: data.userId || req.user.id,
+      amount: data.amount,
+      note: data.note,
+      createdAt: new Date().toISOString(),
+    });
+    goal.entries.sort((a, b) => (a.date < b.date ? -1 : 1));
+    goal.updatedAt = new Date().toISOString();
+    saveSoon();
+    return res.status(201).json({ goal: { ...goal, stats: goalStats(goal, today()) } });
+  } catch (err) {
+    return next(err);
+  }
+});
+
+api.delete('/goals/:id/entries/:entryId', (req, res) => {
+  const goal = find('goals', req.params.id);
+  if (!goal) return res.status(404).json({ error: 'Doel niet gevonden.' });
+  const before = (goal.entries || []).length;
+  goal.entries = (goal.entries || []).filter((e) => e.id !== req.params.entryId);
+  if (goal.entries.length === before) return res.status(404).json({ error: 'Bijdrage niet gevonden.' });
+  goal.updatedAt = new Date().toISOString();
+  saveSoon();
+  return res.json({ goal: { ...goal, stats: goalStats(goal, today()) } });
+});
+
+// ── Taken ──────────────────────────────────────────────────────────────────
+
+api.post('/tasks', (req, res, next) => {
+  try {
+    const data = taskInput(req.body, userIds());
+    const task = {
+      id: newId(),
+      ...data,
+      done: false,
+      doneAt: null,
+      doneBy: null,
+      createdBy: req.user.id,
+      createdAt: new Date().toISOString(),
+    };
+    db().tasks.push(task);
+    saveSoon();
+    res.status(201).json({ task });
+  } catch (err) {
+    next(err);
+  }
+});
+
+api.patch('/tasks/:id', (req, res, next) => {
+  try {
+    const task = find('tasks', req.params.id);
+    if (!task) return res.status(404).json({ error: 'Taak niet gevonden.' });
+    if (typeof req.body?.done === 'boolean') {
+      task.done = req.body.done;
+      task.doneAt = task.done ? new Date().toISOString() : null;
+      task.doneBy = task.done ? req.user.id : null;
+    }
+    if (req.body?.title != null || req.body?.assigneeId !== undefined || req.body?.dueDate !== undefined) {
+      Object.assign(task, taskInput({ ...task, ...req.body }, userIds()));
+    }
+    saveSoon();
+    return res.json({ task });
+  } catch (err) {
+    return next(err);
+  }
+});
+
+api.delete('/tasks/:id', (req, res) => {
+  const ok = remove('tasks', req.params.id);
+  res.status(ok ? 200 : 404).json(ok ? { ok: true } : { error: 'Taak niet gevonden.' });
+});
+
+/** Alle afgeronde taken in één keer opruimen. */
+api.post('/tasks/clear-done', (req, res) => {
+  const store = db();
+  const before = store.tasks.length;
+  store.tasks = store.tasks.filter((t) => !t.done);
+  saveSoon();
+  res.json({ removed: before - store.tasks.length });
+});
+
+// ── Meldingen ──────────────────────────────────────────────────────────────
+
+api.post('/push/subscribe', (req, res, next) => {
+  try {
+    const sub = req.body?.subscription;
+    if (!sub?.endpoint || !sub?.keys?.p256dh || !sub?.keys?.auth) {
+      throw new InputError('Ongeldig abonnement voor meldingen.');
+    }
+    addSubscription(req.user.id, sub);
+    res.json({ ok: true });
+  } catch (err) {
+    next(err);
+  }
+});
+
+api.post('/push/unsubscribe', (req, res) => {
+  if (req.body?.endpoint) removeSubscription(req.body.endpoint);
+  res.json({ ok: true });
+});
+
+api.post('/push/test', async (req, res) => {
+  const sent = await notify(req.user.id, {
+    title: 'Meldingen werken',
+    body: 'Zo ziet een herinnering eruit.',
+    tag: 'test',
+    url: '/',
+  });
+  res.json({ sent });
+});
+
+// ── Back-up ────────────────────────────────────────────────────────────────
+
+api.get('/export', (req, res) => {
+  const { users, ...rest } = db();
+  res.setHeader('Content-Disposition', `attachment; filename="samen-${today()}.json"`);
+  res.json({
+    ...rest,
+    // Pincodes gaan niet mee in een back-up die je in je downloads bewaart.
+    users: users.map(publicUser),
+  });
+});
+
+api.post('/import', (req, res, next) => {
+  try {
+    const incoming = req.body?.data;
+    if (!incoming || typeof incoming !== 'object' || !Array.isArray(incoming.events)) {
+      throw new InputError('Dit bestand ziet er niet uit als een back-up van deze app.');
+    }
+    const store = db();
+    // De inloggegevens van nu blijven staan; alleen de inhoud wordt vervangen.
+    replaceStore({
+      ...incoming,
+      users: store.users,
+      pushSubs: store.pushSubs,
+      sent: {},
+    });
+    res.json({ ok: true });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// ── Statische bestanden en foutafhandeling ─────────────────────────────────
+
+app.use(express.static(join(here, '..', 'public'), { maxAge: '1h', index: 'index.html' }));
+app.get('*', (req, res, next) => {
+  if (req.path.startsWith('/api/')) return next();
+  return res.sendFile(join(here, '..', 'public', 'index.html'));
+});
+
+app.use((req, res) => res.status(404).json({ error: 'Onbekend adres.' }));
+
+app.use((err, req, res, _next) => {
+  const status = err.status || 500;
+  if (status >= 500) console.error('[server]', err);
+  res.status(status).json({ error: err.message || 'Er ging iets mis.' });
+});
+
+const isMain = process.argv[1] && import.meta.url.endsWith(process.argv[1].split('/').pop());
+if (isMain) {
+  initPush();
+  startScheduler();
+  app.listen(config.app.port, () => {
+    console.log(`Samen draait op http://localhost:${config.app.port}`);
+    if (db().users.length === 0) console.log('Open de app om hem in te richten.');
+  });
+}
+
+export default app;

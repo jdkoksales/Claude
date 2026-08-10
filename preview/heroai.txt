@@ -1,4 +1,5 @@
-GEEN AFWIJKINGEN GEVONDEN
+GEVONDEN: 1 punten
+ - telefoon: rekenlink ligt over het bordje heen (172x46px)
 
 desktop 1440x900 — thema 196964024697
    bestand: tk3-hero-ai-desktop.jpg  (bron 1800x1005, vlak 1440x791)
@@ -11,27 +12,33 @@ desktop 1440x900 — thema 196964024697
    botsing onderkop: geen
    botsing knoppen: geen
    botsing rekenlink: geen
+   hoogtes: {"wrap":376,"kop":112,"sub":77,"knoppen":51,"calc":48,"foto":791}, venster 900px
+   bordje voor 100% zichtbaar binnen het scherm
 
 tablet 900x1000 — thema 196964024697
-   bestand: tk3-hero-ai-tablet.jpg  (bron 1400x1045, vlak 900x672)
+   bestand: tk3-hero-ai-tablet.jpg  (bron 1400x1045, vlak 900x485)
    object-fit cover, object-position 50% 100%
-   bordje op het scherm: x 349–565, y 764–1143 (380px hoog)
-   hero 1100px hoog, kop rgb(255, 255, 255), onderkop rgba(255, 255, 255, 0.84)
+   bordje op het scherm: x 349–565, y 555–934 (380px hoog)
+   hero 891px hoog, kop rgb(255, 255, 255), onderkop rgba(255, 255, 255, 0.84)
    kop "Je beste marketing staat op de balie."
    overloop 0px, oude wisselfoto's nog aanwezig: false
    botsing kop: geen
    botsing onderkop: geen
    botsing knoppen: geen
    botsing rekenlink: geen
+   hoogtes: {"wrap":350,"kop":112,"sub":51,"knoppen":51,"calc":48,"foto":485}, venster 1000px
+   bordje voor 100% zichtbaar binnen het scherm
 
 telefoon 390x844 — thema 196964024697
-   bestand: tk3-hero-ai-telefoon.jpg  (bron 900x1612, vlak 390x699)
+   bestand: tk3-hero-ai-telefoon.jpg  (bron 900x1612, vlak 390x347)
    object-fit cover, object-position 50% 100%
-   bordje op het scherm: x 119–291, y 800–1135 (335px hoog)
-   hero 1107px hoog, kop rgb(255, 255, 255), onderkop rgba(255, 255, 255, 0.84)
+   bordje op het scherm: x 119–291, y 428–762 (335px hoog)
+   hero 735px hoog, kop rgb(255, 255, 255), onderkop rgba(255, 255, 255, 0.84)
    kop "Je beste marketing staat op de balie."
    overloop 0px, oude wisselfoto's nog aanwezig: false
    botsing kop: geen
    botsing onderkop: geen
    botsing knoppen: geen
-   botsing rekenlink: geen
+   botsing rekenlink: 172x46px
+   hoogtes: {"wrap":338,"kop":79,"sub":72,"knoppen":53,"calc":46,"foto":347}, venster 844px
+   bordje voor 100% zichtbaar binnen het scherm

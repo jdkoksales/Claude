@@ -4,8 +4,9 @@ Een kleine web-app voor jullie tweeën. Ieder logt in met een eigen pincode en
 ziet daarna alles van de ander: afspraken, doelen en taken. Je zet hem op je
 beginscherm en hij gedraagt zich als een gewone app, inclusief herinneringen.
 
-Er is geen account bij een dienst nodig, er gaat niets naar buiten en alle
-gegevens staan in één bestand dat je met één klik kunt downloaden.
+Alles wat jullie invoeren blijft van jullie: op je eigen computer in één
+JSON-bestand, of online in je eigen database. Met één klik heb je er een kopie
+van.
 
 ## Wat erin zit
 
@@ -73,16 +74,28 @@ Lokaal draaien werkt alleen als de computer aanstaat en jullie op hetzelfde
 netwerk zitten. Om er op je telefoon overal bij te kunnen, moet de app ergens
 draaien die altijd aan staat.
 
-Twee dingen zijn daarbij belangrijk:
+Er is maar één ding dat je echt moet invullen: **waar de gegevens heen gaan**.
+Het sessiegeheim en de sleutels voor meldingen maakt de app bij de eerste start
+zelf aan en bewaart hij bij de rest van de gegevens.
 
-1. **Een schijf die herstarts overleeft.** De gegevens staan in één
-   JSON-bestand. Veel gratis pakketten geven je een tijdelijke schijf die bij
-   elke nieuwe versie wordt gewist — dan ben je alles kwijt. Zorg voor een
-   volume en zet `DB_FILE` daarnaartoe.
-2. **De app moet blijven draaien.** Slaapstand-instellingen die containers bij
-   inactiviteit stoppen, zetten ook de herinneringen stil.
+### Vercel met Supabase (serverless)
 
-### Fly.io
+Vercel start per verzoek een functie in plaats van een server die blijft
+draaien. Er is dus geen schijf die iets onthoudt, en niets dat elke minuut kan
+kijken of er een herinnering klaarstaat. Beide zijn opgelost:
+
+- Zet `DATABASE_URL` op de *Transaction pooler*-verbinding van je Supabase-
+  project. De app gebruikt dan Postgres in plaats van een bestand. Draai eerst
+  de twee migraties uit `db/` (schema `samen` met de tabellen `store` en
+  `photo_data`).
+- Laat een taak in de database elke minuut `/api/cron/tick` aanroepen. Dat
+  adres is afgeschermd met een geheim uit de opslag; hoe je die taak aanmaakt
+  staat onder [Herinneringen zonder server](#herinneringen-zonder-server).
+
+`vercel.json` en `api/index.js` staan klaar. Koppel de repository in Vercel en
+elke push rolt vanzelf uit.
+
+### Fly.io (server die blijft draaien)
 
 `fly.toml` en `Dockerfile` staan klaar. Verzin een eigen `app`-naam in
 `fly.toml` en dan:
@@ -101,6 +114,22 @@ De waarden voor die drie sleutels drukt `npm run setup` voor je af.
 `render.yaml` staat klaar. Koppel de repository, vul in het dashboard
 `SESSION_SECRET`, `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY` en `VAPID_CONTACT`
 in. Let op: de schijf in `render.yaml` zit niet in het gratis pakket.
+
+### Herinneringen zonder server
+
+Draait de app serverless, dan is er geen proces dat de klok in de gaten houdt.
+Laat Postgres het doen — `pg_cron` en `pg_net` staan bij Supabase klaar:
+
+```sql
+select cron.schedule('samen-tick', '* * * * *', $$
+  select net.http_post(
+    url     := 'https://JOUW-APP.vercel.app/api/cron/tick',
+    headers := jsonb_build_object('x-samen-cron', 'HET-GEHEIM-UIT-DE-OPSLAG')
+  );
+$$);
+```
+
+Het geheim vind je met `select data->'settings'->>'cronSecret' from samen.store;`.
 
 ### Iets anders
 
@@ -124,12 +153,13 @@ Alles staat in `.env` (zie `.env.example`):
 
 | Instelling | Waarvoor |
 | --- | --- |
-| `SESSION_SECRET` | Ondertekent het sessiecookie. Zonder deze waarde moeten jullie na elke herstart opnieuw inloggen. |
-| `VAPID_PUBLIC_KEY` / `VAPID_PRIVATE_KEY` | Nodig voor push-meldingen. Laat `npm run setup` ze maken. |
+| `DATABASE_URL` | Postgres-verbinding. Leeg = alles in een bestand op schijf. |
+| `SESSION_SECRET` | Ondertekent het sessiecookie. Leeg laten mag: de app maakt er zelf een en bewaart die. |
+| `VAPID_PUBLIC_KEY` / `VAPID_PRIVATE_KEY` | Voor push-meldingen. Ook deze maakt de app zelf aan als je ze leeg laat. |
 | `VAPID_CONTACT` | Een e-mailadres, verplicht onderdeel van de push-standaard. |
 | `DAILY_DIGEST_AT` | Tijd van het dagelijkse overzicht van openstaande doelen. Standaard 20:00. |
 | `TIMEZONE` | Waarin "vandaag" wordt bepaald. Standaard Europe/Amsterdam. |
-| `DB_FILE` | Waar de gegevens staan. Standaard `data/samen.json`. |
+| `DB_FILE` | Waar de gegevens staan als er geen `DATABASE_URL` is. Standaard `data/samen.json`. |
 | `SESSION_DAYS` | Hoe lang je ingelogd blijft. Standaard 90 dagen. |
 | `SECURE_COOKIES` | Aan zetten zodra de app achter https draait. |
 | `PORT` | Standaard 3000. |
@@ -137,8 +167,9 @@ Alles staat in `.env` (zie `.env.example`):
 ## Back-up
 
 **Meer → Back-up → Gegevens downloaden** geeft je één JSON-bestand met alles
-erin (zonder pincodes). Terugzetten vervangt agenda, doelen en taken; jullie
-inloggegevens blijven staan. Doe dit af en toe — het is één klik en het scheelt
+erin, zonder pincodes en zonder sleutels. Foto's zitten er niet in — die staan
+apart en zijn te groot voor een bestandje in je downloads. Terugzetten vervangt
+agenda, doelen en taken; jullie inloggegevens blijven staan. Doe dit af en toe — het is één klik en het scheelt
 verdriet.
 
 ## Over privacy en beveiliging
@@ -158,17 +189,19 @@ van zes cijfers of meer; dat mag tot tien.
 src/
   server.js          alle API-routes
   auth.js            pincodes, sessies, slot na te vaak misgokken
-  db.js              opslag in één JSON-bestand, veilig wegschrijven
+  store.js           twee opslagvormen: een JSON-bestand of Postgres
+  db.js              de opslag per aanvraag laden en wegschrijven
   push.js            versturen van meldingen
   scheduler.js       elke minuut kijken of er iets verstuurd moet worden
   config.js          instellingen uit .env
   lib/
     dates.js         datums en tijdzones
-    recurrence.js    herhalende afspraken uitrekenen
+    recurrence.js    herhalingen en meerdaagse afspraken uitrekenen
     goals.js         reeksen, weekstanden, projectvoortgang
     validate.js      invoer controleren
+api/index.js         ingang voor Vercel
 public/              de app zelf: één html, één css, één js, geen bouwstap
-tests/               71 tests over datums, herhalingen, doelen en de API
+tests/               81 tests over datums, herhalingen, doelen, invoer en de API
 ```
 
 Geen bouwstap en geen framework. Wat je in `public/` ziet is precies wat de

@@ -117,8 +117,17 @@ jobs:
                   kop: botst(kop), onderkop: botst(sub),
                   knoppen: botst(bediening), rekenlink: botst(calc),
                 },
-                bordjeInBeeld: bordje.right > 0 && bordje.left < innerWidth
-                  && bordje.bottom > 0 && bordje.top < innerHeight,
+                // Niet alleen 'begint binnen het scherm': het grootste deel
+                // moet zichtbaar zijn, anders staat hij onder de vouw.
+                bordjeZichtbaarDeel: (() => {
+                  const zicht = Math.max(0, Math.min(bordje.bottom, innerHeight) - Math.max(bordje.top, 0));
+                  return Math.round(zicht / Math.max(1, bordje.bottom - bordje.top) * 100);
+                })(),
+                hoogtes: (() => {
+                  const h = (s) => { const e = hero.querySelector(s); return e ? Math.round(e.getBoundingClientRect().height) : 0; };
+                  return { wrap: h('.wrap'), kop: h('h1'), sub: h('.sub'), knoppen: h('.controls'), calc: h('.hero-calc'), foto: h('.hero-foto') };
+                })(),
+                venster: innerHeight,
                 bordjeHoog: Math.round(bordje.bottom - bordje.top),
                 heroHoog: Math.round(hero.getBoundingClientRect().height),
                 kopKleur: kop ? getComputedStyle(kop).color : null,
@@ -155,7 +164,10 @@ jobs:
             if (m.oudeShots) fouten.push(`${naam}: de oude wisselfoto's staan er nog`);
             if (m.overloop > 0) fouten.push(`${naam}: pagina schuift ${m.overloop}px opzij`);
             if (m.heroHoog < 400) fouten.push(`${naam}: hero maar ${m.heroHoog}px hoog`);
-            if (!m.bordjeInBeeld) fouten.push(`${naam}: het bordje valt buiten beeld`);
+            log.push(`   hoogtes: ${JSON.stringify(m.hoogtes)}, venster ${m.venster}px`);
+            log.push(`   bordje voor ${m.bordjeZichtbaarDeel}% zichtbaar binnen het scherm`);
+            if (m.bordjeZichtbaarDeel < 70) fouten.push(`${naam}: het bordje is maar voor ${m.bordjeZichtbaarDeel}% zichtbaar, de rest valt onder de vouw`);
+            if (m.heroHoog > m.venster + 10) fouten.push(`${naam}: de hero is ${m.heroHoog}px op een scherm van ${m.venster}px`);
             if (m.bordjeHoog < m.heroHoog * 0.22) fouten.push(`${naam}: het bordje is maar ${m.bordjeHoog}px, te klein voor een hero`);
 
             await p.screenshot({ path: `preview/heroai-${naam}.png` });

@@ -752,7 +752,8 @@ html,body{overflow-x:clip}
 .tk3 .hero .hero-calc svg{opacity:.8}
 @media(max-width:1023px){.tk3 .hero-foto img{object-position:51% bottom}}
 @media(max-width:599px){.tk3 .hero-foto img{object-position:53% bottom}}
-@media(max-width:1023px){.tk3 .hero .inner{display:flex;flex-direction:column;padding-top:clamp(18px,6svh,58px)}.tk3 .hero .wrap{flex:0 0 auto}.tk3 .hero-foto{position:static;flex:1 1 auto;min-height:34svh;margin-top:20px;
+@media(max-width:1023px){.tk3 .hero .inner{display:flex;flex-direction:column;padding-top:clamp(14px,4svh,44px);
+    max-height:calc(100svh - var(--tk3-boven,109px));overflow:hidden}.tk3 .hero .wrap{flex:0 0 auto}.tk3 .hero-foto{position:static;flex:1 1 0;min-height:150px;margin-top:16px;
     -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 15%);
     mask-image:linear-gradient(180deg,transparent 0,#000 15%)}.tk3 .hero-foto img{object-position:50% bottom}}
 @media(min-width:1024px){.tk3 .hero .wrap{padding-left:50%}.tk3 .hero h1,.tk3 .hero .sub{margin-left:0;margin-right:0;max-width:none;text-align:left}.tk3 .hero .controls{justify-content:flex-start}.tk3 .hero .hero-calc{margin-left:0;margin-right:auto}}

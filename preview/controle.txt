@@ -127,15 +127,15 @@ link 200 /policies/privacy-policy
 link 200 /pages/retourbeleid
 
 --- fouten ---
-home/desktop 403 https://shop.app/pay/hop?analytics_trace_id=2076b193-6edd-403c-bcea-3a78f4fbedea&target_origin=https%3A%2F%2Ftapkaarten.
-home/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=8acf3325-47e1-4320-9a25-70ffa69f412e&target_origin=https%3A%2F%2Ftapkaarten.
-product/desktop 403 https://shop.app/pay/hop?analytics_trace_id=4ee19b8a-16e7-4da4-a875-d1fdcdfd0273&target_origin=https%3A%2F%2Ftapkaarten.
-product/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=383e5af6-52a2-4760-8cde-d75f790a8e07&target_origin=https%3A%2F%2Ftapkaarten.
-collectie/desktop 403 https://shop.app/pay/hop?analytics_trace_id=81bd2265-2eb3-4029-9bc8-7be8b8b4389e&target_origin=https%3A%2F%2Ftapkaarten.
-collectie/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=f8c6f730-2bb2-4229-a2c2-6613b0bacda3&target_origin=https%3A%2F%2Ftapkaarten.
-winkelwagen/desktop 403 https://shop.app/pay/hop?analytics_trace_id=f37f29f4-7e81-4beb-86ee-1d5a9b56f106&target_origin=https%3A%2F%2Ftapkaarten.
-winkelwagen/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=7ad57d43-edb2-4c0a-9e18-76e7e66aaa61&target_origin=https%3A%2F%2Ftapkaarten.
-verzending/desktop 403 https://shop.app/pay/hop?analytics_trace_id=9272c75b-c6f5-4a24-ac8b-62c9857a6ed7&target_origin=https%3A%2F%2Ftapkaarten.
-verzending/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=c4828d36-a3ef-4015-a44e-438d91b6d06e&target_origin=https%3A%2F%2Ftapkaarten.
-contact/desktop 403 https://shop.app/pay/hop?analytics_trace_id=b6ba1278-bf24-4064-bcbb-786721d3e258&target_origin=https%3A%2F%2Ftapkaarten.
-contact/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=06f59a98-24c1-4cab-85f5-5e1e80c6300d&target_origin=https%3A%2F%2Ftapkaarten.
+home/desktop 403 https://shop.app/pay/hop?analytics_trace_id=3807c921-e7e1-45da-bdba-2288c01bd02b&target_origin=https%3A%2F%2Ftapkaarten.
+home/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=cfcaf73a-9cbb-4950-a072-1a0ce8bb4024&target_origin=https%3A%2F%2Ftapkaarten.
+product/desktop 403 https://shop.app/pay/hop?analytics_trace_id=b69ec0e7-950c-4a6f-b37a-fa9dae7716fd&target_origin=https%3A%2F%2Ftapkaarten.
+product/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=7c530e9e-c375-4c8a-833e-7dbe45f26620&target_origin=https%3A%2F%2Ftapkaarten.
+collectie/desktop 403 https://shop.app/pay/hop?analytics_trace_id=92ccb91a-5aa0-4d8d-8a95-14aa248d84b9&target_origin=https%3A%2F%2Ftapkaarten.
+collectie/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=de621f13-7048-4b64-899b-97c32e2fa17c&target_origin=https%3A%2F%2Ftapkaarten.
+winkelwagen/desktop 403 https://shop.app/pay/hop?analytics_trace_id=02278bc4-27c0-48a0-9099-0dda20eb5b1e&target_origin=https%3A%2F%2Ftapkaarten.
+winkelwagen/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=bdca0ab6-a7a2-4112-9be0-94bafb693c3f&target_origin=https%3A%2F%2Ftapkaarten.
+verzending/desktop 403 https://shop.app/pay/hop?analytics_trace_id=1f301d44-1ea1-4d4c-95ad-c2f0d3e7804c&target_origin=https%3A%2F%2Ftapkaarten.
+verzending/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=651ce777-557e-4574-87eb-0bf0ce4a241e&target_origin=https%3A%2F%2Ftapkaarten.
+contact/desktop 403 https://shop.app/pay/hop?analytics_trace_id=dba0e428-307e-4530-a9e1-79100b6a1075&target_origin=https%3A%2F%2Ftapkaarten.
+contact/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=163a2b96-1737-405c-9b44-aa8f25496eff&target_origin=https%3A%2F%2Ftapkaarten.

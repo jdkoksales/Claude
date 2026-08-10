@@ -22,24 +22,31 @@ jobs:
           ref: claude/3d-product-animations-btyc7y
 
       - name: Downloaden
+        # Geen externe pakketten: de runner heeft Pillow niet, en de breedte en
+        # hoogte van een PNG staan gewoon op een vaste plek in de kop. En geen
+        # enkel bestand mag de rest van de lijst meeslepen, dus elke stap kan
+        # falen zonder de lus af te breken.
         run: |
-          mkdir -p webshop/hero-voorstellen/ai
+          mkdir -p webshop/hero-voorstellen/ai preview
           : > preview/beeld-log.txt
-          # Elke regel: <bestandsnaam> <url>
+          mislukt=0
           while read -r naam url; do
             [ -z "$naam" ] && continue
             case "$naam" in \#*) continue ;; esac
             doel="webshop/hero-voorstellen/ai/$naam"
-            code=$(curl -sS -L -o "$doel" -w '%{http_code}' "$url" || echo mislukt)
+            code=$(curl -sS -L -o "$doel" -w '%{http_code}' "$url" || echo 000)
             maat=$(stat -c%s "$doel" 2>/dev/null || echo 0)
-            echo "$naam  status $code  $maat bytes" >> preview/beeld-log.txt
-            if [ "$code" != "200" ] || [ "$maat" -lt 10000 ]; then
-              echo "  LET OP: niet goed opgehaald" >> preview/beeld-log.txt
-              rm -f "$doel"
+            if [ "$code" = "200" ] && [ "$maat" -ge 10000 ]; then
+              afm=$(python3 -c "import struct,sys; d=open(sys.argv[1],'rb').read(26); print('%dx%d' % struct.unpack('>II', d[16:24]))" "$doel" 2>/dev/null || echo "?x?")
+              echo "$naam  $code  $maat bytes  $afm" >> preview/beeld-log.txt
             else
-              python3 -c "from PIL import Image; b=Image.open('$doel'); print(f'  {b.size[0]}x{b.size[1]} {b.mode}')" >> preview/beeld-log.txt
+              echo "$naam  MISLUKT status $code, $maat bytes" >> preview/beeld-log.txt
+              rm -f "$doel"
+              mislukt=$((mislukt + 1))
             fi
           done < preview/beeld-urls.txt
+          echo "" >> preview/beeld-log.txt
+          echo "$mislukt van de bestanden mislukt" >> preview/beeld-log.txt
           cat preview/beeld-log.txt
 
       - name: Vastleggen

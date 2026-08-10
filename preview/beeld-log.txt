@@ -1,1 +1,5 @@
-hero-ai-desktop.png  status 200  5661596 bytes
+hero-ai-desktop.png  200  5661596 bytes  2752x1536
+hero-ai-tablet.png  200  4722831 bytes  2400x1792
+hero-ai-telefoon.png  200  4611505 bytes  1536x2752
+
+0 van de bestanden mislukt

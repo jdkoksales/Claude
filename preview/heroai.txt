@@ -1,5 +1,4 @@
-GEVONDEN: 1 punten
- - telefoon: rekenlink ligt over het bordje heen (172x46px)
+GEEN AFWIJKINGEN GEVONDEN
 
 desktop 1440x900 — thema 196964024697
    bestand: tk3-hero-ai-desktop.jpg  (bron 1800x1005, vlak 1440x791)
@@ -30,7 +29,7 @@ tablet 900x1000 — thema 196964024697
    bordje voor 100% zichtbaar binnen het scherm
 
 telefoon 390x844 — thema 196964024697
-   bestand: tk3-hero-ai-telefoon.jpg  (bron 900x1612, vlak 390x347)
+   bestand: tk3-hero-ai-telefoon.jpg  (bron 900x1612, vlak 390x409)
    object-fit cover, object-position 50% 100%
    bordje op het scherm: x 119–291, y 428–762 (335px hoog)
    hero 735px hoog, kop rgb(255, 255, 255), onderkop rgba(255, 255, 255, 0.84)
@@ -39,6 +38,6 @@ telefoon 390x844 — thema 196964024697
    botsing kop: geen
    botsing onderkop: geen
    botsing knoppen: geen
-   botsing rekenlink: 172x46px
-   hoogtes: {"wrap":338,"kop":79,"sub":72,"knoppen":53,"calc":46,"foto":347}, venster 844px
+   botsing rekenlink: geen
+   hoogtes: {"wrap":276,"kop":79,"sub":72,"knoppen":53,"calc":0,"foto":409}, venster 844px
    bordje voor 100% zichtbaar binnen het scherm

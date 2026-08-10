@@ -757,3 +757,4 @@ html,body{overflow-x:clip}
     -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 15%);
     mask-image:linear-gradient(180deg,transparent 0,#000 15%)}.tk3 .hero-foto img{object-position:50% bottom}}
 @media(min-width:1024px){.tk3 .hero .wrap{padding-left:50%}.tk3 .hero h1,.tk3 .hero .sub{margin-left:0;margin-right:0;max-width:none;text-align:left}.tk3 .hero .controls{justify-content:flex-start}.tk3 .hero .hero-calc{margin-left:0;margin-right:auto}}
+@media(max-width:599px){.tk3 .hero .hero-calc{display:none}}

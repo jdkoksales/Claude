@@ -1038,3 +1038,9 @@ footer{background:linear-gradient(115deg,#fdfdfe,#fdf1f5);padding:88px 0 44px}
   .hero .controls{justify-content:flex-start}
   .hero .hero-calc{margin-left:0;margin-right:auto}
 }
+/* Op een telefoon is er geen hoogte over voor een tweede, zachtere ingang: de
+   rekenlink kwam 46px over het bordje te liggen. Kop, kiezer en Kopen blijven;
+   de rekenhulp staat verderop op de pagina toch nog een keer. */
+@media(max-width:599px){
+  .hero .hero-calc{display:none}
+}

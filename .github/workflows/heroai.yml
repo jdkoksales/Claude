@@ -1,0 +1,154 @@
+name: Nieuwe hero nameten
+
+# Kijkt of de gegenereerde hero op elke schermgrootte klopt: het juiste
+# bestand, witte tekst op de oranje foto, en — het belangrijkste — of de
+# uitsnede de standaard niet half wegsnijdt.
+on:
+  workflow_dispatch:
+  push:
+    branches: [claude/3d-product-animations-btyc7y]
+    paths: ['.github/workflows/heroai.yml', 'preview/heroai-trigger.txt']
+
+permissions:
+  contents: write
+
+jobs:
+  meten:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: claude/3d-product-animations-btyc7y
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Playwright installeren
+        run: npm i -D playwright && npx playwright install --with-deps chromium
+
+      - name: Meten
+        run: |
+          mkdir -p preview
+          cat > heroai.mjs <<'JS'
+          import { chromium } from 'playwright';
+          import fs from 'fs';
+
+          const BASE = 'https://ikep5e-3q.myshopify.com';
+          const PV = '?preview_theme_id=196964024697';
+          const log = [];
+          const fouten = [];
+
+          // Waar het witte paneel in elk bronbeeld staat, opgemeten op het
+          // bestand zelf. Valt dat bereik buiten de zichtbare uitsnede, dan
+          // snijdt object-fit de standaard eraf.
+          const SCHERMEN = [
+            ['desktop',  1440, 900,  'desktop',  0.27, 0.48],
+            ['tablet',   900,  1000, 'tablet',   0.39, 0.63],
+            ['telefoon', 390,  844,  'telefoon', 0.30, 0.75],
+          ];
+
+          const b = await chromium.launch();
+          for (const [naam, w, h, bestand, paneelLinks, paneelRechts] of SCHERMEN) {
+            const ctx = await b.newContext({ viewport: { width: w, height: h }, locale: 'nl-NL' });
+            const p = await ctx.newPage();
+            await p.goto(BASE + '/' + PV, { waitUntil: 'load', timeout: 60000 });
+            await p.waitForTimeout(3000);
+            await p.evaluate(() => {
+              document.querySelectorAll('#preview-bar-iframe, #shopify-pc__banner').forEach((el) => el.remove());
+            });
+
+            const m = await p.evaluate(() => {
+              const hero = document.querySelector('.tk3 .hero');
+              const img = hero && hero.querySelector('.hero-foto img');
+              if (!hero || !img) return null;
+              const r = img.getBoundingClientRect();
+              const cs = getComputedStyle(img);
+              const kop = hero.querySelector('h1');
+              const sub = hero.querySelector('.sub');
+              const knop = hero.querySelector('.buy');
+              const zicht = (el) => {
+                if (!el) return false;
+                const q = el.getBoundingClientRect();
+                return q.width > 0 && q.height > 0;
+              };
+
+              // object-fit: cover met een verschoven object-position. Reken uit
+              // welk stuk van de bron daadwerkelijk in beeld valt.
+              const nw = img.naturalWidth, nh = img.naturalHeight;
+              const schaal = Math.max(r.width / nw, r.height / nh);
+              const dw = nw * schaal;
+              const posX = parseFloat(cs.objectPosition) / 100;
+              const offsetX = (r.width - dw) * posX;
+              const zichtbaar = [(-offsetX) / schaal / nw, (-offsetX + r.width) / schaal / nw];
+
+              return {
+                themaId: (window.Shopify && Shopify.theme && Shopify.theme.id) || 'onbekend',
+                bron: (img.currentSrc || img.src).split('/').pop().split('?')[0],
+                natuurlijk: [nw, nh],
+                vlak: [Math.round(r.width), Math.round(r.height)],
+                objectPosition: cs.objectPosition,
+                objectFit: cs.objectFit,
+                zichtbaar,
+                heroHoog: Math.round(hero.getBoundingClientRect().height),
+                kopKleur: kop ? getComputedStyle(kop).color : null,
+                kopTekst: kop ? kop.innerText.replace(/\s+/g, ' ').slice(0, 60) : null,
+                subKleur: sub ? getComputedStyle(sub).color : null,
+                kopZichtbaar: zicht(kop), subZichtbaar: zicht(sub), knopZichtbaar: zicht(knop),
+                oudeShots: !!hero.querySelector('.shots'),
+                overloop: Math.max(0, document.documentElement.scrollWidth - innerWidth),
+              };
+            });
+
+            if (!m) { fouten.push(`${naam}: hero of foto niet gevonden`); await ctx.close(); continue; }
+
+            log.push(`\n${naam} ${w}x${h} — thema ${m.themaId}`);
+            log.push(`   bestand: ${m.bron}  (bron ${m.natuurlijk[0]}x${m.natuurlijk[1]}, vlak ${m.vlak[0]}x${m.vlak[1]})`);
+            log.push(`   object-fit ${m.objectFit}, object-position ${m.objectPosition}`);
+            log.push(`   zichtbaar deel van de bron: ${(m.zichtbaar[0] * 100).toFixed(0)}% tot ${(m.zichtbaar[1] * 100).toFixed(0)}%`);
+            log.push(`   paneel staat op ${(paneelLinks * 100).toFixed(0)}% tot ${(paneelRechts * 100).toFixed(0)}%`);
+            log.push(`   hero ${m.heroHoog}px hoog, kop ${m.kopKleur}, onderkop ${m.subKleur}`);
+            log.push(`   kop "${m.kopTekst}"`);
+            log.push(`   overloop ${m.overloop}px, oude wisselfoto's nog aanwezig: ${m.oudeShots}`);
+
+            if (!m.bron.includes(bestand)) fouten.push(`${naam}: laadt ${m.bron} in plaats van de ${bestand}-versie`);
+            if (m.natuurlijk[0] === 0) fouten.push(`${naam}: de foto is niet geladen`);
+            if (m.objectFit !== 'cover') fouten.push(`${naam}: object-fit is ${m.objectFit}`);
+            if (m.kopKleur !== 'rgb(255, 255, 255)') fouten.push(`${naam}: de kop is ${m.kopKleur} en niet wit`);
+            if (!m.kopZichtbaar) fouten.push(`${naam}: de kop is niet zichtbaar`);
+            if (!m.subZichtbaar) fouten.push(`${naam}: de onderkop is niet zichtbaar`);
+            if (!m.knopZichtbaar) fouten.push(`${naam}: de koopknop is niet zichtbaar`);
+            if (m.oudeShots) fouten.push(`${naam}: de oude wisselfoto's staan er nog`);
+            if (m.overloop > 0) fouten.push(`${naam}: pagina schuift ${m.overloop}px opzij`);
+            if (m.heroHoog < 400) fouten.push(`${naam}: hero maar ${m.heroHoog}px hoog`);
+            if (paneelLinks < m.zichtbaar[0] || paneelRechts > m.zichtbaar[1]) {
+              fouten.push(`${naam}: de standaard wordt afgesneden — paneel ` +
+                `${(paneelLinks * 100).toFixed(0)}%-${(paneelRechts * 100).toFixed(0)}% valt buiten ` +
+                `${(m.zichtbaar[0] * 100).toFixed(0)}%-${(m.zichtbaar[1] * 100).toFixed(0)}%`);
+            }
+
+            await p.screenshot({ path: `preview/heroai-${naam}.png` });
+            await ctx.close();
+          }
+          await b.close();
+
+          const kop = fouten.length
+            ? `GEVONDEN: ${fouten.length} punten\n` + fouten.map((f) => ' - ' + f).join('\n')
+            : 'GEEN AFWIJKINGEN GEVONDEN';
+          fs.writeFileSync('preview/heroai.txt', kop + '\n' + log.join('\n') + '\n');
+          console.log(kop);
+          JS
+          node heroai.mjs
+
+      - name: Vastleggen
+        if: always()
+        run: |
+          git config user.name Claude
+          git config user.email noreply@anthropic.com
+          git add preview/heroai.txt preview/heroai-*.png || true
+          git commit -m "Uitkomst van de nieuwe hero" || exit 0
+          for poging in 1 2 3 4; do
+            git pull --rebase origin claude/3d-product-animations-btyc7y && \
+              git push origin HEAD:claude/3d-product-animations-btyc7y && break
+            sleep $((poging * 4))
+          done

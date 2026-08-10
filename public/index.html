@@ -54,6 +54,19 @@
       <g id="i-sparkle" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
         <path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9zM18.5 15.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8z" />
       </g>
+      <g id="i-heart" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 20s-7.5-4.7-7.5-9.7A4.3 4.3 0 0 1 12 7.4a4.3 4.3 0 0 1 7.5 2.9C19.5 15.3 12 20 12 20z" />
+      </g>
+      <g id="i-camera" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 8.5h3.5L8 6h8l1.5 2.5H21v11H3z" />
+        <circle cx="12" cy="13.5" r="3.5" />
+      </g>
+      <g id="i-comment" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 5.5h16v11H9l-5 4z" />
+      </g>
+      <g id="i-trash" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 6.5h16M9.5 6.5V4h5v2.5M6.5 6.5l1 14h9l1-14M10.5 10v7M13.5 10v7" />
+      </g>
       <g id="i-mark" fill="none" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="9.5" cy="12" r="6.2" stroke="currentColor" stroke-width="1.9" />
         <circle cx="14.5" cy="12" r="6.2" stroke="currentColor" stroke-width="1.9" opacity=".5" />
@@ -76,6 +89,7 @@
     <main id="views">
       <section class="view" data-view="vandaag"></section>
       <section class="view" data-view="week" hidden></section>
+      <section class="view" data-view="momenten" hidden></section>
       <section class="view" data-view="doelen" hidden></section>
       <section class="view" data-view="taken" hidden></section>
       <section class="view" data-view="meer" hidden></section>
@@ -87,6 +101,9 @@
       </button>
       <button class="tab" data-tab="week" role="tab">
         <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-week" /></svg>Week
+      </button>
+      <button class="tab" data-tab="momenten" role="tab">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-heart" /></svg>Momenten
       </button>
       <button class="tab" data-tab="doelen" role="tab">
         <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-target" /></svg>Doelen

@@ -44,10 +44,30 @@ export function occursOn(event, dateKey) {
   }
 }
 
-/** Alle voorkomens van één afspraak binnen [from, to]. */
+/** Loopt deze afspraak over meerdere dagen? Zo ja: t/m welke dag. */
+export function spanEnd(event) {
+  return event.endDate && event.endDate > event.date ? event.endDate : null;
+}
+
+/**
+ * Alle voorkomens van één afspraak binnen [from, to].
+ *
+ * Een vakantie beslaat meerdere dagen en verschijnt dus op elke dag ertussen,
+ * met daarbij welke dag van hoeveel het is. Herhalen én meerdaags tegelijk kan
+ * niet — dat wordt in de invoercontrole al tegengehouden.
+ */
 export function expandEvent(event, from, to) {
+  const until = spanEnd(event);
   if (!event.repeat) {
-    return event.date >= from && event.date <= to ? [occurrence(event, event.date)] : [];
+    const first = event.date;
+    const last = until || event.date;
+    if (last < from || first > to) return [];
+    const total = daysBetween(first, last) + 1;
+    const out = [];
+    for (const day of eachDay(first > from ? first : from, last < to ? last : to)) {
+      out.push(occurrence(event, day, daysBetween(first, day) + 1, total));
+    }
+    return out;
   }
   const out = [];
   const first = event.date > from ? event.date : from;
@@ -59,13 +79,26 @@ export function expandEvent(event, from, to) {
   return out;
 }
 
-function occurrence(event, dateKey) {
+function occurrence(event, dateKey, dayIndex = 1, dayCount = 1) {
   return {
     ...event,
     date: dateKey,
     occurrenceId: `${event.id}@${dateKey}`,
     isRepeat: Boolean(event.repeat),
+    dayIndex,
+    dayCount,
   };
+}
+
+/**
+ * Onder welke sleutel horen de foto's en opmerkingen van dit voorkomen?
+ *
+ * Bij een vakantie van tien dagen wil je één album, niet tien; bij een
+ * afspraak die zich herhaalt juist een album per keer. Vandaar: herhalingen
+ * krijgen de dag zelf, al het andere de begindatum van de afspraak.
+ */
+export function albumDate(event, occurrenceDate) {
+  return event.repeat ? (occurrenceDate || event.date) : event.date;
 }
 
 /** Alle voorkomens van een lijst afspraken, gesorteerd op datum en tijd. */

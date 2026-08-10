@@ -3,16 +3,18 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { config } from './config.js';
 import {
-  db, find, newId, remove, replaceStore, storeKind, touch, withStore,
+  db, dropPhoto, find, getPhoto, newId, putPhoto, remove, replaceStore,
+  storeKind, touch, withStore,
 } from './db.js';
 import {
   currentUser, hashPin, isValidPinFormat, login, logout, requireAuth, verifyPin,
 } from './auth.js';
 import { addDays, todayKey, weekStart } from './lib/dates.js';
-import { describeRepeat, expandEvents } from './lib/recurrence.js';
+import { albumDate, describeRepeat, expandEvents } from './lib/recurrence.js';
 import { BOTH, goalStats, openToday } from './lib/goals.js';
 import {
-  InputError, REMINDER_CHOICES, entryInput, eventInput, goalInput, taskInput,
+  CATEGORIES, FUN, InputError, REMINDER_CHOICES, commentInput, entryInput,
+  eventInput, goalInput, photoInput, taskInput,
 } from './lib/validate.js';
 import {
   addSubscription, notify, publicKey, pushReady, removeSubscription,
@@ -85,6 +87,7 @@ app.get('/api/bootstrap', (req, res) => {
     timezone: config.app.timezone,
     today: today(),
     reminderChoices: REMINDER_CHOICES,
+    categories: CATEGORIES,
   });
 });
 
@@ -233,6 +236,7 @@ api.get('/state', (req, res, next) => {
       })),
       goals,
       tasks: store.tasks,
+      photos: store.photos || [],
       openToday: openToday(
         store.goals.filter((g) => g.ownerId === req.user.id || g.ownerId === BOTH),
         now,
@@ -276,9 +280,22 @@ api.patch('/events/:id', (req, res, next) => {
   }
 });
 
-api.delete('/events/:id', (req, res) => {
-  const ok = remove('events', req.params.id);
-  res.status(ok ? 200 : 404).json(ok ? { ok: true } : { error: 'Afspraak niet gevonden.' });
+api.delete('/events/:id', async (req, res, next) => {
+  try {
+    const store = db();
+    // Anders blijven de foto's als wees achter in de opslag.
+    const orphans = (store.photos || []).filter((p) => p.eventId === req.params.id);
+    for (const photo of orphans) await dropPhoto(photo.id);
+    if (orphans.length) {
+      store.photos = store.photos.filter((p) => p.eventId !== req.params.id);
+      touch();
+    }
+    const ok = remove('events', req.params.id);
+    return res.status(ok ? 200 : 404)
+      .json(ok ? { ok: true, photosRemoved: orphans.length } : { error: 'Afspraak niet gevonden.' });
+  } catch (err) {
+    return next(err);
+  }
 });
 
 // ── Doelen ─────────────────────────────────────────────────────────────────
@@ -384,6 +401,143 @@ api.delete('/goals/:id/entries/:entryId', (req, res) => {
   goal.updatedAt = new Date().toISOString();
   touch();
   return res.json({ goal: { ...goal, stats: goalStats(goal, today()) } });
+});
+
+// ── Momenten: foto's en opmerkingen bij een uitje of vakantie ──────────────
+
+/**
+ * Foto's en opmerkingen hangen aan een album, niet aan de afspraak als geheel:
+ * een vakantie van tien dagen krijgt één album, terwijl een afspraak die zich
+ * herhaalt er een per keer krijgt. Zie albumDate().
+ */
+function albumFor(req) {
+  const event = find('events', req.params.id);
+  if (!event) {
+    throw Object.assign(new Error('Afspraak niet gevonden.'), { status: 404 });
+  }
+  return { event, date: albumDate(event, req.body?.date || req.query.date) };
+}
+
+api.post('/events/:id/photos', async (req, res, next) => {
+  try {
+    const { event, date } = albumFor(req);
+    const { mime, bytes, caption } = photoInput(req.body);
+    const id = newId();
+    await putPhoto(id, mime, bytes);
+    const store = db();
+    store.photos ||= [];
+    const photo = {
+      id,
+      eventId: event.id,
+      date,
+      mime,
+      size: bytes.length,
+      caption,
+      userId: req.user.id,
+      createdAt: new Date().toISOString(),
+    };
+    store.photos.push(photo);
+    touch();
+    res.status(201).json({ photo });
+  } catch (err) {
+    next(err);
+  }
+});
+
+/**
+ * De afbeelding zelf. De naam is een willekeurige uuid die nooit verandert,
+ * dus de browser mag hem eeuwig bewaren; dat scheelt een hoop verkeer bij het
+ * terugbladeren door oude vakanties.
+ */
+api.get('/photos/:photoId', async (req, res, next) => {
+  try {
+    const meta = (db().photos || []).find((p) => p.id === req.params.photoId);
+    if (!meta) return res.status(404).json({ error: 'Foto niet gevonden.' });
+    const bytes = await getPhoto(meta.id);
+    if (!bytes) return res.status(404).json({ error: 'Foto niet gevonden.' });
+    res.setHeader('Content-Type', meta.mime);
+    res.setHeader('Cache-Control', 'private, max-age=31536000, immutable');
+    return res.end(Buffer.from(bytes));
+  } catch (err) {
+    return next(err);
+  }
+});
+
+api.delete('/photos/:photoId', async (req, res, next) => {
+  try {
+    const store = db();
+    const idx = (store.photos || []).findIndex((p) => p.id === req.params.photoId);
+    if (idx === -1) return res.status(404).json({ error: 'Foto niet gevonden.' });
+    await dropPhoto(req.params.photoId);
+    store.photos.splice(idx, 1);
+    touch();
+    return res.json({ ok: true });
+  } catch (err) {
+    return next(err);
+  }
+});
+
+api.post('/events/:id/comments', (req, res, next) => {
+  try {
+    const { event, date } = albumFor(req);
+    const { text } = commentInput(req.body);
+    event.comments ||= [];
+    const comment = {
+      id: newId(),
+      date,
+      text,
+      userId: req.user.id,
+      createdAt: new Date().toISOString(),
+    };
+    event.comments.push(comment);
+    touch();
+    res.status(201).json({ comment });
+  } catch (err) {
+    next(err);
+  }
+});
+
+api.delete('/events/:id/comments/:commentId', (req, res) => {
+  const event = find('events', req.params.id);
+  if (!event) return res.status(404).json({ error: 'Afspraak niet gevonden.' });
+  const before = (event.comments || []).length;
+  event.comments = (event.comments || []).filter((c) => c.id !== req.params.commentId);
+  if (event.comments.length === before) {
+    return res.status(404).json({ error: 'Opmerking niet gevonden.' });
+  }
+  touch();
+  return res.json({ ok: true });
+});
+
+/**
+ * Alle uitjes en vakanties op een rij, gesplitst in wat nog komt en wat
+ * geweest is. Herhalende afspraken tellen hier niet mee: een wekelijkse
+ * sportles is geen moment om op terug te kijken.
+ */
+api.get('/moments', (req, res) => {
+  const store = db();
+  const now = today();
+  const photos = store.photos || [];
+
+  const items = store.events
+    .filter((e) => FUN.includes(e.category) && !e.repeat)
+    .map((event) => {
+      const end = event.endDate || event.date;
+      const album = albumDate(event, event.date);
+      return {
+        ...event,
+        endsOn: end,
+        upcoming: end >= now,
+        photoCount: photos.filter((p) => p.eventId === event.id && p.date === album).length,
+        commentCount: (event.comments || []).filter((c) => c.date === album).length,
+      };
+    });
+
+  res.json({
+    today: now,
+    upcoming: items.filter((i) => i.upcoming).sort((a, b) => (a.date < b.date ? -1 : 1)),
+    past: items.filter((i) => !i.upcoming).sort((a, b) => (a.endsOn > b.endsOn ? -1 : 1)),
+  });
 });
 
 // ── Taken ──────────────────────────────────────────────────────────────────

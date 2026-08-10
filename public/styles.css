@@ -171,7 +171,7 @@ main {
   right: 0;
   z-index: 30;
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   gap: 2px;
   padding: 7px 6px calc(7px + env(safe-area-inset-bottom));
   background: color-mix(in srgb, var(--surface) 86%, transparent);
@@ -190,12 +190,13 @@ main {
   border-radius: 12px;
   background: none;
   color: var(--muted);
-  font-size: .67rem;
+  font-size: .61rem;
   font-weight: 550;
+  letter-spacing: -.01em;
   cursor: pointer;
   transition: color .16s ease, background-color .16s ease;
 }
-.tab svg { width: 21px; height: 21px; stroke-width: 1.7; }
+.tab svg { width: 20px; height: 20px; stroke-width: 1.7; }
 .tab.is-active { color: var(--accent); background: var(--accent-soft); }
 .tab.is-active svg { stroke-width: 2.1; }
 
@@ -510,6 +511,131 @@ button.row { cursor: pointer; }
 .ev.is-free svg { width: 17px; height: 17px; stroke-width: 2; }
 
 .legend { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+
+/* ── Momenten: uitjes, vakanties, foto's ───────────────────────────────── */
+
+.chip.fun { background: transparent; padding: 2px 4px; font-size: .95rem; }
+
+/* De afteller is het hart van dit scherm, dus die mag opvallen. */
+.count {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 11px;
+  border-radius: 999px;
+  font-size: .78rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  background: var(--surface-2);
+  color: var(--text-soft);
+}
+.count.soon { background: var(--accent); color: var(--accent-ink); }
+.count.now {
+  background: color-mix(in srgb, var(--warm) 18%, transparent);
+  color: var(--warm);
+}
+.count.past { background: var(--surface-2); color: var(--muted); }
+
+.moments { display: flex; flex-direction: column; gap: 11px; }
+
+.moment {
+  display: flex;
+  gap: 13px;
+  align-items: center;
+  width: 100%;
+  padding: 11px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+  text-align: left;
+  cursor: pointer;
+  transition: transform .1s ease, box-shadow .16s ease;
+}
+.moment:active { transform: scale(.99); }
+
+.moment-cover {
+  width: 74px;
+  height: 74px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  object-fit: cover;
+  background: var(--surface-2);
+}
+.moment-cover.placeholder { display: grid; place-items: center; color: var(--muted); }
+.moment-cover.placeholder svg { width: 26px; height: 26px; stroke-width: 1.5; }
+
+.moment-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.moment-title { font-size: 1rem; font-weight: 620; letter-spacing: -.01em; }
+.moment-meta { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 2px; }
+.moment-meta .chip svg { width: 13px; height: 13px; stroke-width: 2; }
+
+/* ── Album ─────────────────────────────────────────────────────────────── */
+
+.album-head { display: flex; flex-direction: column; gap: 7px; align-items: flex-start; }
+.album-sub {
+  font-size: .78rem;
+  font-weight: 700;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--text-soft);
+  margin-top: 4px;
+}
+
+.photo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: 7px;
+}
+.photo {
+  aspect-ratio: 1;
+  padding: 0;
+  border: 0;
+  border-radius: 11px;
+  overflow: hidden;
+  background: var(--surface-2);
+  cursor: pointer;
+}
+.photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.photo-large {
+  width: 100%;
+  max-height: 62dvh;
+  object-fit: contain;
+  border-radius: 13px;
+  background: var(--surface-2);
+}
+
+.comments { display: flex; flex-direction: column; gap: 9px; }
+.comment {
+  padding: 10px 13px;
+  border-radius: 13px;
+  background: var(--surface-2);
+}
+.comment-head {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 3px;
+  font-size: .78rem;
+}
+.comment-head strong { font-weight: 620; }
+.comment-head .muted { margin-left: auto; }
+.comment p { font-size: .92rem; white-space: pre-wrap; overflow-wrap: anywhere; }
+
+.comment-form { display: flex; gap: 8px; align-items: flex-end; }
+.comment-form textarea {
+  flex: 1;
+  min-height: var(--tap);
+  padding: 11px 13px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  resize: vertical;
+}
+.comment-form textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: var(--surface);
+}
 
 /* ── Poort (inloggen / inrichten) ──────────────────────────────────────── */
 

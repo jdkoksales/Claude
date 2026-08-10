@@ -98,6 +98,70 @@ function nfmt(n) {
 
 const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
 
+const CATEGORY_LABEL = { gewoon: 'Gewoon', leuk: 'Leuk ding', vakantie: 'Vakantie' };
+
+/**
+ * Hoe lang nog? In hele dagen, want daar denk je in als je ergens naar
+ * uitkijkt. Een vakantie die al bezig is telt niet af maar zegt hoe ver je bent.
+ */
+function countdown(startDate, endDate, today) {
+  const end = endDate || startDate;
+  if (startDate > today) {
+    const days = daysBetween(today, startDate);
+    if (days === 1) return { label: 'morgen', soon: true };
+    if (days <= 7) return { label: `over ${plural(days, 'dag', 'dagen')}`, soon: true };
+    return { label: `over ${plural(days, 'dag', 'dagen')}`, soon: false };
+  }
+  if (end < today) {
+    const days = daysBetween(end, today);
+    if (days === 1) return { label: 'gisteren', past: true };
+    if (days < 31) return { label: `${plural(days, 'dag', 'dagen')} geleden`, past: true };
+    const months = Math.round(days / 30.4);
+    if (months < 24) return { label: `${plural(months, 'maand', 'maanden')} geleden`, past: true };
+    return { label: `${plural(Math.round(days / 365), 'jaar', 'jaar')} geleden`, past: true };
+  }
+  if (startDate === today && end === today) return { label: 'vandaag!', now: true };
+  return { label: `dag ${daysBetween(startDate, today) + 1} van ${daysBetween(startDate, end) + 1}`, now: true };
+}
+
+function daysBetween(a, b) {
+  const [ay, am, ad] = a.split('-').map(Number);
+  const [by, bm, bd] = b.split('-').map(Number);
+  return Math.round((Date.UTC(by, bm - 1, bd) - Date.UTC(ay, am - 1, ad)) / 86400000);
+}
+
+/** Onder welke sleutel horen de foto's van dit voorkomen? Zie de server. */
+const albumDate = (event, occurrenceDate) => (
+  event.repeat ? (occurrenceDate || event.date) : event.date
+);
+
+/**
+ * Verkleint een foto in de browser voordat hij wordt verstuurd. Een moderne
+ * telefoonfoto is al gauw 5 MB; zo blijft er iets van een paar honderd kB over
+ * dat er op een scherm nog steeds scherp uitziet.
+ */
+function shrinkImage(file, maxSide = 1600, quality = 0.78) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = () => reject(new Error('Kon dit bestand niet lezen.'));
+    reader.onload = () => {
+      const img = new Image();
+      img.onerror = () => reject(new Error('Dit bestand is geen afbeelding.'));
+      img.onload = () => {
+        const scale = Math.min(1, maxSide / Math.max(img.width, img.height));
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.round(img.width * scale);
+        canvas.height = Math.round(img.height * scale);
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
 // ── Verbinding met de server ───────────────────────────────────────────────
 
 async function api(path, { method = 'GET', body } = {}) {
@@ -130,6 +194,8 @@ const state = {
   weekOffset: 0,
   goalFilter: 'alles',
   showDoneTasks: false,
+  moments: null,
+  momentFilter: 'komt',
 };
 
 const userById = (id) => state.data?.users.find((u) => u.id === id) || null;
@@ -286,10 +352,30 @@ function eventForm(existing, presetDate) {
     h('input', { type: 'date', name: 'repeatUntil', value: ev.repeat?.until || '' }));
   repeatUntil.hidden = repeatFreq === 'none';
 
+  let category = ev.category || 'gewoon';
+  const endRow = field('Tot en met',
+    h('input', { type: 'date', name: 'endDate', value: ev.endDate || '' }));
+  endRow.hidden = category !== 'vakantie';
+
   const form = h('form', { class: 'form' },
     field('Wat', h('input', { name: 'title', value: ev.title || '', placeholder: 'Bijv. tandarts', required: true, maxlength: '120' })),
+    field('Soort', segmented(
+      [
+        { value: 'gewoon', label: 'Gewoon' },
+        { value: 'leuk', label: 'Leuk ding' },
+        { value: 'vakantie', label: 'Vakantie' },
+      ],
+      category,
+      (v) => {
+        category = v;
+        endRow.hidden = v !== 'vakantie';
+        // Een vakantie duurt de hele dag; tijden invullen slaat nergens op.
+        if (v === 'vakantie' && !allDay) $('input[name=allDay]', form).click();
+      },
+    )),
     field('Van wie', ownerSelect(ev.ownerId || state.me.id)),
     field('Datum', h('input', { type: 'date', name: 'date', value: ev.date || presetDate || state.data.today, required: true })),
+    endRow,
     h('label', { class: 'switch' },
       h('input', {
         type: 'checkbox',
@@ -319,15 +405,21 @@ function eventForm(existing, presetDate) {
     repeatUntil,
     field('Notitie', h('textarea', { name: 'notes', maxlength: '2000' }, ev.notes || '')),
     err,
+    existing && existing.id && h('button', {
+      class: 'btn block',
+      type: 'button',
+      onclick: () => openSheet(ev.title, () => albumSheet(ev, ev.date)),
+    }, "Foto's en opmerkingen"),
     h('div', { class: 'form-actions' },
-      existing && h('button', {
+      existing && existing.id && h('button', {
         class: 'btn danger',
         type: 'button',
         onclick: () => confirmSheet('Afspraak verwijderen',
-          ev.repeat ? 'Deze afspraak herhaalt zich. De hele reeks wordt verwijderd.' : 'Weet je het zeker?',
+          ev.repeat ? 'Deze afspraak herhaalt zich. De hele reeks wordt verwijderd.'
+            : 'De afspraak en de foto\'s die eraan hangen worden verwijderd.',
           () => api(`/events/${ev.id}`, { method: 'DELETE' })),
       }, 'Verwijderen'),
-      h('button', { class: 'btn primary', type: 'submit' }, existing ? 'Opslaan' : 'Toevoegen')));
+      h('button', { class: 'btn primary', type: 'submit' }, existing?.id ? 'Opslaan' : 'Toevoegen')));
 
   timeRow.hidden = allDay;
   reminderRow.hidden = allDay;
@@ -342,12 +434,14 @@ function eventForm(existing, presetDate) {
       end: values.end || null,
       location: values.location || '',
       notes: values.notes || '',
+      category,
+      endDate: category === 'vakantie' ? (values.endDate || null) : null,
       reminderMin: values.reminderMin === '' ? null : Number(values.reminderMin),
       repeat: values.repeatFreq === 'none'
         ? null
         : { freq: values.repeatFreq, interval: 1, until: values.repeatUntil || null },
     };
-    if (existing) await api(`/events/${ev.id}`, { method: 'PATCH', body: payload });
+    if (existing?.id) await api(`/events/${ev.id}`, { method: 'PATCH', body: payload });
     else await api('/events', { method: 'POST', body: payload });
   }));
 
@@ -387,7 +481,7 @@ function goalForm(existing) {
   };
 
   const form = h('form', { class: 'form' },
-    !existing && field('Soort', segmented(
+    !existing?.id && field('Soort', segmented(
       [{ value: 'habit', label: 'Gewoonte' }, { value: 'project', label: 'Project' }],
       kind,
       setKind,
@@ -497,6 +591,18 @@ function personChip(id) {
     ownerName(id));
 }
 
+/**
+ * Uitjes en vakanties openen hun album (daar horen de foto's en opmerkingen);
+ * een tandartsafspraak opent gewoon het formulier, want daar wil je meestal
+ * iets wijzigen en niet terugkijken.
+ */
+function openEvent(ev) {
+  if (ev.category === 'leuk' || ev.category === 'vakantie') {
+    return openSheet(ev.title, () => albumSheet(ev, ev.date));
+  }
+  return openSheet('Afspraak', () => eventForm(ev));
+}
+
 function eventRow(ev, onClick) {
   return h('button', { class: 'ev', type: 'button', onclick: onClick },
     h('span', { class: 'ev-time', text: ev.allDay ? 'hele dag' : ev.start }),
@@ -504,8 +610,15 @@ function eventRow(ev, onClick) {
     h('span', { class: 'ev-main' },
       h('span', { class: 'ev-title', text: ev.title }),
       h('span', { class: 'ev-sub' },
-        [ownerName(ev.ownerId), ev.end && !ev.allDay ? `tot ${ev.end}` : null, ev.location, ev.repeatLabel]
-          .filter(Boolean).join(' · '))));
+        [
+          ownerName(ev.ownerId),
+          ev.dayCount > 1 ? `dag ${ev.dayIndex} van ${ev.dayCount}` : null,
+          ev.end && !ev.allDay ? `tot ${ev.end}` : null,
+          ev.location,
+          ev.repeatLabel,
+        ].filter(Boolean).join(' · '))),
+    ev.category === 'vakantie' ? h('span', { class: 'chip fun' }, '🌴')
+      : ev.category === 'leuk' ? h('span', { class: 'chip fun' }, '✨') : null);
 }
 
 function checkButton(goal) {
@@ -706,7 +819,7 @@ function renderVandaag(root) {
   root.append(card('Agenda vandaag',
     h('button', { class: 'btn ghost', type: 'button', onclick: () => openSheet('Nieuwe afspraak', () => eventForm(null, today)) }, '+ Afspraak'),
     todays.length
-      ? h('div', { class: 'day-body' }, ...todays.map((ev) => eventRow(ev, () => openSheet('Afspraak', () => eventForm(ev)))))
+      ? h('div', { class: 'day-body' }, ...todays.map((ev) => eventRow(ev, () => openEvent(ev))))
       : emptyNote('Niets gepland vandaag. Geniet ervan.', 'calendar-empty')));
 
   const doneCount = mine.filter((g) => g.stats.doneToday).length;
@@ -786,7 +899,7 @@ function renderWeek(root) {
         rel && h('span', { class: 'muted', text: rel })),
       h('div', { class: 'day-body' },
         dayEvents.length
-          ? dayEvents.map((ev) => eventRow(ev, () => openSheet('Afspraak', () => eventForm(ev))))
+          ? dayEvents.map((ev) => eventRow(ev, () => openEvent(ev)))
           : h('button', {
             class: 'ev is-free',
             type: 'button',
@@ -814,6 +927,246 @@ function renderWeek(root) {
           h('span', { class: 'row-end muted', text: `${goal.stats.weekDone}/${goal.stats.weekTarget}` })))));
     }
     root.append(card('Doelen deze week', null, body));
+  }
+}
+
+
+// ── Album: foto's en opmerkingen bij een uitje of vakantie ─────────────────
+
+/**
+ * Het album van één moment. Alles wat hier gebeurt (foto erbij, opmerking,
+ * verwijderen) tekent meteen opnieuw, zodat je niet hoeft te raden of het is
+ * aangekomen.
+ */
+function albumSheet(event, occurrenceDate) {
+  const date = albumDate(event, occurrenceDate);
+  const wrap = h('div', { class: 'form' });
+
+  const draw = () => {
+    const photos = (state.data.photos || [])
+      .filter((p) => p.eventId === event.id && p.date === date)
+      .sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
+    const comments = (event.comments || [])
+      .filter((c) => c.date === date)
+      .sort((a, b) => (a.createdAt < b.createdAt ? -1 : 1));
+    const cd = countdown(event.date, event.endDate, state.data.today);
+
+    const head = h('div', { class: 'album-head' },
+      h('span', { class: `count ${cd.past ? 'past' : cd.now ? 'now' : 'soon'}`, text: cd.label }),
+      h('p', { class: 'muted', text: [
+        event.endDate ? `${shortLabel(event.date)} t/m ${shortLabel(event.endDate)}` : dayLabel(event.date),
+        !event.allDay && event.start ? event.start : null,
+        event.location,
+        ownerName(event.ownerId),
+      ].filter(Boolean).join(' · ') }));
+
+    const grid = photos.length
+      ? h('div', { class: 'photo-grid' }, ...photos.map((photo) => h('button', {
+        class: 'photo',
+        type: 'button',
+        'aria-label': photo.caption || 'Foto bekijken',
+        onclick: () => viewPhoto(photo, event, date),
+      }, h('img', { src: `/api/photos/${photo.id}`, alt: photo.caption || '', loading: 'lazy' }))))
+      : emptyNote('Nog geen foto\'s. Voeg de eerste toe.', 'camera');
+
+    const addPhoto = h('button', { class: 'btn block primary', type: 'button' },
+      icon('camera'), 'Foto toevoegen');
+    addPhoto.addEventListener('click', () => pickPhotos(event, date, addPhoto, draw));
+
+    const commentList = comments.length
+      ? h('div', { class: 'comments' }, ...comments.map((c) => h('div', { class: 'comment' },
+        h('div', { class: 'comment-head' },
+          h('i', { class: 'dot', style: { background: ownerColor(c.userId) } }),
+          h('strong', { text: ownerName(c.userId) }),
+          h('span', { class: 'muted', text: shortLabel(c.createdAt.slice(0, 10)) }),
+          c.userId === state.me.id && h('button', {
+            class: 'icon-btn ghost small',
+            type: 'button',
+            'aria-label': 'Opmerking verwijderen',
+            onclick: async () => {
+              await api(`/events/${event.id}/comments/${c.id}`, { method: 'DELETE' });
+              event.comments = event.comments.filter((x) => x.id !== c.id);
+              draw();
+              refresh();
+            },
+          }, icon('trash'))),
+        h('p', { text: c.text }))))
+      : h('p', { class: 'muted', text: 'Nog geen opmerkingen.' });
+
+    const input = h('textarea', {
+      name: 'text',
+      maxlength: '1000',
+      rows: '2',
+      placeholder: 'Wat wil je hierover onthouden?',
+    });
+    const commentForm = h('form', { class: 'comment-form' },
+      input,
+      h('button', { class: 'btn primary', type: 'submit' }, 'Plaats'));
+
+    commentForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const text = input.value.trim();
+      if (!text) return;
+      try {
+        const res = await api(`/events/${event.id}/comments`, {
+          method: 'POST',
+          body: { text, date },
+        });
+        event.comments = [...(event.comments || []), res.comment];
+        draw();
+        refresh();
+      } catch (err) {
+        toast(err.message);
+      }
+    });
+
+    // replaceChildren() maakt van een null netjes de tekst "null"; anders dan
+    // h() slaat het niets over. Dus eerst zelf de lege plekken eruit.
+    wrap.replaceChildren(...[
+      head,
+      event.notes && h('p', { class: 'muted', text: event.notes }),
+      grid,
+      addPhoto,
+      h('h3', { class: 'album-sub', text: `Opmerkingen${comments.length ? ` · ${comments.length}` : ''}` }),
+      commentList,
+      commentForm,
+      h('button', {
+        class: 'btn block',
+        type: 'button',
+        onclick: () => openSheet('Afspraak aanpassen', () => eventForm(event)),
+      }, 'Gegevens aanpassen'),
+    ].filter(Boolean));
+  };
+
+  draw();
+  return wrap;
+}
+
+/** Kiest foto's, verkleint ze en stuurt ze een voor een op. */
+function pickPhotos(event, date, button, done) {
+  const input = h('input', { type: 'file', accept: 'image/*', multiple: true });
+  input.addEventListener('change', async () => {
+    const files = [...(input.files || [])];
+    if (!files.length) return;
+    button.disabled = true;
+    let ok = 0;
+    for (const [i, file] of files.entries()) {
+      button.textContent = `Bezig… ${i + 1} van ${files.length}`;
+      try {
+        const dataUrl = await shrinkImage(file);
+        const res = await api(`/events/${event.id}/photos`, {
+          method: 'POST',
+          body: { dataUrl, date },
+        });
+        state.data.photos = [...(state.data.photos || []), res.photo];
+        ok += 1;
+      } catch (err) {
+        toast(err.message);
+      }
+    }
+    button.disabled = false;
+    if (ok) toast(ok === 1 ? 'Foto toegevoegd.' : `${ok} foto's toegevoegd.`);
+    done();
+    refresh();
+  });
+  input.click();
+}
+
+/** Eén foto groot, met de mogelijkheid hem weg te halen. */
+function viewPhoto(photo, event, date) {
+  openSheet('Foto', () => h('div', { class: 'form' },
+    h('img', { class: 'photo-large', src: `/api/photos/${photo.id}`, alt: photo.caption || '' }),
+    h('p', { class: 'muted', text: `Geplaatst door ${ownerName(photo.userId)} · ${shortLabel(photo.createdAt.slice(0, 10))}` }),
+    h('div', { class: 'form-actions' },
+      h('button', {
+        class: 'btn',
+        type: 'button',
+        onclick: () => openSheet(event.title, () => albumSheet(event, date)),
+      }, 'Terug'),
+      h('button', {
+        class: 'btn danger',
+        type: 'button',
+        onclick: async () => {
+          try {
+            await api(`/photos/${photo.id}`, { method: 'DELETE' });
+            state.data.photos = state.data.photos.filter((p) => p.id !== photo.id);
+            toast('Foto verwijderd.');
+            openSheet(event.title, () => albumSheet(event, date));
+            refresh();
+          } catch (err) {
+            toast(err.message);
+          }
+        },
+      }, 'Verwijderen'))));
+}
+
+// ── Scherm: Momenten ───────────────────────────────────────────────────────
+
+function momentCard(item) {
+  const cd = countdown(item.date, item.endDate, state.moments.today);
+  const cover = (state.data.photos || []).find((p) => p.eventId === item.id);
+  return h('button', {
+    class: 'moment',
+    type: 'button',
+    onclick: () => openSheet(item.title, () => albumSheet(item, item.date)),
+  },
+  cover
+    ? h('img', { class: 'moment-cover', src: `/api/photos/${cover.id}`, alt: '', loading: 'lazy' })
+    : h('span', { class: 'moment-cover placeholder' },
+      icon(item.category === 'vakantie' ? 'sparkle' : 'heart')),
+  h('span', { class: 'moment-main' },
+    h('span', { class: 'moment-title', text: item.title }),
+    h('span', { class: 'row-sub', text: [
+      item.endDate ? `${shortLabel(item.date)} t/m ${shortLabel(item.endDate)}` : dayLabel(item.date),
+      item.location,
+      ownerName(item.ownerId),
+    ].filter(Boolean).join(' · ') }),
+    h('span', { class: 'moment-meta' },
+      h('span', { class: `count ${cd.past ? 'past' : cd.now ? 'now' : cd.soon ? 'soon' : ''}`, text: cd.label }),
+      item.photoCount ? h('span', { class: 'chip' }, icon('camera'), String(item.photoCount)) : null,
+      item.commentCount ? h('span', { class: 'chip' }, icon('comment'), String(item.commentCount)) : null)));
+}
+
+function renderMomenten(root) {
+  if (!state.moments) {
+    root.append(h('div', { class: 'card' }, h('div', { class: 'spinner' })));
+    return;
+  }
+  const { upcoming, past } = state.moments;
+
+  root.append(h('div', { class: 'card' }, h('div', { class: 'card-body' },
+    segmented(
+      [
+        { value: 'komt', label: `Komt eraan · ${upcoming.length}` },
+        { value: 'geweest', label: `Geweest · ${past.length}` },
+      ],
+      state.momentFilter,
+      (v) => { state.momentFilter = v; render(); },
+    ))));
+
+  const list = state.momentFilter === 'komt' ? upcoming : past;
+
+  if (!list.length) {
+    root.append(card(state.momentFilter === 'komt' ? 'Komt eraan' : 'Geweest',
+      h('button', {
+        class: 'btn ghost',
+        type: 'button',
+        onclick: () => openSheet('Nieuw leuk ding', () => eventForm({ category: 'leuk' }, state.data.today)),
+      }, '+ Plannen'),
+      emptyNote(state.momentFilter === 'komt'
+        ? 'Nog niets gepland. Zet iets leuks in de agenda en zet het op "Leuk ding" of "Vakantie".'
+        : 'Hier komen jullie uitjes en vakanties te staan zodra ze geweest zijn.', 'heart')));
+    return;
+  }
+
+  root.append(h('div', { class: 'moments' }, ...list.map(momentCard)));
+
+  if (state.momentFilter === 'komt') {
+    root.append(h('button', {
+      class: 'btn block',
+      type: 'button',
+      onclick: () => openSheet('Nieuw leuk ding', () => eventForm({ category: 'leuk' }, state.data.today)),
+    }, '+ Iets leuks plannen'));
   }
 }
 
@@ -1134,6 +1487,7 @@ function renderLogin() {
 const TITLES = {
   vandaag: 'Vandaag',
   week: 'Week',
+  momenten: 'Momenten',
   doelen: 'Doelen',
   taken: 'Taken',
   meer: 'Meer',
@@ -1142,6 +1496,7 @@ const TITLES = {
 const RENDERERS = {
   vandaag: renderVandaag,
   week: renderWeek,
+  momenten: renderMomenten,
   doelen: renderDoelen,
   taken: renderTaken,
   meer: renderMeer,
@@ -1161,6 +1516,9 @@ function setTab(tab) {
 $$('.tab').forEach((btn) => btn.addEventListener('click', () => setTab(btn.dataset.tab)));
 
 $('#add-btn').addEventListener('click', () => {
+  if (state.tab === 'momenten') {
+    return openSheet('Nieuw leuk ding', () => eventForm({ category: 'leuk' }, state.data.today));
+  }
   if (state.tab === 'doelen') return openSheet('Nieuw doel', () => goalForm(null));
   if (state.tab === 'taken') return openSheet('Nieuwe taak', () => taskForm(null));
   return openSheet('Nieuw', () => h('div', { class: 'form' },
@@ -1188,7 +1546,12 @@ async function refresh() {
   const base = addDays(weekStart(anchor), state.weekOffset * 7);
   const from = state.weekOffset === 0 ? addDays(base, -7) : addDays(base, -1);
   const to = addDays(base, 21);
-  state.data = await api(`/state?from=${from}&to=${to}`);
+  const [data, moments] = await Promise.all([
+    api(`/state?from=${from}&to=${to}`),
+    api('/moments'),
+  ]);
+  state.data = data;
+  state.moments = moments;
   render();
 }
 

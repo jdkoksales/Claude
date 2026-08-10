@@ -1,4 +1,6 @@
-import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
+import {
+  existsSync, mkdirSync, readFileSync, renameSync, rmSync, writeFileSync,
+} from 'node:fs';
 import { dirname, join } from 'node:path';
 import { randomBytes, randomUUID } from 'node:crypto';
 import { config } from './config.js';
@@ -26,6 +28,9 @@ export function emptyStore() {
     events: [],
     goals: [],
     tasks: [],
+    // Alleen de metagegevens van foto's: wie, waar, wanneer en het bijschrift.
+    // De afbeelding zelf staat apart, zie putPhoto/getPhoto.
+    photos: [],
     pushSubs: [],
     sent: {},
     settings: {},
@@ -93,6 +98,10 @@ function fileBackend() {
 
   if (ensureSecrets(store)) write();
 
+  // Foto's als losse bestanden naast de gegevens; ze horen niet in het
+  // JSON-bestand dat bij elke aanvraag volledig wordt gelezen.
+  const photoDir = join(dirname(file), 'photos');
+
   return {
     kind: 'file',
     async begin() {
@@ -102,6 +111,19 @@ function fileBackend() {
           if (dirty) write();
         },
       };
+    },
+    async putPhoto(id, mime, bytes) {
+      mkdirSync(photoDir, { recursive: true });
+      writeFileSync(join(photoDir, id), bytes);
+    },
+    async getPhoto(id) {
+      const path = join(photoDir, id);
+      if (!existsSync(path)) return null;
+      return readFileSync(path);
+    },
+    async deletePhoto(id) {
+      const path = join(photoDir, id);
+      if (existsSync(path)) rmSync(path);
     },
     async close() {},
   };
@@ -114,7 +136,10 @@ async function postgresBackend() {
   const pool = new pg.Pool({
     connectionString: config.db.url,
     // Serverless: veel korte processen, elk met hooguit een paar verbindingen.
-    max: Number(process.env.PGPOOL_MAX || 2),
+    // Vier in plaats van twee: een foto-upload houdt de transactie van de
+    // aanvraag vast én pakt tegelijk een verbinding om de bytes weg te
+    // schrijven. Met twee kunnen twee gelijktijdige uploads op elkaar wachten.
+    max: Number(process.env.PGPOOL_MAX || 4),
     idleTimeoutMillis: 10_000,
     connectionTimeoutMillis: 10_000,
     ssl: { rejectUnauthorized: false },
@@ -179,6 +204,19 @@ async function postgresBackend() {
         client.release();
         throw err;
       }
+    },
+    async putPhoto(id, mime, bytes) {
+      await pool.query(
+        'insert into samen.photo_data (id, mime, bytes) values ($1, $2, $3)',
+        [id, mime, bytes],
+      );
+    },
+    async getPhoto(id) {
+      const { rows } = await pool.query('select bytes from samen.photo_data where id = $1', [id]);
+      return rows[0] ? rows[0].bytes : null;
+    },
+    async deletePhoto(id) {
+      await pool.query('delete from samen.photo_data where id = $1', [id]);
     },
     async close() {
       await pool.end();

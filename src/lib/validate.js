@@ -43,12 +43,27 @@ export function dateKey(value, field) {
 
 const REMINDER_CHOICES = [0, 5, 10, 15, 30, 60, 120, 720, 1440];
 
+/**
+ * Waar hoort deze afspraak thuis?
+ *
+ *  - gewoon   — tandarts, werk, alles wat gewoon in de agenda moet
+ *  - leuk     — uitjes en dingen om naar uit te kijken
+ *  - vakantie — meerdaags, met een t/m-datum
+ *
+ * Alleen 'leuk' en 'vakantie' komen op het Momenten-scherm terecht.
+ */
+export const CATEGORIES = ['gewoon', 'leuk', 'vakantie'];
+export const FUN = ['leuk', 'vakantie'];
+
 export function eventInput(body, userIds) {
   const allDay = Boolean(body.allDay);
+  const category = CATEGORIES.includes(body.category) ? body.category : 'gewoon';
   const out = {
     title: text(body.title, 'Titel', { max: 120 }),
     ownerId: ownerId(body.ownerId, userIds),
     date: dateKey(body.date, 'Datum'),
+    category,
+    endDate: null,
     allDay,
     start: null,
     end: null,
@@ -75,10 +90,50 @@ export function eventInput(body, userIds) {
     }
   }
 
+  if (body.endDate) {
+    out.endDate = dateKey(body.endDate, 'Einddatum');
+    if (out.endDate < out.date) fail('De einddatum ligt vóór de begindatum.');
+    // Een reeks die zich óók nog herhaalt levert overlappende voorkomens op;
+    // dat is niet uit te leggen en niet te tonen.
+    if (out.repeat) fail('Iets dat meerdere dagen duurt kan zich niet ook herhalen.');
+    if (out.endDate === out.date) out.endDate = null;
+  }
+
   if (out.repeat?.until && out.repeat.until < out.date) {
     fail('De herhaling eindigt vóór de eerste datum.');
   }
   return out;
+}
+
+/** Een opmerking bij een uitje of vakantie. */
+export function commentInput(body) {
+  return { text: text(body.text, 'Opmerking', { max: 1000 }) };
+}
+
+// Foto's worden in de browser al verkleind; dit is de vangrail voor het geval
+// dat mislukt of iemand rechtstreeks naar de API stuurt.
+const MAX_PHOTO_BYTES = 3 * 1024 * 1024;
+const PHOTO_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+
+/** Pelt een data-URL uit de browser af tot mimetype en ruwe bytes. */
+export function photoInput(body) {
+  const url = typeof body?.dataUrl === 'string' ? body.dataUrl : '';
+  const m = /^data:([a-z/+.-]+);base64,([A-Za-z0-9+/=]+)$/.exec(url);
+  if (!m) fail('Dit ziet er niet uit als een afbeelding.');
+  const [, mime, base64] = m;
+  if (!PHOTO_TYPES.includes(mime)) {
+    fail('Alleen JPEG, PNG of WebP kunnen we opslaan.');
+  }
+  const bytes = Buffer.from(base64, 'base64');
+  if (bytes.length === 0) fail('Deze afbeelding is leeg.');
+  if (bytes.length > MAX_PHOTO_BYTES) {
+    fail('Deze foto is te groot. Probeer er een die kleiner is dan 3 MB.');
+  }
+  return {
+    mime,
+    bytes,
+    caption: text(body.caption, 'Bijschrift', { max: 200, required: false }),
+  };
 }
 
 export function goalInput(body, userIds) {
@@ -145,4 +200,4 @@ export function taskInput(body, userIds) {
   };
 }
 
-export { REMINDER_CHOICES };
+export { MAX_PHOTO_BYTES, REMINDER_CHOICES };

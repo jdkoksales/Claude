@@ -27,11 +27,22 @@ Beide soorten kunnen van jou zijn, van haar, of van jullie samen. Bij een
 samen-doel telt een dag zodra één van jullie afvinkt, en zie je per persoon wie
 wat heeft bijgedragen.
 
+**Momenten.** Alles wat leuk is staat bij elkaar. Bij het maken van een
+afspraak kies je of het gewoon is, een *leuk ding*, of een *vakantie* — die
+laatste loopt over meerdere dagen en verschijnt de hele periode in de agenda.
+Op het Momenten-scherm staat links wat eraan komt, met een afteller ("over 12
+dagen"), en rechts alles wat geweest is, met de nieuwste bovenaan.
+
+Tik je zo'n moment aan, dan open je het album: foto's en opmerkingen. Foto's
+worden in je browser verkleind voordat ze verstuurd worden, dus een kiekje van
+5 MB kost er nog een paar honderd kB. Een vakantie van tien dagen krijgt één
+album; een afspraak die zich herhaalt krijgt er een per keer.
+
 **Taken.** Een gedeeld lijstje. Toewijzen aan jezelf, aan de ander, aan jullie
 samen, of aan "wie het eerst kan". Met een datum erbij verschijnt de taak op
 Vandaag.
 
-**Weekoverzicht.** Eén scherm met de hele week: alle afspraken van jullie
+**Week.** Eén scherm met de hele week: alle afspraken van jullie
 beiden onder elkaar per dag, en daaronder hoe elk doel er deze week voor staat.
 
 **Herinneringen.** Een melding op je telefoon vóór een afspraak, en één keer

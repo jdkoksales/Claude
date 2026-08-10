@@ -86,4 +86,24 @@ export function markSent(key) {
   return true;
 }
 
+// ── Foto's ─────────────────────────────────────────────────────────────────
+//
+// Deze gaan langs de store heen rechtstreeks naar de opslag: het zijn de enige
+// gegevens die te groot zijn om bij elke aanvraag mee te laden.
+
+export async function putPhoto(id, mime, bytes) {
+  const backend = await openStore();
+  await backend.putPhoto(id, mime, bytes);
+}
+
+export async function getPhoto(id) {
+  const backend = await openStore();
+  return backend.getPhoto(id);
+}
+
+export async function dropPhoto(id) {
+  const backend = await openStore();
+  await backend.deletePhoto(id);
+}
+
 export { SCHEMA_VERSION, storeKind };

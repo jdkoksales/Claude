@@ -94,3 +94,48 @@ test('een taak mag zonder toegewezen persoon', () => {
 test('een onmogelijke datum wordt afgewezen', () => {
   assert.throws(() => taskInput({ title: 'Koken', dueDate: '2026-02-30' }, USERS), /datum/);
 });
+
+// ── Uitjes, vakanties en foto's ────────────────────────────────────────────
+
+test('de soort van een afspraak valt terug op gewoon', async () => {
+  const { eventInput: ev } = await import('../src/lib/validate.js');
+  assert.equal(ev({ ...ok }, USERS).category, 'gewoon');
+  assert.equal(ev({ ...ok, category: 'leuk' }, USERS).category, 'leuk');
+  assert.equal(ev({ ...ok, category: 'onzin' }, USERS).category, 'gewoon');
+});
+
+test('een einddatum vóór de begindatum wordt geweigerd', async () => {
+  const { eventInput: ev } = await import('../src/lib/validate.js');
+  assert.throws(() => ev({ ...ok, endDate: '2026-08-01' }, USERS), /vóór de begindatum/);
+});
+
+test('meerdaags én herhalend tegelijk kan niet', async () => {
+  const { eventInput: ev } = await import('../src/lib/validate.js');
+  assert.throws(
+    () => ev({ ...ok, endDate: '2026-08-20', repeat: { freq: 'weekly' } }, USERS),
+    /niet ook herhalen/,
+  );
+});
+
+test('een foto moet een echte afbeelding zijn en niet te groot', async () => {
+  const { photoInput } = await import('../src/lib/validate.js');
+  const tiny = Buffer.from([0xff, 0xd8, 0xff, 0xdb]).toString('base64');
+  const out = photoInput({ dataUrl: `data:image/jpeg;base64,${tiny}`, caption: ' Op het strand ' });
+  assert.equal(out.mime, 'image/jpeg');
+  assert.equal(out.caption, 'Op het strand');
+  assert.equal(out.bytes.length, 4);
+
+  assert.throws(() => photoInput({ dataUrl: 'gewoon wat tekst' }), /geen afbeelding|niet uit/);
+  assert.throws(
+    () => photoInput({ dataUrl: `data:application/pdf;base64,${tiny}` }),
+    /JPEG, PNG of WebP/,
+  );
+  const huge = `data:image/jpeg;base64,${'A'.repeat(5 * 1024 * 1024)}`;
+  assert.throws(() => photoInput({ dataUrl: huge }), /te groot/);
+});
+
+test('een opmerking mag niet leeg zijn', async () => {
+  const { commentInput } = await import('../src/lib/validate.js');
+  assert.equal(commentInput({ text: '  Wat een dag  ' }).text, 'Wat een dag');
+  assert.throws(() => commentInput({ text: '   ' }), /mag niet leeg/);
+});

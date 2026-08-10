@@ -81,3 +81,45 @@ test('describeRepeat is leesbaar', () => {
   assert.equal(describeRepeat({ freq: 'weekly', interval: 1, until: null }), 'elke week');
   assert.equal(describeRepeat({ freq: 'weekly', interval: 2, until: null }), 'elke 2 weken');
 });
+
+// ── Meerdaagse afspraken (vakanties) ───────────────────────────────────────
+
+test('een vakantie verschijnt op elke dag ertussen', async () => {
+  const { expandEvent: expand } = await import('../src/lib/recurrence.js');
+  const trip = {
+    id: 'v1', title: 'Italië', ownerId: 'both', date: '2026-08-10',
+    endDate: '2026-08-14', allDay: true, category: 'vakantie',
+  };
+  const days = expand(trip, '2026-08-01', '2026-08-31');
+  assert.deepEqual(days.map((o) => o.date), [
+    '2026-08-10', '2026-08-11', '2026-08-12', '2026-08-13', '2026-08-14',
+  ]);
+  assert.equal(days[0].dayIndex, 1);
+  assert.equal(days[0].dayCount, 5);
+  assert.equal(days.at(-1).dayIndex, 5);
+});
+
+test('een vakantie die deels buiten de periode valt wordt netjes afgeknipt', async () => {
+  const { expandEvent: expand } = await import('../src/lib/recurrence.js');
+  const trip = { id: 'v1', title: 'Italië', ownerId: 'both', date: '2026-08-10', endDate: '2026-08-20' };
+  const days = expand(trip, '2026-08-12', '2026-08-14');
+  assert.deepEqual(days.map((o) => o.date), ['2026-08-12', '2026-08-13', '2026-08-14']);
+  // De nummering blijft van de hele reis, niet van het stukje dat je ziet.
+  assert.equal(days[0].dayIndex, 3);
+  assert.equal(days[0].dayCount, 11);
+});
+
+test('een einddatum gelijk aan de begindatum is gewoon één dag', async () => {
+  const { expandEvent: expand } = await import('../src/lib/recurrence.js');
+  const days = expand({ id: 'x', title: 'Dagje', ownerId: 'u1', date: '2026-08-10', endDate: '2026-08-10' }, '2026-08-01', '2026-08-31');
+  assert.equal(days.length, 1);
+  assert.equal(days[0].dayCount, 1);
+});
+
+test('albumDate geeft vakanties één album en herhalingen er een per keer', async () => {
+  const { albumDate } = await import('../src/lib/recurrence.js');
+  const trip = { id: 'v', date: '2026-08-10', endDate: '2026-08-14' };
+  assert.equal(albumDate(trip, '2026-08-13'), '2026-08-10');
+  const weekly = { id: 'w', date: '2026-08-10', repeat: { freq: 'weekly', interval: 1, until: null } };
+  assert.equal(albumDate(weekly, '2026-08-17'), '2026-08-17');
+});

@@ -194,7 +194,7 @@ html,body{overflow-x:clip}
 .tk3 .mobmenu .sheet hr{border:0;border-top:1px solid var(--line);margin:8px 6px}
 @media(max-width:900px){.tk3 .hdr nav,.tk3 .hdr .deskonly{display:none}.tk3 .hdr .row{height:64px;gap:14px}.tk3 .hdr .right{margin-left:auto;gap:16px}.tk3 .mobmenu{display:block}.tk3 .brand img{height:21px}}
 .tk3 .hero{position:relative;text-align:center;overflow:hidden;
-  background:linear-gradient(112deg,#fbfbfc 0%,#fcf6f8 48%,#fbecf0 100%)}
+  background:linear-gradient(180deg,#B8400E 0%,#E06C18 52%,#F2A04A 100%)}
 .tk3 .hero .inner{position:relative;z-index:2;
   padding-top:max(16px,calc(50svh - var(--tk3-kop,243px) - var(--tk3-boven,109px)));
   min-height:calc(100vh - var(--tk3-boven,109px));
@@ -736,3 +736,19 @@ html,body{overflow-x:clip}
 .tk3 .waarom.licht .wrm-lijst li{color:var(--ink-64)}
 .tk3 .waarom.licht .wrm-punch{color:var(--ink)}
 .tk3 .waarom.licht .wrm-bronnen{color:var(--ink-36)}
+.tk3 .hero-foto{position:absolute;inset:0;z-index:1;display:block;pointer-events:none}
+.tk3 .hero-foto img{width:100%;height:100%!important;aspect-ratio:auto;display:block;
+  object-fit:cover;object-position:38% bottom}
+.tk3 .hero h1{color:#fff}
+.tk3 .hero .sub{color:rgba(255,255,255,.84)}
+.tk3 .hero .seg{background:rgba(255,255,255,.2)}
+.tk3 .hero .seg button{color:rgba(255,255,255,.88)}
+.tk3 .hero .seg button[aria-selected="true"]{background:#fff;color:var(--ink);
+  box-shadow:0 1px 4px rgba(0,0,0,.18)}
+.tk3 .hero .buy{background:#fff;color:var(--ink)}
+.tk3 .hero .buy:hover{background:rgba(255,255,255,.88)}
+.tk3 .hero .hero-calc{background:rgba(255,255,255,.18);color:#fff}
+.tk3 .hero .hero-calc:hover{background:rgba(255,255,255,.3)}
+.tk3 .hero .hero-calc svg{opacity:.8}
+@media(max-width:1023px){.tk3 .hero-foto img{object-position:51% bottom}}
+@media(max-width:599px){.tk3 .hero-foto img{object-position:53% bottom}}

@@ -138,7 +138,8 @@
         var first = hero.querySelector('[data-shot]');
         if (first) first.classList.add('on');
       }
-      hero.style.background = GRAD[key] || GRAD['google-wit'];
+      // De achtergrond komt nu uit de foto zelf; hem hier overschrijven
+      // zou de oranje gradient van de sectie wegdrukken.
       var btn = hero.querySelector('[data-plat="' + plat + '"]');
       if (buy && btn && btn.getAttribute('data-url')) buy.href = btn.getAttribute('data-url');
     }

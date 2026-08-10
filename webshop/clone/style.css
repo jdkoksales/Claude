@@ -125,7 +125,7 @@ footer .brand img{height:29px}
 
 /* ---------- hero ---------- */
 .hero{position:relative;text-align:center;overflow:hidden;
-  background:linear-gradient(112deg,#fbfbfc 0%,#fcf6f8 48%,#fbecf0 100%)}
+  background:linear-gradient(180deg,#B8400E 0%,#E06C18 52%,#F2A04A 100%)}
 /* De titel staat op exact dezelfde hoogte als bij de referentie. Die zet zijn
    kop op de helft van de schermhoogte min de halve hoogte van het tekstblok;
    over veertien schermformaten opgemeten is dat een vaste afstand: 237px vanaf
@@ -973,3 +973,34 @@ footer{background:linear-gradient(115deg,#fdfdfe,#fdf1f5);padding:88px 0 44px}
 .waarom.licht .wrm-lijst li{color:var(--ink-64)}
 .waarom.licht .wrm-punch{color:var(--ink)}
 .waarom.licht .wrm-bronnen{color:var(--ink-36)}
+
+
+/* ---------- hero met foto over de volle sectie ---------- */
+/* De hero was drie transparante productplaatjes onderaan een lichte gradient.
+   Nu is het één foto per schermgrootte met het oranje er al in, dus hij vult
+   de hele sectie en de tekst ligt eroverheen. Daarom moet alle tekst wit.
+
+   De uitsnede schuift per formaat mee met waar de standaard staat: opgemeten
+   staat het witte paneel op 38% van de breedte in het desktopbeeld, 51% op
+   tablet en 53% op de telefoon. Zonder die verschuiving snijdt object-fit de
+   standaard eraf zodra het venster smaller wordt dan de foto. */
+.hero-foto{position:absolute;inset:0;z-index:1;display:block;pointer-events:none}
+.hero-foto img{width:100%;height:100%!important;aspect-ratio:auto;display:block;
+  object-fit:cover;object-position:38% bottom}
+.hero h1{color:#fff}
+.hero .sub{color:rgba(255,255,255,.84)}
+.hero .seg{background:rgba(255,255,255,.2)}
+.hero .seg button{color:rgba(255,255,255,.88)}
+.hero .seg button[aria-selected="true"]{background:#fff;color:var(--ink);
+  box-shadow:0 1px 4px rgba(0,0,0,.18)}
+.hero .buy{background:#fff;color:var(--ink)}
+.hero .buy:hover{background:rgba(255,255,255,.88)}
+.hero .hero-calc{background:rgba(255,255,255,.18);color:#fff}
+.hero .hero-calc:hover{background:rgba(255,255,255,.3)}
+.hero .hero-calc svg{opacity:.8}
+@media(max-width:1023px){
+  .hero-foto img{object-position:51% bottom}
+}
+@media(max-width:599px){
+  .hero-foto img{object-position:53% bottom}
+}

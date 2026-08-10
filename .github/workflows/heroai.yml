@@ -7,7 +7,10 @@ on:
   workflow_dispatch:
   push:
     branches: [claude/3d-product-animations-btyc7y]
-    paths: ['.github/workflows/heroai.yml', 'preview/heroai-trigger.txt']
+    # Ook op de stylesheet zelf: een hero-aanpassing zit bijna altijd daar,
+    # en anders meet ik de vorige versie na.
+    paths: ['.github/workflows/heroai.yml', 'preview/heroai-trigger.txt',
+            'webshop/theme3/assets/tk3.css', 'webshop/theme3/sections/tk3-hero.liquid']
 
 permissions:
   contents: write

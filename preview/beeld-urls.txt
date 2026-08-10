@@ -2,3 +2,4 @@
 hero-ai-desktop.png https://d8j0ntlcm91z4.cloudfront.net/user_3H2Nj30E5c9ly0JUatR4HpxuaNv/hf_20260810_101202_83ecd984-3cbc-4c85-a493-d4bfade32c61.png
 hero-ai-tablet.png https://d8j0ntlcm91z4.cloudfront.net/user_3H2Nj30E5c9ly0JUatR4HpxuaNv/hf_20260810_101757_d148eba4-d301-41e1-b771-8ba21c4fb0ce.png
 hero-ai-telefoon.png https://d8j0ntlcm91z4.cloudfront.net/user_3H2Nj30E5c9ly0JUatR4HpxuaNv/hf_20260810_101757_6e96e201-e2ba-419b-b5f0-149f25eeaa41.png
+# lijst opnieuw aangetikt zodat de workflow afgaat

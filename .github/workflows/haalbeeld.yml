@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
   push:
     branches: [claude/3d-product-animations-btyc7y]
-    paths: ['preview/beeld-urls.txt']
+    paths: ['.github/workflows/haalbeeld.yml', 'preview/beeld-urls.txt']
 
 permissions:
   contents: write

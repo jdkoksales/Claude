@@ -42,14 +42,16 @@ jobs:
           // Waar het witte paneel in elk bronbeeld staat, opgemeten op het
           // bestand zelf. Valt dat bereik buiten de zichtbare uitsnede, dan
           // snijdt object-fit de standaard eraf.
+          // Waar het witte paneel in elk bronbestand staat, opgemeten op het
+          // bestand zelf: [links, rechts, boven, onder] als fractie.
           const SCHERMEN = [
-            ['desktop',  1440, 900,  'desktop',  0.27, 0.48],
-            ['tablet',   900,  1000, 'tablet',   0.39, 0.63],
-            ['telefoon', 390,  844,  'telefoon', 0.30, 0.75],
+            ['desktop',  1440, 900,  'desktop',  [0.270, 0.482, 0.226, 0.890]],
+            ['tablet',   900,  1000, 'tablet',   [0.388, 0.628, 0.337, 0.902]],
+            ['telefoon', 390,  844,  'telefoon', [0.306, 0.746, 0.404, 0.883]],
           ];
 
           const b = await chromium.launch();
-          for (const [naam, w, h, bestand, paneelLinks, paneelRechts] of SCHERMEN) {
+          for (const [naam, w, h, bestand, paneel] of SCHERMEN) {
             const ctx = await b.newContext({ viewport: { width: w, height: h }, locale: 'nl-NL' });
             const p = await ctx.newPage();
             await p.goto(BASE + '/' + PV, { waitUntil: 'load', timeout: 60000 });
@@ -58,29 +60,47 @@ jobs:
               document.querySelectorAll('#preview-bar-iframe, #shopify-pc__banner').forEach((el) => el.remove());
             });
 
-            const m = await p.evaluate(() => {
+            const m = await p.evaluate((paneel) => {
               const hero = document.querySelector('.tk3 .hero');
               const img = hero && hero.querySelector('.hero-foto img');
               if (!hero || !img) return null;
               const r = img.getBoundingClientRect();
               const cs = getComputedStyle(img);
-              const kop = hero.querySelector('h1');
-              const sub = hero.querySelector('.sub');
-              const knop = hero.querySelector('.buy');
               const zicht = (el) => {
                 if (!el) return false;
                 const q = el.getBoundingClientRect();
                 return q.width > 0 && q.height > 0;
               };
 
-              // object-fit: cover met een verschoven object-position. Reken uit
-              // welk stuk van de bron daadwerkelijk in beeld valt.
+              // Waar belandt het paneel op het scherm? object-fit: cover schaalt
+              // op de grootste factor en snijdt de rest weg; object-position
+              // bepaalt waar dat wegsnijden begint.
               const nw = img.naturalWidth, nh = img.naturalHeight;
               const schaal = Math.max(r.width / nw, r.height / nh);
-              const dw = nw * schaal;
-              const posX = parseFloat(cs.objectPosition) / 100;
-              const offsetX = (r.width - dw) * posX;
-              const zichtbaar = [(-offsetX) / schaal / nw, (-offsetX + r.width) / schaal / nw];
+              const dw = nw * schaal, dh = nh * schaal;
+              const pos = cs.objectPosition.split(' ');
+              const fx = pos[0].endsWith('%') ? parseFloat(pos[0]) / 100 : 0.5;
+              const fy = pos[1] && pos[1].endsWith('%') ? parseFloat(pos[1]) / 100 : 1;
+              const ox = r.left + (r.width - dw) * fx;
+              const oy = r.top + (r.height - dh) * fy;
+              const bordje = {
+                left: ox + paneel[0] * dw, right: ox + paneel[1] * dw,
+                top: oy + paneel[2] * dh, bottom: oy + paneel[3] * dh,
+              };
+
+              const botst = (el) => {
+                if (!el) return null;
+                const q = el.getBoundingClientRect();
+                if (q.width === 0 || q.height === 0) return null;
+                const bx = Math.max(0, Math.min(q.right, bordje.right) - Math.max(q.left, bordje.left));
+                const by = Math.max(0, Math.min(q.bottom, bordje.bottom) - Math.max(q.top, bordje.top));
+                return bx > 2 && by > 2 ? Math.round(bx) + 'x' + Math.round(by) + 'px' : null;
+              };
+
+              const kop = hero.querySelector('h1');
+              const sub = hero.querySelector('.sub');
+              const bediening = hero.querySelector('.controls');
+              const calc = hero.querySelector('.hero-calc');
 
               return {
                 themaId: (window.Shopify && Shopify.theme && Shopify.theme.id) || 'onbekend',
@@ -89,27 +109,41 @@ jobs:
                 vlak: [Math.round(r.width), Math.round(r.height)],
                 objectPosition: cs.objectPosition,
                 objectFit: cs.objectFit,
-                zichtbaar,
+                bordje: {
+                  left: Math.round(bordje.left), right: Math.round(bordje.right),
+                  top: Math.round(bordje.top), bottom: Math.round(bordje.bottom),
+                },
+                botsingen: {
+                  kop: botst(kop), onderkop: botst(sub),
+                  knoppen: botst(bediening), rekenlink: botst(calc),
+                },
+                bordjeInBeeld: bordje.right > 0 && bordje.left < innerWidth
+                  && bordje.bottom > 0 && bordje.top < innerHeight,
+                bordjeHoog: Math.round(bordje.bottom - bordje.top),
                 heroHoog: Math.round(hero.getBoundingClientRect().height),
                 kopKleur: kop ? getComputedStyle(kop).color : null,
                 kopTekst: kop ? kop.innerText.replace(/\s+/g, ' ').slice(0, 60) : null,
                 subKleur: sub ? getComputedStyle(sub).color : null,
-                kopZichtbaar: zicht(kop), subZichtbaar: zicht(sub), knopZichtbaar: zicht(knop),
+                kopZichtbaar: zicht(kop), subZichtbaar: zicht(sub),
+                knopZichtbaar: zicht(hero.querySelector('.buy')),
                 oudeShots: !!hero.querySelector('.shots'),
                 overloop: Math.max(0, document.documentElement.scrollWidth - innerWidth),
               };
-            });
+            }, paneel);
 
             if (!m) { fouten.push(`${naam}: hero of foto niet gevonden`); await ctx.close(); continue; }
 
             log.push(`\n${naam} ${w}x${h} — thema ${m.themaId}`);
             log.push(`   bestand: ${m.bron}  (bron ${m.natuurlijk[0]}x${m.natuurlijk[1]}, vlak ${m.vlak[0]}x${m.vlak[1]})`);
             log.push(`   object-fit ${m.objectFit}, object-position ${m.objectPosition}`);
-            log.push(`   zichtbaar deel van de bron: ${(m.zichtbaar[0] * 100).toFixed(0)}% tot ${(m.zichtbaar[1] * 100).toFixed(0)}%`);
-            log.push(`   paneel staat op ${(paneelLinks * 100).toFixed(0)}% tot ${(paneelRechts * 100).toFixed(0)}%`);
+            log.push(`   bordje op het scherm: x ${m.bordje.left}–${m.bordje.right}, y ${m.bordje.top}–${m.bordje.bottom} (${m.bordjeHoog}px hoog)`);
             log.push(`   hero ${m.heroHoog}px hoog, kop ${m.kopKleur}, onderkop ${m.subKleur}`);
             log.push(`   kop "${m.kopTekst}"`);
             log.push(`   overloop ${m.overloop}px, oude wisselfoto's nog aanwezig: ${m.oudeShots}`);
+            for (const [wat, hoeveel] of Object.entries(m.botsingen)) {
+              log.push(`   botsing ${wat}: ${hoeveel || 'geen'}`);
+              if (hoeveel) fouten.push(`${naam}: ${wat} ligt over het bordje heen (${hoeveel})`);
+            }
 
             if (!m.bron.includes(bestand)) fouten.push(`${naam}: laadt ${m.bron} in plaats van de ${bestand}-versie`);
             if (m.natuurlijk[0] === 0) fouten.push(`${naam}: de foto is niet geladen`);
@@ -121,11 +155,8 @@ jobs:
             if (m.oudeShots) fouten.push(`${naam}: de oude wisselfoto's staan er nog`);
             if (m.overloop > 0) fouten.push(`${naam}: pagina schuift ${m.overloop}px opzij`);
             if (m.heroHoog < 400) fouten.push(`${naam}: hero maar ${m.heroHoog}px hoog`);
-            if (paneelLinks < m.zichtbaar[0] || paneelRechts > m.zichtbaar[1]) {
-              fouten.push(`${naam}: de standaard wordt afgesneden — paneel ` +
-                `${(paneelLinks * 100).toFixed(0)}%-${(paneelRechts * 100).toFixed(0)}% valt buiten ` +
-                `${(m.zichtbaar[0] * 100).toFixed(0)}%-${(m.zichtbaar[1] * 100).toFixed(0)}%`);
-            }
+            if (!m.bordjeInBeeld) fouten.push(`${naam}: het bordje valt buiten beeld`);
+            if (m.bordjeHoog < m.heroHoog * 0.22) fouten.push(`${naam}: het bordje is maar ${m.bordjeHoog}px, te klein voor een hero`);
 
             await p.screenshot({ path: `preview/heroai-${naam}.png` });
             await ctx.close();

@@ -1,0 +1,61 @@
+name: Gegenereerd beeld ophalen
+
+# De beeldgenerator levert af op een tijdelijke CDN-link die ik vanuit deze
+# omgeving niet mag ophalen, en die na verloop van tijd verloopt. Deze runner
+# haalt hem binnen en zet hem in de repo, zodat het beeld blijft bestaan en
+# ik het kan beoordelen.
+on:
+  workflow_dispatch:
+  push:
+    branches: [claude/3d-product-animations-btyc7y]
+    paths: ['preview/beeld-urls.txt']
+
+permissions:
+  contents: write
+
+jobs:
+  halen:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: claude/3d-product-animations-btyc7y
+
+      - name: Downloaden
+        run: |
+          mkdir -p webshop/hero-voorstellen/ai
+          : > preview/beeld-log.txt
+          # Elke regel: <bestandsnaam> <url>
+          while read -r naam url; do
+            [ -z "$naam" ] && continue
+            case "$naam" in \#*) continue ;; esac
+            doel="webshop/hero-voorstellen/ai/$naam"
+            code=$(curl -sS -L -o "$doel" -w '%{http_code}' "$url" || echo mislukt)
+            maat=$(stat -c%s "$doel" 2>/dev/null || echo 0)
+            echo "$naam  status $code  $maat bytes" >> preview/beeld-log.txt
+            if [ "$code" != "200" ] || [ "$maat" -lt 10000 ]; then
+              echo "  LET OP: niet goed opgehaald" >> preview/beeld-log.txt
+              rm -f "$doel"
+            else
+              python3 - "$doel" <<'PY' >> preview/beeld-log.txt
+import sys
+from PIL import Image
+b = Image.open(sys.argv[1])
+print(f"  {b.size[0]}x{b.size[1]} {b.mode}")
+PY
+            fi
+          done < preview/beeld-urls.txt
+          cat preview/beeld-log.txt
+
+      - name: Vastleggen
+        if: always()
+        run: |
+          git config user.name Claude
+          git config user.email noreply@anthropic.com
+          git add webshop/hero-voorstellen/ai preview/beeld-log.txt || true
+          git commit -m "Gegenereerd beeld opgehaald" || exit 0
+          for poging in 1 2 3 4; do
+            git pull --rebase origin claude/3d-product-animations-btyc7y && \
+              git push origin HEAD:claude/3d-product-animations-btyc7y && break
+            sleep $((poging * 4))
+          done

@@ -30,6 +30,42 @@ function h(tag, props = {}, ...children) {
   return node;
 }
 
+const SVG_NS = 'http://www.w3.org/2000/svg';
+
+/** Een pictogram uit de verzameling boven in index.html. */
+function icon(name) {
+  const svg = document.createElementNS(SVG_NS, 'svg');
+  svg.setAttribute('viewBox', '0 0 24 24');
+  svg.setAttribute('aria-hidden', 'true');
+  const use = document.createElementNS(SVG_NS, 'use');
+  use.setAttribute('href', `#i-${name}`);
+  svg.append(use);
+  return svg;
+}
+
+/** Voortgangsring met het percentage in het midden. */
+function ring(pct, label) {
+  const radius = 18;
+  const circumference = 2 * Math.PI * radius;
+  const svg = document.createElementNS(SVG_NS, 'svg');
+  svg.setAttribute('class', 'ring');
+  svg.setAttribute('viewBox', '0 0 46 46');
+  svg.setAttribute('aria-hidden', 'true');
+  for (const cls of ['track', 'value']) {
+    const circle = document.createElementNS(SVG_NS, 'circle');
+    circle.setAttribute('class', cls);
+    circle.setAttribute('cx', '23');
+    circle.setAttribute('cy', '23');
+    circle.setAttribute('r', String(radius));
+    if (cls === 'value') {
+      circle.setAttribute('stroke-dasharray', String(circumference));
+      circle.setAttribute('stroke-dashoffset', String(circumference * (1 - Math.min(1, pct / 100))));
+    }
+    svg.append(circle);
+  }
+  return h('div', { class: 'ring-wrap' }, svg, h('span', { text: label }));
+}
+
 const fmtDay = new Intl.DateTimeFormat('nl-NL', { weekday: 'long', day: 'numeric', month: 'long' });
 const fmtShort = new Intl.DateTimeFormat('nl-NL', { day: 'numeric', month: 'short' });
 const fmtMonth = new Intl.DateTimeFormat('nl-NL', { month: 'long', year: 'numeric' });
@@ -254,12 +290,11 @@ function eventForm(existing, presetDate) {
     field('Wat', h('input', { name: 'title', value: ev.title || '', placeholder: 'Bijv. tandarts', required: true, maxlength: '120' })),
     field('Van wie', ownerSelect(ev.ownerId || state.me.id)),
     field('Datum', h('input', { type: 'date', name: 'date', value: ev.date || presetDate || state.data.today, required: true })),
-    h('label', { class: 'row', style: { padding: '0' } },
+    h('label', { class: 'switch' },
       h('input', {
         type: 'checkbox',
         name: 'allDay',
         checked: allDay,
-        style: { width: '20px', height: '20px' },
         onchange: (e) => {
           allDay = e.target.checked;
           timeRow.hidden = allDay;
@@ -489,7 +524,7 @@ function checkButton(goal) {
         toast(err.message);
       }
     },
-  }, '✓');
+  }, icon('check'));
 }
 
 function weekDots(goal) {
@@ -519,12 +554,15 @@ function heatmap(goal) {
 }
 
 function progressBar(pct) {
-  return h('div', { class: 'bar' }, h('span', { style: { width: `${Math.max(2, pct)}%` } }));
+  // Bij 0% helemaal geen streepje: een klein bolletje suggereert voortgang
+  // die er niet is.
+  const width = pct <= 0 ? 0 : Math.max(4, pct);
+  return h('div', { class: 'bar' }, h('span', { style: { width: `${width}%` } }));
 }
 
 function goalCard(goal, { compact = false } = {}) {
   const s = goal.stats;
-  const head = h('div', { class: 'card-head' },
+  const head = h('div', { class: 'card-head named' },
     h('div', { style: { minWidth: '0' } },
       h('h2', { text: goal.title }),
       h('p', { class: 'muted', text: goal.kind === 'habit'
@@ -535,7 +573,7 @@ function goalCard(goal, { compact = false } = {}) {
       type: 'button',
       'aria-label': 'Doel aanpassen',
       onclick: () => openSheet('Doel aanpassen', () => goalForm(goal)),
-    }, '✎'));
+    }, icon('edit')));
 
   const body = h('div', { class: 'card-body' });
 
@@ -548,7 +586,7 @@ function goalCard(goal, { compact = false } = {}) {
           ? `door ${s.checkedToday.map(ownerName).join(' en ')}`
           : `deze week ${s.weekDone} van ${s.weekTarget}` })),
       h('div', { class: 'row-end' },
-        h('div', { style: { fontWeight: '650' }, text: String(s.streak) }),
+        h('div', { class: 'big', text: String(s.streak) }),
         h('div', { class: 'muted', text: s.streakUnit }))));
     body.append(weekDots(goal));
     if (!compact) {
@@ -563,7 +601,7 @@ function goalCard(goal, { compact = false } = {}) {
           : s.daysLeft > 0 ? `nog ${nfmt(s.remaining)} ${goal.unit} in ${s.daysLeft} dagen`
             : s.remaining > 0 ? `streefdatum voorbij, nog ${nfmt(s.remaining)} ${goal.unit}` : 'gehaald' })),
       h('div', { class: 'row-end' },
-        h('div', { style: { fontWeight: '650' }, text: `${s.pct}%` }),
+        h('div', { class: 'big', text: `${s.pct}%` }),
         s.onTrack != null && h('div', { class: 'muted', text: s.onTrack ? 'op schema' : 'achterop' }))));
     body.append(progressBar(s.pct));
     if (!compact) {
@@ -591,7 +629,7 @@ function goalCard(goal, { compact = false } = {}) {
               'aria-label': 'Bijdrage verwijderen',
               onclick: () => confirmSheet('Bijdrage verwijderen', `${nfmt(e.amount)} ${goal.unit} van ${shortLabel(e.date)} wordt teruggedraaid.`,
                 () => api(`/goals/${goal.id}/entries/${e.id}`, { method: 'DELETE' })),
-            }, '✕')))));
+            }, icon('close'))))));
       }
     }
   }
@@ -615,7 +653,7 @@ function taskRow(task) {
           toast(err.message);
         }
       },
-    }, '✓'),
+    }, icon('check')),
     h('button', {
       class: 'row-main',
       type: 'button',
@@ -629,7 +667,7 @@ function taskRow(task) {
       task.done && task.doneBy ? `afgevinkt door ${ownerName(task.doneBy)}` : null,
     ].filter(Boolean).join(' · ') })),
     task.dueDate && !task.done && task.dueDate < state.data.today
-      && h('span', { class: 'chip', style: { color: 'var(--danger)' } }, 'te laat'));
+      && h('span', { class: 'chip warn' }, 'te laat'));
 }
 
 function card(title, action, ...body) {
@@ -638,8 +676,19 @@ function card(title, action, ...body) {
     ...body);
 }
 
-function emptyNote(text) {
-  return h('p', { class: 'empty', text });
+function emptyNote(text, iconName = 'sparkle') {
+  return h('div', { class: 'empty' }, icon(iconName), h('p', { text }));
+}
+
+/** De twee gezichten rechtsboven; die van jou heeft een ring om zich heen. */
+function renderAvatars() {
+  const wrap = $('#avatars');
+  wrap.replaceChildren(...state.data.users.map((u) => h('span', {
+    class: `avatar${u.id === state.me.id ? ' is-me' : ''}`,
+    style: { background: u.color },
+    title: u.id === state.me.id ? `${u.name} (jij)` : u.name,
+    text: u.name.trim().charAt(0).toUpperCase(),
+  })));
 }
 
 // ── Scherm: Vandaag ────────────────────────────────────────────────────────
@@ -658,11 +707,13 @@ function renderVandaag(root) {
     h('button', { class: 'btn ghost', type: 'button', onclick: () => openSheet('Nieuwe afspraak', () => eventForm(null, today)) }, '+ Afspraak'),
     todays.length
       ? h('div', { class: 'day-body' }, ...todays.map((ev) => eventRow(ev, () => openSheet('Afspraak', () => eventForm(ev)))))
-      : emptyNote('Niets gepland. Geniet ervan.')));
+      : emptyNote('Niets gepland vandaag. Geniet ervan.', 'calendar-empty')));
 
   const doneCount = mine.filter((g) => g.stats.doneToday).length;
-  root.append(card(`Jouw doelen · ${doneCount}/${mine.length}`,
-    null,
+  root.append(card('Jouw doelen',
+    mine.length
+      ? ring(Math.round((doneCount / mine.length) * 100), `${doneCount}/${mine.length}`)
+      : null,
     mine.length
       ? h('div', { class: 'card-body tight' }, ...mine.map((goal) => h('div', { class: 'row' },
         checkButton(goal),
@@ -672,14 +723,14 @@ function renderVandaag(root) {
             ? `reeks van ${goal.stats.streak} ${goal.stats.streakUnit}`
             : `deze week ${goal.stats.weekDone} van ${goal.stats.weekTarget}` })),
         goal.ownerId === 'both' && h('span', { class: 'chip' }, 'samen'))))
-      : emptyNote('Nog geen gewoontes. Voeg er een toe via de plusknop.')));
+      : emptyNote('Nog geen gewoontes. Voeg er een toe via de plusknop.', 'target')));
 
   if (theirs.length) {
     root.append(card(`Doelen van ${partner()?.name || 'de ander'}`,
       null,
       h('div', { class: 'card-body tight' }, ...theirs.map((goal) => h('div', { class: 'row' },
-        h('span', { class: 'chip', style: { background: goal.stats.doneToday ? 'var(--accent-soft)' : 'var(--surface-2)' } },
-          goal.stats.doneToday ? '✓ gedaan' : 'nog niet'),
+        h('span', { class: `chip${goal.stats.doneToday ? ' done' : ''}` },
+          goal.stats.doneToday ? 'gedaan' : 'nog niet'),
         h('div', { class: 'row-main' },
           h('div', { class: 'row-title', text: goal.title }),
           h('div', { class: 'row-sub', text: goal.stats.daily
@@ -702,7 +753,7 @@ function renderVandaag(root) {
     h('button', { class: 'btn ghost', type: 'button', onclick: () => openSheet('Nieuwe taak', () => taskForm(null)) }, '+ Taak'),
     dueTasks.length
       ? h('div', { class: 'card-body tight' }, ...dueTasks.map(taskRow))
-      : emptyNote('Geen taken voor vandaag.')));
+      : emptyNote('Geen taken voor vandaag.', 'check-list')));
 }
 
 // ── Scherm: Week ───────────────────────────────────────────────────────────
@@ -713,11 +764,11 @@ function renderWeek(root) {
 
   root.append(h('div', { class: 'card' },
     h('div', { class: 'card-head' },
-      h('button', { class: 'icon-btn ghost', type: 'button', 'aria-label': 'Vorige week', onclick: () => { state.weekOffset -= 1; refresh(); } }, '‹'),
+      h('button', { class: 'icon-btn ghost', type: 'button', 'aria-label': 'Vorige week', onclick: () => { state.weekOffset -= 1; refresh(); } }, icon('left')),
       h('div', { style: { textAlign: 'center' } },
-        h('h2', { text: state.weekOffset === 0 ? 'Deze week' : `${shortLabel(start)} – ${shortLabel(addDays(start, 6))}` }),
+        h('h2', { class: 'week-title', text: state.weekOffset === 0 ? 'Deze week' : `${shortLabel(start)} – ${shortLabel(addDays(start, 6))}` }),
         h('p', { class: 'muted', text: fmtMonth.format(asDate(start)) })),
-      h('button', { class: 'icon-btn ghost', type: 'button', 'aria-label': 'Volgende week', onclick: () => { state.weekOffset += 1; refresh(); } }, '›')),
+      h('button', { class: 'icon-btn ghost', type: 'button', 'aria-label': 'Volgende week', onclick: () => { state.weekOffset += 1; refresh(); } }, icon('right'))),
     h('div', { class: 'card-body' },
       h('div', { class: 'legend' },
         ...users.map((u) => personChip(u.id)),
@@ -737,10 +788,10 @@ function renderWeek(root) {
         dayEvents.length
           ? dayEvents.map((ev) => eventRow(ev, () => openSheet('Afspraak', () => eventForm(ev))))
           : h('button', {
-            class: 'ev',
+            class: 'ev is-free',
             type: 'button',
             onclick: () => openSheet('Nieuwe afspraak', () => eventForm(null, date)),
-          }, h('span', { class: 'muted', style: { paddingLeft: '4px' }, text: '+ vrij — iets plannen?' })))));
+          }, h('span', { class: 'ev-time' }, icon('plus')), h('span', { text: 'vrij — iets plannen?' })))));
   }
   root.append(strip);
 
@@ -786,7 +837,7 @@ function renderDoelen(root) {
   if (!active.length) {
     root.append(card('Doelen',
       h('button', { class: 'btn ghost', type: 'button', onclick: () => openSheet('Nieuw doel', () => goalForm(null)) }, '+ Doel'),
-      emptyNote('Nog geen doelen hier. Begin met één gewoonte — dat werkt beter dan vijf tegelijk.')));
+      emptyNote('Nog geen doelen hier. Begin met één gewoonte — dat werkt beter dan vijf tegelijk.', 'target')));
   } else {
     for (const goal of active.filter((g) => g.kind === 'habit')) root.append(goalCard(goal));
     for (const goal of active.filter((g) => g.kind === 'project')) root.append(goalCard(goal));
@@ -836,7 +887,7 @@ function renderTaken(root) {
     h('button', { class: 'btn ghost', type: 'button', onclick: () => openSheet('Nieuwe taak', () => taskForm(null)) }, '+ Taak'),
     sorted.length
       ? h('div', { class: 'card-body tight' }, ...sorted.map(taskRow))
-      : emptyNote('Alles is af. Mooi.')));
+      : emptyNote('Alles is af. Mooi.', 'check')));
 
   if (done.length) {
     root.append(card(`Afgevinkt · ${done.length}`,
@@ -980,6 +1031,14 @@ async function enablePush() {
 
 // ── Inloggen en inrichten ──────────────────────────────────────────────────
 
+/** Het beeldmerk op het inlogscherm: twee cirkels die elkaar overlappen. */
+function gateMark() {
+  const svg = icon('mark');
+  svg.setAttribute('class', 'gate-mark');
+  svg.style.color = 'var(--accent)';
+  return svg;
+}
+
 function renderSetup() {
   const card = $('#gate-card');
   const err = errorLine();
@@ -988,6 +1047,7 @@ function renderSetup() {
     field('Pincode', h('input', { name: `pin${i}`, class: 'pin-input', type: 'password', inputmode: 'numeric', pattern: '\\d{4,10}', required: true, autocomplete: 'new-password' }))));
 
   const form = h('form', { class: 'form' },
+    gateMark(),
     h('h1', { text: 'Welkom bij Samen' }),
     h('p', { class: 'muted', text: 'Eenmalig instellen: twee namen en twee pincodes. Met je eigen pincode kom je binnen; daarna zien jullie elkaars agenda en doelen.' }),
     ...rows,
@@ -1036,6 +1096,7 @@ function renderLogin() {
   });
 
   const form = h('form', { class: 'form' },
+    gateMark(),
     h('h1', { text: 'Samen' }),
     h('p', { class: 'muted', text: 'Wie ben je?' }),
     who,
@@ -1111,6 +1172,7 @@ $('#add-btn').addEventListener('click', () => {
 function render() {
   const root = $(`.view[data-view="${state.tab}"]`);
   if (!root || !state.data) return;
+  renderAvatars();
   root.replaceChildren();
   RENDERERS[state.tab](root);
 

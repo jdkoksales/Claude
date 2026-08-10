@@ -3,26 +3,35 @@ GEEN AFWIJKINGEN GEVONDEN
 desktop 1440x900 — thema 196964024697
    bestand: tk3-hero-ai-desktop.jpg  (bron 1800x1005, vlak 1440x791)
    object-fit cover, object-position 38% 100%
-   zichtbaar deel van de bron: 0% tot 100%
-   paneel staat op 27% tot 48%
+   bordje op het scherm: x 389–694, y 278–812 (534px hoog)
    hero 791px hoog, kop rgb(255, 255, 255), onderkop rgba(255, 255, 255, 0.84)
    kop "Je beste marketing staat op de balie."
    overloop 0px, oude wisselfoto's nog aanwezig: false
+   botsing kop: geen
+   botsing onderkop: geen
+   botsing knoppen: geen
+   botsing rekenlink: geen
 
 tablet 900x1000 — thema 196964024697
-   bestand: tk3-hero-ai-tablet.jpg  (bron 1400x1045, vlak 900x891)
-   object-fit cover, object-position 51% 100%
-   zichtbaar deel van de bron: 13% tot 88%
-   paneel staat op 39% tot 63%
-   hero 891px hoog, kop rgb(255, 255, 255), onderkop rgba(255, 255, 255, 0.84)
+   bestand: tk3-hero-ai-tablet.jpg  (bron 1400x1045, vlak 900x672)
+   object-fit cover, object-position 50% 100%
+   bordje op het scherm: x 349–565, y 764–1143 (380px hoog)
+   hero 1100px hoog, kop rgb(255, 255, 255), onderkop rgba(255, 255, 255, 0.84)
    kop "Je beste marketing staat op de balie."
    overloop 0px, oude wisselfoto's nog aanwezig: false
+   botsing kop: geen
+   botsing onderkop: geen
+   botsing knoppen: geen
+   botsing rekenlink: geen
 
 telefoon 390x844 — thema 196964024697
-   bestand: tk3-hero-ai-telefoon.jpg  (bron 900x1612, vlak 390x735)
-   object-fit cover, object-position 53% 100%
-   zichtbaar deel van de bron: 3% tot 98%
-   paneel staat op 30% tot 75%
-   hero 735px hoog, kop rgb(255, 255, 255), onderkop rgba(255, 255, 255, 0.84)
+   bestand: tk3-hero-ai-telefoon.jpg  (bron 900x1612, vlak 390x699)
+   object-fit cover, object-position 50% 100%
+   bordje op het scherm: x 119–291, y 800–1135 (335px hoog)
+   hero 1107px hoog, kop rgb(255, 255, 255), onderkop rgba(255, 255, 255, 0.84)
    kop "Je beste marketing staat op de balie."
    overloop 0px, oude wisselfoto's nog aanwezig: false
+   botsing kop: geen
+   botsing onderkop: geen
+   botsing knoppen: geen
+   botsing rekenlink: geen

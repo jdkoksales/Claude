@@ -37,12 +37,7 @@ jobs:
               echo "  LET OP: niet goed opgehaald" >> preview/beeld-log.txt
               rm -f "$doel"
             else
-              python3 - "$doel" <<'PY' >> preview/beeld-log.txt
-import sys
-from PIL import Image
-b = Image.open(sys.argv[1])
-print(f"  {b.size[0]}x{b.size[1]} {b.mode}")
-PY
+              python3 -c "from PIL import Image; b=Image.open('$doel'); print(f'  {b.size[0]}x{b.size[1]} {b.mode}')" >> preview/beeld-log.txt
             fi
           done < preview/beeld-urls.txt
           cat preview/beeld-log.txt

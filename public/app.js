@@ -929,7 +929,7 @@ function renderMeer(root) {
     h('button', { class: 'btn block', type: 'button', onclick: importBackup }, 'Back-up terugzetten'))));
 
   root.append(card('Over deze app', null, h('div', { class: 'card-body' },
-    h('p', { class: 'muted', text: 'Alles wat jullie invoeren is voor elkaar zichtbaar: afspraken, doelen en taken. Er gaat niets naar buiten — de gegevens staan alleen op jullie eigen server.' }),
+    h('p', { class: 'muted', text: 'Alles wat jullie invoeren is voor elkaar zichtbaar: afspraken, doelen en taken. Er kan verder niemand bij — de gegevens staan in jullie eigen database.' }),
     h('p', { class: 'muted', text: `Tijdzone: ${state.boot.timezone}` }))));
 }
 

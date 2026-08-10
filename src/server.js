@@ -145,6 +145,24 @@ app.post('/api/logout', (req, res) => {
   res.json({ ok: true });
 });
 
+// ── Klopje van buiten ──────────────────────────────────────────────────────
+
+/**
+ * Op een hostingdienst zonder doorlopend proces (Vercel) is er niets dat elke
+ * minuut kan kijken of er een herinnering klaarstaat. Daarom kan iets van
+ * buitenaf — in ons geval een taak in de database zelf — dit adres aanroepen.
+ * Het geheim staat in de opslag en wordt bij de eerste start aangemaakt.
+ */
+app.post('/api/cron/tick', async (req, res) => {
+  const expected = db().settings?.cronSecret;
+  const given = req.get('x-samen-cron') || req.query.key;
+  if (!expected || given !== expected) {
+    return res.status(401).json({ error: 'Onbekende sleutel.' });
+  }
+  const result = await tick();
+  return res.json({ ok: true, ...result });
+});
+
 // ── Vanaf hier moet je ingelogd zijn ────────────────────────────────────────
 
 const api = express.Router();
@@ -483,24 +501,6 @@ api.post('/import', (req, res, next) => {
   } catch (err) {
     next(err);
   }
-});
-
-// ── Klopje van buiten ──────────────────────────────────────────────────────
-
-/**
- * Op een hostingdienst zonder doorlopend proces (Vercel) is er niets dat elke
- * minuut kan kijken of er een herinnering klaarstaat. Daarom kan iets van
- * buitenaf — in ons geval een taak in de database zelf — dit adres aanroepen.
- * Het geheim staat in de opslag en wordt bij de eerste start aangemaakt.
- */
-app.post('/api/cron/tick', async (req, res) => {
-  const expected = db().settings?.cronSecret;
-  const given = req.get('x-samen-cron') || req.query.key;
-  if (!expected || given !== expected) {
-    return res.status(401).json({ error: 'Onbekende sleutel.' });
-  }
-  const result = await tick();
-  return res.json({ ok: true, ...result });
 });
 
 // ── Statische bestanden en foutafhandeling ─────────────────────────────────

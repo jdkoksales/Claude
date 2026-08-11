@@ -1,9 +1,14 @@
-GEEN AFWIJKINGEN GEVONDEN
+GEVONDEN: 5 punten
+ - tablet-kort: onderkop ligt over het bordje heen (193x2px)
+ - tablet-kort: knoppen ligt over het bordje heen (193x46px)
+ - tablet-kort: de uitsnede snijdt 24% van het bordje weg
+ - telefoon-kort: de onderkop is niet zichtbaar
+ - telefoon-klein: de onderkop is niet zichtbaar
 
 desktop 1440x900 — thema 196964024697
    bestand: tk3-hero-ai-desktop.jpg  (bron 1800x1005, vlak 1440x791)
    object-fit cover, object-position 38% 100%
-   bordje op het scherm: x 389–694, y 278–812 (534px hoog)
+   bordje op het scherm: x 396–693, y 277–813 (536px hoog)
    hero 791px hoog, kop rgb(255, 255, 255), onderkop rgba(255, 255, 255, 0.84)
    kop "Je beste marketing staat op de balie."
    overloop 0px, oude wisselfoto's nog aanwezig: false
@@ -11,13 +16,13 @@ desktop 1440x900 — thema 196964024697
    botsing onderkop: geen
    botsing knoppen: geen
    botsing rekenlink: geen
-   hoogtes: {"wrap":376,"kop":112,"sub":77,"knoppen":51,"calc":48,"foto":791}, venster 900px
-   bordje voor 100% zichtbaar binnen het scherm
+   hoogtes: {"wrap":345,"kop":112,"sub":51,"knoppen":46,"calc":48,"foto":791}, venster 900px
+   bordje voor 100% binnen de foto-uitsnede, 100% binnen het scherm
 
-tablet 900x1000 — thema 196964024697
-   bestand: tk3-hero-ai-tablet.jpg  (bron 1400x1045, vlak 900x485)
+tablet 834x1000 — thema 196964024697
+   bestand: tk3-hero-ai-tablet.jpg  (bron 1400x1045, vlak 834x527)
    object-fit cover, object-position 50% 100%
-   bordje op het scherm: x 349–565, y 555–934 (380px hoog)
+   bordje op het scherm: x 329–522, y 587–940 (353px hoog)
    hero 891px hoog, kop rgb(255, 255, 255), onderkop rgba(255, 255, 255, 0.84)
    kop "Je beste marketing staat op de balie."
    overloop 0px, oude wisselfoto's nog aanwezig: false
@@ -25,13 +30,27 @@ tablet 900x1000 — thema 196964024697
    botsing onderkop: geen
    botsing knoppen: geen
    botsing rekenlink: geen
-   hoogtes: {"wrap":350,"kop":112,"sub":51,"knoppen":51,"calc":48,"foto":485}, venster 1000px
-   bordje voor 100% zichtbaar binnen het scherm
+   hoogtes: {"wrap":320,"kop":112,"sub":26,"knoppen":46,"calc":48,"foto":527}, venster 1000px
+   bordje voor 100% binnen de foto-uitsnede, 100% binnen het scherm
+
+tablet-kort 834x700 — thema 196964024697
+   bestand: tk3-hero-ai-tablet.jpg  (bron 1400x1045, vlak 834x327)
+   object-fit cover, object-position 50% 100%
+   bordje op het scherm: x 329–522, y 287–640 (353px hoog)
+   hero 591px hoog, kop rgb(255, 255, 255), onderkop rgba(255, 255, 255, 0.84)
+   kop "Je beste marketing staat op de balie."
+   overloop 0px, oude wisselfoto's nog aanwezig: false
+   botsing kop: geen
+   botsing onderkop: 193x2px
+   botsing knoppen: 193x46px
+   botsing rekenlink: geen
+   hoogtes: {"wrap":229,"kop":112,"sub":26,"knoppen":46,"calc":0,"foto":327}, venster 700px
+   bordje voor 76% binnen de foto-uitsnede, 100% binnen het scherm
 
 telefoon 390x844 — thema 196964024697
-   bestand: tk3-hero-ai-telefoon.jpg  (bron 900x1612, vlak 390x409)
-   object-fit cover, object-position 50% 100%
-   bordje op het scherm: x 119–291, y 428–762 (335px hoog)
+   bestand: tk3-hero-telefoon-krap.jpg  (bron 900x900, vlak 390x501)
+   object-fit cover, object-position 50% 50%
+   bordje op het scherm: x 103–317, y 372–801 (429px hoog)
    hero 735px hoog, kop rgb(255, 255, 255), onderkop rgba(255, 255, 255, 0.84)
    kop "Je beste marketing staat op de balie."
    overloop 0px, oude wisselfoto's nog aanwezig: false
@@ -39,5 +58,33 @@ telefoon 390x844 — thema 196964024697
    botsing onderkop: geen
    botsing knoppen: geen
    botsing rekenlink: geen
-   hoogtes: {"wrap":276,"kop":79,"sub":72,"knoppen":53,"calc":0,"foto":409}, venster 844px
-   bordje voor 100% zichtbaar binnen het scherm
+   hoogtes: {"wrap":194,"kop":68,"sub":47,"knoppen":50,"calc":0,"foto":501}, venster 844px
+   bordje voor 100% binnen de foto-uitsnede, 100% binnen het scherm
+
+telefoon-kort 360x615 — thema 196964024697
+   bestand: tk3-hero-telefoon-krap.jpg  (bron 900x900, vlak 360x360)
+   object-fit cover, object-position 50% 50%
+   bordje op het scherm: x 114–267, y 290–598 (308px hoog)
+   hero 520px hoog, kop rgb(255, 255, 255), onderkop rgba(255, 255, 255, 0.84)
+   kop "Je beste marketing staat op de balie."
+   overloop 0px, oude wisselfoto's nog aanwezig: false
+   botsing kop: geen
+   botsing onderkop: geen
+   botsing knoppen: geen
+   botsing rekenlink: geen
+   hoogtes: {"wrap":128,"kop":64,"sub":0,"knoppen":50,"calc":0,"foto":360}, venster 615px
+   bordje voor 100% binnen de foto-uitsnede, 100% binnen het scherm
+
+telefoon-klein 360x560 — thema 196964024697
+   bestand: tk3-hero-telefoon-krap.jpg  (bron 900x900, vlak 360x360)
+   object-fit cover, object-position 50% 50%
+   bordje op het scherm: x 114–267, y 288–597 (308px hoog)
+   hero 518px hoog, kop rgb(255, 255, 255), onderkop rgba(255, 255, 255, 0.84)
+   kop "Je beste marketing staat op de balie."
+   overloop 0px, oude wisselfoto's nog aanwezig: false
+   botsing kop: geen
+   botsing onderkop: geen
+   botsing knoppen: geen
+   botsing rekenlink: geen
+   hoogtes: {"wrap":128,"kop":64,"sub":0,"knoppen":50,"calc":0,"foto":360}, venster 560px
+   bordje voor 100% binnen de foto-uitsnede, 88% binnen het scherm

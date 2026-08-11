@@ -1,0 +1,195 @@
+name: Reviewsectie nameten
+
+# De reviewsectie toont pas iets zodra er echte reviews in staan, en die
+# verzinnen we niet. Daarom wordt hier een proefpagina met dezelfde opmaak en
+# de echte stylesheet nagemeten, plus — op de winkel zelf — of de sectie
+# inderdaad zwijgt zolang hij leeg is.
+on:
+  workflow_dispatch:
+  push:
+    branches: [claude/3d-product-animations-btyc7y]
+    paths: ['.github/workflows/reviewcheck.yml',
+            'webshop/proef/reviews-proef.html',
+            'webshop/theme3/sections/tk3-reviews.liquid',
+            'webshop/theme3/assets/tk3.css']
+
+permissions:
+  contents: write
+
+jobs:
+  meten:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: claude/3d-product-animations-btyc7y
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Klassen vergelijken
+        # De proefpagina is met de hand geschreven. Loopt hij uit de pas met de
+        # liquid, dan meet ik iets na wat de winkel nooit toont. Elke klasse
+        # die de een gebruikt moet de ander dus ook kennen.
+        run: |
+          python3 - <<'EINDE'
+          import re, sys, pathlib
+          proef = pathlib.Path('webshop/proef/reviews-proef.html').read_text()
+          liquid = pathlib.Path('webshop/theme3/sections/tk3-reviews.liquid').read_text()
+
+          def klassen(tekst):
+              uit = set()
+              for stuk in re.findall(r'class="([^"{}]*)"', tekst):
+                  uit.update(k for k in stuk.split() if k)
+              return uit
+
+          eigen = {'tk3', 'blk', 'grey', 'dark', 'wrap', 'center', 'aan'}
+          a, b = klassen(proef) - eigen, klassen(liquid) - eigen
+          fout = []
+          if a - b: fout.append(f"proefpagina gebruikt klassen die de sectie niet kent: {sorted(a - b)}")
+          if b - a: fout.append(f"de sectie gebruikt klassen die de proefpagina mist: {sorted(b - a)}")
+          for f in fout: print(" -", f)
+          print("gedeeld:", sorted(a & b))
+          sys.exit(1 if fout else 0)
+          EINDE
+
+      - name: Playwright installeren
+        run: npm i -D playwright && npx playwright install --with-deps chromium
+
+      - name: Meten
+        run: |
+          mkdir -p preview
+          cat > reviewcheck.mjs <<'JS'
+          import { chromium } from 'playwright';
+          import fs from 'fs';
+
+          const log = [];
+          const fouten = [];
+          const b = await chromium.launch();
+
+          // ---------- 1. de opmaak, op de proefpagina ----------
+          const SCHERMEN = [['desktop', 1440, 900], ['tablet', 834, 1000], ['telefoon', 390, 844]];
+          for (const [naam, w, h] of SCHERMEN) {
+            const ctx = await b.newContext({ viewport: { width: w, height: h }, locale: 'nl-NL' });
+            const p = await ctx.newPage();
+            await p.goto('file://' + process.cwd() + '/webshop/proef/reviews-proef.html', { waitUntil: 'load' });
+            await p.waitForTimeout(400);
+
+            const m = await p.evaluate(() => {
+              const kaarten = [...document.querySelectorAll('.tk3 .rev')];
+              const rij = document.querySelector('.tk3 .revs');
+              const k = (el) => el.getBoundingClientRect();
+              return {
+                aantal: kaarten.length,
+                cssGeladen: getComputedStyle(kaarten[0]).borderRadius !== '0px',
+                // Staan de sterren links bovenaan, en kloppen de aantallen?
+                sterren: kaarten.map((c) => ({
+                  totaal: c.querySelectorAll('.rev-sterren svg').length,
+                  aan: [...c.querySelectorAll('.rev-sterren svg')]
+                    .filter((s) => getComputedStyle(s).fill !== getComputedStyle(c.querySelector('.rev-sterren svg:not(.aan)') || s).fill
+                              || s.classList.contains('aan')).length,
+                  gevuldeKleur: getComputedStyle(c.querySelector('.rev-sterren svg.aan')).fill,
+                  legeKleur: (() => { const e = c.querySelector('.rev-sterren svg:not(.aan)');
+                    return e ? getComputedStyle(e).fill : null; })(),
+                })),
+                // De klantregel moet onderaan elke kaart staan, ook als de ene
+                // review veel langer is dan de andere.
+                voetAfstand: kaarten.map((c) => {
+                  const v = c.querySelector('.rev-wie');
+                  return Math.round(k(c).bottom - k(v).bottom);
+                }),
+                fotoMaten: [...document.querySelectorAll('.tk3 .rev-foto')].map((f) => {
+                  const q = k(f); const cs = getComputedStyle(f);
+                  return { w: Math.round(q.width), h: Math.round(q.height), radius: cs.borderRadius };
+                }),
+                // Op een telefoon moet het een rail zijn: één kaart hoog, en
+                // horizontaal te scrollen.
+                rijHoog: Math.round(k(rij).height),
+                kaartHoog: Math.round(Math.max(...kaarten.map((c) => k(c).height))),
+                railBreedte: rij.scrollWidth,
+                railZichtbaar: Math.round(k(rij).width),
+                paginaOverloop: Math.max(0, document.documentElement.scrollWidth - innerWidth),
+              };
+            });
+
+            log.push(`\n${naam} ${w}x${h}`);
+            log.push(`   ${m.aantal} kaarten, stylesheet geladen: ${m.cssGeladen}`);
+            log.push(`   sterren per kaart: ${m.sterren.map((s) => s.aan + '/' + s.totaal).join(', ')}`);
+            log.push(`   gevulde ster ${m.sterren[0].gevuldeKleur}, lege ster ${m.sterren[1].legeKleur}`);
+            log.push(`   afstand klantregel tot onderkant kaart: ${m.voetAfstand.join(', ')}px`);
+            log.push(`   fotootjes: ${m.fotoMaten.map((f) => f.w + 'x' + f.h + ' r' + f.radius).join(', ')}`);
+            log.push(`   rij ${m.rijHoog}px hoog, hoogste kaart ${m.kaartHoog}px, rail ${m.railBreedte}px in ${m.railZichtbaar}px`);
+
+            if (!m.cssGeladen) fouten.push(`${naam}: de stylesheet is niet geladen, deze meting zegt niets`);
+            if (m.aantal !== 3) fouten.push(`${naam}: ${m.aantal} kaarten in plaats van 3`);
+            const verwacht = [5, 4, 3];
+            m.sterren.forEach((s, i) => {
+              if (s.totaal !== 5) fouten.push(`${naam}: kaart ${i + 1} heeft ${s.totaal} sterren in plaats van 5`);
+              if (s.aan !== verwacht[i]) fouten.push(`${naam}: kaart ${i + 1} toont ${s.aan} gevulde sterren in plaats van ${verwacht[i]}`);
+            });
+            if (m.sterren[1].gevuldeKleur === m.sterren[1].legeKleur)
+              fouten.push(`${naam}: gevulde en lege sterren hebben dezelfde kleur (${m.sterren[1].legeKleur})`);
+            const spreiding = Math.max(...m.voetAfstand) - Math.min(...m.voetAfstand);
+            if (spreiding > 2) fouten.push(`${naam}: de klantregel staat niet op gelijke hoogte, ${spreiding}px verschil`);
+            m.fotoMaten.forEach((f, i) => {
+              if (f.w !== f.h) fouten.push(`${naam}: fotootje ${i + 1} is ${f.w}x${f.h} en dus niet vierkant`);
+              if (f.w < 36) fouten.push(`${naam}: fotootje ${i + 1} is maar ${f.w}px`);
+              if (!/50%|9999px|22px|\d+px/.test(f.radius) || f.radius === '0px')
+                fouten.push(`${naam}: fotootje ${i + 1} is niet rond (radius ${f.radius})`);
+            });
+            if (m.paginaOverloop > 0) fouten.push(`${naam}: de pagina schuift ${m.paginaOverloop}px opzij`);
+            if (naam === 'telefoon') {
+              if (m.railBreedte <= m.railZichtbaar) fouten.push('telefoon: de reviews stapelen in plaats van te schuiven');
+              if (m.rijHoog > m.kaartHoog + 20) fouten.push(`telefoon: de rij is ${m.rijHoog}px terwijl de hoogste kaart ${m.kaartHoog}px is — hij stapelt`);
+            } else if (naam === 'desktop') {
+              if (m.railBreedte > m.railZichtbaar + 2) fouten.push('desktop: de reviews schuiven terwijl ze in een rooster horen');
+            }
+
+            await p.screenshot({ path: `preview/reviews-${naam}.png`, fullPage: naam !== 'telefoon' });
+            await ctx.close();
+          }
+
+          // ---------- 2. de winkel zelf: leeg hoort leeg te blijven ----------
+          const ctx = await b.newContext({ viewport: { width: 390, height: 844 }, locale: 'nl-NL' });
+          const p = await ctx.newPage();
+          await p.goto('https://ikep5e-3q.myshopify.com/?preview_theme_id=196964024697', { waitUntil: 'load', timeout: 60000 });
+          await p.waitForTimeout(3000);
+          const winkel = await p.evaluate(() => ({
+            themaId: (window.Shopify && Shopify.theme && Shopify.theme.id) || 'onbekend',
+            reviewSectie: !!document.querySelector('.tk3 #reviews'),
+            legeKaarten: document.querySelectorAll('.tk3 .rev').length,
+            vertrouwensbalk: !!document.querySelector('.tk3 .trust'),
+            productKaarten: document.querySelectorAll('.tk3 .pcard').length,
+          }));
+          log.push(`\nwinkel (thema ${winkel.themaId})`);
+          log.push(`   reviewsectie zichtbaar: ${winkel.reviewSectie}, kaarten: ${winkel.legeKaarten}`);
+          log.push(`   vertrouwensbalk nog aanwezig: ${winkel.vertrouwensbalk}`);
+          log.push(`   productkaarten: ${winkel.productKaarten}`);
+          if (winkel.reviewSectie || winkel.legeKaarten > 0)
+            fouten.push('winkel: de lege reviewsectie staat op de pagina, hij hoort te zwijgen tot er een review in staat');
+          if (winkel.vertrouwensbalk) fouten.push('winkel: de vertrouwensbalk staat er nog');
+          if (winkel.productKaarten < 1) fouten.push('winkel: er staat geen enkele productkaart op de pagina');
+          await ctx.close();
+
+          await b.close();
+          const kop = fouten.length
+            ? `GEVONDEN: ${fouten.length} punten\n` + fouten.map((f) => ' - ' + f).join('\n')
+            : 'GEEN AFWIJKINGEN GEVONDEN';
+          fs.writeFileSync('preview/reviews.txt', kop + '\n' + log.join('\n') + '\n');
+          console.log(kop);
+          JS
+          node reviewcheck.mjs
+
+      - name: Vastleggen
+        if: always()
+        run: |
+          git config user.name Claude
+          git config user.email noreply@anthropic.com
+          git add preview/reviews.txt preview/reviews-*.png || true
+          git commit -m "Uitkomst van de reviewsectie" || exit 0
+          for poging in 1 2 3 4; do
+            git pull --rebase origin claude/3d-product-animations-btyc7y && \
+              git push origin HEAD:claude/3d-product-animations-btyc7y && break
+            sleep $((poging * 4))
+          done

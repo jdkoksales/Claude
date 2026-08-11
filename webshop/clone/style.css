@@ -911,6 +911,68 @@ footer{background:linear-gradient(115deg,#fdfdfe,#fdf1f5);padding:88px 0 44px}
 .waarom.licht .wrm-bronnen{color:var(--ink-36)}
 
 
+/* ---------- reviews ---------- */
+/* Kaarten met de sterren bovenaan, de review in het midden en de klant
+   onderin. Die volgorde is niet willekeurig: het cijfer bepaalt of iemand
+   verder leest, de naam is pas interessant als de tekst overtuigd heeft.
+
+   Op een breed scherm een rooster, op een smal scherm een rail. Zou de rij
+   op een telefoon stapelen, dan groeit deze sectie met elke review die je
+   toevoegt en zakken de producten eronder van het eerste scherm af. */
+.kicker{display:inline-flex;align-items:center;margin-bottom:18px;
+  padding:7px 16px;border-radius:9999px;background:rgba(244,128,31,.14);
+  color:var(--oranje-diep);font-size:var(--fs-xs);font-weight:750;
+  letter-spacing:.01em}
+.kicker.center{display:block;width:fit-content;margin-left:auto;margin-right:auto}
+section.dark .kicker{background:rgba(244,128,31,.2);color:#FBC26B}
+
+.revs{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:38px}
+.rev{display:flex;flex-direction:column;margin:0;padding:26px 24px;
+  background:#fff;border:1px solid var(--line);border-radius:16px}
+section.dark .rev{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12)}
+
+.rev-sterren{display:flex;gap:2px;margin-bottom:14px}
+.rev-sterren svg{fill:rgba(0,0,0,.14);flex:0 0 auto}
+.rev-sterren svg.aan{fill:var(--oranje)}
+section.dark .rev-sterren svg{fill:rgba(255,255,255,.18)}
+section.dark .rev-sterren svg.aan{fill:#FBC26B}
+
+.rev blockquote{margin:0;font-size:var(--fs-md);line-height:1.55;color:var(--ink)}
+section.dark .rev blockquote{color:rgba(255,255,255,.9)}
+
+/* De klant staat onderin, en `margin-top:auto` houdt hem daar ook als de ene
+   review korter is dan de andere. Anders danst die rij per kaart op en neer. */
+.rev-wie{display:flex;align-items:center;gap:12px;margin-top:auto;padding-top:20px}
+.rev-foto{width:44px;height:44px;border-radius:50%;flex:0 0 auto;object-fit:cover;
+  background:var(--grey-bg);display:block}
+.rev-letter{display:grid;place-items:center;font-weight:750;font-size:var(--fs-sm);
+  color:var(--oranje-diep);background:rgba(244,128,31,.14)}
+section.dark .rev-letter{background:rgba(244,128,31,.22);color:#FBC26B}
+.rev-naam{display:flex;flex-direction:column;min-width:0;line-height:1.35}
+.rev-naam strong{font-size:var(--fs-sm);font-weight:700}
+.rev-naam span{font-size:var(--fs-xs);color:var(--ink-64)}
+section.dark .rev-naam span{color:rgba(255,255,255,.62)}
+
+.rev-note{margin-top:28px;font-size:var(--fs-xs);color:var(--ink-48)}
+section.dark .rev-note{color:rgba(255,255,255,.52)}
+
+@media(max-width:1023px){
+  .revs{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:767px){
+  /* Rail in plaats van stapel: de sectie blijft één kaart hoog, hoeveel
+     reviews je er ook in zet. De negatieve marge laat de kaarten tot aan de
+     schermrand doorlopen, zodat je ziet dat er meer staat. */
+  .revs{display:flex;grid-template-columns:none;gap:14px;
+    overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;
+    margin-left:calc(var(--gut) * -1);margin-right:calc(var(--gut) * -1);
+    padding:0 var(--gut) 6px}
+  .revs::-webkit-scrollbar{display:none}
+  .rev{flex:0 0 82%;scroll-snap-align:start;padding:22px 20px}
+  .rev blockquote{font-size:var(--fs-sm)}
+}
+
+
 /* ---------- hero met foto over de volle sectie ---------- */
 /* De hero was drie transparante productplaatjes onderaan een lichte gradient.
    Nu is het één foto per schermgrootte met het oranje er al in, dus hij vult

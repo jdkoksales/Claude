@@ -1,39 +1,131 @@
 {{ 'tk3.css' | asset_url | stylesheet_tag }}
 
-{%- assign rail_id = 'tk3-rev-' | append: section.id -%}
+{%- liquid
+  # Alleen blokken met een echte tekst tellen mee. Een half ingevuld blok
+  # hoort niet als lege kaart op de winkel te staan.
+  assign gevuld = 0
+  for block in section.blocks
+    if block.settings.tekst != blank
+      assign gevuld = gevuld | plus: 1
+    endif
+  endfor
 
-<div class="tk3">
-  <section class="blk">
-    <div class="wrap">
-      <h2 class="sec-title center">{{ section.settings.heading }}</h2>
-      {%- if section.settings.sub != blank -%}
-        <p class="sec-sub center" style="margin-bottom:44px">{{ section.settings.sub }}</p>
-      {%- endif -%}
+  case section.settings.achtergrond
+    when 'grijs'
+      assign vlak = 'blk grey'
+    when 'donker'
+      assign vlak = 'blk dark'
+    else
+      assign vlak = 'blk'
+  endcase
+-%}
 
-      <div class="rail" id="{{ rail_id }}">
-        {%- for block in section.blocks -%}
-          <div class="revcard" {{ block.shopify_attributes }}>
-            <div class="stars">{% for i in (1..block.settings.stars) %}★{% endfor %}</div>
-            <p>{{ block.settings.text }}</p>
-            <div class="src">{{ block.settings.source }}</div>
-          </div>
-        {%- endfor -%}
+{%- if gevuld > 0 -%}
+  <div class="tk3">
+    <section class="{{ vlak }}" id="reviews">
+      <div class="wrap">
+        {%- if section.settings.kicker != blank -%}
+          <p class="kicker center">{{ section.settings.kicker }}</p>
+        {%- endif -%}
+        {%- if section.settings.heading != blank -%}
+          <h2 class="sec-title center">{{ section.settings.heading }}</h2>
+        {%- endif -%}
+        {%- if section.settings.sub != blank -%}
+          <p class="sec-sub center">{{ section.settings.sub }}</p>
+        {%- endif -%}
+
+        <div class="revs">
+          {%- for block in section.blocks -%}
+            {%- if block.settings.tekst == blank -%}{% continue %}{%- endif -%}
+
+            {%- liquid
+              assign sterren = block.settings.sterren | default: 5 | at_most: 5 | at_least: 1
+              assign naam = block.settings.naam | default: '' | strip
+              assign letter = naam | slice: 0, 1 | upcase
+            -%}
+
+            <figure class="rev" {{ block.shopify_attributes }}>
+              {%- comment -%}
+                De sterren staan als tekst in het aria-label. Een rij losse
+                symbolen leest een schermlezer anders voor als "ster ster ster
+                ster ster", en dat zegt niets over het cijfer.
+              {%- endcomment -%}
+              <div class="rev-sterren" role="img" aria-label="{{ sterren }} van de 5 sterren">
+                {%- for i in (1..5) -%}
+                  <svg width="17" height="17" viewBox="0 0 20 20" aria-hidden="true"
+                    class="{% if i <= sterren %}aan{% endif %}">
+                    <path d="M10 1.6l2.5 5.4 5.9.7-4.4 4 1.2 5.8L10 14.6 4.8 17.5 6 11.7 1.6 7.7l5.9-.7z"/>
+                  </svg>
+                {%- endfor -%}
+              </div>
+
+              <blockquote>{{ block.settings.tekst }}</blockquote>
+
+              <figcaption class="rev-wie">
+                {%- if block.settings.foto -%}
+                  <img class="rev-foto" src="{{ block.settings.foto | image_url: width: 112, height: 112, crop: 'center' }}"
+                    alt="{{ naam | escape }}" width="56" height="56" loading="lazy" decoding="async">
+                {%- elsif letter != blank -%}
+                  {%- comment -%}
+                    Geen foto? Dan de eerste letter in een schijfje. Een lege
+                    grijze cirkel ziet eruit als een afbeelding die niet laadt.
+                  {%- endcomment -%}
+                  <span class="rev-foto rev-letter" aria-hidden="true">{{ letter }}</span>
+                {%- endif -%}
+                <span class="rev-naam">
+                  {%- if naam != blank -%}<strong>{{ naam }}</strong>{%- endif -%}
+                  {%- if block.settings.zaak != blank -%}<span>{{ block.settings.zaak }}</span>{%- endif -%}
+                </span>
+              </figcaption>
+            </figure>
+          {%- endfor -%}
+        </div>
+
+        {%- if section.settings.note != blank -%}
+          <p class="rev-note center">{{ section.settings.note }}</p>
+        {%- endif -%}
       </div>
+    </section>
+  </div>
 
-      <div class="arrows">
-        <button type="button" onclick="tk3ScrollRail('{{ rail_id }}',-1)" aria-label="Vorige">←</button>
-        <button type="button" onclick="tk3ScrollRail('{{ rail_id }}',1)" aria-label="Volgende">→</button>
+{%- elsif request.design_mode -%}
+  {%- comment -%}
+    Nog geen reviews ingevuld. In de winkel laten we dan niets zien — een
+    lege sectie of een verzonnen voorbeeldreview is allebei erger dan geen
+    sectie. In de thema-editor staat wél deze uitleg, zodat je ziet waar je
+    moet typen.
+  {%- endcomment -%}
+  <div class="tk3">
+    <section class="blk grey">
+      <div class="wrap">
+        <h2 class="sec-title center">{{ section.settings.heading }}</h2>
+        <p class="sec-sub center">
+          Er staat nog geen review in. Voeg links een blok “Review” toe en vul
+          in elk geval het reviewveld in — zonder tekst blijft een blok
+          onzichtbaar. Deze uitleg ziet alleen jij; op de winkel zelf staat er
+          nu niets.
+        </p>
       </div>
-    </div>
-  </section>
-</div>
+    </section>
+  </div>
+{%- endif -%}
 
 {% schema %}
 {
   "name": "TK3 reviews",
+  "tag": "section",
   "settings": [
-    { "type": "text", "id": "heading", "label": "Kop", "default": "Wat ondernemers zeggen." },
-    { "type": "textarea", "id": "sub", "label": "Onderkop", "default": "Echte reacties verschijnen hier zodra je eerste klanten geleverd zijn." }
+    { "type": "paragraph", "content": "Elk blok is één review. Blokken zonder reviewtekst worden overgeslagen, dus je kunt er rustig een leeg blok tussen laten staan." },
+    { "type": "select", "id": "achtergrond", "label": "Achtergrond", "default": "grijs",
+      "options": [
+        { "value": "wit", "label": "Wit" },
+        { "value": "grijs", "label": "Grijs" },
+        { "value": "donker", "label": "Donker" }
+      ] },
+    { "type": "text", "id": "kicker", "label": "Klein bovenschrift", "default": "Wat klanten zeggen" },
+    { "type": "text", "id": "heading", "label": "Kop", "default": "Ondernemers die het al op de balie hebben staan." },
+    { "type": "textarea", "id": "sub", "label": "Onderkop" },
+    { "type": "text", "id": "note", "label": "Regel onder de reviews", "info": "Bijvoorbeeld waar de reviews vandaan komen." }
   ],
   "max_blocks": 12,
   "blocks": [
@@ -41,17 +133,14 @@
       "type": "review",
       "name": "Review",
       "settings": [
-        { "type": "range", "id": "stars", "min": 1, "max": 5, "step": 1, "label": "Sterren", "default": 5 },
-        { "type": "textarea", "id": "text", "label": "Tekst", "default": "[PLAATSHOUDER — echte klantreactie]" },
-        { "type": "text", "id": "source", "label": "Bron", "default": "Zaaknaam — datum" }
+        { "type": "textarea", "id": "tekst", "label": "De review", "info": "Zonder deze tekst wordt het blok niet getoond." },
+        { "type": "range", "id": "sterren", "label": "Aantal sterren", "min": 1, "max": 5, "step": 1, "default": 5 },
+        { "type": "text", "id": "naam", "label": "Naam van de klant" },
+        { "type": "text", "id": "zaak", "label": "Zaak en plaats", "info": "Bijvoorbeeld: Café De Zwaan, Utrecht" },
+        { "type": "image_picker", "id": "foto", "label": "Fotootje van de klant", "info": "Wordt vierkant bijgesneden en rond getoond. Geen foto? Dan verschijnt de eerste letter van de naam." }
       ]
     }
   ],
-  "presets": [
-    {
-      "name": "TK3 reviews",
-      "blocks": [{ "type": "review" }, { "type": "review" }, { "type": "review" }, { "type": "review" }]
-    }
-  ]
+  "presets": [{ "name": "TK3 reviews" }]
 }
 {% endschema %}

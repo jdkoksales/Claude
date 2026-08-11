@@ -11,49 +11,6 @@
         "calc_url": "/#calculator"
       }
     },
-    "trust": {
-      "type": "tk3-trust",
-      "blocks": {
-        "t1": {
-          "type": "item",
-          "settings": {
-            "text": "🚚 Gratis verzending vanaf € 70"
-          }
-        },
-        "t2": {
-          "type": "item",
-          "settings": {
-            "text": "⚡ Op werkdagen voor 16:00 besteld, vandaag verzonden"
-          }
-        },
-        "t3": {
-          "type": "item",
-          "settings": {
-            "text": "🛡️ Niet tevreden? 14 dagen retour, geld terug"
-          }
-        },
-        "t4": {
-          "type": "item",
-          "settings": {
-            "text": "🔗 Wij koppelen je pagina — jij stelt niets in"
-          }
-        },
-        "t5": {
-          "type": "item",
-          "settings": {
-            "text": "🇳🇱 Verzonden vanuit Nederland"
-          }
-        }
-      },
-      "block_order": [
-        "t1",
-        "t2",
-        "t3",
-        "t4",
-        "t5"
-      ],
-      "settings": {}
-    },
     "statement": {
       "type": "tk3-statement",
       "settings": {
@@ -408,12 +365,24 @@
         "drempel": 7000,
         "note": "Liever zelf samenstellen? Vanaf twee TapKaarten rekent de winkelwagen automatisch korting: 10% bij twee, 15% bij drie, 20% vanaf vier. Bij vier standaards scheelt dat € 27,96. Elke standaard én elke sticker telt mee."
       }
+    },
+    "reviews": {
+      "type": "tk3-reviews",
+      "blocks": {},
+      "block_order": [],
+      "settings": {
+        "achtergrond": "grijs",
+        "kicker": "Wat klanten zeggen",
+        "heading": "Ondernemers die het al op de balie hebben staan.",
+        "sub": "",
+        "note": ""
+      }
     }
   },
   "order": [
     "hero",
+    "reviews",
     "producten",
-    "trust",
     "hoe",
     "koppelen",
     "configurator",

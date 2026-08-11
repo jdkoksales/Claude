@@ -706,6 +706,40 @@ html,body{overflow-x:clip}
 .tk3 .waarom.licht .wrm-lijst li{color:var(--ink-64)}
 .tk3 .waarom.licht .wrm-punch{color:var(--ink)}
 .tk3 .waarom.licht .wrm-bronnen{color:var(--ink-36)}
+.tk3 .kicker{display:inline-flex;align-items:center;margin-bottom:18px;
+  padding:7px 16px;border-radius:9999px;background:rgba(244,128,31,.14);
+  color:var(--oranje-diep);font-size:var(--fs-xs);font-weight:750;
+  letter-spacing:.01em}
+.tk3 .kicker.center{display:block;width:fit-content;margin-left:auto;margin-right:auto}
+.tk3 section.dark .kicker{background:rgba(244,128,31,.2);color:#FBC26B}
+.tk3 .revs{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:38px}
+.tk3 .rev{display:flex;flex-direction:column;margin:0;padding:26px 24px;
+  background:#fff;border:1px solid var(--line);border-radius:16px}
+.tk3 section.dark .rev{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12)}
+.tk3 .rev-sterren{display:flex;gap:2px;margin-bottom:14px}
+.tk3 .rev-sterren svg{fill:rgba(0,0,0,.14);flex:0 0 auto}
+.tk3 .rev-sterren svg.aan{fill:var(--oranje)}
+.tk3 section.dark .rev-sterren svg{fill:rgba(255,255,255,.18)}
+.tk3 section.dark .rev-sterren svg.aan{fill:#FBC26B}
+.tk3 .rev blockquote{margin:0;font-size:var(--fs-md);line-height:1.55;color:var(--ink)}
+.tk3 section.dark .rev blockquote{color:rgba(255,255,255,.9)}
+.tk3 .rev-wie{display:flex;align-items:center;gap:12px;margin-top:auto;padding-top:20px}
+.tk3 .rev-foto{width:44px;height:44px;border-radius:50%;flex:0 0 auto;object-fit:cover;
+  background:var(--grey-bg);display:block}
+.tk3 .rev-letter{display:grid;place-items:center;font-weight:750;font-size:var(--fs-sm);
+  color:var(--oranje-diep);background:rgba(244,128,31,.14)}
+.tk3 section.dark .rev-letter{background:rgba(244,128,31,.22);color:#FBC26B}
+.tk3 .rev-naam{display:flex;flex-direction:column;min-width:0;line-height:1.35}
+.tk3 .rev-naam strong{font-size:var(--fs-sm);font-weight:700}
+.tk3 .rev-naam span{font-size:var(--fs-xs);color:var(--ink-64)}
+.tk3 section.dark .rev-naam span{color:rgba(255,255,255,.62)}
+.tk3 .rev-note{margin-top:28px;font-size:var(--fs-xs);color:var(--ink-48)}
+.tk3 section.dark .rev-note{color:rgba(255,255,255,.52)}
+@media(max-width:1023px){.tk3 .revs{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:767px){.tk3 .revs{display:flex;grid-template-columns:none;gap:14px;
+    overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;
+    margin-left:calc(var(--gut) * -1);margin-right:calc(var(--gut) * -1);
+    padding:0 var(--gut) 6px}.tk3 .revs::-webkit-scrollbar{display:none}.tk3 .rev{flex:0 0 82%;scroll-snap-align:start;padding:22px 20px}.tk3 .rev blockquote{font-size:var(--fs-sm)}}
 .tk3 .hero-foto{position:absolute;inset:0;z-index:1;display:block;pointer-events:none}
 .tk3 .hero-foto img{width:100%;height:100%!important;aspect-ratio:auto;display:block;
   object-fit:cover;object-position:38% bottom}

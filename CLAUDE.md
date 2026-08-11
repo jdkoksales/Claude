@@ -38,6 +38,13 @@ Deze keuzes zijn met Julian doorgenomen. Verander ze niet zonder het te vragen.
   de kleur bepaalt. Daardoor is er niets in te stellen en niets op te slaan.
   Laadt een plaatje niet, dan staat de beginletter er nog: de app werkt dus ook
   zonder avatars.
+- **De kaart draait op OpenStreetMap, niet op Google Maps.** Geen account,
+  geen sleutel, geen creditcard, geen rekening die kan oplopen. Leaflet staat
+  in `public/vendor/` — dus in de repo, niet op een CDN — en wordt pas geladen
+  als je de kaart opent. Zoeken naar een plek loopt via `/api/geocode`, dat is
+  een doorgeefluik naar Nominatim: die dienst wil één afzender met een eigen
+  User-Agent zien in plaats van tientallen browsers, en hooguit één vraag per
+  seconde. Antwoorden blijven een uur in het geheugen hangen.
 - **Diepte en beweging zijn versiering, nooit constructie.** Er hangt geen
   enkele knop of scherm aan een animatie: haal het hele blok "Diepte en
   beweging" uit `styles.css` en de app doet nog precies hetzelfde. Wie in zijn
@@ -124,13 +131,19 @@ De app staat live op **https://samen-agenda.vercel.app** en werkt: opslag op
 Postgres bevestigd via `/api/health`, en de herinneringstaak in Postgres krijgt
 netjes antwoord.
 
+De app is ingericht: **Julian staat eerste, Jessica tweede.** Die volgorde
+bepaalt zowel hun kleur als hun avatar, dus draai hem niet om. Hun kleuren zijn
+`#3a7ca5` (Julian) en `#e26d5c` (Jessica) — niet het blauw en roze uit oudere
+notities; de app kiest ze bij het inrichten.
+
 Openstaand:
 
-1. **Julian en zijn vriendin moeten de app nog inrichten** (twee namen, twee
-   pincodes) en op hun beginscherm zetten. Tot die tijd is `users` leeg.
-2. **De repository op privé zetten** is Julian aangeraden maar nog niet gedaan.
-3. **Het databasewachtwoord vervangen** kan wanneer hij wil; het is een keer in
+1. **De repository op privé zetten** is Julian aangeraden maar nog niet gedaan.
+2. **Het databasewachtwoord vervangen** kan wanneer hij wil; het is een keer in
    een gesprek langsgekomen.
+3. **Vraag na of ze zichzelf herkennen in hun avatar.** Die is getekend uit een
+   beschrijving, niet uit hun foto; klopt er iets niet aan haar of kleding, dan
+   is het een kwestie van de beschrijving bijstellen en opnieuw laten tekenen.
 
 ## Higgsfield
 

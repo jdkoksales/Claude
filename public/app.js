@@ -511,7 +511,7 @@ function eventForm(existing, presetDate, presetStart) {
       h('span', { class: 'row-main' }, 'Hele dag')),
     timeRow,
     reminderRow,
-    field('Waar', h('input', { name: 'location', value: ev.location || '', placeholder: 'Optioneel', maxlength: '120' })),
+    placeField(ev),
     field('Herhaling',
       h('select', {
         name: 'repeatFreq',
@@ -553,6 +553,8 @@ function eventForm(existing, presetDate, presetStart) {
       start: values.start || null,
       end: values.end || null,
       location: values.location || '',
+      lat: values.lat || null,
+      lon: values.lon || null,
       notes: values.notes || '',
       category,
       endDate: category === 'vakantie' ? (values.endDate || null) : null,
@@ -1428,6 +1430,233 @@ function viewPhoto(photo, event, date) {
 
 // ── Scherm: Momenten ───────────────────────────────────────────────────────
 
+// ── Kaart ──────────────────────────────────────────────────────────────────
+
+/**
+ * Leaflet staat in de repo zelf (public/vendor), niet op een CDN: wat hier
+ * staat is wat de browser krijgt, ook over vijf jaar. Het wordt pas opgehaald
+ * als je de kaart voor het eerst opent — dat is 160 kB die je bij het gewone
+ * gebruik van de app nooit hoeft te laden.
+ */
+let mapLib = null;
+function loadMap() {
+  if (mapLib) return mapLib;
+  mapLib = new Promise((resolve, reject) => {
+    if (window.L) return resolve(window.L);
+    document.head.append(h('link', { rel: 'stylesheet', href: '/vendor/leaflet.css' }));
+    const script = h('script', { src: '/vendor/leaflet.js' });
+    script.addEventListener('load', () => resolve(window.L));
+    script.addEventListener('error', () => {
+      mapLib = null; // volgende keer opnieuw proberen
+      reject(new Error('De kaart kon niet geladen worden.'));
+    });
+    document.head.append(script);
+  });
+  return mapLib;
+}
+
+const TILE_URL = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+
+/** Een kaart met de kaartlaag erop. Nederland als beginbeeld. */
+function baseMap(L, node, { lat = 52.15, lon = 5.4, zoom = 7 } = {}) {
+  const map = L.map(node, { zoomControl: true }).setView([lat, lon], zoom);
+  L.tileLayer(TILE_URL, { maxZoom: 19, attribution: '© OpenStreetMap' }).addTo(map);
+  // De kaart meet zichzelf op bij het maken; in een paneel dat net is opengegaan
+  // klopt die maat nog niet, en dan blijft de helft grijs.
+  setTimeout(() => map.invalidateSize(), 60);
+  return map;
+}
+
+/**
+ * Momenten gegroepeerd per plek. Twee uitjes op hetzelfde strand horen op één
+ * speld, anders staan ze over elkaar heen. Drie decimalen is ongeveer honderd
+ * meter — dicht genoeg om "dezelfde plek" te zijn.
+ */
+function groupByPlace(items) {
+  const groups = new Map();
+  for (const item of items) {
+    if (typeof item.lat !== 'number' || typeof item.lon !== 'number') continue;
+    const key = `${item.lat.toFixed(3)},${item.lon.toFixed(3)}`;
+    const group = groups.get(key)
+      || { key, lat: item.lat, lon: item.lon, name: item.location || 'Zonder naam', items: [] };
+    group.items.push(item);
+    groups.set(key, group);
+  }
+  return [...groups.values()];
+}
+
+/** De inhoud van een speld: de omslagfoto van het uitje, of anders een hartje. */
+function fillPin(element, group) {
+  const first = group.items[0];
+  const cover = (state.data.photos || []).find((p) => group.items.some((i) => i.id === p.eventId));
+  element.append(cover
+    ? h('img', { src: `/api/photos/${cover.id}`, alt: '' })
+    : icon(first.category === 'vakantie' ? 'sparkle' : 'heart'));
+  if (group.items.length > 1) {
+    element.append(h('b', { class: 'pin-count', text: String(group.items.length) }));
+  }
+}
+
+/**
+ * De kaart met alle momenten die een plek hebben. Tik je op een speld, dan zie
+ * je wat daar is geweest of nog komt.
+ */
+function mapSheet() {
+  const wrap = h('div', { class: 'form' });
+  const canvas = h('div', { class: 'map' });
+  const note = h('p', { class: 'muted' });
+  wrap.append(canvas, note);
+
+  const all = [...(state.moments?.upcoming || []), ...(state.moments?.past || [])];
+  const groups = groupByPlace(all);
+  const zonderPlek = all.length - groups.reduce((n, g) => n + g.items.length, 0);
+
+  if (!groups.length) {
+    canvas.remove();
+    wrap.append(emptyNote('Nog geen enkel moment staat op de kaart. Open een uitje, vul "Waar" in en kies een plek.', 'heart'));
+    note.remove();
+    return wrap;
+  }
+
+  note.textContent = `${plural(groups.length, 'plek', 'plekken')} op de kaart`
+    + (zonderPlek ? ` · ${plural(zonderPlek, 'moment', 'momenten')} zonder plek` : '');
+
+  loadMap().then((L) => {
+    const map = baseMap(L, canvas);
+    const markers = [];
+    for (const group of groups) {
+      const marker = L.marker([group.lat, group.lon], {
+        icon: L.divIcon({ className: 'pin', html: '', iconSize: [46, 46], iconAnchor: [23, 23] }),
+        title: group.name,
+      }).addTo(map);
+      fillPin(marker.getElement(), group);
+      marker.on('click', () => openSheet(group.name, () => placeSheet(group)));
+      markers.push(marker);
+    }
+    // Zo ver uitzoomen dat alles erop past, maar niet verder dan wijkniveau —
+    // bij één plek zou je anders op straatniveau uitkomen.
+    map.fitBounds(L.featureGroup(markers).getBounds().pad(0.25), { maxZoom: 14 });
+  }).catch((err) => {
+    canvas.remove();
+    note.textContent = err.message;
+  });
+
+  return wrap;
+}
+
+/** Wat er op één plek te doen is geweest, of nog gaat gebeuren. */
+function placeSheet(group) {
+  const sorted = [...group.items].sort((a, b) => (a.date < b.date ? 1 : -1));
+  return h('div', { class: 'form' },
+    h('p', { class: 'muted', text: group.name }),
+    h('div', { class: 'moments' }, ...sorted.map(momentCard)),
+    h('button', {
+      class: 'btn block',
+      type: 'button',
+      onclick: () => openSheet('Kaart', mapSheet),
+    }, 'Terug naar de kaart'));
+}
+
+/**
+ * Waar iets is. Je kunt het gewoon typen — dan blijft het een tekstje — of er
+ * een plek bij zoeken, en dan komt het uitje ook op de kaart te staan. De
+ * kleine kaart eronder laat zien waar de speld staat; tik hem ergens anders om
+ * hem te verplaatsen, want lang niet elk strand heeft een adres.
+ */
+function placeField(ev) {
+  const input = h('input', {
+    name: 'location', value: ev.location || '', placeholder: 'Optioneel', maxlength: '120',
+  });
+  const latField = h('input', { type: 'hidden', name: 'lat', value: ev.lat ?? '' });
+  const lonField = h('input', { type: 'hidden', name: 'lon', value: ev.lon ?? '' });
+
+  const status = h('span', { class: 'place-status' });
+  const results = h('div', { class: 'place-results', hidden: true });
+  const canvas = h('div', { class: 'map small', hidden: true });
+  let map = null;
+  let marker = null;
+
+  const hasPlace = () => latField.value !== '' && lonField.value !== '';
+
+  function showStatus() {
+    status.replaceChildren(...(hasPlace()
+      ? [icon('target'), h('span', { text: 'Staat op de kaart' }), h('button', {
+        class: 'btn ghost', type: 'button', onclick: () => setPlace(null),
+      }, 'Wissen')]
+      : [h('span', { class: 'muted', text: 'Nog niet op de kaart' })]));
+  }
+
+  function setPlace(point) {
+    latField.value = point ? String(point.lat) : '';
+    lonField.value = point ? String(point.lon) : '';
+    showStatus();
+    if (!point) {
+      canvas.hidden = true;
+      return;
+    }
+    canvas.hidden = false;
+    loadMap().then((L) => {
+      if (!map) {
+        map = baseMap(L, canvas, { lat: point.lat, lon: point.lon, zoom: 14 });
+        map.on('click', (e) => setPlace({ lat: e.latlng.lat, lon: e.latlng.lng }));
+      }
+      map.setView([point.lat, point.lon], Math.max(map.getZoom(), 14));
+      if (marker) marker.remove();
+      marker = L.marker([point.lat, point.lon], {
+        icon: L.divIcon({ className: 'pin pin-pick', html: '', iconSize: [34, 34], iconAnchor: [17, 17] }),
+      }).addTo(map);
+      marker.getElement().append(icon('target'));
+    }).catch((err) => {
+      canvas.hidden = true;
+      status.replaceChildren(h('span', { class: 'muted', text: err.message }));
+    });
+  }
+
+  const search = h('button', { class: 'btn', type: 'button' }, 'Zoek plek');
+  search.addEventListener('click', async () => {
+    const q = input.value.trim();
+    if (q.length < 3) {
+      toast('Typ eerst waar het is.');
+      return;
+    }
+    search.disabled = true;
+    search.textContent = 'Zoeken…';
+    try {
+      const res = await api(`/geocode?q=${encodeURIComponent(q)}`);
+      results.replaceChildren(...(res.results.length
+        ? res.results.map((r) => {
+          const pick = h('button', { class: 'place-hit', type: 'button' },
+            h('b', { text: r.name }),
+            r.context ? h('span', { text: r.context }) : null);
+          pick.addEventListener('click', () => {
+            input.value = r.name;
+            results.hidden = true;
+            setPlace({ lat: r.lat, lon: r.lon });
+          });
+          return pick;
+        })
+        : [h('p', { class: 'muted', text: 'Niets gevonden. Probeer het anders, of tik de plek aan op de kaart.' })]));
+      results.hidden = false;
+    } catch (err) {
+      toast(err.message);
+    } finally {
+      search.disabled = false;
+      search.textContent = 'Zoek plek';
+    }
+  });
+
+  showStatus();
+  if (hasPlace()) setPlace({ lat: Number(latField.value), lon: Number(lonField.value) });
+
+  return field('Waar', h('div', { class: 'place' },
+    h('div', { class: 'place-row' }, input, search),
+    status,
+    results,
+    canvas,
+    latField,
+    lonField));
+}
+
 function momentCard(item) {
   const cd = countdown(item.date, item.endDate, state.moments.today);
   const cover = (state.data.photos || []).find((p) => p.eventId === item.id);
@@ -1459,6 +1688,7 @@ function renderMomenten(root) {
     return;
   }
   const { upcoming, past } = state.moments;
+  const opDeKaart = groupByPlace([...upcoming, ...past]);
 
   root.append(h('div', { class: 'card' }, h('div', { class: 'card-body' },
     segmented(
@@ -1468,7 +1698,14 @@ function renderMomenten(root) {
       ],
       state.momentFilter,
       (v) => { state.momentFilter = v; render(); },
-    ))));
+    ),
+    h('button', {
+      class: 'btn map-btn block',
+      type: 'button',
+      onclick: () => openSheet('Kaart', mapSheet),
+    }, icon('target'), opDeKaart.length
+      ? `Op de kaart · ${plural(opDeKaart.length, 'plek', 'plekken')}`
+      : 'Op de kaart'))));
 
   const list = state.momentFilter === 'komt' ? upcoming : past;
 

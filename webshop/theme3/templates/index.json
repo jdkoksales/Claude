@@ -3,7 +3,7 @@
     "hero": {
       "type": "tk3-hero",
       "settings": {
-        "heading": "Je beste marketing staat op de balie.",
+        "heading": "Laat jouw bedrijf groeien met TapKaarten.",
         "sub": "Eén tik en je klant staat op jouw reviewpagina. Jij hoeft niets te vragen.",
         "cta_text": "Bestel nu!",
         "cta_url": "/#producten",
@@ -408,78 +408,6 @@
         "drempel": 7000,
         "note": "Liever zelf samenstellen? Vanaf twee TapKaarten rekent de winkelwagen automatisch korting: 10% bij twee, 15% bij drie, 20% vanaf vier. Bij vier standaards scheelt dat € 27,96. Elke standaard én elke sticker telt mee."
       }
-    },
-    "waarom": {
-      "type": "tk3-waarom",
-      "blocks": {
-        "w1": {
-          "type": "punt",
-          "settings": {
-            "cijfer": "83%",
-            "tekst": "van de mensen die om een review gevraagd wordt, laat er ook een achter. Bijna niemand vraagt het. Daar zit jouw kans.",
-            "bron": "BrightLocal 2026"
-          }
-        },
-        "w2": {
-          "type": "punt",
-          "settings": {
-            "cijfer": "68%",
-            "tekst": "kiest geen zaak met minder dan vier sterren. Een jaar eerder was dat nog 55%. De lat gaat elk jaar omhoog.",
-            "bron": "BrightLocal 2026"
-          }
-        },
-        "w3": {
-          "type": "punt",
-          "settings": {
-            "cijfer": "74%",
-            "tekst": "kijkt alleen naar reviews van de laatste drie maanden. Je mooie reviews uit 2023 tellen niet meer mee.",
-            "bron": "BrightLocal 2026"
-          }
-        },
-        "w4": {
-          "type": "punt",
-          "settings": {
-            "cijfer": "5 tot 9%",
-            "tekst": "meer omzet per extra ster. Dat effect is het grootst bij zelfstandige zaken, niet bij ketens.",
-            "bron": "Harvard Business School"
-          }
-        },
-        "w5": {
-          "type": "punt",
-          "settings": {
-            "cijfer": "1 op de 5",
-            "tekst": "van je positie in Google Maps hangt aan je reviews. Alleen je bedrijfsprofiel zelf weegt zwaarder.",
-            "bron": "Whitespark 2026"
-          }
-        },
-        "w6": {
-          "type": "punt",
-          "settings": {
-            "cijfer": "76%",
-            "tekst": "van wie ‘in de buurt’ zoekt, staat binnen een dag in een zaak. De enige vraag is: in die van jou of van de buurman.",
-            "bron": "Google"
-          }
-        }
-      },
-      "block_order": [
-        "w1",
-        "w2",
-        "w3",
-        "w4",
-        "w5",
-        "w6"
-      ],
-      "settings": {
-        "kicker": "Waarom je dit nodig hebt",
-        "heading": "Je concurrent is niet beter. Hij vraagt het alleen wél.",
-        "sub": "Zoek je eigen zaak op in Google Maps en kijk wie er boven je staat. Meestal is het verschil niet de kwaliteit van het werk. Het is het aantal recente reviews.",
-        "slot_kop": "Wat je nu doet, werkt niet.",
-        "slot_lijst": "Erom vragen aan de balie voelt ongemakkelijk. Dus je doet het niet.|Een mailtje achteraf komt binnen als je klant je alweer vergeten is.|Alleen een QR-code betekent: camera pakken, richten, wachten. Elke handeling erbij kost je klanten.",
-        "punch": "Een TapKaart stelt de vraag voor je, op het enige moment dat het werkt: als je klant tevreden voor je staat met de telefoon al in de hand.",
-        "knop_tekst": "Bekijk de TapKaarten",
-        "knop_url": "/#producten",
-        "bronnen": "Cijfers: BrightLocal, Local Consumer Review Survey 2026 · Michael Luca, Harvard Business School · Whitespark, Local Search Ranking Factors 2026 · Google."
-      }
     }
   },
   "order": [
@@ -487,7 +415,6 @@
     "trust",
     "hoe",
     "koppelen",
-    "waarom",
     "configurator",
     "statement",
     "pakketten",

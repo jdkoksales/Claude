@@ -69,6 +69,7 @@ function ring(pct, label) {
 const fmtDay = new Intl.DateTimeFormat('nl-NL', { weekday: 'long', day: 'numeric', month: 'long' });
 const fmtShort = new Intl.DateTimeFormat('nl-NL', { day: 'numeric', month: 'short' });
 const fmtMonth = new Intl.DateTimeFormat('nl-NL', { month: 'long', year: 'numeric' });
+const fmtDow = new Intl.DateTimeFormat('nl-NL', { weekday: 'short' });
 
 const asDate = (key) => new Date(`${key}T12:00:00Z`);
 const dayLabel = (key) => fmtDay.format(asDate(key));
@@ -196,13 +197,28 @@ const state = {
   showDoneTasks: false,
   moments: null,
   momentFilter: 'komt',
+  // Welke agenda's staan aan in het weekrooster. null = allemaal.
+  calOwners: null,
 };
 
 const userById = (id) => state.data?.users.find((u) => u.id === id) || null;
 const partner = () => state.data?.users.find((u) => u.id !== state.me?.id) || null;
 
-// Eigen kleur voor "samen", zodat die niet te verwarren is met een van jullie.
-const BOTH_COLOR = '#8a63b8';
+// Eigen kleur voor "samen": geel, duidelijk anders dan het blauw en roze van
+// jullie tweeën.
+const BOTH_COLOR = '#eab308';
+
+/**
+ * Zwarte of witte letters op een gekleurd blok? Geel vraagt om zwart, blauw om
+ * wit. Berekend in plaats van per kleur ingesteld, zodat het blijft kloppen als
+ * er ooit een kleur bij komt.
+ */
+function textOn(color) {
+  const hex = String(color).replace('#', '');
+  if (hex.length !== 6) return '#ffffff';
+  const [r, g, b] = [0, 2, 4].map((i) => parseInt(hex.slice(i, i + 2), 16));
+  return (0.299 * r + 0.587 * g + 0.114 * b) / 255 > 0.62 ? '#1c1917' : '#ffffff';
+}
 
 function ownerName(id) {
   if (id === 'both') return 'Samen';
@@ -238,6 +254,9 @@ function openSheet(title, buildBody) {
 function closeSheet() {
   $('#sheet').hidden = true;
   document.body.style.overflow = '';
+  // Inhoud weggooien: anders blijft het vorige formulier in de pagina staan,
+  // met oude waarden en al.
+  $('#sheet-body').replaceChildren();
 }
 
 $('#sheet').addEventListener('click', (e) => {
@@ -327,15 +346,26 @@ function submitter(form, err, send) {
 
 // ── Formulier: afspraak ────────────────────────────────────────────────────
 
-function eventForm(existing, presetDate) {
+function eventForm(existing, presetDate, presetStart) {
   const ev = existing || {};
   const err = errorLine();
   let allDay = Boolean(ev.allDay);
   let repeatFreq = ev.repeat?.freq || 'none';
 
+  // Klik je in het rooster op 14:30, dan staat dat er al in — en een uur later
+  // als eindtijd, want dat is verreweg het vaakst goed.
+  const startValue = ev.start || presetStart || '09:00';
+  const plusHour = (t) => {
+    const [hh, mm] = t.split(':').map(Number);
+    return `${String(Math.min(23, hh + 1)).padStart(2, '0')}:${String(mm).padStart(2, '0')}`;
+  };
   const timeRow = h('div', { class: 'grid-2' },
-    field('Van', h('input', { type: 'time', name: 'start', value: ev.start || '09:00', required: true })),
-    field('Tot', h('input', { type: 'time', name: 'end', value: ev.end || '' })));
+    field('Van', h('input', { type: 'time', name: 'start', value: startValue, required: true })),
+    field('Tot', h('input', {
+      type: 'time',
+      name: 'end',
+      value: ev.end || (presetStart ? plusHour(presetStart) : ''),
+    })));
 
   const reminderRow = field('Herinnering',
     h('select', { name: 'reminderMin' },
@@ -871,51 +901,236 @@ function renderVandaag(root) {
 
 // ── Scherm: Week ───────────────────────────────────────────────────────────
 
+// Hoogte van één uur in het rooster. 48 pixels is genoeg om een afspraak van
+// een half uur nog leesbaar te houden zonder dat je eindeloos moet scrollen.
+const HOUR_PX = 48;
+const minsOf = (t) => {
+  const [h1, m1] = t.split(':').map(Number);
+  return h1 * 60 + m1;
+};
+
+/** Wie zijn agenda's kun je aan- en uitzetten, en staan ze aan? */
+function calendarOwners() {
+  return [...state.data.users.map((u) => u.id), 'both'];
+}
+const ownerVisible = (id) => !state.calOwners || state.calOwners.has(id);
+
+function toggleOwner(id) {
+  const all = calendarOwners();
+  const set = new Set(state.calOwners || all);
+  if (set.has(id)) set.delete(id);
+  else set.add(id);
+  state.calOwners = set.size === all.length ? null : set;
+  render();
+}
+
+/**
+ * Legt afspraken die elkaar overlappen naast elkaar, zoals in Google Agenda.
+ * Eerst worden ze in trosjes verdeeld (alles wat aan elkaar vastzit), en pas
+ * binnen zo'n trosje wordt de breedte verdeeld — anders wordt een afspraak 's
+ * ochtends smal omdat er 's avonds twee dingen tegelijk zijn.
+ */
+function layoutDay(events) {
+  const items = events
+    .map((ev) => {
+      const from = minsOf(ev.start);
+      const to = ev.end ? Math.max(minsOf(ev.end), from + 30) : from + 60;
+      return { ev, from, to, lane: 0, lanes: 1 };
+    })
+    .sort((a, b) => a.from - b.from || a.to - b.to);
+
+  let cluster = [];
+  let clusterEnd = -1;
+  const flush = () => {
+    if (!cluster.length) return;
+    const ends = [];
+    for (const item of cluster) {
+      let lane = ends.findIndex((endsAt) => endsAt <= item.from);
+      if (lane === -1) {
+        lane = ends.length;
+        ends.push(item.to);
+      } else {
+        ends[lane] = item.to;
+      }
+      item.lane = lane;
+    }
+    for (const item of cluster) item.lanes = ends.length;
+    cluster = [];
+    clusterEnd = -1;
+  };
+
+  for (const item of items) {
+    if (cluster.length && item.from >= clusterEnd) flush();
+    cluster.push(item);
+    clusterEnd = Math.max(clusterEnd, item.to);
+  }
+  flush();
+  return items;
+}
+
 function renderWeek(root) {
   const { today, users, goals } = state.data;
   const start = addDays(weekStart(today), state.weekOffset * 7);
+  const days = [...Array(7)].map((unused, i) => addDays(start, i));
+  const inWeek = state.data.events.filter((e) => e.date >= days[0] && e.date <= days[6]);
 
+  // ── Kop: welke week, en heen en weer bladeren ──────────────────────────
   root.append(h('div', { class: 'card' },
     h('div', { class: 'card-head' },
-      h('button', { class: 'icon-btn ghost', type: 'button', 'aria-label': 'Vorige week', onclick: () => { state.weekOffset -= 1; refresh(); } }, icon('left')),
+      h('button', {
+        class: 'icon-btn ghost',
+        type: 'button',
+        'aria-label': 'Vorige week',
+        onclick: () => { state.weekOffset -= 1; refresh(); },
+      }, icon('left')),
       h('div', { style: { textAlign: 'center' } },
-        h('h2', { class: 'week-title', text: state.weekOffset === 0 ? 'Deze week' : `${shortLabel(start)} – ${shortLabel(addDays(start, 6))}` }),
+        h('h2', { text: state.weekOffset === 0 ? 'Deze week' : `${shortLabel(start)} – ${shortLabel(days[6])}` }),
         h('p', { class: 'muted', text: fmtMonth.format(asDate(start)) })),
-      h('button', { class: 'icon-btn ghost', type: 'button', 'aria-label': 'Volgende week', onclick: () => { state.weekOffset += 1; refresh(); } }, icon('right'))),
+      h('button', {
+        class: 'icon-btn ghost',
+        type: 'button',
+        'aria-label': 'Volgende week',
+        onclick: () => { state.weekOffset += 1; refresh(); },
+      }, icon('right'))),
     h('div', { class: 'card-body' },
-      h('div', { class: 'legend' },
-        ...users.map((u) => personChip(u.id)),
-        personChip('both'),
-        state.weekOffset !== 0 && h('button', { class: 'btn ghost', type: 'button', onclick: () => { state.weekOffset = 0; refresh(); } }, 'Naar deze week')))));
+      h('div', { class: 'cal-filters' },
+        h('button', {
+          class: `cal-filter${state.calOwners ? '' : ' is-on'}`,
+          type: 'button',
+          onclick: () => { state.calOwners = null; render(); },
+        }, h('i', { class: 'box', style: { background: 'var(--text-soft)' } }), 'Alles'),
+        ...calendarOwners().map((id) => h('button', {
+          class: `cal-filter${ownerVisible(id) ? ' is-on' : ''}`,
+          type: 'button',
+          'aria-pressed': String(ownerVisible(id)),
+          onclick: () => toggleOwner(id),
+        }, h('i', { class: 'box', style: { background: ownerColor(id) } }), ownerName(id)))),
+      state.weekOffset !== 0 && h('button', {
+        class: 'btn ghost',
+        type: 'button',
+        onclick: () => { state.weekOffset = 0; refresh(); },
+      }, 'Naar deze week'))));
 
-  const strip = h('div', { class: 'daystrip' });
-  for (let i = 0; i < 7; i += 1) {
-    const date = addDays(start, i);
-    const dayEvents = state.data.events.filter((e) => e.date === date);
-    const rel = relativeDay(date, today);
-    strip.append(h('article', { class: `day${date === today ? ' is-today' : ''}` },
-      h('div', { class: 'day-head' },
-        h('span', { text: dayLabel(date) }),
-        rel && h('span', { class: 'muted', text: rel })),
-      h('div', { class: 'day-body' },
-        dayEvents.length
-          ? dayEvents.map((ev) => eventRow(ev, () => openEvent(ev)))
-          : h('button', {
-            class: 'ev is-free',
-            type: 'button',
-            onclick: () => openSheet('Nieuwe afspraak', () => eventForm(null, date)),
-          }, h('span', { class: 'ev-time' }, icon('plus')), h('span', { text: 'vrij — iets plannen?' })))));
+  // ── Het rooster ────────────────────────────────────────────────────────
+  const visible = inWeek.filter((e) => ownerVisible(e.ownerId));
+  const cal = h('div', { class: 'cal' });
+  const scroller = h('div', { class: 'cal-scroll' }, cal);
+
+  // Kolomkoppen met de dagnaam en het getal.
+  const head = h('div', { class: 'cal-row cal-head-row' }, h('div', { class: 'cal-gutter-cell' }));
+  for (const date of days) {
+    head.append(h('div', { class: `cal-day-head${date === today ? ' is-today' : ''}` },
+      h('span', { class: 'cal-dow', text: fmtDow.format(asDate(date)) }),
+      h('span', { class: 'cal-dom', text: String(Number(date.slice(8, 10))) })));
   }
-  root.append(strip);
+  cal.append(head);
 
-  // Hoe staan de doelen er deze week voor, per persoon naast elkaar.
+  // Strook bovenaan voor hele dagen en vakanties, met één blok over meerdere
+  // kolommen — losse blokjes per dag lezen niet als één reis.
+  const spanning = new Map();
+  for (const occ of visible) {
+    if (!occ.allDay && occ.dayCount <= 1) continue;
+    const index = days.indexOf(occ.date);
+    const found = spanning.get(occ.id);
+    if (found) {
+      found.last = Math.max(found.last, index);
+    } else {
+      spanning.set(occ.id, { occ, first: index, last: index });
+    }
+  }
+  if (spanning.size) {
+    const strip = h('div', { class: 'cal-row cal-allday' },
+      h('div', { class: 'cal-gutter-cell', text: 'hele dag' }));
+    const grid = h('div', { class: 'cal-allday-grid' });
+    for (const { occ, first, last } of spanning.values()) {
+      const color = ownerColor(occ.ownerId);
+      grid.append(h('button', {
+        class: 'cal-span',
+        type: 'button',
+        style: {
+          gridColumn: `${first + 1} / ${last + 2}`,
+          background: color,
+          color: textOn(color),
+        },
+        onclick: () => openEvent(occ),
+      }, occ.title));
+    }
+    strip.append(grid);
+    cal.append(strip);
+  }
+
+  // De uren zelf.
+  const body = h('div', { class: 'cal-row cal-body' });
+  const gutter = h('div', { class: 'cal-gutter' });
+  for (let hour = 0; hour < 24; hour += 1) {
+    gutter.append(h('div', { class: 'cal-hour' },
+      hour === 0 ? '' : h('span', { text: `${String(hour).padStart(2, '0')}:00` })));
+  }
+  body.append(gutter);
+
+  for (const date of days) {
+    const column = h('div', {
+      class: `cal-col${date === today ? ' is-today' : ''}`,
+      style: { height: `${24 * HOUR_PX}px` },
+    });
+
+    // Klikken op een leeg stuk maakt meteen een afspraak op dat tijdstip.
+    column.addEventListener('click', (e) => {
+      if (e.target.closest('.cal-ev')) return;
+      const y = e.clientY - column.getBoundingClientRect().top;
+      const raw = (y / HOUR_PX) * 60;
+      const minutes = Math.max(0, Math.min(23 * 60 + 30, Math.round(raw / 30) * 30));
+      const at = `${String(Math.floor(minutes / 60)).padStart(2, '0')}:${String(minutes % 60).padStart(2, '0')}`;
+      openSheet('Nieuwe afspraak', () => eventForm(null, date, at));
+    });
+
+    const timed = visible.filter((e) => !e.allDay && e.dayCount <= 1 && e.start);
+    for (const item of layoutDay(timed.filter((e) => e.date === date))) {
+      const { ev, from, to, lane, lanes } = item;
+      const color = ownerColor(ev.ownerId);
+      const short = to - from < 45;
+      column.append(h('button', {
+        class: `cal-ev${short ? ' is-short' : ''}`,
+        type: 'button',
+        style: {
+          top: `${(from / 60) * HOUR_PX}px`,
+          height: `${Math.max(18, ((to - from) / 60) * HOUR_PX - 2)}px`,
+          left: `${(lane / lanes) * 100}%`,
+          width: `${(1 / lanes) * 100}%`,
+          background: color,
+          color: textOn(color),
+        },
+        onclick: () => openEvent(ev),
+      },
+      h('span', { class: 'cal-ev-title', text: ev.title }),
+      !short && h('span', { class: 'cal-ev-time', text: ev.start })));
+    }
+
+    if (date === today) {
+      const nowMin = new Date().getHours() * 60 + new Date().getMinutes();
+      column.append(h('div', { class: 'cal-now', style: { top: `${(nowMin / 60) * HOUR_PX}px` } }));
+    }
+    body.append(column);
+  }
+  cal.append(body);
+  root.append(scroller);
+
+  // Bij het openen niet om middernacht beginnen maar rond het ontbijt.
+  requestAnimationFrame(() => {
+    const target = state.weekOffset === 0
+      ? Math.max(0, (new Date().getHours() - 2) * HOUR_PX)
+      : 7 * HOUR_PX;
+    scroller.scrollTop = target;
+  });
+
+  // ── Hoe staan de doelen er deze week voor ──────────────────────────────
   const habits = goals.filter((g) => !g.archived && g.kind === 'habit');
   if (habits.length) {
-    const body = h('div', { class: 'card-body' });
-    for (const owner of [...users.map((u) => u.id), 'both']) {
+    const inner = h('div', { class: 'card-body' });
+    for (const owner of calendarOwners()) {
       const mine = habits.filter((g) => g.ownerId === owner);
       if (!mine.length) continue;
-      body.append(h('div', {},
+      inner.append(h('div', {},
         h('div', { class: 'row', style: { padding: '2px 0' } },
           h('i', { class: 'dot', style: { background: ownerColor(owner) } }),
           h('strong', { class: 'row-main', text: ownerName(owner) }),
@@ -926,10 +1141,9 @@ function renderWeek(root) {
           weekDots(goal),
           h('span', { class: 'row-end muted', text: `${goal.stats.weekDone}/${goal.stats.weekTarget}` })))));
     }
-    root.append(card('Doelen deze week', null, body));
+    root.append(card('Doelen deze week', null, inner));
   }
 }
-
 
 // ── Album: foto's en opmerkingen bij een uitje of vakantie ─────────────────
 

@@ -65,9 +65,9 @@ app.use('/api', (req, res, next) => {
   );
 });
 
-// Bewust ver uit elkaar liggende kleuren: in de weekagenda moet je in één
-// oogopslag zien van wie een afspraak is.
-const PALETTE = ['#3a7ca5', '#e26d5c', '#c9852b', '#4c8577', '#a05195', '#6c7ae0'];
+// Vaste kleuren, in deze volgorde toegekend bij het inrichten: de eerste
+// persoon blauw, de tweede roze. "Samen" is geel en zit in de interface.
+const PALETTE = ['#3b82f6', '#ec4899', '#8b5cf6', '#14b8a6', '#f97316', '#64748b'];
 const today = () => todayKey(config.app.timezone);
 const userIds = () => db().users.map((u) => u.id);
 const publicUser = (u) => ({ id: u.id, name: u.name, color: u.color });

@@ -512,6 +512,194 @@ button.row { cursor: pointer; }
 
 .legend { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 
+/* ── Weekrooster ───────────────────────────────────────────────────────── */
+
+.cal-filters { display: flex; flex-wrap: wrap; gap: 7px; }
+.cal-filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 11px;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: var(--surface);
+  font-size: .78rem;
+  font-weight: 560;
+  color: var(--muted);
+  cursor: pointer;
+  transition: border-color .16s ease, color .16s ease;
+}
+.cal-filter .box {
+  width: 12px;
+  height: 12px;
+  border-radius: 4px;
+  flex-shrink: 0;
+  opacity: .3;
+  transition: opacity .16s ease;
+}
+.cal-filter.is-on { color: var(--text); border-color: var(--text-soft); }
+.cal-filter.is-on .box { opacity: 1; }
+
+/* Het rooster scrollt verticaal door de uren; de dagkoppen blijven staan. */
+.cal-scroll {
+  max-height: 68dvh;
+  overflow: auto;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overscroll-behavior: contain;
+}
+.cal { min-width: 100%; }
+.cal-row { display: grid; grid-template-columns: 44px repeat(7, minmax(0, 1fr)); }
+
+/* De strook voor hele dagen plakt onder de dagkoppen. Die hoogte moet dus
+   vastliggen, anders schuiven ze over elkaar heen. */
+.cal { --cal-head: 56px; }
+
+.cal-head-row {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  height: var(--cal-head);
+  background: color-mix(in srgb, var(--surface) 94%, transparent);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line);
+}
+.cal-day-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  padding: 7px 2px;
+  border-left: 1px solid var(--line);
+}
+.cal-dow { font-size: .62rem; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+.cal-dom { font-size: .95rem; font-weight: 650; font-variant-numeric: tabular-nums; }
+.cal-day-head.is-today .cal-dom {
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+.cal-allday {
+  position: sticky;
+  top: var(--cal-head);
+  z-index: 2;
+  min-height: 34px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+}
+.cal-allday .cal-gutter-cell {
+  font-size: .58rem;
+  color: var(--muted);
+  text-align: right;
+  padding: 5px 5px 0 0;
+  line-height: 1.1;
+}
+.cal-allday-grid {
+  grid-column: 2 / -1;
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 2px;
+  padding: 4px 2px;
+}
+.cal-span {
+  min-width: 0;
+  padding: 4px 7px;
+  border: 0;
+  border-radius: 6px;
+  font-size: .7rem;
+  font-weight: 600;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+.cal-gutter { position: relative; }
+.cal-hour {
+  height: 48px;
+  position: relative;
+  font-size: .62rem;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.cal-hour span {
+  position: absolute;
+  top: -6px;
+  right: 5px;
+  background: var(--surface);
+  padding: 0 1px;
+}
+
+.cal-col {
+  position: relative;
+  border-left: 1px solid var(--line);
+  /* Uurlijnen als achtergrond in plaats van 24 lege elementen per dag. */
+  background-image: repeating-linear-gradient(
+    to bottom,
+    var(--line) 0, var(--line) 1px,
+    transparent 1px, transparent 48px
+  );
+  cursor: copy;
+}
+.cal-col.is-today { background-color: color-mix(in srgb, var(--accent) 5%, transparent); }
+
+.cal-ev {
+  position: absolute;
+  /* Een <button> centreert zijn inhoud verticaal. Bij een afspraak van acht
+     uur belandt de titel dan halverwege het blok in plaats van bovenaan. */
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  padding: 2px 5px;
+  border: 0;
+  border-left: 2px solid rgba(0, 0, 0, .18);
+  border-radius: 5px;
+  overflow: hidden;
+  text-align: left;
+  line-height: 1.15;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .12);
+}
+.cal-ev-title {
+  display: block;
+  font-size: .68rem;
+  font-weight: 620;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.cal-ev-time { display: block; font-size: .62rem; opacity: .85; }
+.cal-ev.is-short { flex-direction: row; align-items: center; padding: 0 5px; }
+.cal-ev.is-short .cal-ev-title { font-size: .62rem; }
+
+/* Waar we nu zijn. */
+.cal-now { position: absolute; left: 0; right: 0; height: 2px; background: #ef4444; z-index: 1; }
+.cal-now::before {
+  content: "";
+  position: absolute;
+  left: -3px;
+  top: -3px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ef4444;
+}
+
+/* Op een smal scherm blijft een week van zeven kolommen krap; dan mag het
+   rooster zijwaarts schuiven in plaats van onleesbaar te worden. */
+@media (max-width: 420px) {
+  .cal { min-width: 560px; }
+}
+
 /* ── Momenten: uitjes, vakanties, foto's ───────────────────────────────── */
 
 .chip.fun { background: transparent; padding: 2px 4px; font-size: .95rem; }

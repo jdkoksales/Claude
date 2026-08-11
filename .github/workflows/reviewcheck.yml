@@ -11,6 +11,7 @@ on:
     paths: ['.github/workflows/reviewcheck.yml',
             'webshop/proef/reviews-proef.html',
             'webshop/theme3/sections/tk3-reviews.liquid',
+            'webshop/theme3/sections/tk3-wistjedat.liquid',
             'webshop/theme3/assets/tk3.css']
 
 permissions:
@@ -151,26 +152,62 @@ jobs:
           }
 
           // ---------- 2. de winkel zelf: leeg hoort leeg te blijven ----------
-          const ctx = await b.newContext({ viewport: { width: 390, height: 844 }, locale: 'nl-NL' });
-          const p = await ctx.newPage();
-          await p.goto('https://ikep5e-3q.myshopify.com/?preview_theme_id=196964024697', { waitUntil: 'load', timeout: 60000 });
-          await p.waitForTimeout(3000);
-          const winkel = await p.evaluate(() => ({
-            themaId: (window.Shopify && Shopify.theme && Shopify.theme.id) || 'onbekend',
-            reviewSectie: !!document.querySelector('.tk3 #reviews'),
-            legeKaarten: document.querySelectorAll('.tk3 .rev').length,
-            vertrouwensbalk: !!document.querySelector('.tk3 .trust'),
-            productKaarten: document.querySelectorAll('.tk3 .pcard').length,
-          }));
-          log.push(`\nwinkel (thema ${winkel.themaId})`);
-          log.push(`   reviewsectie zichtbaar: ${winkel.reviewSectie}, kaarten: ${winkel.legeKaarten}`);
-          log.push(`   vertrouwensbalk nog aanwezig: ${winkel.vertrouwensbalk}`);
-          log.push(`   productkaarten: ${winkel.productKaarten}`);
-          if (winkel.reviewSectie || winkel.legeKaarten > 0)
-            fouten.push('winkel: de lege reviewsectie staat op de pagina, hij hoort te zwijgen tot er een review in staat');
-          if (winkel.vertrouwensbalk) fouten.push('winkel: de vertrouwensbalk staat er nog');
-          if (winkel.productKaarten < 1) fouten.push('winkel: er staat geen enkele productkaart op de pagina');
-          await ctx.close();
+          for (const [naam, br, ho] of [['winkel-telefoon', 390, 844], ['winkel-desktop', 1440, 900]]) {
+            const ctx = await b.newContext({ viewport: { width: br, height: ho }, locale: 'nl-NL' });
+            const p = await ctx.newPage();
+            await p.goto('https://ikep5e-3q.myshopify.com/?preview_theme_id=196964024697', { waitUntil: 'load', timeout: 60000 });
+            await p.waitForTimeout(3000);
+            await p.evaluate(() => {
+              document.querySelectorAll('#preview-bar-iframe, #shopify-pc__banner').forEach((el) => el.remove());
+            });
+            const winkel = await p.evaluate(() => {
+              const top = (s) => { const e = document.querySelector(s);
+                return e ? Math.round(e.getBoundingClientRect().top + scrollY) : null; };
+              const wjd = document.querySelector('.tk3 .wjd');
+              return {
+                themaId: (window.Shopify && Shopify.theme && Shopify.theme.id) || 'onbekend',
+                heroOnder: (() => { const e = document.querySelector('.tk3 .hero');
+                  return e ? Math.round(e.getBoundingClientRect().bottom + scrollY) : null; })(),
+                wjdTop: top('.tk3 .wjd'),
+                wjdHoog: wjd ? Math.round(wjd.getBoundingClientRect().height) : null,
+                wjdCijfer: (() => { const e = document.querySelector('.tk3 .wjd-cijfer');
+                  return e ? e.innerText.trim() : null; })(),
+                wjdCijferPx: (() => { const e = document.querySelector('.tk3 .wjd-cijfer');
+                  return e ? Math.round(parseFloat(getComputedStyle(e).fontSize)) : null; })(),
+                wjdKnop: (() => { const e = document.querySelector('.tk3 .wjd-knop');
+                  return e ? e.innerText.trim() : null; })(),
+                wjdBron: !!document.querySelector('.tk3 .wjd-bron'),
+                productTop: top('.tk3 .pcard'),
+                reviewSectie: !!document.querySelector('.tk3 #reviews'),
+                vertrouwensbalk: !!document.querySelector('.tk3 .trust'),
+                productKaarten: document.querySelectorAll('.tk3 .pcard').length,
+                overloop: Math.max(0, document.documentElement.scrollWidth - innerWidth),
+              };
+            });
+            log.push(`\n${naam} ${br}x${ho} — thema ${winkel.themaId}`);
+            log.push(`   hero eindigt op ${winkel.heroOnder}px, wist-je-dat begint op ${winkel.wjdTop}px (${winkel.wjdHoog}px hoog)`);
+            log.push(`   getal "${winkel.wjdCijfer}" op ${winkel.wjdCijferPx}px, knop "${winkel.wjdKnop}", bronregel: ${winkel.wjdBron}`);
+            log.push(`   eerste productkaart op ${winkel.productTop}px, ${winkel.productKaarten} kaarten`);
+            log.push(`   reviewsectie zichtbaar: ${winkel.reviewSectie}, vertrouwensbalk: ${winkel.vertrouwensbalk}, overloop ${winkel.overloop}px`);
+
+            if (winkel.wjdTop === null) fouten.push(`${naam}: de wist-je-dat-band staat niet op de pagina`);
+            else {
+              if (winkel.wjdTop < winkel.heroOnder - 4) fouten.push(`${naam}: de band begint op ${winkel.wjdTop}px, nog binnen de hero`);
+              if (winkel.productTop === null) fouten.push(`${naam}: er staat geen productkaart op de pagina`);
+              else if (winkel.wjdTop > winkel.productTop) fouten.push(`${naam}: de band staat onder de producten in plaats van erboven`);
+              if (!winkel.wjdBron) fouten.push(`${naam}: de bronregel onder het getal ontbreekt`);
+              if (!winkel.wjdKnop) fouten.push(`${naam}: de knop in de band ontbreekt`);
+              if (winkel.wjdCijferPx < 46) fouten.push(`${naam}: het getal staat op ${winkel.wjdCijferPx}px, te klein voor het enige punt van de sectie`);
+              // Klein moet klein blijven: de band mag de producten niet wegduwen.
+              if (winkel.wjdHoog > ho * 0.62) fouten.push(`${naam}: de band is ${winkel.wjdHoog}px op een scherm van ${ho}px, dat is geen kleine sectie meer`);
+            }
+            if (winkel.vertrouwensbalk) fouten.push(`${naam}: de vertrouwensbalk staat er nog`);
+            if (winkel.productKaarten < 1) fouten.push(`${naam}: er staat geen enkele productkaart op de pagina`);
+            if (winkel.overloop > 0) fouten.push(`${naam}: de pagina schuift ${winkel.overloop}px opzij`);
+
+            await p.screenshot({ path: `preview/reviews-${naam}.png` });
+            await ctx.close();
+          }
 
           await b.close();
           const kop = fouten.length

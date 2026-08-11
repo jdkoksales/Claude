@@ -1,5 +1,4 @@
-GEVONDEN: 1 punten
- - winkel-telefoon: de band is 659px op een scherm van 844px, dat is geen kleine sectie meer
+GEEN AFWIJKINGEN GEVONDEN
 
 desktop 1440x900
    3 kaarten, stylesheet geladen: true
@@ -26,13 +25,13 @@ telefoon 390x844
    rij 349px hoog, hoogste kaart 343px, rail 935px in 390px
 
 winkel-telefoon 390x844 — thema 196964024697
-   hero eindigt op 844px, wist-je-dat begint op 844px (659px hoog)
-   getal "5–9%" op 59px, knop "Bestel nu!", bronregel: true
-   eerste productkaart op 1648px, 5 kaarten
+   hero eindigt op 844px, wist-je-dat begint op 844px (439px hoog)
+   getal "5–9%" op 55px, knop "Bestel nu!", bronregel: true
+   eerste productkaart op 1429px, 5 kaarten
    reviewsectie zichtbaar: false, vertrouwensbalk: false, overloop 0px
 
 winkel-desktop 1440x900 — thema 196964024697
-   hero eindigt op 900px, wist-je-dat begint op 900px (516px hoog)
+   hero eindigt op 900px, wist-je-dat begint op 900px (395px hoog)
    getal "5–9%" op 104px, knop "Bestel nu!", bronregel: true
-   eerste productkaart op 1618px, 5 kaarten
+   eerste productkaart op 1497px, 5 kaarten
    reviewsectie zichtbaar: false, vertrouwensbalk: false, overloop 0px

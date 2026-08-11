@@ -157,6 +157,21 @@ jobs:
                 oudeShots: !!hero.querySelector('.shots'),
                 platformkiezer: !!hero.querySelector('.seg'),
                 waaromSectie: !!document.querySelector('.tk3 .waarom'),
+                // Wat komt er direct na de hero, en staan de producten er echt?
+                // Een lege of kapotte productsectie bovenaan is erger dan een
+                // productsectie halverwege, dus dat wordt hier geteld.
+                naDeHero: (() => {
+                  const secties = [...document.querySelectorAll('.tk3 > section, .tk3 > div')]
+                    .filter((e) => e.getBoundingClientRect().height > 8);
+                  const i = secties.findIndex((e) => e.classList.contains('hero'));
+                  const v = i >= 0 ? secties[i + 1] : null;
+                  return v ? (v.className || v.tagName).toString().trim().split(/\s+/)[0] : null;
+                })(),
+                productKaarten: document.querySelectorAll('.tk3 .pcard').length,
+                productTop: (() => {
+                  const e = document.querySelector('.tk3 .pcard');
+                  return e ? Math.round(e.getBoundingClientRect().top + scrollY) : null;
+                })(),
                 knopTekst: (hero.querySelector('.buy') || {}).innerText ? hero.querySelector('.buy').innerText.trim() : null,
                 overloop: Math.max(0, document.documentElement.scrollWidth - innerWidth),
               };
@@ -177,6 +192,10 @@ jobs:
             }
             if (m.platformkiezer) fouten.push(`${naam}: de platformkiezer staat er nog`);
             if (m.waaromSectie) fouten.push(`${naam}: de waarom-sectie staat nog op de pagina`);
+            log.push(`   na de hero: ${m.naDeHero}, ${m.productKaarten} productkaarten, eerste kaart op ${m.productTop}px`);
+            if (m.productKaarten < 1) fouten.push(`${naam}: er staat geen enkele productkaart op de pagina`);
+            if (m.productTop === null || m.productTop > m.heroHoog + m.venster * 0.5)
+              fouten.push(`${naam}: de eerste productkaart staat op ${m.productTop}px, te ver onder de hero (${m.heroHoog}px)`);
             if (m.kopTekst !== 'Laat jouw bedrijf groeien met TapKaarten.') fouten.push(`${naam}: de kop is "${m.kopTekst}"`);
             if (m.knopTekst !== 'Bestel nu!') fouten.push(`${naam}: de knop zegt "${m.knopTekst}" en niet "Bestel nu!"`);
 

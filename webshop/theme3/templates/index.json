@@ -64,7 +64,7 @@
     "producten": {
       "type": "tk3-products",
       "settings": {
-        "heading": "Of stel het zelf samen.",
+        "heading": "Kies jouw TapKaart.",
         "collection": "alle-tapkaarten",
         "count": 8,
         "link_text": "Bekijk alle specificaties",
@@ -412,13 +412,13 @@
   },
   "order": [
     "hero",
+    "producten",
     "trust",
     "hoe",
     "koppelen",
     "configurator",
     "statement",
     "pakketten",
-    "producten",
     "branches",
     "ontwerp",
     "cijfers",

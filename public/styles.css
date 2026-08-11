@@ -31,6 +31,32 @@
   --shadow-lg: 0 24px 60px -20px rgba(34, 38, 43, .35);
   --tap: 44px;
 
+  /* Diepte. Een blok ligt niet "op" de achtergrond maar erboven: een lichte
+     rand vangt het licht van boven, de schaduw valt naar beneden weg. Die twee
+     samen maken het verschil tussen plat en tastbaar. */
+  --lift-1: 0 1px 1px rgba(34, 38, 43, .04), 0 3px 8px -4px rgba(34, 38, 43, .14);
+  --lift-2:
+    0 1px 1px rgba(34, 38, 43, .05),
+    0 6px 16px -8px rgba(34, 38, 43, .18),
+    0 18px 40px -22px rgba(44, 107, 88, .22);
+  --lift-3:
+    0 2px 3px rgba(34, 38, 43, .06),
+    0 14px 34px -14px rgba(34, 38, 43, .24),
+    0 34px 70px -34px rgba(44, 107, 88, .3);
+  /* De glansrand bovenop een blok; in donker juist een lichte streep. */
+  --sheen: rgba(255, 255, 255, .78);
+  --sheen-soft: rgba(255, 255, 255, .4);
+  --glow: color-mix(in srgb, var(--accent) 30%, transparent);
+  /* De donkere onderrand van een ingedrukte knop. */
+  --accent-deep: color-mix(in srgb, var(--accent) 70%, #000);
+
+  /* Beweging. Eén veercurve voor alles wat verschijnt, één rustige voor kleur. */
+  --spring: cubic-bezier(.2, .9, .28, 1.12);
+  --ease: cubic-bezier(.22, .8, .3, 1);
+  --fast: .16s;
+
+  --noise-op: .035;
+
   --noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
@@ -56,6 +82,19 @@
     --shadow-sm: 0 1px 2px rgba(0, 0, 0, .35);
     --shadow: 0 1px 2px rgba(0, 0, 0, .35), 0 12px 32px -14px rgba(0, 0, 0, .7);
     --shadow-lg: 0 26px 70px -24px rgba(0, 0, 0, .8);
+
+    --lift-1: 0 1px 2px rgba(0, 0, 0, .4), 0 4px 10px -6px rgba(0, 0, 0, .6);
+    --lift-2:
+      0 1px 2px rgba(0, 0, 0, .45),
+      0 8px 20px -10px rgba(0, 0, 0, .7),
+      0 20px 44px -24px rgba(98, 207, 170, .22);
+    --lift-3:
+      0 2px 4px rgba(0, 0, 0, .5),
+      0 16px 38px -16px rgba(0, 0, 0, .8),
+      0 38px 80px -36px rgba(98, 207, 170, .28);
+    --sheen: rgba(255, 255, 255, .13);
+    --sheen-soft: rgba(255, 255, 255, .07);
+    --noise-op: .05;
   }
 }
 
@@ -89,9 +128,34 @@ body::before {
   z-index: 0;
   pointer-events: none;
   background-image: var(--noise);
-  opacity: .035;
+  opacity: var(--noise-op);
 }
-@media (prefers-color-scheme: dark) { body::before { opacity: .05; } }
+
+/* Noorderlicht: drie zachte kleurvlekken die heel langzaam langs elkaar
+   schuiven. Geen plaatje, geen filter — alleen verlopen die de browser op de
+   grafische kaart kan verschuiven, dus het kost niets. Bewust vaag genoeg om
+   nooit met tekst te concurreren; het valt pas op als je even blijft kijken. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: -25%;
+  z-index: 0;
+  pointer-events: none;
+  opacity: .55;
+  background:
+    radial-gradient(28% 22% at 22% 26%, color-mix(in srgb, var(--accent) 26%, transparent) 0%, transparent 70%),
+    radial-gradient(26% 20% at 76% 18%, color-mix(in srgb, var(--warm) 22%, transparent) 0%, transparent 70%),
+    radial-gradient(34% 26% at 58% 76%, color-mix(in srgb, var(--accent) 15%, transparent) 0%, transparent 72%);
+  animation: aurora 34s ease-in-out infinite alternate;
+  will-change: transform;
+}
+@media (prefers-color-scheme: dark) { body::after { opacity: .42; } }
+
+@keyframes aurora {
+  0%   { transform: translate3d(0, 0, 0) scale(1); }
+  50%  { transform: translate3d(3%, -2.5%, 0) scale(1.12); }
+  100% { transform: translate3d(-2.5%, 2%, 0) scale(1.05); }
+}
 
 h1, h2, h3 { margin: 0; font-weight: 640; letter-spacing: -.015em; }
 p { margin: 0; }
@@ -126,18 +190,46 @@ a { color: var(--accent); }
   align-items: center;
   gap: 12px;
   padding: calc(14px + env(safe-area-inset-top)) 16px 13px;
-  background: color-mix(in srgb, var(--bg) 82%, transparent);
-  backdrop-filter: blur(14px) saturate(1.3);
-  border-bottom: 1px solid color-mix(in srgb, var(--line) 70%, transparent);
+  /* Matglas is mooi, maar tekst mag er nooit doorheen te lezen zijn. Vandaar
+     een stevige ondergrond en pas daarbovenop de vervaging. */
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(18px) saturate(1.5);
+  -webkit-backdrop-filter: blur(18px) saturate(1.5);
+  border-bottom: 1px solid transparent;
+  transition: border-color .25s var(--ease), box-shadow .25s var(--ease), background-color .25s var(--ease);
+}
+/* Zodra je scrolt komt de balk los van de pagina: een randje, een schaduw. */
+.topbar.is-stuck {
+  border-bottom-color: color-mix(in srgb, var(--line) 70%, transparent);
+  box-shadow: 0 12px 28px -22px rgba(34, 38, 43, .55);
 }
 
 .topbar-title { flex: 1; min-width: 0; }
-.topbar h1 { font-size: 1.45rem; line-height: 1.15; }
-.topbar-title p { font-size: .82rem; color: var(--muted); margin-top: 2px; }
+.topbar h1 {
+  font-size: 1.45rem;
+  line-height: 1.15;
+  /* De titel is de enige plek met een kleurverloop in de letters: net genoeg
+     om het scherm een kop te geven zonder dat het druk wordt. */
+  background: linear-gradient(102deg, var(--text) 0%, color-mix(in srgb, var(--text) 62%, var(--accent)) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  transition: font-size .28s var(--spring);
+}
+.topbar.is-stuck h1 { font-size: 1.22rem; }
+.topbar-title p {
+  font-size: .82rem;
+  color: var(--muted);
+  margin-top: 2px;
+  transition: opacity .22s var(--ease), max-height .28s var(--ease);
+  max-height: 22px;
+}
+.topbar.is-stuck .topbar-title p { opacity: 0; max-height: 0; }
 
 /* De twee gezichten van de app, altijd in beeld. */
 .avatars { display: flex; align-items: center; }
 .avatar {
+  position: relative;
   width: 30px;
   height: 30px;
   display: grid;
@@ -148,9 +240,35 @@ a { color: var(--accent); }
   font-weight: 700;
   color: #fff;
   letter-spacing: .01em;
+  /* Een bolletje in plaats van een schijfje: licht van linksboven, schaduw
+     eronder. Het verloop komt uit de eigen kleur, dus het klopt voor allebei. */
+  background-image: linear-gradient(155deg, rgba(255, 255, 255, .42), rgba(0, 0, 0, .16));
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, .5), var(--lift-1);
+  transition: transform .2s var(--spring);
 }
 .avatar + .avatar { margin-left: -9px; }
-.avatar.is-me { box-shadow: 0 0 0 2px var(--accent); }
+.avatar.is-me { box-shadow: inset 0 1px 1px rgba(255, 255, 255, .5), 0 0 0 2px var(--accent), 0 0 12px -2px var(--glow); }
+.avatars:hover .avatar { transform: translateY(-1px); }
+
+/* Het portret ligt over de beginletter heen. Laadt het niet, dan blijft de
+   letter staan — de app werkt dus ook zonder dat er avatars zijn. */
+.avatar-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  /* De avatars zijn al op het gezicht uitgesneden, dus gewoon midden. */
+  object-position: 50% 50%;
+}
+.avatar-letter { position: relative; }
+.avatar-mark { width: 70%; height: 70%; color: rgba(0, 0, 0, .55); }
+
+.avatar.xs { width: 20px; height: 20px; border-width: 1.5px; font-size: .58rem; }
+.avatar.lg { width: 46px; height: 46px; border-width: 3px; font-size: 1.05rem; }
+
+.chip.person { padding-left: 3px; gap: 7px; }
 
 main {
   flex: 1;
@@ -174,12 +292,26 @@ main {
   grid-template-columns: repeat(6, 1fr);
   gap: 2px;
   padding: 7px 6px calc(7px + env(safe-area-inset-bottom));
-  background: color-mix(in srgb, var(--surface) 86%, transparent);
-  backdrop-filter: blur(16px) saturate(1.4);
+  background: color-mix(in srgb, var(--surface) 94%, transparent);
+  backdrop-filter: blur(20px) saturate(1.6);
+  -webkit-backdrop-filter: blur(20px) saturate(1.6);
   border-top: 1px solid var(--line);
+  box-shadow: 0 -10px 30px -24px rgba(34, 38, 43, .6);
+}
+/* Een haarlijn licht bovenop de balk: dat is wat glas van vlak grijs scheidt. */
+.tabbar::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--sheen), transparent);
+  pointer-events: none;
 }
 
 .tab {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -194,20 +326,63 @@ main {
   font-weight: 550;
   letter-spacing: -.01em;
   cursor: pointer;
-  transition: color .16s ease, background-color .16s ease;
+  transition: color var(--fast) ease, transform .2s var(--spring);
 }
-.tab svg { width: 20px; height: 20px; stroke-width: 1.7; }
-.tab.is-active { color: var(--accent); background: var(--accent-soft); }
-.tab.is-active svg { stroke-width: 2.1; }
+.tab svg {
+  width: 20px;
+  height: 20px;
+  stroke-width: 1.7;
+  transition: transform .32s var(--spring), stroke-width var(--fast) ease;
+}
+.tab:active { transform: scale(.9); }
+
+/* Het gekleurde vlak achter het actieve tabblad is een eigen laag, zodat het
+   kan opveren zonder de letters mee te rekken. */
+.tab::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  /* Zonder dit ligt het vlak vóór het pictogram en het woord: een geplaatst
+     pseudo-element wordt ná de inhoud van zijn ouder getekend. */
+  z-index: -1;
+  border-radius: 12px;
+  background: var(--accent-soft);
+  box-shadow: inset 0 1px 0 var(--sheen-soft), 0 4px 12px -6px var(--glow);
+  opacity: 0;
+  transform: scale(.72);
+  transition: opacity .2s var(--ease), transform .34s var(--spring);
+  pointer-events: none;
+}
+.tab.is-active { color: var(--accent); }
+.tab.is-active::before { opacity: 1; transform: scale(1); }
+.tab.is-active svg { stroke-width: 2.1; transform: translateY(-1px) scale(1.12); }
 
 /* ── Bouwstenen ────────────────────────────────────────────────────────── */
 
 .card {
-  background: var(--surface);
+  position: relative;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--surface) 100%, transparent) 0%, var(--surface) 40%),
+    var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  box-shadow: var(--shadow);
+  box-shadow: var(--lift-2);
   overflow: hidden;
+  /* Zonder isolate lekt de glansrand hieronder over de kaartrand heen. */
+  isolation: isolate;
+}
+/* De lichtvanger: een haarlijntje langs de bovenrand, precies zoals licht op
+   een echte rand valt. Het is klein, maar dit is wat een blok laat "liggen". */
+.card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 12px;
+  right: 12px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--sheen), transparent);
+  pointer-events: none;
+  z-index: 1;
 }
 .card-head {
   display: flex;
@@ -268,20 +443,38 @@ button.row { cursor: pointer; }
   padding: 0 17px;
   border: 1px solid var(--line-strong);
   border-radius: var(--radius-sm);
-  background: var(--surface);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--surface) 92%, #fff) 0%, var(--surface) 100%);
   font-weight: 560;
   cursor: pointer;
-  transition: transform .1s ease, background-color .16s ease, border-color .16s ease;
+  box-shadow: inset 0 1px 0 var(--sheen), var(--lift-1);
+  transition: transform .12s var(--ease), box-shadow .18s var(--ease), background-color var(--fast) ease, border-color var(--fast) ease;
 }
-.btn:active { transform: scale(.985); }
+/* Indrukken is echt indrukken: het blok zakt een halve pixel en zijn schaduw
+   krimpt mee. Dat leest als tastbaar, waar alleen krimpen als een truc leest. */
+.btn:active { transform: translateY(1px) scale(.985); box-shadow: inset 0 1px 2px rgba(0, 0, 0, .12); }
+/* De hoofdknop is een blok met een dikke onderrand in dezelfde kleur, maar
+   donkerder. Druk je hem in, dan zakt hij precies die rand naar beneden en is
+   de onderrand weg. Dat is waarom hij aanvoelt als een echte toets in plaats
+   van een gekleurd vlak — en het is de reden dat je hem graag nog eens indrukt. */
 .btn.primary {
   background: var(--accent);
   border-color: transparent;
   color: var(--accent-ink);
-  box-shadow: var(--shadow-sm);
+  font-weight: 700;
+  letter-spacing: .01em;
+  box-shadow: 0 4px 0 var(--accent-deep), 0 8px 18px -8px var(--glow);
+  transition: transform .1s var(--ease), box-shadow .1s var(--ease), background-color var(--fast) ease;
 }
-.btn.ghost { background: none; border-color: transparent; color: var(--accent); font-weight: 600; padding: 0 8px; min-height: 36px; }
-.btn.danger { color: var(--danger); border-color: color-mix(in srgb, var(--danger) 35%, transparent); background: none; }
+.btn.primary:active {
+  transform: translateY(4px);
+  box-shadow: 0 0 0 var(--accent-deep), 0 2px 6px -4px var(--glow);
+}
+/* Een knop zonder rand hoort ook geen schaduw te hebben: die zou als een los
+   blokje achter de tekst gaan zweven. */
+.btn.ghost { background: none; border-color: transparent; color: var(--accent); font-weight: 600; padding: 0 8px; min-height: 36px; box-shadow: none; }
+.btn.ghost:active { box-shadow: none; }
+.btn.danger { color: var(--danger); border-color: color-mix(in srgb, var(--danger) 35%, transparent); background: none; box-shadow: none; }
+.btn.danger:active { box-shadow: none; }
 .btn.block { width: 100%; }
 .btn:disabled { opacity: .5; cursor: default; }
 .btn svg { width: 17px; height: 17px; stroke-width: 2; }
@@ -293,14 +486,28 @@ button.row { cursor: pointer; }
   place-items: center;
   border: 1px solid var(--line-strong);
   border-radius: 13px;
-  background: var(--surface);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--surface) 92%, #fff) 0%, var(--surface) 100%);
   cursor: pointer;
-  transition: transform .1s ease;
+  box-shadow: inset 0 1px 0 var(--sheen), var(--lift-1);
+  transition: transform .14s var(--spring), box-shadow .18s var(--ease);
 }
-.icon-btn:active { transform: scale(.94); }
-.icon-btn svg { width: 20px; height: 20px; stroke-width: 2; }
-.icon-btn.primary { background: var(--accent); border-color: transparent; color: var(--accent-ink); box-shadow: var(--shadow); }
-.icon-btn.ghost { border-color: transparent; background: none; color: var(--muted); width: 38px; height: 38px; }
+.icon-btn:active { transform: scale(.9); box-shadow: inset 0 1px 3px rgba(0, 0, 0, .16); }
+.icon-btn svg { width: 20px; height: 20px; stroke-width: 2; transition: transform .3s var(--spring); }
+.icon-btn.primary {
+  background: var(--accent);
+  border-color: transparent;
+  color: var(--accent-ink);
+  box-shadow: 0 4px 0 var(--accent-deep), 0 8px 20px -9px var(--glow);
+  transition: transform .1s var(--ease), box-shadow .1s var(--ease);
+}
+.icon-btn.primary:active {
+  transform: translateY(4px) scale(1);
+  box-shadow: 0 0 0 var(--accent-deep);
+}
+/* De plusknop is de enige knop die je overal ziet; die mag draaien. */
+.icon-btn.primary:active svg { transform: rotate(90deg); }
+.icon-btn.ghost { border-color: transparent; background: none; color: var(--muted); width: 38px; height: 38px; box-shadow: none; }
+.icon-btn.ghost:active { box-shadow: none; }
 .icon-btn.small { width: 34px; height: 34px; border-radius: 10px; }
 .icon-btn.small svg { width: 16px; height: 16px; }
 
@@ -392,21 +599,27 @@ button.row { cursor: pointer; }
   display: grid;
   place-items: center;
   border: 2px solid var(--line-strong);
-  border-radius: 10px;
+  border-radius: 11px;
   background: var(--surface);
   color: transparent;
   cursor: pointer;
-  transition: background-color .18s ease, border-color .18s ease, transform .12s ease;
+  /* Ook het vakje krijgt een onderrand om in te zakken. Dit is het knopje dat
+     je het vaakst indrukt, dus dit is waar het tastbare gevoel het meest telt. */
+  box-shadow: 0 3px 0 var(--line-strong);
+  transition: background-color .18s ease, border-color .18s ease, color .18s ease,
+    transform .1s var(--ease), box-shadow .1s var(--ease);
 }
-.check svg { width: 17px; height: 17px; stroke-width: 3; }
-.check:active { transform: scale(.9); }
+.check svg { width: 17px; height: 17px; stroke-width: 3.2; }
+.check:active { transform: translateY(3px); box-shadow: 0 0 0 var(--line-strong); }
 .check[aria-pressed="true"] {
   background: var(--accent);
   border-color: var(--accent);
   color: var(--accent-ink);
-  animation: pop .24s ease-out;
+  box-shadow: 0 3px 0 var(--accent-deep);
+  animation: pop .34s var(--spring);
 }
-@keyframes pop { 40% { transform: scale(1.14); } }
+.check[aria-pressed="true"]:active { box-shadow: 0 0 0 var(--accent-deep); }
+@keyframes pop { 35% { transform: scale(1.22) rotate(-6deg); } 70% { transform: scale(.96) rotate(2deg); } }
 
 /* ── Voortgang, ringen en heatmap ──────────────────────────────────────── */
 
@@ -723,9 +936,10 @@ button.row { cursor: pointer; }
 }
 .count.past { background: var(--surface-2); color: var(--muted); }
 
-.moments { display: flex; flex-direction: column; gap: 11px; }
+.moments { display: flex; flex-direction: column; gap: 11px; perspective: 900px; }
 
 .moment {
+  position: relative;
   display: flex;
   gap: 13px;
   align-items: center;
@@ -733,13 +947,19 @@ button.row { cursor: pointer; }
   padding: 11px;
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  background: var(--surface);
-  box-shadow: var(--shadow-sm);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--surface) 94%, #fff) 0%, var(--surface) 55%);
+  box-shadow: inset 0 1px 0 var(--sheen), var(--lift-2);
   text-align: left;
   cursor: pointer;
-  transition: transform .1s ease, box-shadow .16s ease;
+  transform-style: preserve-3d;
+  transition: transform .22s var(--spring), box-shadow .22s var(--ease);
 }
-.moment:active { transform: scale(.99); }
+/* Aantikken kantelt de kaart weg van je vinger. Dat is het 3D-gevoel waar het
+   om gaat: niet de kaart die krimpt, maar de kaart die meegeeft. */
+.moment:active { transform: rotateX(4deg) translateZ(-8px) scale(.985); box-shadow: var(--lift-1); }
+@media (hover: hover) {
+  .moment:hover { transform: translateY(-2px) rotateX(-1.5deg); box-shadow: var(--lift-3); }
+}
 
 .moment-cover {
   width: 74px;
@@ -748,6 +968,8 @@ button.row { cursor: pointer; }
   border-radius: 12px;
   object-fit: cover;
   background: var(--surface-2);
+  box-shadow: 0 4px 12px -6px rgba(34, 38, 43, .5), inset 0 0 0 1px var(--sheen-soft);
+  transform: translateZ(14px);
 }
 .moment-cover.placeholder { display: grid; place-items: center; color: var(--muted); }
 .moment-cover.placeholder svg { width: 26px; height: 26px; stroke-width: 1.5; }
@@ -842,39 +1064,70 @@ button.row { cursor: pointer; }
 }
 .gate[hidden] { display: none; }
 .gate-card {
+  position: relative;
   width: min(420px, 100%);
   display: flex;
   flex-direction: column;
   gap: 18px;
   padding: 30px 26px;
-  background: color-mix(in srgb, var(--surface) 92%, transparent);
-  backdrop-filter: blur(8px);
-  border: 1px solid var(--line);
-  border-radius: 22px;
-  box-shadow: var(--shadow-lg);
+  background: color-mix(in srgb, var(--surface) 82%, transparent);
+  backdrop-filter: blur(22px) saturate(1.4);
+  -webkit-backdrop-filter: blur(22px) saturate(1.4);
+  border: 1px solid color-mix(in srgb, var(--sheen) 60%, var(--line));
+  border-radius: 26px;
+  box-shadow: inset 0 1px 0 var(--sheen), var(--lift-3);
+  /* Het inlogscherm is het eerste wat je ziet; die mag rustig binnenkomen. */
+  animation: gate-in .6s var(--spring) both;
+}
+@keyframes gate-in {
+  from { opacity: 0; transform: translateY(18px) scale(.96); }
 }
 .gate-card h1 { font-size: 1.7rem; }
-.gate-mark { width: 56px; height: 56px; }
+
+/* Het merkteken zweeft. Twee cirkels die elkaar overlappen — dat is de app in
+   één beeld, dus die verdient de enige echte 3D-beweging in de app. */
+.gate-mark {
+  width: 62px;
+  height: 62px;
+  filter: drop-shadow(0 6px 14px var(--glow));
+  animation: mark-float 7s ease-in-out infinite;
+  transform-origin: 50% 50%;
+}
+@keyframes mark-float {
+  0%, 100% { transform: perspective(300px) rotateY(-11deg) rotateX(5deg) translateY(0); }
+  50%      { transform: perspective(300px) rotateY(11deg) rotateX(-4deg) translateY(-5px); }
+}
 
 .who { display: grid; gap: 9px; }
+/* Wie ben je? Twee grote gezichten met een dikke rand eronder — het eerste
+   wat je ziet als je de app opent, dus dit mag het vrolijkste blok zijn. */
 .who button {
   display: flex;
   align-items: center;
-  gap: 11px;
-  min-height: 58px;
-  padding: 0 15px;
-  border: 1.5px solid var(--line-strong);
-  border-radius: 14px;
+  gap: 13px;
+  min-height: 70px;
+  padding: 0 16px;
+  border: 2px solid var(--line-strong);
+  border-radius: 18px;
   background: var(--surface-2);
-  font-weight: 620;
+  font-size: 1.05rem;
+  font-weight: 700;
   cursor: pointer;
-  transition: border-color .16s ease, background-color .16s ease;
+  box-shadow: 0 4px 0 var(--line-strong);
+  transition: border-color .16s ease, background-color .16s ease,
+    transform .1s var(--ease), box-shadow .1s var(--ease);
 }
+.who button:active { transform: translateY(4px); box-shadow: 0 0 0 var(--line-strong); }
 .who button[aria-pressed="true"] {
   border-color: var(--accent);
   background: var(--accent-soft);
   color: var(--accent);
+  box-shadow: 0 4px 0 var(--accent-deep);
 }
+.who button[aria-pressed="true"]:active { box-shadow: 0 0 0 var(--accent-deep); }
+/* De gekozen persoon komt naar voren. */
+.who button .avatar { transition: transform .3s var(--spring); }
+.who button[aria-pressed="true"] .avatar { transform: scale(1.08); }
 .pin-input { letter-spacing: .5em; text-align: center; font-size: 1.25rem; }
 .error {
   color: var(--danger);
@@ -968,9 +1221,162 @@ button.row { cursor: pointer; }
 }
 .toast[hidden] { display: none; }
 
+/* ── Diepte en beweging ────────────────────────────────────────────────────
+
+   Alles hieronder is versiering. Het is bewust zo gebouwd dat de app zonder
+   deze regels nog precies hetzelfde doet: niets hangt aan een animatie, geen
+   enkele knop wacht op een overgang. Wie beweging uitzet (zie helemaal
+   onderaan) krijgt gewoon de rustige versie. */
+
+/* Een scherm komt van onderen binnen, blok voor blok, met een paar honderdste
+   seconde ertussen. Alleen bij het wisselen van tabblad — niet bij elke
+   verversing, want dan zou de lijst dansen zodra je een taak afvinkt. */
+.view.is-entering > * {
+  animation: rise-in .44s var(--spring) both;
+  animation-delay: calc(var(--i, 0) * 48ms);
+}
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(16px) scale(.98); }
+}
+
+/* Dagen in de agenda en doelkaarten krijgen dezelfde tastbaarheid als .card. */
+.day {
+  box-shadow: inset 0 1px 0 var(--sheen), var(--lift-1);
+  transition: box-shadow .2s var(--ease), transform .2s var(--ease);
+}
+.day.is-today { box-shadow: inset 0 1px 0 var(--sheen), var(--lift-2), 0 0 0 1px var(--glow); }
+
+/* Een regel licht op waar je hem aanraakt, in plaats van gewoon grijs te
+   worden: het aanraakpunt zelf wordt de bron van de kleur. */
+.ev, button.row {
+  position: relative;
+  transition: background-color .14s ease, transform .14s var(--ease);
+}
+.ev:active, button.row:active { transform: scale(.995); }
+
+/* De voortgangsbalk krijgt een trage glans die er langzaam overheen loopt —
+   het enige element in de app dat uit zichzelf beweegt terwijl je kijkt. */
+.bar > span {
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 10px -2px var(--glow);
+}
+.bar > span::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, transparent 20%, rgba(255, 255, 255, .45) 50%, transparent 80%);
+  transform: translateX(-100%);
+  animation: sheen-sweep 3.6s ease-in-out infinite;
+}
+@keyframes sheen-sweep {
+  0%, 55% { transform: translateX(-100%); }
+  100%    { transform: translateX(100%); }
+}
+
+/* De ring gloeit mee met wat er af is. */
+.ring .value { filter: drop-shadow(0 0 4px var(--glow)); }
+
+/* Afvinken laat confetti los vanuit het vakje. De stukjes worden in JS
+   gemaakt en ruimen zichzelf op; hier staat alleen hoe ze wegvliegen. */
+.confetti {
+  position: fixed;
+  z-index: 60;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+.confetti i {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  margin: -4px 0 0 -4px;
+  border-radius: 2px;
+  animation: fly .95s cubic-bezier(.16, .7, .3, 1) forwards;
+}
+.confetti i:nth-child(3n) { border-radius: 50%; }
+.confetti i:nth-child(4n) { width: 6px; height: 10px; }
+@keyframes fly {
+  from { transform: translate3d(0, 0, 0) rotate(0); opacity: 1; }
+  60%  { opacity: 1; }
+  to   { transform: translate3d(var(--dx), calc(var(--dy) + 60px), 0) rotate(var(--rot)); opacity: 0; }
+}
+
+/* De vlam naast een reeks. Hoe langer de reeks, hoe voller de kleur: --heat
+   loopt van 0 tot 1 en wordt in JS gezet. */
+.flame {
+  width: 22px;
+  height: 22px;
+  color: color-mix(in srgb, #f97316 calc(var(--heat, .3) * 100%), var(--line-strong));
+  --flame-core: color-mix(in srgb, #ffd166 calc(var(--heat, .3) * 100%), transparent);
+  filter: drop-shadow(0 2px 5px color-mix(in srgb, #f97316 calc(var(--heat, 0) * 45%), transparent));
+  animation: flicker 2.2s ease-in-out infinite;
+}
+@keyframes flicker {
+  0%, 100% { transform: scale(1) rotate(-1.5deg); }
+  50%      { transform: scale(1.09) rotate(1.5deg); }
+}
+.big.streak { display: inline-flex; align-items: center; gap: 3px; }
+
+/* Iets waar je bijna bent ademt zachtjes. */
+.count.soon {
+  box-shadow: 0 4px 14px -6px var(--glow);
+  animation: breathe 3.4s ease-in-out infinite;
+}
+@keyframes breathe {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.035); }
+}
+
+/* Blokken in het weekrooster liggen op het rooster in plaats van erin. */
+.cal-ev {
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .12), 0 4px 10px -6px rgba(0, 0, 0, .3), inset 0 1px 0 rgba(255, 255, 255, .3);
+  transition: transform .14s var(--spring), box-shadow .18s var(--ease);
+}
+.cal-ev:active { transform: scale(.96); }
+@media (hover: hover) {
+  .cal-ev:hover { transform: translateY(-1px) scale(1.015); box-shadow: 0 2px 4px rgba(0, 0, 0, .14), 0 10px 22px -8px rgba(0, 0, 0, .4); z-index: 2; }
+}
+
+/* De lijn van "nu" pulseert, zodat je hem meteen vindt. */
+.cal-now::before { animation: breathe 2.6s ease-in-out infinite; }
+
+/* Foto's in het album komen naar voren als je ze aanraakt. */
+.photo img { transition: transform .3s var(--spring); }
+.photo:active img { transform: scale(1.06); }
+
+/* Het onderpaneel komt met perspectief omhoog: het kantelt tijdens het
+   opkomen net iets naar achteren en vlakt uit. Dat is wat het "zwaar" maakt. */
+.sheet-panel {
+  animation: sheet-rise .34s var(--spring);
+  transform-origin: 50% 100%;
+}
+@keyframes sheet-rise {
+  from { transform: perspective(1000px) translateY(26px) rotateX(6deg); opacity: .4; }
+}
+.sheet-backdrop { background: rgba(10, 13, 17, .52); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); }
+
+/* Invoervelden zakken in plaats van dat ze alleen van rand veranderen. */
+.field input, .field select, .field textarea {
+  box-shadow: inset 0 1px 2px rgba(34, 38, 43, .06);
+}
+
+.toast { animation: toast-in .34s var(--spring); }
+@keyframes toast-in {
+  from { transform: translateX(-50%) translateY(14px) scale(.94); opacity: 0; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
     transition-duration: .01ms !important;
   }
+  /* Deze lopen eeuwig door; die moeten echt uit, niet alleen versneld. */
+  body::after, .bar > span::after, .count.soon, .cal-now::before, .gate-mark, .flame {
+    animation: none !important;
+  }
+  /* Confetti maakt de app niet stuk als hij wegblijft — JS laat hem in deze
+     stand ook niet los, dit is de tweede sluiting. */
+  .confetti { display: none !important; }
 }

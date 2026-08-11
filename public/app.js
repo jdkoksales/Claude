@@ -18,7 +18,14 @@ function h(tag, props = {}, ...children) {
     if (value == null || value === false) continue;
     if (key === 'class') node.className = value;
     else if (key === 'text') node.textContent = value;
-    else if (key === 'style') Object.assign(node.style, value);
+    // Eigen eigenschappen (--iets) moeten via setProperty; die pikt een gewone
+    // toewijzing aan node.style niet op.
+    else if (key === 'style') {
+      for (const [prop, val] of Object.entries(value)) {
+        if (prop.startsWith('--')) node.style.setProperty(prop, val);
+        else node.style[prop] = val;
+      }
+    }
     else if (key.startsWith('on')) node.addEventListener(key.slice(2), value);
     else if (key === 'dataset') Object.assign(node.dataset, value);
     else node.setAttribute(key, value === true ? '' : value);
@@ -199,9 +206,14 @@ const state = {
   momentFilter: 'komt',
   // Welke agenda's staan aan in het weekrooster. null = allemaal.
   calOwners: null,
+  // Of het volgende tekenmoment de blokken mag laten binnenkomen.
+  entering: false,
+  enterTimer: null,
 };
 
-const userById = (id) => state.data?.users.find((u) => u.id === id) || null;
+// Ook vóór het inloggen, want dan is er nog geen state.data maar wel een
+// lijstje namen uit /bootstrap — en het keuzescherm wil die gezichten al tonen.
+const userById = (id) => (state.data?.users || state.boot?.users || []).find((u) => u.id === id) || null;
 const partner = () => state.data?.users.find((u) => u.id !== state.me?.id) || null;
 
 // Eigen kleur voor "samen": geel, duidelijk anders dan het blauw en roze van
@@ -227,6 +239,84 @@ function ownerName(id) {
 function ownerColor(id) {
   if (id === 'both') return BOTH_COLOR;
   return userById(id)?.color || 'var(--muted)';
+}
+
+/**
+ * Welk portretje bij wie hoort. De volgorde uit het instelscherm beslist —
+ * dezelfde volgorde die ook de kleur bepaalt, dus de eerste persoon is blauw
+ * én het eerste gezicht. Zo is er niets in te stellen en niets op te slaan.
+ */
+function avatarSrc(id) {
+  const users = state.data?.users || state.boot?.users || [];
+  const i = users.findIndex((u) => u.id === id);
+  return i === 0 || i === 1 ? `/avatars/a${i + 1}.jpg` : null;
+}
+
+/**
+ * Een rond portretje. De eerste letter staat eronder: laadt het plaatje niet,
+ * dan is er nog steeds iets te zien. "Samen" is geen persoon en krijgt het
+ * merkteken van de app.
+ */
+function avatarOf(id, extra = '') {
+  const name = ownerName(id);
+  const wrap = h('span', {
+    class: `avatar${extra ? ` ${extra}` : ''}`,
+    style: { background: ownerColor(id) },
+    title: name,
+  });
+  if (id === 'both') {
+    const mark = icon('mark');
+    mark.setAttribute('class', 'avatar-mark');
+    wrap.append(mark);
+    return wrap;
+  }
+  wrap.append(h('span', { class: 'avatar-letter', text: name.trim().charAt(0).toUpperCase() }));
+  const src = avatarSrc(id);
+  if (src) {
+    const img = h('img', { class: 'avatar-img', src, alt: '' });
+    img.addEventListener('error', () => img.remove());
+    wrap.append(img);
+  }
+  return wrap;
+}
+
+/** Beweging uit in de telefoon betekent: geen confetti, geen trillen. */
+const calm = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/** Een kort trilsignaal, als de telefoon dat kan. */
+function buzz(pattern = 14) {
+  if (calm()) return;
+  navigator.vibrate?.(pattern);
+}
+
+/**
+ * Confetti vanuit een knop. Puur versiering: dit gebeurt ná het opslaan en er
+ * hangt niets van af. De stukjes ruimen zichzelf op.
+ */
+function celebrate(anchor) {
+  if (calm() || !anchor?.isConnected) return;
+  const box = anchor.getBoundingClientRect();
+  const layer = h('div', { class: 'confetti' });
+  layer.style.left = `${box.left + box.width / 2}px`;
+  layer.style.top = `${box.top + box.height / 2}px`;
+  const colors = state.data
+    ? [...state.data.users.map((u) => u.color), BOTH_COLOR, 'var(--accent)']
+    : ['var(--accent)'];
+  for (let i = 0; i < 18; i += 1) {
+    const angle = (i / 18) * Math.PI * 2 + Math.random() * 0.3;
+    const distance = 40 + Math.random() * 52;
+    layer.append(h('i', {
+      style: {
+        '--dx': `${Math.cos(angle) * distance}px`,
+        '--dy': `${Math.sin(angle) * distance - 16}px`,
+        '--rot': `${(Math.random() * 2 - 1) * 260}deg`,
+        background: colors[i % colors.length],
+        animationDelay: `${Math.random() * 70}ms`,
+      },
+    }));
+  }
+  document.body.append(layer);
+  setTimeout(() => layer.remove(), 1200);
 }
 
 let toastTimer = null;
@@ -616,9 +706,7 @@ function taskForm(existing) {
 // ── Onderdelen die in meerdere schermen terugkomen ─────────────────────────
 
 function personChip(id) {
-  return h('span', { class: 'chip' },
-    h('i', { class: 'dot', style: { background: ownerColor(id) } }),
-    ownerName(id));
+  return h('span', { class: 'chip person' }, avatarOf(id, 'xs'), ownerName(id));
 }
 
 /**
@@ -660,8 +748,11 @@ function checkButton(goal) {
     'aria-label': on ? `${goal.title} afvinken ongedaan maken` : `${goal.title} afvinken`,
     onclick: async (e) => {
       e.stopPropagation();
+      const button = e.currentTarget;
       try {
         await api(`/goals/${goal.id}/checkin`, { method: 'POST', body: { date: state.data.today } });
+        // Vieren voor het opnieuw tekenen, want daarna is deze knop weg.
+        if (!on) { celebrate(button); buzz(); }
         await refresh();
       } catch (err) {
         toast(err.message);
@@ -703,6 +794,26 @@ function progressBar(pct) {
   return h('div', { class: 'bar' }, h('span', { style: { width: `${width}%` } }));
 }
 
+/**
+ * Het getal van een reeks, met een vlam ernaast zodra hij loopt. De vlam wordt
+ * feller naarmate je het langer volhoudt — dat is het hele idee van een reeks:
+ * je ziet in één oogopslag dat er iets is om niet te laten uitgaan.
+ */
+function streakBadge(streak) {
+  const wrap = h('div', { class: `big${streak > 0 ? ' streak' : ''}` });
+  if (streak > 0) {
+    const f = icon('flame');
+    f.setAttribute('class', 'flame');
+    // Ook een reeks van één dag brandt al; na een week of twee staat hij op
+    // volle sterkte. Begon dit op nul, dan zag een verse reeks er grauw uit —
+    // precies het tegenovergestelde van wat een reeks moet doen.
+    f.style.setProperty('--heat', String(0.45 + 0.55 * Math.min(1, streak / 14)));
+    wrap.append(f);
+  }
+  wrap.append(h('span', { text: String(streak) }));
+  return wrap;
+}
+
 function goalCard(goal, { compact = false } = {}) {
   const s = goal.stats;
   const head = h('div', { class: 'card-head named' },
@@ -729,7 +840,7 @@ function goalCard(goal, { compact = false } = {}) {
           ? `door ${s.checkedToday.map(ownerName).join(' en ')}`
           : `deze week ${s.weekDone} van ${s.weekTarget}` })),
       h('div', { class: 'row-end' },
-        h('div', { class: 'big', text: String(s.streak) }),
+        streakBadge(s.streak),
         h('div', { class: 'muted', text: s.streakUnit }))));
     body.append(weekDots(goal));
     if (!compact) {
@@ -788,9 +899,11 @@ function taskRow(task) {
       type: 'button',
       'aria-pressed': String(task.done),
       'aria-label': task.done ? 'Weer openzetten' : 'Afvinken',
-      onclick: async () => {
+      onclick: async (e) => {
+        const button = e.currentTarget;
         try {
           await api(`/tasks/${task.id}`, { method: 'PATCH', body: { done: !task.done } });
+          if (!task.done) { celebrate(button); buzz(); }
           await refresh();
         } catch (err) {
           toast(err.message);
@@ -826,12 +939,11 @@ function emptyNote(text, iconName = 'sparkle') {
 /** De twee gezichten rechtsboven; die van jou heeft een ring om zich heen. */
 function renderAvatars() {
   const wrap = $('#avatars');
-  wrap.replaceChildren(...state.data.users.map((u) => h('span', {
-    class: `avatar${u.id === state.me.id ? ' is-me' : ''}`,
-    style: { background: u.color },
-    title: u.id === state.me.id ? `${u.name} (jij)` : u.name,
-    text: u.name.trim().charAt(0).toUpperCase(),
-  })));
+  wrap.replaceChildren(...state.data.users.map((u) => {
+    const a = avatarOf(u.id, u.id === state.me.id ? 'is-me' : '');
+    a.title = u.id === state.me.id ? `${u.name} (jij)` : u.name;
+    return a;
+  }));
 }
 
 // ── Scherm: Vandaag ────────────────────────────────────────────────────────
@@ -1657,7 +1769,7 @@ function renderLogin() {
         $('input[name=pin]', card)?.focus();
       },
       dataset: { id: u.id },
-    }, h('i', { class: 'dot', style: { background: u.color, width: '12px', height: '12px' } }), u.name);
+    }, avatarOf(u.id, 'lg'), u.name);
     who.append(btn);
     return btn;
   });
@@ -1716,8 +1828,24 @@ const RENDERERS = {
   meer: renderMeer,
 };
 
+/**
+ * Laat de blokken van een scherm één voor één binnenkomen. De vertraging per
+ * blok staat in CSS; hier geven we alleen door de hoeveelste het is. Na afloop
+ * gaat de klasse er weer af, anders zou elke verversing opnieuw animeren —
+ * en dan springt de lijst op zodra je een taak afvinkt.
+ */
+function animateIn(root) {
+  root.classList.remove('is-entering');
+  [...root.children].forEach((el, i) => el.style.setProperty('--i', String(Math.min(i, 8))));
+  void root.offsetWidth; // forceer een herstart van de animatie
+  root.classList.add('is-entering');
+  clearTimeout(state.enterTimer);
+  state.enterTimer = setTimeout(() => root.classList.remove('is-entering'), 1000);
+}
+
 function setTab(tab) {
   state.tab = tab;
+  state.entering = true;
   $$('.tab').forEach((b) => b.classList.toggle('is-active', b.dataset.tab === tab));
   $$('.view').forEach((v) => { v.hidden = v.dataset.view !== tab; });
   $('#view-title').textContent = TITLES[tab];
@@ -1728,6 +1856,21 @@ function setTab(tab) {
 }
 
 $$('.tab').forEach((btn) => btn.addEventListener('click', () => setTab(btn.dataset.tab)));
+
+// Zodra je scrolt maakt de bovenbalk zich klein en komt hij los van de pagina.
+// De klasse gaat er maar één keer op of af, dus dit kost tijdens het scrollen
+// vrijwel niets.
+{
+  const topbar = $('.topbar');
+  let stuck = false;
+  addEventListener('scroll', () => {
+    const next = scrollY > 10;
+    if (next !== stuck) {
+      stuck = next;
+      topbar.classList.toggle('is-stuck', next);
+    }
+  }, { passive: true });
+}
 
 $('#add-btn').addEventListener('click', () => {
   if (state.tab === 'momenten') {
@@ -1747,6 +1890,10 @@ function render() {
   renderAvatars();
   root.replaceChildren();
   RENDERERS[state.tab](root);
+  if (state.entering) {
+    state.entering = false;
+    animateIn(root);
+  }
 
   const sub = $('#view-sub');
   if (state.tab === 'vandaag') sub.textContent = dayLabel(state.data.today);

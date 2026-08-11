@@ -4,7 +4,7 @@
  * de cache geserveerd — alleen de schil, zodat je nooit oude cijfers ziet.
  */
 
-const CACHE = 'samen-v1';
+const CACHE = 'samen-v2';
 const SHELL = ['/', '/index.html', '/styles.css', '/app.js', '/icon.svg', '/manifest.webmanifest'];
 
 self.addEventListener('install', (event) => {

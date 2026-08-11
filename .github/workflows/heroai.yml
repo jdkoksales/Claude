@@ -156,6 +156,7 @@ jobs:
                 knopZichtbaar: zicht(hero.querySelector('.buy')),
                 oudeShots: !!hero.querySelector('.shots'),
                 platformkiezer: !!hero.querySelector('.seg'),
+                waaromSectie: !!document.querySelector('.tk3 .waarom'),
                 knopTekst: (hero.querySelector('.buy') || {}).innerText ? hero.querySelector('.buy').innerText.trim() : null,
                 overloop: Math.max(0, document.documentElement.scrollWidth - innerWidth),
               };
@@ -175,6 +176,8 @@ jobs:
               if (hoeveel) fouten.push(`${naam}: ${wat} ligt over het bordje heen (${hoeveel})`);
             }
             if (m.platformkiezer) fouten.push(`${naam}: de platformkiezer staat er nog`);
+            if (m.waaromSectie) fouten.push(`${naam}: de waarom-sectie staat nog op de pagina`);
+            if (m.kopTekst !== 'Laat jouw bedrijf groeien met TapKaarten.') fouten.push(`${naam}: de kop is "${m.kopTekst}"`);
             if (m.knopTekst !== 'Bestel nu!') fouten.push(`${naam}: de knop zegt "${m.knopTekst}" en niet "Bestel nu!"`);
 
             if (!m.bron.includes(bestand)) fouten.push(`${naam}: laadt ${m.bron} in plaats van de ${bestand}-versie`);

@@ -1,26 +1,41 @@
-GEVONDEN: 1 punten
- - breed: de uitsnede snijdt 14% van het bordje weg
+GEEN AFWIJKINGEN GEVONDEN
 
-breed 2560x1080 — thema 197367529849
-   bestand: tk3-hero-ai-desktop.jpg  (bron 1800x1005, vlak 2560x971)
-   object-fit cover, object-position 38% 100%
-   bordje op het scherm: x 704–1231, y -28–926 (953px hoog)
-   hero 971px hoog, kop rgb(255, 255, 255), onderkop rgba(255, 255, 255, 0.84)
+ultrabreed 3440x1440 — thema 197367529849
+   bestand: tk3-hero-ai-desktop.jpg  (bron 1800x1005, vlak 3440x1445)
+   object-fit cover, object-position 38% 70%
+   bordje op het scherm: x 946–1655, y 208–1489 (1281px hoog)
+   hero 1445px hoog, kop rgb(255, 255, 255), onderkop rgba(255, 255, 255, 0.84)
    kop "Laat jouw bedrijf groeien met TapKaarten."
    overloop 0px, oude wisselfoto's nog aanwezig: false
    botsing kop: geen
    botsing onderkop: geen
    botsing knoppen: geen
    botsing rekenlink: geen
-   na de hero: blk, 5 productkaarten, eerste kaart op 1282px
+   na de hero: blk, 5 productkaarten, eerste kaart op 1756px
    kopkolom 588px, langste woord "TapKaarten." is 272px, 2 regels
-   hoogtes: {"wrap":319,"kop":112,"sub":51,"knoppen":46,"calc":0,"foto":971}, venster 1080px
-   bordje voor 86% binnen de foto-uitsnede, 97% binnen het scherm
+   hoogtes: {"wrap":319,"kop":112,"sub":51,"knoppen":46,"calc":0,"foto":1445}, venster 1440px
+   bordje voor 100% binnen de foto-uitsnede, 96% binnen het scherm
+
+breed 2560x1080 — thema 197367529849
+   bestand: tk3-hero-ai-desktop.jpg  (bron 1800x1005, vlak 2560x1075)
+   object-fit cover, object-position 38% 70%
+   bordje op het scherm: x 704–1231, y 183–1136 (953px hoog)
+   hero 1075px hoog, kop rgb(255, 255, 255), onderkop rgba(255, 255, 255, 0.84)
+   kop "Laat jouw bedrijf groeien met TapKaarten."
+   overloop 0px, oude wisselfoto's nog aanwezig: false
+   botsing kop: geen
+   botsing onderkop: geen
+   botsing knoppen: geen
+   botsing rekenlink: geen
+   na de hero: blk, 5 productkaarten, eerste kaart op 1386px
+   kopkolom 588px, langste woord "TapKaarten." is 272px, 2 regels
+   hoogtes: {"wrap":319,"kop":112,"sub":51,"knoppen":46,"calc":0,"foto":1075}, venster 1080px
+   bordje voor 100% binnen de foto-uitsnede, 94% binnen het scherm
 
 desktop-groot 1920x1080 — thema 197367529849
    bestand: tk3-hero-ai-desktop.jpg  (bron 1800x1005, vlak 1920x971)
-   object-fit cover, object-position 38% 100%
-   bordje op het scherm: x 528–924, y 249–964 (715px hoog)
+   object-fit cover, object-position 38% 70%
+   bordje op het scherm: x 528–924, y 280–995 (715px hoog)
    hero 971px hoog, kop rgb(255, 255, 255), onderkop rgba(255, 255, 255, 0.84)
    kop "Laat jouw bedrijf groeien met TapKaarten."
    overloop 0px, oude wisselfoto's nog aanwezig: false
@@ -35,8 +50,8 @@ desktop-groot 1920x1080 — thema 197367529849
 
 desktop 1440x900 — thema 197367529849
    bestand: tk3-hero-ai-desktop.jpg  (bron 1800x1005, vlak 1440x791)
-   object-fit cover, object-position 38% 100%
-   bordje op het scherm: x 396–693, y 277–813 (536px hoog)
+   object-fit cover, object-position 38% 70%
+   bordje op het scherm: x 396–693, y 281–817 (536px hoog)
    hero 791px hoog, kop rgb(255, 255, 255), onderkop rgba(255, 255, 255, 0.84)
    kop "Laat jouw bedrijf groeien met TapKaarten."
    overloop 0px, oude wisselfoto's nog aanwezig: false

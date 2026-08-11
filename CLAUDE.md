@@ -124,13 +124,19 @@ De app staat live op **https://samen-agenda.vercel.app** en werkt: opslag op
 Postgres bevestigd via `/api/health`, en de herinneringstaak in Postgres krijgt
 netjes antwoord.
 
+De app is ingericht: **Julian staat eerste, Jessica tweede.** Die volgorde
+bepaalt zowel hun kleur als hun avatar, dus draai hem niet om. Hun kleuren zijn
+`#3a7ca5` (Julian) en `#e26d5c` (Jessica) — niet het blauw en roze uit oudere
+notities; de app kiest ze bij het inrichten.
+
 Openstaand:
 
-1. **Julian en zijn vriendin moeten de app nog inrichten** (twee namen, twee
-   pincodes) en op hun beginscherm zetten. Tot die tijd is `users` leeg.
-2. **De repository op privé zetten** is Julian aangeraden maar nog niet gedaan.
-3. **Het databasewachtwoord vervangen** kan wanneer hij wil; het is een keer in
+1. **De repository op privé zetten** is Julian aangeraden maar nog niet gedaan.
+2. **Het databasewachtwoord vervangen** kan wanneer hij wil; het is een keer in
    een gesprek langsgekomen.
+3. **Vraag na of ze zichzelf herkennen in hun avatar.** Die is getekend uit een
+   beschrijving, niet uit hun foto; klopt er iets niet aan haar of kleding, dan
+   is het een kwestie van de beschrijving bijstellen en opnieuw laten tekenen.
 
 ## Higgsfield
 

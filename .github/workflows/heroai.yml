@@ -38,7 +38,7 @@ jobs:
           import fs from 'fs';
 
           const BASE = 'https://ikep5e-3q.myshopify.com';
-          const PV = '?preview_theme_id=196964024697';
+          const PV = '?preview_theme_id=197367529849';
           const log = [];
           const fouten = [];
 

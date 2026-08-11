@@ -48,6 +48,7 @@ EMAIL = "info@tapkaarten.nl"
 WEBSITE = "tapkaarten.nl"
 SITE_URL = "https://tapkaarten.nl"
 SLOGAN = "NFC-bordjes voor meer reviews en volgers"
+INSTAGRAM = "@tapkaarten"
 
 # Staat dit aan, dan worden alleen de vlakken getekend en geen tekst of
 # merkteken. Daarmee is na te meten wat er precies inkt is en wat achtergrond,
@@ -117,6 +118,50 @@ def nfc_bogen(c, cx, cy, kleur, schaal=1.0):
         c.drawPath(p, stroke=1, fill=0)
 
 
+def _lijn(c, maat, kleur):
+    c.setStrokeColor(kleur)
+    c.setFillColor(kleur)
+    c.setLineWidth(maat * 0.1)
+    c.setLineCap(1)
+    c.setLineJoin(1)
+
+
+def teken_telefoon(c, px, py, maat, kleur):
+    _lijn(c, maat, kleur)
+    b = maat * 0.58
+    c.roundRect(px + (maat - b) / 2, py, b, maat, maat * 0.14, stroke=1, fill=0)
+    c.line(px + maat * 0.38, py + maat * 0.88, px + maat * 0.62, py + maat * 0.88)
+
+
+def teken_envelop(c, px, py, maat, kleur):
+    _lijn(c, maat, kleur)
+    h = maat * 0.72
+    py += (maat - h) / 2
+    c.roundRect(px, py, maat, h, maat * 0.1, stroke=1, fill=0)
+    p = c.beginPath()
+    p.moveTo(px + maat * 0.06, py + h * 0.86)
+    p.lineTo(px + maat * 0.5, py + h * 0.42)
+    p.lineTo(px + maat * 0.94, py + h * 0.86)
+    c.drawPath(p, stroke=1, fill=0)
+
+
+def teken_wereldbol(c, px, py, maat, kleur):
+    _lijn(c, maat, kleur)
+    r = maat / 2
+    c.circle(px + r, py + r, r * 0.94, stroke=1, fill=0)
+    c.line(px + maat * 0.06, py + r, px + maat * 0.94, py + r)
+    c.ellipse(px + maat * 0.28, py + maat * 0.03, px + maat * 0.72, py + maat * 0.97,
+              stroke=1, fill=0)
+
+
+def teken_instagram(c, px, py, maat, kleur):
+    """Vereenvoudigd Instagram-teken: afgeronde vierkant, cirkel, stip."""
+    _lijn(c, maat, kleur)
+    c.roundRect(px, py, maat, maat, maat * 0.28, stroke=1, fill=0)
+    c.circle(px + maat / 2, py + maat / 2, maat * 0.26, stroke=1, fill=0)
+    c.circle(px + maat * 0.755, py + maat * 0.755, maat * 0.055, stroke=0, fill=1)
+
+
 def qr_tekenen(c, links, onder, maat, kleur):
     q = qrcode.QRCode(version=None, error_correction=qrcode.constants.ERROR_CORRECT_M, border=0)
     q.add_data(SITE_URL)
@@ -180,18 +225,21 @@ def achterkant(c):
     c.setLineWidth(0.4)
     c.line(x(13.5), y(32.5), x(52), y(32.5))
 
-    # Contactregels. Telefoon iets zwaarder: dat is waar iemand naar zoekt.
+    # Contactregels met een klein teken ervoor. Telefoon iets zwaarder gezet:
+    # dat is waar iemand op een visitekaartje naar zoekt.
     regels = [
-        ("Inter-Semi", 10, TELEFOON),
-        ("Inter", 9, EMAIL),
-        ("Inter", 9, WEBSITE),
+        (teken_telefoon,   "Inter-Semi", 10, TELEFOON),
+        (teken_envelop,    "Inter",       9, EMAIL),
+        (teken_wereldbol,  "Inter",       9, WEBSITE),
+        (teken_instagram,  "Inter",       9, INSTAGRAM),
     ]
-    hoogte = 25.9
-    for lettertype, korps, tekst in regels:
+    hoogte, teken_maat = 27.2, 3.3
+    for tekenaar, lettertype, korps, tekst in regels:
+        tekenaar(c, x(13.5), y(hoogte - 0.25), teken_maat * mm, ORANJE_DIEP)
         c.setFillColor(INKT)
         c.setFont(lettertype, korps)
-        c.drawString(x(13.5), y(hoogte), tekst)
-        hoogte -= 6.5
+        c.drawString(x(19.5), y(hoogte), tekst)
+        hoogte -= 5.8
 
     # De QR staat rechts, met zijn bijschrift ruim binnen de veilige rand.
     qr = 17.5

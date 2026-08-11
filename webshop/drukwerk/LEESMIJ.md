@@ -32,8 +32,13 @@ Voorkant: het merkteken en de naam op je huisoranje, met één regel die uitlegt
 wat je verkoopt — want wie dit kaartje krijgt, kent je nog niet.
 
 Achterkant: telefoonnummer (iets zwaarder gezet, dat is waar mensen naar
-zoeken), e-mail, website, en een QR-code die naar tapkaarten.nl gaat. Die code
-is nagelezen met een scanner, ook op halve resolutie.
+zoeken), e-mail, website en Instagram, elk met een klein teken ervoor, en een
+QR-code die naar tapkaarten.nl gaat. Die code is nagelezen met een scanner,
+ook op halve resolutie.
+
+Die tekentjes zijn er niet voor de sier: met vier regels leest een losse
+Instagram-glyph naast alleen die ene regel als een fout, en vier tekens houden
+de tekstkolom bovendien netjes op één lijn.
 
 ## Iets veranderen
 
@@ -43,6 +48,7 @@ Alles staat in `visitekaartje.py`. De gegevens staan bovenin bij elkaar:
 TELEFOON = "06 16 03 63 28"
 EMAIL = "info@tapkaarten.nl"
 WEBSITE = "tapkaarten.nl"
+INSTAGRAM = "@tapkaarten"
 SITE_URL = "https://tapkaarten.nl"
 SLOGAN = "NFC-bordjes voor meer reviews en volgers"
 ```

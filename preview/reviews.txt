@@ -1,4 +1,6 @@
-GEEN AFWIJKINGEN GEVONDEN
+GEVONDEN: 2 punten
+ - winkel-telefoon: de wist-je-dat-band staat niet op de pagina
+ - winkel-desktop: de wist-je-dat-band staat niet op de pagina
 
 desktop 1440x900
    3 kaarten, stylesheet geladen: true
@@ -25,13 +27,13 @@ telefoon 390x844
    rij 349px hoog, hoogste kaart 343px, rail 935px in 390px
 
 winkel-telefoon 390x844 — thema 196964024697
-   hero eindigt op 844px, wist-je-dat begint op 844px (439px hoog)
-   getal "5–9%" op 55px, knop "Bestel nu!", bronregel contrast 6.7:1
-   eerste productkaart op 1429px, 5 kaarten
+   hero eindigt op 844px, wist-je-dat begint op nullpx (nullpx hoog)
+   getal "null" op nullpx, knop "null", bronregel contrast null:1
+   eerste productkaart op 989px, 5 kaarten
    reviewsectie zichtbaar: false, vertrouwensbalk: false, overloop 0px
 
 winkel-desktop 1440x900 — thema 196964024697
-   hero eindigt op 900px, wist-je-dat begint op 900px (395px hoog)
-   getal "5–9%" op 104px, knop "Bestel nu!", bronregel contrast 6.7:1
-   eerste productkaart op 1497px, 5 kaarten
+   hero eindigt op 900px, wist-je-dat begint op nullpx (nullpx hoog)
+   getal "null" op nullpx, knop "null", bronregel contrast null:1
+   eerste productkaart op 1102px, 5 kaarten
    reviewsectie zichtbaar: false, vertrouwensbalk: false, overloop 0px

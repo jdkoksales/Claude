@@ -5,13 +5,13 @@ desktop 1440x900 — thema 196964024697
    object-fit cover, object-position 38% 100%
    bordje op het scherm: x 396–693, y 277–813 (536px hoog)
    hero 791px hoog, kop rgb(255, 255, 255), onderkop rgba(255, 255, 255, 0.84)
-   kop "Je beste marketing staat op de balie."
+   kop "Laat jouw bedrijf groeien met TapKaarten."
    overloop 0px, oude wisselfoto's nog aanwezig: false
    botsing kop: geen
    botsing onderkop: geen
    botsing knoppen: geen
    botsing rekenlink: geen
-   hoogtes: {"wrap":345,"kop":112,"sub":51,"knoppen":46,"calc":48,"foto":791}, venster 900px
+   hoogtes: {"wrap":401,"kop":168,"sub":51,"knoppen":46,"calc":48,"foto":791}, venster 900px
    bordje voor 100% binnen de foto-uitsnede, 100% binnen het scherm
 
 tablet 834x1000 — thema 196964024697
@@ -19,7 +19,7 @@ tablet 834x1000 — thema 196964024697
    object-fit cover, object-position 50% 50%
    bordje op het scherm: x 312–542, y 510–930 (420px hoog)
    hero 891px hoog, kop rgb(255, 255, 255), onderkop rgba(255, 255, 255, 0.84)
-   kop "Je beste marketing staat op de balie."
+   kop "Laat jouw bedrijf groeien met TapKaarten."
    overloop 0px, oude wisselfoto's nog aanwezig: false
    botsing kop: geen
    botsing onderkop: geen
@@ -33,7 +33,7 @@ tablet-kort 834x700 — thema 196964024697
    object-fit cover, object-position 50% 50%
    bordje op het scherm: x 327–525, y 278–639 (362px hoog)
    hero 591px hoog, kop rgb(255, 255, 255), onderkop rgba(255, 255, 255, 0.84)
-   kop "Je beste marketing staat op de balie."
+   kop "Laat jouw bedrijf groeien met TapKaarten."
    overloop 0px, oude wisselfoto's nog aanwezig: false
    botsing kop: geen
    botsing onderkop: geen
@@ -47,7 +47,7 @@ telefoon 390x844 — thema 196964024697
    object-fit cover, object-position 50% 50%
    bordje op het scherm: x 103–317, y 372–801 (429px hoog)
    hero 735px hoog, kop rgb(255, 255, 255), onderkop rgba(255, 255, 255, 0.84)
-   kop "Je beste marketing staat op de balie."
+   kop "Laat jouw bedrijf groeien met TapKaarten."
    overloop 0px, oude wisselfoto's nog aanwezig: false
    botsing kop: geen
    botsing onderkop: geen
@@ -61,7 +61,7 @@ telefoon-kort 360x615 — thema 196964024697
    object-fit cover, object-position 50% 50%
    bordje op het scherm: x 114–267, y 286–594 (308px hoog)
    hero 516px hoog, kop rgb(255, 255, 255), onderkop rgba(255, 255, 255, 0.84)
-   kop "Je beste marketing staat op de balie."
+   kop "Laat jouw bedrijf groeien met TapKaarten."
    overloop 0px, oude wisselfoto's nog aanwezig: false
    botsing kop: geen
    botsing onderkop: geen
@@ -75,7 +75,7 @@ telefoon-klein 360x560 — thema 196964024697
    object-fit cover, object-position 50% 50%
    bordje op het scherm: x 114–267, y 284–592 (308px hoog)
    hero 514px hoog, kop rgb(255, 255, 255), onderkop rgba(255, 255, 255, 0.84)
-   kop "Je beste marketing staat op de balie."
+   kop "Laat jouw bedrijf groeien met TapKaarten."
    overloop 0px, oude wisselfoto's nog aanwezig: false
    botsing kop: geen
    botsing onderkop: geen

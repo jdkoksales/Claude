@@ -47,10 +47,16 @@ jobs:
           // snijdt object-fit de standaard eraf.
           // Waar het witte paneel in elk bronbestand staat, opgemeten op het
           // bestand zelf: [links, rechts, boven, onder] als fractie.
+          // De korte telefoonvensters staan er met opzet bij. Een toestel meldt
+          // 390x844, maar met browserbalk en de voorbeeldbalk van Shopify hou je
+          // rond de 600px over — en juist daar sneed de uitsnede het bordje weg.
           const SCHERMEN = [
-            ['desktop',  1440, 900,  'desktop',  [0.270, 0.482, 0.226, 0.890]],
-            ['tablet',   900,  1000, 'tablet',   [0.388, 0.628, 0.337, 0.902]],
-            ['telefoon', 390,  844,  'telefoon', [0.306, 0.746, 0.404, 0.883]],
+            ['desktop',        1440, 900,  'desktop',      [0.275, 0.481, 0.225, 0.892]],
+            ['tablet',         834,  1000, 'tablet',       [0.394, 0.626, 0.337, 0.904]],
+            ['tablet-kort',    834,  700,  'tablet',       [0.394, 0.626, 0.337, 0.904]],
+            ['telefoon',       390,  844,  'telefoon-krap',[0.316, 0.743, 0.058, 0.914]],
+            ['telefoon-kort',  360,  615,  'telefoon-krap',[0.316, 0.743, 0.058, 0.914]],
+            ['telefoon-klein', 360,  560,  'telefoon-krap',[0.316, 0.743, 0.058, 0.914]],
           ];
 
           const b = await chromium.launch();
@@ -100,6 +106,15 @@ jobs:
                 return bx > 2 && by > 2 ? Math.round(bx) + 'x' + Math.round(by) + 'px' : null;
               };
 
+              // Hoeveel van het bordje overleeft de uitsnede zelf? object-fit
+              // klipt alles buiten de lijst van de foto; dat is een andere
+              // vraag dan of het binnen het venster valt, en juist die vraag
+              // werd nooit gesteld.
+              const inLijst = (() => {
+                const zicht = Math.max(0, Math.min(bordje.bottom, r.bottom) - Math.max(bordje.top, r.top));
+                return Math.round(zicht / Math.max(1, bordje.bottom - bordje.top) * 100);
+              })();
+
               const kop = hero.querySelector('h1');
               const sub = hero.querySelector('.sub');
               const bediening = hero.querySelector('.controls');
@@ -122,6 +137,7 @@ jobs:
                 },
                 // Niet alleen 'begint binnen het scherm': het grootste deel
                 // moet zichtbaar zijn, anders staat hij onder de vouw.
+                bordjeInLijst: inLijst,
                 bordjeZichtbaarDeel: (() => {
                   const zicht = Math.max(0, Math.min(bordje.bottom, innerHeight) - Math.max(bordje.top, 0));
                   return Math.round(zicht / Math.max(1, bordje.bottom - bordje.top) * 100);
@@ -139,6 +155,8 @@ jobs:
                 kopZichtbaar: zicht(kop), subZichtbaar: zicht(sub),
                 knopZichtbaar: zicht(hero.querySelector('.buy')),
                 oudeShots: !!hero.querySelector('.shots'),
+                platformkiezer: !!hero.querySelector('.seg'),
+                knopTekst: (hero.querySelector('.buy') || {}).innerText ? hero.querySelector('.buy').innerText.trim() : null,
                 overloop: Math.max(0, document.documentElement.scrollWidth - innerWidth),
               };
             }, paneel);
@@ -156,6 +174,8 @@ jobs:
               log.push(`   botsing ${wat}: ${hoeveel || 'geen'}`);
               if (hoeveel) fouten.push(`${naam}: ${wat} ligt over het bordje heen (${hoeveel})`);
             }
+            if (m.platformkiezer) fouten.push(`${naam}: de platformkiezer staat er nog`);
+            if (m.knopTekst !== 'Bestel nu!') fouten.push(`${naam}: de knop zegt "${m.knopTekst}" en niet "Bestel nu!"`);
 
             if (!m.bron.includes(bestand)) fouten.push(`${naam}: laadt ${m.bron} in plaats van de ${bestand}-versie`);
             if (m.natuurlijk[0] === 0) fouten.push(`${naam}: de foto is niet geladen`);
@@ -168,9 +188,10 @@ jobs:
             if (m.overloop > 0) fouten.push(`${naam}: pagina schuift ${m.overloop}px opzij`);
             if (m.heroHoog < 400) fouten.push(`${naam}: hero maar ${m.heroHoog}px hoog`);
             log.push(`   hoogtes: ${JSON.stringify(m.hoogtes)}, venster ${m.venster}px`);
-            log.push(`   bordje voor ${m.bordjeZichtbaarDeel}% zichtbaar binnen het scherm`);
-            if (m.bordjeZichtbaarDeel < 70) fouten.push(`${naam}: het bordje is maar voor ${m.bordjeZichtbaarDeel}% zichtbaar, de rest valt onder de vouw`);
-            if (m.heroHoog > m.venster + 10) fouten.push(`${naam}: de hero is ${m.heroHoog}px op een scherm van ${m.venster}px`);
+            log.push(`   bordje voor ${m.bordjeInLijst}% binnen de foto-uitsnede, ${m.bordjeZichtbaarDeel}% binnen het scherm`);
+            if (m.bordjeInLijst < 99) fouten.push(`${naam}: de uitsnede snijdt ${100 - m.bordjeInLijst}% van het bordje weg`);
+            if (m.bordjeZichtbaarDeel < 85) fouten.push(`${naam}: het bordje is maar voor ${m.bordjeZichtbaarDeel}% zichtbaar, de rest valt onder de vouw`);
+            if (m.heroHoog > m.venster * 1.25) fouten.push(`${naam}: de hero is ${m.heroHoog}px op een scherm van ${m.venster}px`);
             if (m.bordjeHoog < m.heroHoog * 0.22) fouten.push(`${naam}: het bordje is maar ${m.bordjeHoog}px, te klein voor een hero`);
 
             await p.screenshot({ path: `preview/heroai-${naam}.png` });

@@ -4,12 +4,9 @@
       "type": "tk3-hero",
       "settings": {
         "heading": "Je beste marketing staat op de balie.",
-        "sub": "Eén tik met de telefoon en je klant staat op jouw Google-, Instagram- of Facebookpagina. Zonder dat jij erom hoeft te vragen.",
-        "cta_text": "Kopen",
+        "sub": "Eén tik en je klant staat op jouw reviewpagina. Jij hoeft niets te vragen.",
+        "cta_text": "Bestel nu!",
         "cta_url": "/#producten",
-        "product_google": "tapkaarten-google-review-standaard",
-        "product_instagram": "tapkaarten-instagram-standaard",
-        "product_facebook": "tapkaarten-facebook-standaard",
         "calc_text": "Bereken wat TapKaarten jou oplevert.",
         "calc_url": "/#calculator"
       }

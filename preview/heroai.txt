@@ -1,9 +1,4 @@
-GEVONDEN: 5 punten
- - tablet-kort: onderkop ligt over het bordje heen (193x2px)
- - tablet-kort: knoppen ligt over het bordje heen (193x46px)
- - tablet-kort: de uitsnede snijdt 24% van het bordje weg
- - telefoon-kort: de onderkop is niet zichtbaar
- - telefoon-klein: de onderkop is niet zichtbaar
+GEEN AFWIJKINGEN GEVONDEN
 
 desktop 1440x900 — thema 196964024697
    bestand: tk3-hero-ai-desktop.jpg  (bron 1800x1005, vlak 1440x791)
@@ -20,9 +15,9 @@ desktop 1440x900 — thema 196964024697
    bordje voor 100% binnen de foto-uitsnede, 100% binnen het scherm
 
 tablet 834x1000 — thema 196964024697
-   bestand: tk3-hero-ai-tablet.jpg  (bron 1400x1045, vlak 834x527)
-   object-fit cover, object-position 50% 100%
-   bordje op het scherm: x 329–522, y 587–940 (353px hoog)
+   bestand: tk3-hero-tablet-krap.jpg  (bron 1400x745, vlak 834x527)
+   object-fit cover, object-position 50% 50%
+   bordje op het scherm: x 312–542, y 510–930 (420px hoog)
    hero 891px hoog, kop rgb(255, 255, 255), onderkop rgba(255, 255, 255, 0.84)
    kop "Je beste marketing staat op de balie."
    overloop 0px, oude wisselfoto's nog aanwezig: false
@@ -34,18 +29,18 @@ tablet 834x1000 — thema 196964024697
    bordje voor 100% binnen de foto-uitsnede, 100% binnen het scherm
 
 tablet-kort 834x700 — thema 196964024697
-   bestand: tk3-hero-ai-tablet.jpg  (bron 1400x1045, vlak 834x327)
-   object-fit cover, object-position 50% 100%
-   bordje op het scherm: x 329–522, y 287–640 (353px hoog)
+   bestand: tk3-hero-tablet-krap.jpg  (bron 1400x745, vlak 834x454)
+   object-fit cover, object-position 50% 50%
+   bordje op het scherm: x 327–525, y 278–639 (362px hoog)
    hero 591px hoog, kop rgb(255, 255, 255), onderkop rgba(255, 255, 255, 0.84)
    kop "Je beste marketing staat op de balie."
    overloop 0px, oude wisselfoto's nog aanwezig: false
    botsing kop: geen
-   botsing onderkop: 193x2px
-   botsing knoppen: 193x46px
+   botsing onderkop: geen
+   botsing knoppen: geen
    botsing rekenlink: geen
-   hoogtes: {"wrap":229,"kop":112,"sub":26,"knoppen":46,"calc":0,"foto":327}, venster 700px
-   bordje voor 76% binnen de foto-uitsnede, 100% binnen het scherm
+   hoogtes: {"wrap":102,"kop":44,"sub":0,"knoppen":46,"calc":0,"foto":454}, venster 700px
+   bordje voor 100% binnen de foto-uitsnede, 100% binnen het scherm
 
 telefoon 390x844 — thema 196964024697
    bestand: tk3-hero-telefoon-krap.jpg  (bron 900x900, vlak 390x501)
@@ -64,27 +59,27 @@ telefoon 390x844 — thema 196964024697
 telefoon-kort 360x615 — thema 196964024697
    bestand: tk3-hero-telefoon-krap.jpg  (bron 900x900, vlak 360x360)
    object-fit cover, object-position 50% 50%
-   bordje op het scherm: x 114–267, y 290–598 (308px hoog)
-   hero 520px hoog, kop rgb(255, 255, 255), onderkop rgba(255, 255, 255, 0.84)
+   bordje op het scherm: x 114–267, y 286–594 (308px hoog)
+   hero 516px hoog, kop rgb(255, 255, 255), onderkop rgba(255, 255, 255, 0.84)
    kop "Je beste marketing staat op de balie."
    overloop 0px, oude wisselfoto's nog aanwezig: false
    botsing kop: geen
    botsing onderkop: geen
    botsing knoppen: geen
    botsing rekenlink: geen
-   hoogtes: {"wrap":128,"kop":64,"sub":0,"knoppen":50,"calc":0,"foto":360}, venster 615px
+   hoogtes: {"wrap":123,"kop":62,"sub":0,"knoppen":50,"calc":0,"foto":360}, venster 615px
    bordje voor 100% binnen de foto-uitsnede, 100% binnen het scherm
 
 telefoon-klein 360x560 — thema 196964024697
    bestand: tk3-hero-telefoon-krap.jpg  (bron 900x900, vlak 360x360)
    object-fit cover, object-position 50% 50%
-   bordje op het scherm: x 114–267, y 288–597 (308px hoog)
-   hero 518px hoog, kop rgb(255, 255, 255), onderkop rgba(255, 255, 255, 0.84)
+   bordje op het scherm: x 114–267, y 284–592 (308px hoog)
+   hero 514px hoog, kop rgb(255, 255, 255), onderkop rgba(255, 255, 255, 0.84)
    kop "Je beste marketing staat op de balie."
    overloop 0px, oude wisselfoto's nog aanwezig: false
    botsing kop: geen
    botsing onderkop: geen
    botsing knoppen: geen
    botsing rekenlink: geen
-   hoogtes: {"wrap":128,"kop":64,"sub":0,"knoppen":50,"calc":0,"foto":360}, venster 560px
-   bordje voor 100% binnen de foto-uitsnede, 88% binnen het scherm
+   hoogtes: {"wrap":123,"kop":62,"sub":0,"knoppen":50,"calc":0,"foto":360}, venster 560px
+   bordje voor 100% binnen de foto-uitsnede, 89% binnen het scherm

@@ -51,6 +51,8 @@ jobs:
           // 390x844, maar met browserbalk en de voorbeeldbalk van Shopify hou je
           // rond de 600px over — en juist daar sneed de uitsnede het bordje weg.
           const SCHERMEN = [
+            ['breed',          2560, 1080, 'desktop',      [0.275, 0.481, 0.225, 0.892]],
+            ['desktop-groot',  1920, 1080, 'desktop',      [0.275, 0.481, 0.225, 0.892]],
             ['desktop',        1440, 900,  'desktop',      [0.275, 0.481, 0.225, 0.892]],
             ['tablet',         834,  1000, 'tablet-krap',  [0.394, 0.626, 0.070, 0.866]],
             ['tablet-kort',    834,  700,  'tablet-krap',  [0.394, 0.626, 0.070, 0.866]],
@@ -151,6 +153,34 @@ jobs:
                 heroHoog: Math.round(hero.getBoundingClientRect().height),
                 kopKleur: kop ? getComputedStyle(kop).color : null,
                 kopTekst: kop ? kop.innerText.replace(/\s+/g, ' ').slice(0, 60) : null,
+                // Past het langste woord van de kop nog in de kolom? Zo niet,
+                // dan breekt de browser middenin een woord — "TapKaarte / n."
+                // Meten door dat woord echt te renderen, niet door de breedte
+                // te schatten.
+                kopKolom: kop ? Math.round(kop.getBoundingClientRect().width) : 0,
+                langsteWoord: (() => {
+                  if (!kop) return null;
+                  const cs = getComputedStyle(kop);
+                  const meet = document.createElement('span');
+                  meet.style.cssText = 'position:absolute;visibility:hidden;white-space:pre';
+                  meet.style.font = cs.font;
+                  meet.style.letterSpacing = cs.letterSpacing;
+                  document.body.appendChild(meet);
+                  let breedst = 0, woord = '';
+                  for (const w of kop.innerText.split(/\s+/).filter(Boolean)) {
+                    meet.textContent = w;
+                    const b = meet.getBoundingClientRect().width;
+                    if (b > breedst) { breedst = b; woord = w; }
+                  }
+                  meet.remove();
+                  return { woord: woord, breedte: Math.round(breedst) };
+                })(),
+                kopRegels: (() => {
+                  if (!kop || !kop.firstChild) return null;
+                  const r = document.createRange();
+                  r.selectNodeContents(kop);
+                  return r.getClientRects().length;
+                })(),
                 subKleur: sub ? getComputedStyle(sub).color : null,
                 kopZichtbaar: zicht(kop), subZichtbaar: zicht(sub),
                 knopZichtbaar: zicht(hero.querySelector('.buy')),
@@ -204,6 +234,10 @@ jobs:
             if (m.objectFit !== 'cover') fouten.push(`${naam}: object-fit is ${m.objectFit}`);
             if (m.kopKleur !== 'rgb(255, 255, 255)') fouten.push(`${naam}: de kop is ${m.kopKleur} en niet wit`);
             if (!m.kopZichtbaar) fouten.push(`${naam}: de kop is niet zichtbaar`);
+            log.push(`   kopkolom ${m.kopKolom}px, langste woord "${m.langsteWoord.woord}" is ${m.langsteWoord.breedte}px, ${m.kopRegels} regels`);
+            if (m.langsteWoord && m.kopKolom < m.langsteWoord.breedte)
+              fouten.push(`${naam}: de kopkolom is ${m.kopKolom}px en "${m.langsteWoord.woord}" ${m.langsteWoord.breedte}px — dat woord breekt middenin`);
+            if (m.kopRegels > 3) fouten.push(`${naam}: de kop staat over ${m.kopRegels} regels`);
             if (!m.subZichtbaar && m.venster > 700) fouten.push(`${naam}: de onderkop is niet zichtbaar terwijl er hoogte genoeg is`);
             if (m.subZichtbaar && m.venster <= 700 && w < 1024) fouten.push(`${naam}: de onderkop staat er nog op een kort venster`);
             if (!m.knopZichtbaar) fouten.push(`${naam}: de koopknop is niet zichtbaar`);

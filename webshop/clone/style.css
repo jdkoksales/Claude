@@ -1077,11 +1077,18 @@ section.dark .rev-note{color:rgba(255,255,255,.52)}
   .hero-foto{flex:1 0 auto;width:100%;aspect-ratio:1400/745}
 }
 @media(min-width:1024px){
-  /* Het bordje staat links van het midden, dus de tekst gaat naar rechts. */
-  .hero .wrap{padding-left:50%}
+  /* Het bordje staat links van het midden, dus de tekst gaat naar rechts.
+
+     Niet met padding-left:50%. Een procentuele padding rekent tegen het
+     omvattende blok — de hele sectie dus, en niet tegen .wrap zelf. Boven de
+     2448px zou die 50% breder worden dan .wrap in zijn geheel is; al bij
+     1900px bleef er een tekstkolom van 250px over en brak "TapKaarten"
+     middenin. Een raster deelt .wrap zelf in tweeën en schaalt wel mee. */
+  .hero .wrap{display:grid;grid-template-columns:1fr 1fr;align-content:center}
+  .hero .wrap > *{grid-column:2;min-width:0}
   .hero h1,.hero .sub{margin-left:0;margin-right:0;max-width:none;text-align:left}
   .hero .controls{justify-content:flex-start}
-  .hero .hero-calc{margin-left:0;margin-right:auto}
+  .hero .hero-calc{margin-left:0;margin-right:auto;align-self:start}
 }
 
 /* ---------- de telefoon: het bordje werd weggesneden ---------- */

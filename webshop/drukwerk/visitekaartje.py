@@ -252,10 +252,14 @@ def achterkant(c):
     c.drawCentredString(x(qr_links + qr / 2), y(7.9), "Scan voor de webshop")
 
 
-def maak(bestand, met_snijtekens=False):
+def maak(bestand, met_snijtekens=False, kanten=None):
+    """Eén PDF. Zonder `kanten` staan voor- en achterkant als twee pagina's in
+    hetzelfde bestand; met bijvoorbeeld [voorkant] krijg je een bestand van
+    één pagina. Veel drukkers willen per zijde een apart bestand."""
+    kanten = kanten or [voorkant, achterkant]
     c = canvas.Canvas(str(bestand), pagesize=(PAG_B, PAG_H))
     c.setTitle("TapKaarten visitekaartje")
-    for tekenaar in (voorkant, achterkant):
+    for tekenaar in kanten:
         tekenaar(c)
         if met_snijtekens:
             snijtekens(c)
@@ -280,5 +284,8 @@ if __name__ == "__main__":
     letters()
     maak(HIER / "tapkaarten-visitekaartje.pdf")
     maak(HIER / "tapkaarten-visitekaartje-proef.pdf", met_snijtekens=True)
+    # Losse zijdes: sommige drukkers vragen per kant een apart bestand.
+    maak(HIER / "tapkaarten-visitekaartje-voorkant.pdf", kanten=[voorkant])
+    maak(HIER / "tapkaarten-visitekaartje-achterkant.pdf", kanten=[achterkant])
     print(f"{PAG_B / mm:.0f} x {PAG_H / mm:.0f} mm inclusief afloop "
           f"({SNIJ_B / mm:.0f} x {SNIJ_H / mm:.0f} mm gesneden)")

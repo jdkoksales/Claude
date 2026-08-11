@@ -2,7 +2,16 @@
 
 ## Wat je naar de drukker stuurt
 
-**`tapkaarten-visitekaartje.pdf`** — dit bestand, verder niets.
+Er zijn twee smaken; kijk wat je drukker vraagt.
+
+**Eén bestand, twee pagina's** — `tapkaarten-visitekaartje.pdf`. Pagina 1 is de
+voorkant, pagina 2 de achterkant.
+
+**Of per zijde een apart bestand** — `tapkaarten-visitekaartje-voorkant.pdf` en
+`tapkaarten-visitekaartje-achterkant.pdf`, elk één pagina. Inhoudelijk exact
+hetzelfde: de losse zijdes zijn pixel-identiek aan de bijbehorende pagina van
+het dubbele bestand, dus je kunt niet per ongeluk twee versies door elkaar
+halen.
 
 - 2 pagina's: pagina 1 is de voorkant, pagina 2 de achterkant
 - 91 × 61 mm, dat is 85 × 55 mm gesneden met 3 mm afloop rondom

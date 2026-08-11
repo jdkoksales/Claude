@@ -51,6 +51,7 @@ jobs:
           // 390x844, maar met browserbalk en de voorbeeldbalk van Shopify hou je
           // rond de 600px over — en juist daar sneed de uitsnede het bordje weg.
           const SCHERMEN = [
+            ['ultrabreed',     3440, 1440, 'desktop',      [0.275, 0.481, 0.225, 0.892]],
             ['breed',          2560, 1080, 'desktop',      [0.275, 0.481, 0.225, 0.892]],
             ['desktop-groot',  1920, 1080, 'desktop',      [0.275, 0.481, 0.225, 0.892]],
             ['desktop',        1440, 900,  'desktop',      [0.275, 0.481, 0.225, 0.892]],

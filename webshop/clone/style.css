@@ -1084,6 +1084,15 @@ section.dark .rev-note{color:rgba(255,255,255,.52)}
      2448px zou die 50% breder worden dan .wrap in zijn geheel is; al bij
      1900px bleef er een tekstkolom van 250px over en brak "TapKaarten"
      middenin. Een raster deelt .wrap zelf in tweeën en schaalt wel mee. */
+  /* Boven ongeveer 2400px is de sectie wel breed maar niet hoog. object-fit
+     schaalt op de breedte, dus het bordje wordt dan hoger dan de sectie zelf
+     en de bovenkant valt weg. De sectie groeit daarom mee met de breedte
+     zodra de schermhoogte niet meer volstaat; 42vw is net meer dan de hoogte
+     die het bordje op die schaal inneemt (0,372 x de breedte). */
+  .hero .inner{min-height:max(calc(100svh - var(--tk3-boven,109px)),42vw)}
+  /* Niet 'bottom': dan komt al het wegsnijden van de bovenkant af, precies
+     waar de kop van het bordje staat. 70% verdeelt het over boven en onder. */
+  .hero-foto img{object-position:38% 70%}
   .hero .wrap{display:grid;grid-template-columns:1fr 1fr;align-content:center}
   .hero .wrap > *{grid-column:2;min-width:0}
   .hero h1,.hero .sub{margin-left:0;margin-right:0;max-width:none;text-align:left}

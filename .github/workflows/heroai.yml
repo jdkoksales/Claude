@@ -52,8 +52,8 @@ jobs:
           // rond de 600px over — en juist daar sneed de uitsnede het bordje weg.
           const SCHERMEN = [
             ['desktop',        1440, 900,  'desktop',      [0.275, 0.481, 0.225, 0.892]],
-            ['tablet',         834,  1000, 'tablet',       [0.394, 0.626, 0.337, 0.904]],
-            ['tablet-kort',    834,  700,  'tablet',       [0.394, 0.626, 0.337, 0.904]],
+            ['tablet',         834,  1000, 'tablet-krap',  [0.394, 0.626, 0.070, 0.866]],
+            ['tablet-kort',    834,  700,  'tablet-krap',  [0.394, 0.626, 0.070, 0.866]],
             ['telefoon',       390,  844,  'telefoon-krap',[0.316, 0.743, 0.058, 0.914]],
             ['telefoon-kort',  360,  615,  'telefoon-krap',[0.316, 0.743, 0.058, 0.914]],
             ['telefoon-klein', 360,  560,  'telefoon-krap',[0.316, 0.743, 0.058, 0.914]],
@@ -182,7 +182,8 @@ jobs:
             if (m.objectFit !== 'cover') fouten.push(`${naam}: object-fit is ${m.objectFit}`);
             if (m.kopKleur !== 'rgb(255, 255, 255)') fouten.push(`${naam}: de kop is ${m.kopKleur} en niet wit`);
             if (!m.kopZichtbaar) fouten.push(`${naam}: de kop is niet zichtbaar`);
-            if (!m.subZichtbaar) fouten.push(`${naam}: de onderkop is niet zichtbaar`);
+            if (!m.subZichtbaar && m.venster > 700) fouten.push(`${naam}: de onderkop is niet zichtbaar terwijl er hoogte genoeg is`);
+            if (m.subZichtbaar && m.venster <= 700 && w < 1024) fouten.push(`${naam}: de onderkop staat er nog op een kort venster`);
             if (!m.knopZichtbaar) fouten.push(`${naam}: de koopknop is niet zichtbaar`);
             if (m.oudeShots) fouten.push(`${naam}: de oude wisselfoto's staan er nog`);
             if (m.overloop > 0) fouten.push(`${naam}: pagina schuift ${m.overloop}px opzij`);

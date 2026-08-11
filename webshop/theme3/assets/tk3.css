@@ -716,11 +716,12 @@ html,body{overflow-x:clip}
 .tk3 .hero .hero-calc{background:rgba(255,255,255,.18);color:#fff}
 .tk3 .hero .hero-calc:hover{background:rgba(255,255,255,.3)}
 .tk3 .hero .hero-calc svg{opacity:.8}
-@media(max-width:1023px){.tk3 .hero-foto img{object-position:51% bottom}}
+@media(max-width:1023px){.tk3 .hero-foto img{object-position:50% 50%}}
 @media(max-width:1023px){.tk3 .hero .inner{display:flex;flex-direction:column;padding-top:clamp(12px,3svh,40px)}.tk3 .hero .wrap{flex:0 0 auto}.tk3 .hero-foto{position:static;margin-top:14px;
     -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 7%);
-    mask-image:linear-gradient(180deg,transparent 0,#000 7%)}.tk3 .hero-foto img{object-position:50% bottom}}
-@media(min-width:600px) and (max-width:1023px){.tk3 .hero .inner{max-height:calc(100svh - var(--tk3-boven,109px));overflow:hidden}.tk3 .hero-foto{flex:1 1 0;min-height:220px}}
+    mask-image:linear-gradient(180deg,transparent 0,#000 7%)}}
+@media(min-width:600px) and (max-width:1023px){.tk3 .hero-foto{flex:1 0 auto;width:100%;aspect-ratio:1400/745}}
 @media(min-width:1024px){.tk3 .hero .wrap{padding-left:50%}.tk3 .hero h1,.tk3 .hero .sub{margin-left:0;margin-right:0;max-width:none;text-align:left}.tk3 .hero .controls{justify-content:flex-start}.tk3 .hero .hero-calc{margin-left:0;margin-right:auto}}
 @media(max-width:599px){.tk3 .hero-foto{flex:1 0 auto;width:100%;aspect-ratio:1/1}.tk3 .hero-foto img{object-position:50% 50%}.tk3 .hero h1{font-size:31px;margin-bottom:12px}.tk3 .hero .sub{font-size:15.5px;margin-bottom:0}.tk3 .hero .controls{margin-top:18px}.tk3 .hero .hero-calc{display:none}}
-@media(max-width:599px) and (max-height:700px){.tk3 .hero .sub{display:none}.tk3 .hero h1{font-size:29px;margin-bottom:14px}.tk3 .hero .controls{margin-top:0}}
+@media(max-width:1023px) and (max-height:760px){.tk3 .hero h1{font-size:clamp(28px,5.2vw,40px);margin-bottom:12px}.tk3 .hero .sub{margin-bottom:0}.tk3 .hero .controls{margin-top:16px}}
+@media(max-width:1023px) and (max-height:700px){.tk3 .hero .sub{display:none}.tk3 .hero .controls{margin-top:0}}

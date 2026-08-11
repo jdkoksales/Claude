@@ -61,6 +61,11 @@
 
               <blockquote>{{ block.settings.tekst }}</blockquote>
 
+              {%- comment -%}
+                Alleen een klantregel als er ook iets in staat. Een review met
+                enkel tekst kreeg anders een lege strook onderaan de kaart.
+              {%- endcomment -%}
+              {%- if naam != blank or block.settings.zaak != blank or block.settings.foto -%}
               <figcaption class="rev-wie">
                 {%- if block.settings.foto -%}
                   <img class="rev-foto" src="{{ block.settings.foto | image_url: width: 112, height: 112, crop: 'center' }}"
@@ -77,6 +82,7 @@
                   {%- if block.settings.zaak != blank -%}<span>{{ block.settings.zaak }}</span>{%- endif -%}
                 </span>
               </figcaption>
+              {%- endif -%}
             </figure>
           {%- endfor -%}
         </div>

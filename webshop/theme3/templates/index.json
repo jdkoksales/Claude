@@ -4,11 +4,12 @@
       "type": "tk3-hero",
       "settings": {
         "heading": "Laat jouw bedrijf groeien met TapKaarten.",
-        "sub": "Eén tik en je klant staat op jouw reviewpagina. Jij hoeft niets te vragen.",
+        "sub": "Eén tik en je klant staat op jouw Google review, Instagram of Facebook pagina Jij hoeft niets te vragen.",
         "cta_text": "Bestel nu!",
         "cta_url": "/#producten",
-        "calc_text": "Bereken wat TapKaarten jou oplevert.",
-        "calc_url": "/#calculator"
+        "calc_text": "",
+        "calc_url": "/#calculator",
+        "foto_alt": ""
       }
     },
     "statement": {
@@ -198,7 +199,9 @@
           "settings": {
             "label": "Kleur",
             "value_a": "Wit",
-            "value_b": "Mat zwart"
+            "value_b": "Mat zwart",
+            "note_a": "",
+            "note_b": ""
           }
         },
         "c2": {
@@ -252,7 +255,8 @@
       "settings": {
         "heading": "Kies je uitvoering: wit of zwart.",
         "product_a": "tapkaarten-google-review-standaard",
-        "product_b": "tapkaarten-google-review-standaard-zwart"
+        "product_b": "tapkaarten-google-review-standaard-zwart",
+        "fallback_price": "€ 34,95"
       }
     },
     "hoe": {
@@ -368,15 +372,39 @@
     },
     "reviews": {
       "type": "tk3-reviews",
-      "blocks": {},
-      "block_order": [],
+      "blocks": {
+        "review_JhXQcK": {
+          "type": "review",
+          "settings": {
+            "tekst": "Zeer nuttig product",
+            "sterren": 5,
+            "naam": "",
+            "zaak": ""
+          }
+        },
+        "review_4GP6B9": {
+          "type": "review",
+          "settings": {
+            "tekst": "Bijzonder dat een simpel product als deze zoveel impact maakt op mijn bedrijf. in 1 maand tijd is het aantal reviews op google verdubbeld. en hebben we 108 nieuwe volgers op Instagram. Zeker een aanrader voor iedereen die zijn online zichtbaarheid wil vergroten zonder grote bedragen per maand kwijt te zijn",
+            "sterren": 5,
+            "naam": "Hilda",
+            "zaak": "Cadeauwinkel - Zaandam",
+            "foto": "shopify://shop_images/een-porttrtetfoto-is-goed-waar-alleen-dr-hoofd-zichtbaar-is.png"
+          }
+        }
+      },
+      "block_order": [
+        "review_JhXQcK",
+        "review_4GP6B9"
+      ],
       "settings": {
         "achtergrond": "grijs",
         "kicker": "Wat klanten zeggen",
         "heading": "Ondernemers die het al op de balie hebben staan.",
         "sub": "",
         "note": ""
-      }
+      },
+      "disabled": true
     },
     "wistjedat": {
       "type": "tk3-wistjedat",

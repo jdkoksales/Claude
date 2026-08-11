@@ -12,13 +12,13 @@ desktop 1440x900 — thema 196964024697
    botsing knoppen: geen
    botsing rekenlink: geen
    na de hero: blk, 5 productkaarten, eerste kaart op 1102px
-   hoogtes: {"wrap":401,"kop":168,"sub":51,"knoppen":46,"calc":48,"foto":791}, venster 900px
+   hoogtes: {"wrap":337,"kop":168,"sub":51,"knoppen":46,"calc":0,"foto":791}, venster 900px
    bordje voor 100% binnen de foto-uitsnede, 100% binnen het scherm
 
 tablet 834x1000 — thema 196964024697
-   bestand: tk3-hero-tablet-krap.jpg  (bron 1400x745, vlak 834x527)
+   bestand: tk3-hero-tablet-krap.jpg  (bron 1400x745, vlak 834x566)
    object-fit cover, object-position 50% 50%
-   bordje op het scherm: x 312–542, y 510–930 (420px hoog)
+   bordje op het scherm: x 304–551, y 474–924 (451px hoog)
    hero 891px hoog, kop rgb(255, 255, 255), onderkop rgba(255, 255, 255, 0.84)
    kop "Laat jouw bedrijf groeien met TapKaarten."
    overloop 0px, oude wisselfoto's nog aanwezig: false
@@ -27,7 +27,7 @@ tablet 834x1000 — thema 196964024697
    botsing knoppen: geen
    botsing rekenlink: geen
    na de hero: blk, 5 productkaarten, eerste kaart op 1171px
-   hoogtes: {"wrap":320,"kop":112,"sub":26,"knoppen":46,"calc":48,"foto":527}, venster 1000px
+   hoogtes: {"wrap":281,"kop":112,"sub":51,"knoppen":46,"calc":0,"foto":566}, venster 1000px
    bordje voor 100% binnen de foto-uitsnede, 100% binnen het scherm
 
 tablet-kort 834x700 — thema 196964024697
@@ -46,9 +46,9 @@ tablet-kort 834x700 — thema 196964024697
    bordje voor 100% binnen de foto-uitsnede, 100% binnen het scherm
 
 telefoon 390x844 — thema 196964024697
-   bestand: tk3-hero-telefoon-krap.jpg  (bron 900x900, vlak 390x501)
+   bestand: tk3-hero-telefoon-krap.jpg  (bron 900x900, vlak 390x478)
    object-fit cover, object-position 50% 50%
-   bordje op het scherm: x 103–317, y 372–801 (429px hoog)
+   bordje op het scherm: x 107–311, y 394–803 (409px hoog)
    hero 735px hoog, kop rgb(255, 255, 255), onderkop rgba(255, 255, 255, 0.84)
    kop "Laat jouw bedrijf groeien met TapKaarten."
    overloop 0px, oude wisselfoto's nog aanwezig: false
@@ -57,7 +57,7 @@ telefoon 390x844 — thema 196964024697
    botsing knoppen: geen
    botsing rekenlink: geen
    na de hero: blk, 5 productkaarten, eerste kaart op 989px
-   hoogtes: {"wrap":194,"kop":68,"sub":47,"knoppen":50,"calc":0,"foto":501}, venster 844px
+   hoogtes: {"wrap":218,"kop":68,"sub":70,"knoppen":50,"calc":0,"foto":478}, venster 844px
    bordje voor 100% binnen de foto-uitsnede, 100% binnen het scherm
 
 telefoon-kort 360x615 — thema 196964024697

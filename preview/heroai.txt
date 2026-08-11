@@ -1,4 +1,10 @@
-GEEN AFWIJKINGEN GEVONDEN
+GEVONDEN: 6 punten
+ - desktop: de eerste productkaart staat op 1497px, te ver onder de hero (791px)
+ - tablet: de eerste productkaart staat op 1566px, te ver onder de hero (891px)
+ - tablet-kort: de eerste productkaart staat op 1266px, te ver onder de hero (591px)
+ - telefoon: de eerste productkaart staat op 1429px, te ver onder de hero (735px)
+ - telefoon-kort: de eerste productkaart staat op 1250px, te ver onder de hero (516px)
+ - telefoon-klein: de eerste productkaart staat op 1249px, te ver onder de hero (514px)
 
 desktop 1440x900 — thema 196964024697
    bestand: tk3-hero-ai-desktop.jpg  (bron 1800x1005, vlak 1440x791)
@@ -11,7 +17,7 @@ desktop 1440x900 — thema 196964024697
    botsing onderkop: geen
    botsing knoppen: geen
    botsing rekenlink: geen
-   na de hero: blk, 5 productkaarten, eerste kaart op 1102px
+   na de hero: wjd, 5 productkaarten, eerste kaart op 1497px
    hoogtes: {"wrap":337,"kop":168,"sub":51,"knoppen":46,"calc":0,"foto":791}, venster 900px
    bordje voor 100% binnen de foto-uitsnede, 100% binnen het scherm
 
@@ -26,7 +32,7 @@ tablet 834x1000 — thema 196964024697
    botsing onderkop: geen
    botsing knoppen: geen
    botsing rekenlink: geen
-   na de hero: blk, 5 productkaarten, eerste kaart op 1171px
+   na de hero: wjd, 5 productkaarten, eerste kaart op 1566px
    hoogtes: {"wrap":281,"kop":112,"sub":51,"knoppen":46,"calc":0,"foto":566}, venster 1000px
    bordje voor 100% binnen de foto-uitsnede, 100% binnen het scherm
 
@@ -41,7 +47,7 @@ tablet-kort 834x700 — thema 196964024697
    botsing onderkop: geen
    botsing knoppen: geen
    botsing rekenlink: geen
-   na de hero: blk, 5 productkaarten, eerste kaart op 871px
+   na de hero: wjd, 5 productkaarten, eerste kaart op 1266px
    hoogtes: {"wrap":102,"kop":44,"sub":0,"knoppen":46,"calc":0,"foto":454}, venster 700px
    bordje voor 100% binnen de foto-uitsnede, 100% binnen het scherm
 
@@ -56,7 +62,7 @@ telefoon 390x844 — thema 196964024697
    botsing onderkop: geen
    botsing knoppen: geen
    botsing rekenlink: geen
-   na de hero: blk, 5 productkaarten, eerste kaart op 989px
+   na de hero: wjd, 5 productkaarten, eerste kaart op 1429px
    hoogtes: {"wrap":218,"kop":68,"sub":70,"knoppen":50,"calc":0,"foto":478}, venster 844px
    bordje voor 100% binnen de foto-uitsnede, 100% binnen het scherm
 
@@ -71,7 +77,7 @@ telefoon-kort 360x615 — thema 196964024697
    botsing onderkop: geen
    botsing knoppen: geen
    botsing rekenlink: geen
-   na de hero: blk, 5 productkaarten, eerste kaart op 770px
+   na de hero: wjd, 5 productkaarten, eerste kaart op 1250px
    hoogtes: {"wrap":123,"kop":62,"sub":0,"knoppen":50,"calc":0,"foto":360}, venster 615px
    bordje voor 100% binnen de foto-uitsnede, 100% binnen het scherm
 
@@ -86,6 +92,6 @@ telefoon-klein 360x560 — thema 196964024697
    botsing onderkop: geen
    botsing knoppen: geen
    botsing rekenlink: geen
-   na de hero: blk, 5 productkaarten, eerste kaart op 769px
+   na de hero: wjd, 5 productkaarten, eerste kaart op 1249px
    hoogtes: {"wrap":123,"kop":62,"sub":0,"knoppen":50,"calc":0,"foto":360}, venster 560px
    bordje voor 100% binnen de foto-uitsnede, 89% binnen het scherm

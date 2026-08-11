@@ -75,7 +75,13 @@ const publicUser = (u) => ({ id: u.id, name: u.name, color: u.color });
 // ── Openbaar: wie zijn we, en is de app al ingericht ────────────────────────
 
 /** Voor de gezondheidscheck van de hostingdienst. */
-app.get('/api/health', (req, res) => res.json({ ok: true, users: db().users.length }));
+app.get('/api/health', (req, res) => res.json({
+  ok: true,
+  users: db().users.length,
+  // Zonder dit is van buitenaf niet te zien of hij op de database draait of op
+  // een bestand — precies wat je wilt weten als er iets misgaat na een uitrol.
+  storage: storeKind(),
+}));
 
 app.get('/api/bootstrap', (req, res) => {
   const store = db();

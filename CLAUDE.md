@@ -27,10 +27,17 @@ Deze keuzes zijn met Julian doorgenomen. Verander ze niet zonder het te vragen.
   gekleurd blok wordt uitgerekend uit de helderheid.
 - **Geen bouwstap, geen framework.** Wat in `public/` staat is precies wat de
   browser krijgt. Dat blijft over vijf jaar nog werken en laadt meteen.
-- **Geen afbeeldingen in de interface.** Alles is CSS en SVG. Achtergronden
-  achter de agenda of de doelen zijn eerder afgewezen: kost leesbaarheid en
-  laadtijd op schermen die je tien keer per dag bekijkt. Het app-icoon en het
-  deelplaatje zijn wél gemaakte afbeeldingen — die staan buiten de app.
+- **Geen decoratieve afbeeldingen in de interface.** Alles is CSS en SVG.
+  Achtergronden achter de agenda of de doelen zijn afgewezen: kost leesbaarheid
+  en laadtijd op schermen die je tien keer per dag bekijkt. Twee uitzonderingen,
+  allebei inhoud en geen versiering: de **avatars** van Julian en zijn vriendin
+  (`public/avatars/a1.jpg` en `a2.jpg`, ~27 kB per stuk), en foto's in albums.
+  Het app-icoon en het deelplaatje staan buiten de app.
+- **De avatar hoort bij de plek in de rij.** De eerste persoon uit het
+  instelscherm krijgt `a1.jpg`, de tweede `a2.jpg` — dezelfde volgorde die ook
+  de kleur bepaalt. Daardoor is er niets in te stellen en niets op te slaan.
+  Laadt een plaatje niet, dan staat de beginletter er nog: de app werkt dus ook
+  zonder avatars.
 - **Diepte en beweging zijn versiering, nooit constructie.** Er hangt geen
   enkele knop of scherm aan een animatie: haal het hele blok "Diepte en
   beweging" uit `styles.css` en de app doet nog precies hetzelfde. Wie in zijn
@@ -140,16 +147,38 @@ POST https://platform.higgsfield.ai/v1/text2image/soul
 GET  https://platform.higgsfield.ai/v1/job-sets/<id>     # tot status "completed"
 ```
 
-Twee dingen die tijd kosten als je ze niet weet:
+Dingen die tijd kosten als je ze niet weet:
 
 - **Vraag het met `curl`, niet met Python.** Cloudflare weigert de aanvraag van
   `urllib` met foutcode 1010; via `curl` gaat hij er gewoon doorheen.
 - **Het model tekent een icoon mét witte marge en ronde hoeken.** iOS legt daar
   zijn eigen masker overheen, dus die marge moet eraf: bijsnijden tot een vol
   vlak, anders krijg je een geslonken icoon met witte hoekjes.
+- **`enhance_prompt` gooit je stijlopdracht weg.** Hij herschrijft je prompt tot
+  een fotobeschrijving. Vraag je om een geïllustreerde avatar, dan krijg je een
+  foto. Zet hem op `false` zodra de stijl belangrijker is dan de rijkdom.
+- **Julians eigen sleutel heeft alleen `soul`,** en dat is tekst-naar-beeld.
+  Modellen die een referentiefoto aannemen (`nano_banana_pro`, `soul_2`) zitten
+  alleen achter de MCP. Een plaatje *van een foto* maken kan dus niet met zijn
+  eigen sleutel.
+- **`batch_size` mag alleen 1 of 4 zijn.** Vier varianten en dan de beste kiezen
+  werkt goed; bij gezichten is de eerste poging zelden meteen raak.
 
-De Higgsfield-MCP is iets anders: die loopt via een gekoppeld account dat bijna
-geen credits meer heeft. Gebruik de API met Julians eigen sleutels.
+De Higgsfield-MCP is iets anders: die loopt via een gekoppeld account, en dat is
+inmiddels **door zijn credits heen**. Gebruik de API met Julians eigen sleutels.
+
+**De avatars zijn getekend met `soul`, uit een beschrijving — niet uit hun
+foto.** De weg erheen, zodat je hem niet opnieuw hoeft te zoeken:
+
+1. Met `soul_2` en hun eigen foto als referentie (via de MCP) kwamen er twee
+   vreemden uit die vaag op ze leken. Onbruikbaar; die route is een doodlopende
+   weg voor gelijkenis.
+2. Wat wél werkt: `enhance_prompt: false` en een prompt die de persoon in
+   kenmerken beschrijft — kapsel en kleur, ogen, pet, neusring, kleding — plus
+   een harde stijlopdracht ("flat vector, dunne donkere omlijning, egale
+   kleuren, effen pastelachtergrond, geen tekst").
+3. Snijd daarna vierkant bij rond het hoofd (een paar regels Pillow) en schaal
+   naar 320 px. Groter heeft geen zin: het grootste rondje in de app is 46 px.
 
 ## Met Julian praten
 

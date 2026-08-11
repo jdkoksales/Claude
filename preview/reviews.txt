@@ -26,13 +26,13 @@ telefoon 390x844
    fotootjes: 44x44 r50%, 44x44 r50%, 44x44 r50%
    rij 349px hoog, hoogste kaart 343px, rail 935px in 390px
 
-winkel-telefoon 390x844 — thema 196964024697
+winkel-telefoon 390x844 — thema 197367529849
    hero eindigt op 844px, wist-je-dat begint op nullpx (nullpx hoog)
    getal "null" op nullpx, knop "null", bronregel contrast null:1
    eerste productkaart op 989px, 5 kaarten
    reviewsectie zichtbaar: false, vertrouwensbalk: false, overloop 0px
 
-winkel-desktop 1440x900 — thema 196964024697
+winkel-desktop 1440x900 — thema 197367529849
    hero eindigt op 900px, wist-je-dat begint op nullpx (nullpx hoog)
    getal "null" op nullpx, knop "null", bronregel contrast null:1
    eerste productkaart op 1102px, 5 kaarten

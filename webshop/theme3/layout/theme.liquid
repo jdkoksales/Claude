@@ -37,15 +37,19 @@
       meet; het merkteken zelf is breder dan hoog en werd daarom genegeerd.
       Vandaar een apart vierkant icoon, in twee maten zodat zowel de
       zoekresultaten als het tabblad iets scherps te pakken hebben.
+
+      Het favicon toont alleen de ster: op 16 pixels is een woordmerk een
+      grijze veeg. De apple-touch-icon komt wél groot op een beginscherm te
+      staan en gebruikt daarom de tegel mét de naam erop.
     {% endcomment %}
     {% if settings.favicon %}
       <link rel="icon" type="image/png" sizes="192x192" href="{{ settings.favicon | image_url: width: 192, height: 192 }}">
       <link rel="icon" type="image/png" sizes="48x48" href="{{ settings.favicon | image_url: width: 48, height: 48 }}">
       <link rel="apple-touch-icon" href="{{ settings.favicon | image_url: width: 180, height: 180 }}">
     {% else %}
-      <link rel="icon" type="image/png" sizes="192x192" href="{{ 'tk3-merk-vierkant.png' | asset_url }}">
+      <link rel="icon" type="image/png" sizes="192x192" href="{{ 'tk3-favicon-192.png' | asset_url }}">
       <link rel="icon" type="image/png" sizes="48x48" href="{{ 'tk3-favicon-48.png' | asset_url }}">
-      <link rel="apple-touch-icon" href="{{ 'tk3-merk-vierkant.png' | asset_url }}">
+      <link rel="apple-touch-icon" sizes="180x180" href="{{ 'tk3-merk-vierkant.png' | asset_url }}">
     {% endif %}
 
     {% # Social, title, etc. %}

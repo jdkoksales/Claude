@@ -199,6 +199,9 @@ const state = {
   momentFilter: 'komt',
   // Welke agenda's staan aan in het weekrooster. null = allemaal.
   calOwners: null,
+  // Of het volgende tekenmoment de blokken mag laten binnenkomen.
+  entering: false,
+  enterTimer: null,
 };
 
 const userById = (id) => state.data?.users.find((u) => u.id === id) || null;
@@ -1716,8 +1719,24 @@ const RENDERERS = {
   meer: renderMeer,
 };
 
+/**
+ * Laat de blokken van een scherm één voor één binnenkomen. De vertraging per
+ * blok staat in CSS; hier geven we alleen door de hoeveelste het is. Na afloop
+ * gaat de klasse er weer af, anders zou elke verversing opnieuw animeren —
+ * en dan springt de lijst op zodra je een taak afvinkt.
+ */
+function animateIn(root) {
+  root.classList.remove('is-entering');
+  [...root.children].forEach((el, i) => el.style.setProperty('--i', String(Math.min(i, 8))));
+  void root.offsetWidth; // forceer een herstart van de animatie
+  root.classList.add('is-entering');
+  clearTimeout(state.enterTimer);
+  state.enterTimer = setTimeout(() => root.classList.remove('is-entering'), 1000);
+}
+
 function setTab(tab) {
   state.tab = tab;
+  state.entering = true;
   $$('.tab').forEach((b) => b.classList.toggle('is-active', b.dataset.tab === tab));
   $$('.view').forEach((v) => { v.hidden = v.dataset.view !== tab; });
   $('#view-title').textContent = TITLES[tab];
@@ -1728,6 +1747,21 @@ function setTab(tab) {
 }
 
 $$('.tab').forEach((btn) => btn.addEventListener('click', () => setTab(btn.dataset.tab)));
+
+// Zodra je scrolt maakt de bovenbalk zich klein en komt hij los van de pagina.
+// De klasse gaat er maar één keer op of af, dus dit kost tijdens het scrollen
+// vrijwel niets.
+{
+  const topbar = $('.topbar');
+  let stuck = false;
+  addEventListener('scroll', () => {
+    const next = scrollY > 10;
+    if (next !== stuck) {
+      stuck = next;
+      topbar.classList.toggle('is-stuck', next);
+    }
+  }, { passive: true });
+}
 
 $('#add-btn').addEventListener('click', () => {
   if (state.tab === 'momenten') {
@@ -1747,6 +1781,10 @@ function render() {
   renderAvatars();
   root.replaceChildren();
   RENDERERS[state.tab](root);
+  if (state.entering) {
+    state.entering = false;
+    animateIn(root);
+  }
 
   const sub = $('#view-sub');
   if (state.tab === 'vandaag') sub.textContent = dayLabel(state.data.today);

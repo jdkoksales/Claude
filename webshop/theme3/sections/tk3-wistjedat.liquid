@@ -1,0 +1,73 @@
+{{ 'tk3.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  case section.settings.achtergrond
+    when 'grijs'
+      assign vlak = 'wjd grey'
+    when 'donker'
+      assign vlak = 'wjd dark'
+    when 'oranje'
+      assign vlak = 'wjd oranje'
+    else
+      assign vlak = 'wjd'
+  endcase
+-%}
+
+<div class="tk3">
+  <section class="{{ vlak }}" id="wistjedat">
+    <div class="wrap wjd-rij">
+      {%- comment -%}
+        Het getal is het hele punt van deze sectie, dus het staat vooraan en
+        het is het grootste dat er staat. De rest legt uit waarom het klopt.
+      {%- endcomment -%}
+      <div class="wjd-cijfer" aria-hidden="true">{{ section.settings.cijfer }}</div>
+
+      <div class="wjd-tekst">
+        {%- if section.settings.kicker != blank -%}
+          <p class="kicker">{{ section.settings.kicker }}</p>
+        {%- endif -%}
+        <h2>
+          <span class="alleen-voorlezen">{{ section.settings.cijfer }} </span>
+          {{ section.settings.kop }}
+        </h2>
+        {%- if section.settings.tekst != blank -%}
+          <p class="wjd-body">{{ section.settings.tekst }}</p>
+        {%- endif -%}
+
+        {%- if section.settings.knop_tekst != blank -%}
+          <a class="btn-primary wjd-knop" href="{{ section.settings.knop_url | default: '#producten' }}">{{ section.settings.knop_tekst }}
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+        {%- endif -%}
+
+        {%- if section.settings.bron != blank -%}
+          <p class="wjd-bron">{{ section.settings.bron }}</p>
+        {%- endif -%}
+      </div>
+    </div>
+  </section>
+</div>
+
+{% schema %}
+{
+  "name": "TK3 wist je dat",
+  "tag": "section",
+  "settings": [
+    { "type": "select", "id": "achtergrond", "label": "Achtergrond", "default": "wit",
+      "options": [
+        { "value": "wit", "label": "Wit" },
+        { "value": "grijs", "label": "Grijs" },
+        { "value": "oranje", "label": "Oranje" },
+        { "value": "donker", "label": "Donker" }
+      ] },
+    { "type": "text", "id": "kicker", "label": "Klein bovenschrift", "default": "Wist je dat?" },
+    { "type": "text", "id": "cijfer", "label": "Het getal", "default": "5–9%" },
+    { "type": "text", "id": "kop", "label": "Wat het getal betekent", "default": "meer omzet, per ster die erbij komt." },
+    { "type": "textarea", "id": "tekst", "label": "Uitleg", "default": "Harvard legde reviewscores naast de echte omzetcijfers van de belastingdienst. Eén ster hoger: 5 tot 9% meer omzet. Bij ketens gebeurde er niets — het effect zat vrijwel helemaal bij zelfstandige zaken zoals die van jou. Draai je € 20.000 per maand, dan is dat € 1.000 tot € 1.800. Elke maand. Een TapKaart kost eenmalig € 34,95." },
+    { "type": "text", "id": "knop_tekst", "label": "Knop", "default": "Bestel nu!" },
+    { "type": "url", "id": "knop_url", "label": "Knoplink" },
+    { "type": "text", "id": "bron", "label": "Bronregel", "default": "Michael Luca, Harvard Business School — “Reviews, Reputation, and Revenue: The Case of Yelp.com”." }
+  ],
+  "presets": [{ "name": "TK3 wist je dat" }]
+}
+{% endschema %}

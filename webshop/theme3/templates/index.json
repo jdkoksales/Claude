@@ -377,10 +377,24 @@
         "sub": "",
         "note": ""
       }
+    },
+    "wistjedat": {
+      "type": "tk3-wistjedat",
+      "settings": {
+        "achtergrond": "wit",
+        "kicker": "Wist je dat?",
+        "cijfer": "5–9%",
+        "kop": "meer omzet, per ster die erbij komt.",
+        "tekst": "Harvard legde reviewscores naast de echte omzetcijfers van de belastingdienst. Eén ster hoger: 5 tot 9% meer omzet. Bij ketens gebeurde er niets — het effect zat vrijwel helemaal bij zelfstandige zaken zoals die van jou. Draai je € 20.000 per maand, dan is dat € 1.000 tot € 1.800. Elke maand. Een TapKaart kost eenmalig € 34,95.",
+        "knop_tekst": "Bestel nu!",
+        "knop_url": "/#producten",
+        "bron": "Michael Luca, Harvard Business School — “Reviews, Reputation, and Revenue: The Case of Yelp.com”."
+      }
     }
   },
   "order": [
     "hero",
+    "wistjedat",
     "reviews",
     "producten",
     "hoe",

@@ -1,30 +1,23 @@
-GEVONDEN: 8 punten
- - breed: de kop is niet zichtbaar
- - breed: de kopkolom is 0px en "TapKaarten." 272px — dat woord breekt middenin
- - breed: de kop staat over 36 regels
- - breed: de onderkop is niet zichtbaar terwijl er hoogte genoeg is
- - breed: het bordje is maar voor 0% zichtbaar, de rest valt onder de vouw
- - breed: de hero is 4548px op een scherm van 1080px
- - desktop-groot: de kopkolom is 240px en "TapKaarten." 272px — dat woord breekt middenin
- - desktop-groot: de kop staat over 6 regels
+GEVONDEN: 1 punten
+ - breed: de uitsnede snijdt 14% van het bordje weg
 
-breed 2560x1080 — thema 196964024697
-   bestand: tk3-hero-ai-desktop.jpg  (bron 1800x1005, vlak 2560x4548)
+breed 2560x1080 — thema 197367529849
+   bestand: tk3-hero-ai-desktop.jpg  (bron 1800x1005, vlak 2560x971)
    object-fit cover, object-position 38% 100%
-   bordje op het scherm: x 118–1796, y 1132–4166 (3033px hoog)
-   hero 4548px hoog, kop rgb(255, 255, 255), onderkop rgba(255, 255, 255, 0.84)
+   bordje op het scherm: x 704–1231, y -28–926 (953px hoog)
+   hero 971px hoog, kop rgb(255, 255, 255), onderkop rgba(255, 255, 255, 0.84)
    kop "Laat jouw bedrijf groeien met TapKaarten."
    overloop 0px, oude wisselfoto's nog aanwezig: false
    botsing kop: geen
    botsing onderkop: geen
    botsing knoppen: geen
    botsing rekenlink: geen
-   na de hero: blk, 5 productkaarten, eerste kaart op 4859px
-   kopkolom 0px, langste woord "TapKaarten." is 272px, 36 regels
-   hoogtes: {"wrap":4354,"kop":2019,"sub":2193,"knoppen":70,"calc":0,"foto":4548}, venster 1080px
-   bordje voor 100% binnen de foto-uitsnede, 0% binnen het scherm
+   na de hero: blk, 5 productkaarten, eerste kaart op 1282px
+   kopkolom 588px, langste woord "TapKaarten." is 272px, 2 regels
+   hoogtes: {"wrap":319,"kop":112,"sub":51,"knoppen":46,"calc":0,"foto":971}, venster 1080px
+   bordje voor 86% binnen de foto-uitsnede, 97% binnen het scherm
 
-desktop-groot 1920x1080 — thema 196964024697
+desktop-groot 1920x1080 — thema 197367529849
    bestand: tk3-hero-ai-desktop.jpg  (bron 1800x1005, vlak 1920x971)
    object-fit cover, object-position 38% 100%
    bordje op het scherm: x 528–924, y 249–964 (715px hoog)
@@ -36,11 +29,11 @@ desktop-groot 1920x1080 — thema 196964024697
    botsing knoppen: geen
    botsing rekenlink: geen
    na de hero: blk, 5 productkaarten, eerste kaart op 1282px
-   kopkolom 240px, langste woord "TapKaarten." is 272px, 6 regels
-   hoogtes: {"wrap":582,"kop":337,"sub":128,"knoppen":46,"calc":0,"foto":971}, venster 1080px
+   kopkolom 588px, langste woord "TapKaarten." is 272px, 2 regels
+   hoogtes: {"wrap":319,"kop":112,"sub":51,"knoppen":46,"calc":0,"foto":971}, venster 1080px
    bordje voor 100% binnen de foto-uitsnede, 100% binnen het scherm
 
-desktop 1440x900 — thema 196964024697
+desktop 1440x900 — thema 197367529849
    bestand: tk3-hero-ai-desktop.jpg  (bron 1800x1005, vlak 1440x791)
    object-fit cover, object-position 38% 100%
    bordje op het scherm: x 396–693, y 277–813 (536px hoog)
@@ -52,11 +45,11 @@ desktop 1440x900 — thema 196964024697
    botsing knoppen: geen
    botsing rekenlink: geen
    na de hero: blk, 5 productkaarten, eerste kaart op 1102px
-   kopkolom 480px, langste woord "TapKaarten." is 272px, 3 regels
-   hoogtes: {"wrap":337,"kop":168,"sub":51,"knoppen":46,"calc":0,"foto":791}, venster 900px
+   kopkolom 588px, langste woord "TapKaarten." is 272px, 2 regels
+   hoogtes: {"wrap":319,"kop":112,"sub":51,"knoppen":46,"calc":0,"foto":791}, venster 900px
    bordje voor 100% binnen de foto-uitsnede, 100% binnen het scherm
 
-tablet 834x1000 — thema 196964024697
+tablet 834x1000 — thema 197367529849
    bestand: tk3-hero-tablet-krap.jpg  (bron 1400x745, vlak 834x566)
    object-fit cover, object-position 50% 50%
    bordje op het scherm: x 304–551, y 474–924 (451px hoog)
@@ -72,7 +65,7 @@ tablet 834x1000 — thema 196964024697
    hoogtes: {"wrap":281,"kop":112,"sub":51,"knoppen":46,"calc":0,"foto":566}, venster 1000px
    bordje voor 100% binnen de foto-uitsnede, 100% binnen het scherm
 
-tablet-kort 834x700 — thema 196964024697
+tablet-kort 834x700 — thema 197367529849
    bestand: tk3-hero-tablet-krap.jpg  (bron 1400x745, vlak 834x454)
    object-fit cover, object-position 50% 50%
    bordje op het scherm: x 327–525, y 278–639 (362px hoog)
@@ -88,7 +81,7 @@ tablet-kort 834x700 — thema 196964024697
    hoogtes: {"wrap":102,"kop":44,"sub":0,"knoppen":46,"calc":0,"foto":454}, venster 700px
    bordje voor 100% binnen de foto-uitsnede, 100% binnen het scherm
 
-telefoon 390x844 — thema 196964024697
+telefoon 390x844 — thema 197367529849
    bestand: tk3-hero-telefoon-krap.jpg  (bron 900x900, vlak 390x478)
    object-fit cover, object-position 50% 50%
    bordje op het scherm: x 107–311, y 394–803 (409px hoog)
@@ -104,7 +97,7 @@ telefoon 390x844 — thema 196964024697
    hoogtes: {"wrap":218,"kop":68,"sub":70,"knoppen":50,"calc":0,"foto":478}, venster 844px
    bordje voor 100% binnen de foto-uitsnede, 100% binnen het scherm
 
-telefoon-kort 360x615 — thema 196964024697
+telefoon-kort 360x615 — thema 197367529849
    bestand: tk3-hero-telefoon-krap.jpg  (bron 900x900, vlak 360x360)
    object-fit cover, object-position 50% 50%
    bordje op het scherm: x 114–267, y 286–594 (308px hoog)
@@ -120,7 +113,7 @@ telefoon-kort 360x615 — thema 196964024697
    hoogtes: {"wrap":123,"kop":62,"sub":0,"knoppen":50,"calc":0,"foto":360}, venster 615px
    bordje voor 100% binnen de foto-uitsnede, 100% binnen het scherm
 
-telefoon-klein 360x560 — thema 196964024697
+telefoon-klein 360x560 — thema 197367529849
    bestand: tk3-hero-telefoon-krap.jpg  (bron 900x900, vlak 360x360)
    object-fit cover, object-position 50% 50%
    bordje op het scherm: x 114–267, y 284–592 (308px hoog)

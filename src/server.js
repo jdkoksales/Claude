@@ -633,6 +633,77 @@ api.post('/push/test', async (req, res) => {
 
 // ── Back-up ────────────────────────────────────────────────────────────────
 
+// ── Plekken opzoeken ───────────────────────────────────────────────────────
+
+/**
+ * Zoeken gaat via de server en niet vanuit de browser. Twee redenen: de
+ * zoekdienst van OpenStreetMap wil één duidelijke afzender zien in plaats van
+ * tientallen browsers, en zo staat er geen adres van buiten rechtstreeks in de
+ * pagina. Antwoorden blijven een uur hangen — je zoekt "Ardennen" toch twee
+ * keer — en er gaat er hooguit één per seconde uit, zoals hun regels vragen.
+ */
+const geoCache = new Map();
+let lastLookup = 0;
+
+api.get('/geocode', async (req, res) => {
+  const q = String(req.query.q || '').trim().slice(0, 120);
+  if (q.length < 3) return res.json({ results: [] });
+
+  const key = q.toLowerCase();
+  const hit = geoCache.get(key);
+  if (hit && Date.now() - hit.at < 3600_000) return res.json({ results: hit.results });
+
+  const wait = Math.max(0, 1100 - (Date.now() - lastLookup));
+  if (wait) await new Promise((r) => setTimeout(r, wait));
+  lastLookup = Date.now();
+
+  const url = new URL('https://nominatim.openstreetmap.org/search');
+  url.searchParams.set('q', q);
+  url.searchParams.set('format', 'jsonv2');
+  url.searchParams.set('limit', '6');
+  url.searchParams.set('accept-language', 'nl');
+
+  try {
+    const upstream = await fetch(url, {
+      headers: { 'User-Agent': 'Samen/1.0 (gedeelde agenda voor twee; https://samen-agenda.vercel.app)' },
+      signal: AbortSignal.timeout(8000),
+    });
+    if (!upstream.ok) throw new Error(String(upstream.status));
+    const raw = await upstream.json();
+    // Een adres komt binnen als "Neude, Domplein, Neude, Janskerkhof, …, 3512 AE,
+    // Nederland". De eerste twee stukjes zijn de naam; de rest is context. Het
+    // gevolg is wel dat drie treffers die alleen in postcode verschillen op
+    // hetzelfde neerkomen, dus die gooien we samen.
+    const seen = new Set();
+    const results = [];
+    for (const r of Array.isArray(raw) ? raw : []) {
+      const lat = Number(r.lat);
+      const lon = Number(r.lon);
+      if (!Number.isFinite(lat) || !Number.isFinite(lon)) continue;
+      const parts = String(r.display_name || '').split(',').map((s) => s.trim()).filter(Boolean);
+      const name = parts.slice(0, 2).join(', ').slice(0, 120);
+      if (!name || seen.has(name)) continue;
+      seen.add(name);
+      // Postcodes zeggen je niets als je een plek herkent aan stad en land, en
+      // een naam die al in de kop staat hoef je er niet nog eens onder.
+      const context = [...new Set(parts.slice(2).filter((p) => !/\d/.test(p)))]
+        .filter((p) => !name.includes(p))
+        .join(' · ')
+        .slice(0, 120);
+      results.push({ name, context, lat, lon });
+      if (results.length === 6) break;
+    }
+    geoCache.set(key, { at: Date.now(), results });
+    // De cache staat in het geheugen van één exemplaar; laat hem niet groeien.
+    if (geoCache.size > 200) geoCache.delete(geoCache.keys().next().value);
+    res.json({ results });
+  } catch {
+    // Zoeken is een extraatje: valt de dienst weg, dan typ je de plek gewoon
+    // zelf en zet je hem met een tik op de kaart.
+    res.status(503).json({ error: 'Zoeken lukt even niet. Tik de plek aan op de kaart.' });
+  }
+});
+
 api.get('/export', (req, res) => {
   const { users, ...rest } = db();
   res.setHeader('Content-Disposition', `attachment; filename="samen-${today()}.json"`);

@@ -38,6 +38,13 @@ Deze keuzes zijn met Julian doorgenomen. Verander ze niet zonder het te vragen.
   de kleur bepaalt. Daardoor is er niets in te stellen en niets op te slaan.
   Laadt een plaatje niet, dan staat de beginletter er nog: de app werkt dus ook
   zonder avatars.
+- **De kaart draait op OpenStreetMap, niet op Google Maps.** Geen account,
+  geen sleutel, geen creditcard, geen rekening die kan oplopen. Leaflet staat
+  in `public/vendor/` — dus in de repo, niet op een CDN — en wordt pas geladen
+  als je de kaart opent. Zoeken naar een plek loopt via `/api/geocode`, dat is
+  een doorgeefluik naar Nominatim: die dienst wil één afzender met een eigen
+  User-Agent zien in plaats van tientallen browsers, en hooguit één vraag per
+  seconde. Antwoorden blijven een uur in het geheugen hangen.
 - **Diepte en beweging zijn versiering, nooit constructie.** Er hangt geen
   enkele knop of scherm aan een animatie: haal het hele blok "Diepte en
   beweging" uit `styles.css` en de app doet nog precies hetzelfde. Wie in zijn

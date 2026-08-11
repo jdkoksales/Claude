@@ -1221,6 +1221,128 @@ button.row { cursor: pointer; }
 }
 .toast[hidden] { display: none; }
 
+/* ── Kaart ─────────────────────────────────────────────────────────────────
+
+   Leaflet brengt zijn eigen opmaak mee; hieronder staat alleen wat de kaart in
+   deze app laat passen. De spelden zijn van ons: geen standaardpunaise maar een
+   rondje met de omslagfoto van dat uitje erin. */
+
+.map {
+  height: min(58dvh, 460px);
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  box-shadow: inset 0 1px 0 var(--sheen), var(--lift-1);
+  overflow: hidden;
+  background: var(--surface-2);
+  /* De kaart vangt sleepbewegingen zelf op; anders scrollt het paneel mee. */
+  touch-action: none;
+}
+.map.small { height: 190px; }
+
+/* Leaflets eigen tekst haakt qua kleur en formaat aan bij de app. */
+.leaflet-container { font: inherit; background: var(--surface-2); }
+.leaflet-control-attribution {
+  font-size: .62rem;
+  background: color-mix(in srgb, var(--surface) 86%, transparent) !important;
+  color: var(--muted);
+}
+.leaflet-control-attribution a { color: var(--muted); }
+.leaflet-bar a {
+  background: var(--surface);
+  color: var(--text);
+  border-bottom-color: var(--line);
+}
+.leaflet-bar a:hover { background: var(--surface-2); }
+
+.pin {
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 3px solid var(--accent);
+  box-shadow: var(--lift-2);
+  overflow: visible;
+  color: var(--accent);
+  transition: transform .22s var(--spring);
+}
+.pin img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.pin svg { width: 55%; height: 55%; stroke-width: 2; }
+.pin:hover { transform: scale(1.12); z-index: 500; }
+/* Het getal als er meer dan één moment op dezelfde plek staat. */
+.pin-count {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  min-width: 19px;
+  height: 19px;
+  padding: 0 5px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-size: .66rem;
+  font-weight: 700;
+  box-shadow: 0 2px 0 var(--accent-deep);
+}
+.pin-pick { border-color: var(--warm); color: var(--warm); }
+
+.map-btn { margin-top: 11px; gap: 8px; }
+.map-btn svg { width: 18px; height: 18px; stroke-width: 2; }
+
+.place { display: flex; flex-direction: column; gap: 9px; }
+.place-row { display: flex; gap: 8px; }
+.place-row input { flex: 1; min-width: 0; }
+.place-row .btn { flex-shrink: 0; }
+.place-status {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: .78rem;
+  color: var(--accent);
+  font-weight: 600;
+}
+.place-status svg { width: 16px; height: 16px; stroke-width: 2; }
+.place-status .btn { margin-left: auto; }
+
+.place-results {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+.place-hit {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 12px;
+  border: 0;
+  background: var(--surface-2);
+  text-align: left;
+  font: inherit;
+  font-size: .82rem;
+  color: var(--text);
+  cursor: pointer;
+}
+.place-hit b { font-weight: 650; }
+/* De context eronder is om treffers uit elkaar te houden, niet om te lezen. */
+.place-hit span {
+  font-size: .74rem;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.place-hit:hover, .place-hit:active { background: var(--accent-soft); }
+.place-hit:hover b, .place-hit:active b { color: var(--accent); }
+
 /* ── Diepte en beweging ────────────────────────────────────────────────────
 
    Alles hieronder is versiering. Het is bewust zo gebouwd dat de app zonder

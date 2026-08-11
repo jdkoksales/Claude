@@ -139,3 +139,26 @@ test('een opmerking mag niet leeg zijn', async () => {
   assert.equal(commentInput({ text: '  Wat een dag  ' }).text, 'Wat een dag');
   assert.throws(() => commentInput({ text: '   ' }), /mag niet leeg/);
 });
+
+test('een afspraak zonder plek houdt lege coördinaten', () => {
+  const out = eventInput({ ...ok }, USERS);
+  assert.equal(out.lat, null);
+  assert.equal(out.lon, null);
+});
+
+test('een plek op de kaart wordt afgerond bewaard', () => {
+  const out = eventInput({ ...ok, lat: '52.37403123456', lon: 4.88969987654 }, USERS);
+  assert.equal(out.lat, 52.374031);
+  assert.equal(out.lon, 4.8897);
+});
+
+test('een halve coördinaat wordt geweigerd', () => {
+  assert.throws(() => eventInput({ ...ok, lat: '52.1' }, USERS), /lengtegraad/);
+  assert.throws(() => eventInput({ ...ok, lon: '4.9' }, USERS), /lengtegraad/);
+});
+
+test('een plek buiten de kaart wordt geweigerd', () => {
+  assert.throws(() => eventInput({ ...ok, lat: 91, lon: 0 }, USERS), /buiten de kaart/);
+  assert.throws(() => eventInput({ ...ok, lat: 0, lon: -181 }, USERS), /buiten de kaart/);
+  assert.throws(() => eventInput({ ...ok, lat: 'ergens', lon: 'daar' }, USERS), /klopt niet/);
+});

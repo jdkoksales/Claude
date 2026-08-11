@@ -55,6 +55,24 @@ const REMINDER_CHOICES = [0, 5, 10, 15, 30, 60, 120, 720, 1440];
 export const CATEGORIES = ['gewoon', 'leuk', 'vakantie'];
 export const FUN = ['leuk', 'vakantie'];
 
+/**
+ * De plek op de kaart. Allebei of geen van beide: aan één helft van een
+ * coördinaat heb je niets, en een speld midden in de oceaan is erger dan geen
+ * speld. Afgerond op zes decimalen — dat is ruim een tiende meter, en scheelt
+ * ruimte in de ene rij waar alles in staat.
+ */
+export function place(lat, lon) {
+  const leeg = (v) => v == null || v === '';
+  if (leeg(lat) && leeg(lon)) return { lat: null, lon: null };
+  if (leeg(lat) || leeg(lon)) fail('Een plek heeft zowel een breedte- als een lengtegraad nodig.');
+  const a = Number(lat);
+  const o = Number(lon);
+  if (!Number.isFinite(a) || !Number.isFinite(o)) fail('Die plek op de kaart klopt niet.');
+  if (a < -90 || a > 90 || o < -180 || o > 180) fail('Die plek ligt buiten de kaart.');
+  const round = (n) => Math.round(n * 1e6) / 1e6;
+  return { lat: round(a), lon: round(o) };
+}
+
 export function eventInput(body, userIds) {
   const allDay = Boolean(body.allDay);
   const category = CATEGORIES.includes(body.category) ? body.category : 'gewoon';
@@ -68,6 +86,7 @@ export function eventInput(body, userIds) {
     start: null,
     end: null,
     location: text(body.location, 'Locatie', { max: 120, required: false }),
+    ...place(body.lat, body.lon),
     notes: text(body.notes, 'Notitie', { max: 2000, required: false }),
     repeat: normalizeRepeat(body.repeat),
     reminderMin: null,

@@ -1,0 +1,30 @@
+GEEN AFWIJKINGEN GEVONDEN
+
+desktop 1440x900
+   3 kaarten, stylesheet geladen: true
+   sterren per kaart: 5/5, 4/5, 3/5
+   gevulde ster rgb(244, 128, 31), lege ster rgba(0, 0, 0, 0.14)
+   afstand klantregel tot onderkant kaart: 27, 27, 27px
+   fotootjes: 44x44 r50%, 44x44 r50%, 44x44 r50%
+   rij 307px hoog, hoogste kaart 307px, rail 1176px in 1176px
+
+tablet 834x1000
+   3 kaarten, stylesheet geladen: true
+   sterren per kaart: 5/5, 4/5, 3/5
+   gevulde ster rgb(244, 128, 31), lege ster rgba(0, 0, 0, 0.14)
+   afstand klantregel tot onderkant kaart: 27, 27, 27px
+   fotootjes: 44x44 r50%, 44x44 r50%, 44x44 r50%
+   rij 555px hoog, hoogste kaart 307px, rail 786px in 786px
+
+telefoon 390x844
+   3 kaarten, stylesheet geladen: true
+   sterren per kaart: 5/5, 4/5, 3/5
+   gevulde ster rgb(244, 128, 31), lege ster rgba(0, 0, 0, 0.14)
+   afstand klantregel tot onderkant kaart: 23, 23, 23px
+   fotootjes: 44x44 r50%, 44x44 r50%, 44x44 r50%
+   rij 349px hoog, hoogste kaart 343px, rail 935px in 390px
+
+winkel (thema 196964024697)
+   reviewsectie zichtbaar: false, kaarten: 0
+   vertrouwensbalk nog aanwezig: false
+   productkaarten: 5

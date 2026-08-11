@@ -922,7 +922,7 @@ footer{background:linear-gradient(115deg,#fdfdfe,#fdf1f5);padding:88px 0 44px}
 .alleen-voorlezen{position:absolute;width:1px;height:1px;padding:0;margin:-1px;
   overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 
-.wjd{padding:72px 0}
+.wjd{padding:56px 0}
 .wjd.grey{background:var(--grey-bg)}
 .wjd.dark{background:var(--dark-bg);color:#fff}
 .wjd.oranje{background:linear-gradient(120deg,var(--oranje-diep) 0%,var(--oranje) 62%,#FFA83F 100%);color:#fff}
@@ -940,20 +940,21 @@ footer{background:linear-gradient(115deg,#fdfdfe,#fdf1f5);padding:88px 0 44px}
 .wjd.dark .wjd-body{color:rgba(255,255,255,.72)}
 .wjd.oranje .wjd-body{color:rgba(255,255,255,.86)}
 
-.wjd-knop{margin-top:22px}
+.wjd-knop{margin-top:20px}
 .wjd.oranje .wjd-knop{background:#fff;color:var(--ink)}
 
-.wjd-bron{margin-top:14px;font-size:var(--fs-xs);color:var(--ink-36);max-width:62ch}
+.wjd-bron{margin-top:12px;font-size:13.6px;line-height:1.4;color:var(--ink-36);max-width:64ch}
 .wjd.dark .wjd-bron{color:rgba(255,255,255,.45)}
 .wjd.oranje .wjd-bron{color:rgba(255,255,255,.6)}
 
 @media(max-width:767px){
   /* Onder elkaar, en het getal wat kleiner: naast een kop van twee regels
      duwt een getal van 104px de hele band uit verhouding. */
-  .wjd{padding:52px 0}
-  .wjd-rij{grid-template-columns:1fr;gap:6px}
-  .wjd-cijfer{font-size:clamp(52px,15vw,76px)}
-  .wjd-tekst h2{font-size:var(--fs-xl);max-width:none}
+  .wjd{padding:38px 0}
+  .wjd-rij{grid-template-columns:1fr;gap:2px}
+  .wjd-cijfer{font-size:clamp(50px,14vw,72px)}
+  .wjd-tekst h2{font-size:22px;max-width:none}
+  .wjd-body{margin-top:8px}
 }
 
 

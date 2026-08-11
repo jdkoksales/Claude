@@ -26,12 +26,12 @@ telefoon 390x844
 
 winkel-telefoon 390x844 — thema 196964024697
    hero eindigt op 844px, wist-je-dat begint op 844px (439px hoog)
-   getal "5–9%" op 55px, knop "Bestel nu!", bronregel: true
+   getal "5–9%" op 55px, knop "Bestel nu!", bronregel contrast 6.7:1
    eerste productkaart op 1429px, 5 kaarten
    reviewsectie zichtbaar: false, vertrouwensbalk: false, overloop 0px
 
 winkel-desktop 1440x900 — thema 196964024697
    hero eindigt op 900px, wist-je-dat begint op 900px (395px hoog)
-   getal "5–9%" op 104px, knop "Bestel nu!", bronregel: true
+   getal "5–9%" op 104px, knop "Bestel nu!", bronregel contrast 6.7:1
    eerste productkaart op 1497px, 5 kaarten
    reviewsectie zichtbaar: false, vertrouwensbalk: false, overloop 0px

@@ -725,9 +725,9 @@ html,body{overflow-x:clip}
 .tk3 .wjd.oranje .wjd-body{color:rgba(255,255,255,.86)}
 .tk3 .wjd-knop{margin-top:20px}
 .tk3 .wjd.oranje .wjd-knop{background:#fff;color:var(--ink)}
-.tk3 .wjd-bron{margin-top:12px;font-size:13.6px;line-height:1.4;color:var(--ink-36);max-width:64ch}
-.tk3 .wjd.dark .wjd-bron{color:rgba(255,255,255,.45)}
-.tk3 .wjd.oranje .wjd-bron{color:rgba(255,255,255,.6)}
+.tk3 .wjd-bron{margin-top:12px;font-size:13.6px;line-height:1.4;color:var(--ink-64);max-width:64ch}
+.tk3 .wjd.dark .wjd-bron{color:rgba(255,255,255,.7)}
+.tk3 .wjd.oranje .wjd-bron{color:rgba(255,255,255,.82)}
 @media(max-width:767px){.tk3 .wjd{padding:38px 0}.tk3 .wjd-rij{grid-template-columns:1fr;gap:2px}.tk3 .wjd-cijfer{font-size:clamp(50px,14vw,72px)}.tk3 .wjd-tekst h2{font-size:22px;max-width:none}.tk3 .wjd-body{margin-top:8px}}
 .tk3 .kicker{display:inline-flex;align-items:center;margin-bottom:18px;
   padding:7px 16px;border-radius:9999px;background:rgba(244,128,31,.14);

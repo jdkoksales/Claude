@@ -943,9 +943,12 @@ footer{background:linear-gradient(115deg,#fdfdfe,#fdf1f5);padding:88px 0 44px}
 .wjd-knop{margin-top:20px}
 .wjd.oranje .wjd-knop{background:#fff;color:var(--ink)}
 
-.wjd-bron{margin-top:12px;font-size:13.6px;line-height:1.4;color:var(--ink-36);max-width:64ch}
-.wjd.dark .wjd-bron{color:rgba(255,255,255,.45)}
-.wjd.oranje .wjd-bron{color:rgba(255,255,255,.6)}
+/* Niet --ink-36: dat is op wit ongeveer 2,5:1 en zakt onder de leesbaarheids-
+   norm. Juist deze regel maakt het getal erboven controleerbaar, dus hij moet
+   te lezen zijn. --ink-64 haalt ruim 4,5:1. */
+.wjd-bron{margin-top:12px;font-size:13.6px;line-height:1.4;color:var(--ink-64);max-width:64ch}
+.wjd.dark .wjd-bron{color:rgba(255,255,255,.7)}
+.wjd.oranje .wjd-bron{color:rgba(255,255,255,.82)}
 
 @media(max-width:767px){
   /* Onder elkaar, en het getal wat kleiner: naast een kop van twee regels

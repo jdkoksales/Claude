@@ -177,6 +177,23 @@ jobs:
                 wjdKnop: (() => { const e = document.querySelector('.tk3 .wjd-knop');
                   return e ? e.innerText.trim() : null; })(),
                 wjdBron: !!document.querySelector('.tk3 .wjd-bron'),
+                // De bronregel draagt het bewijs onder het getal. Staat hij te
+                // licht op de achtergrond, dan is hij er wel maar leest hij niet.
+                wjdBronContrast: (() => {
+                  const e = document.querySelector('.tk3 .wjd-bron');
+                  const band = document.querySelector('.tk3 .wjd');
+                  if (!e || !band) return null;
+                  const lum = (kleur) => {
+                    const [r, g, bl, a = 1] = kleur.match(/[\d.]+/g).map(Number);
+                    const op = (k) => { const v = (k * a + 255 * (1 - a)) / 255;
+                      return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); };
+                    return 0.2126 * op(r) + 0.7152 * op(g) + 0.0722 * op(bl);
+                  };
+                  let grond = getComputedStyle(band).backgroundColor;
+                  if (!grond || grond === 'rgba(0, 0, 0, 0)') grond = 'rgb(255,255,255)';
+                  const x = lum(getComputedStyle(e).color), y = lum(grond);
+                  return Math.round(((Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05)) * 10) / 10;
+                })(),
                 productTop: top('.tk3 .pcard'),
                 reviewSectie: !!document.querySelector('.tk3 #reviews'),
                 vertrouwensbalk: !!document.querySelector('.tk3 .trust'),
@@ -186,7 +203,7 @@ jobs:
             });
             log.push(`\n${naam} ${br}x${ho} — thema ${winkel.themaId}`);
             log.push(`   hero eindigt op ${winkel.heroOnder}px, wist-je-dat begint op ${winkel.wjdTop}px (${winkel.wjdHoog}px hoog)`);
-            log.push(`   getal "${winkel.wjdCijfer}" op ${winkel.wjdCijferPx}px, knop "${winkel.wjdKnop}", bronregel: ${winkel.wjdBron}`);
+            log.push(`   getal "${winkel.wjdCijfer}" op ${winkel.wjdCijferPx}px, knop "${winkel.wjdKnop}", bronregel contrast ${winkel.wjdBronContrast}:1`);
             log.push(`   eerste productkaart op ${winkel.productTop}px, ${winkel.productKaarten} kaarten`);
             log.push(`   reviewsectie zichtbaar: ${winkel.reviewSectie}, vertrouwensbalk: ${winkel.vertrouwensbalk}, overloop ${winkel.overloop}px`);
 
@@ -196,6 +213,7 @@ jobs:
               if (winkel.productTop === null) fouten.push(`${naam}: er staat geen productkaart op de pagina`);
               else if (winkel.wjdTop > winkel.productTop) fouten.push(`${naam}: de band staat onder de producten in plaats van erboven`);
               if (!winkel.wjdBron) fouten.push(`${naam}: de bronregel onder het getal ontbreekt`);
+              else if (winkel.wjdBronContrast < 4.5) fouten.push(`${naam}: de bronregel haalt maar ${winkel.wjdBronContrast}:1 contrast, de norm is 4,5:1`);
               if (!winkel.wjdKnop) fouten.push(`${naam}: de knop in de band ontbreekt`);
               if (winkel.wjdCijferPx < 46) fouten.push(`${naam}: het getal staat op ${winkel.wjdCijferPx}px, te klein voor het enige punt van de sectie`);
               // Klein moet klein blijven: de band mag de producten niet wegduwen.

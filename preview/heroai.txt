@@ -1,10 +1,44 @@
-GEVONDEN: 6 punten
- - desktop: de eerste productkaart staat op 1497px, te ver onder de hero (791px)
- - tablet: de eerste productkaart staat op 1566px, te ver onder de hero (891px)
- - tablet-kort: de eerste productkaart staat op 1266px, te ver onder de hero (591px)
- - telefoon: de eerste productkaart staat op 1429px, te ver onder de hero (735px)
- - telefoon-kort: de eerste productkaart staat op 1250px, te ver onder de hero (516px)
- - telefoon-klein: de eerste productkaart staat op 1249px, te ver onder de hero (514px)
+GEVONDEN: 8 punten
+ - breed: de kop is niet zichtbaar
+ - breed: de kopkolom is 0px en "TapKaarten." 272px — dat woord breekt middenin
+ - breed: de kop staat over 36 regels
+ - breed: de onderkop is niet zichtbaar terwijl er hoogte genoeg is
+ - breed: het bordje is maar voor 0% zichtbaar, de rest valt onder de vouw
+ - breed: de hero is 4548px op een scherm van 1080px
+ - desktop-groot: de kopkolom is 240px en "TapKaarten." 272px — dat woord breekt middenin
+ - desktop-groot: de kop staat over 6 regels
+
+breed 2560x1080 — thema 196964024697
+   bestand: tk3-hero-ai-desktop.jpg  (bron 1800x1005, vlak 2560x4548)
+   object-fit cover, object-position 38% 100%
+   bordje op het scherm: x 118–1796, y 1132–4166 (3033px hoog)
+   hero 4548px hoog, kop rgb(255, 255, 255), onderkop rgba(255, 255, 255, 0.84)
+   kop "Laat jouw bedrijf groeien met TapKaarten."
+   overloop 0px, oude wisselfoto's nog aanwezig: false
+   botsing kop: geen
+   botsing onderkop: geen
+   botsing knoppen: geen
+   botsing rekenlink: geen
+   na de hero: blk, 5 productkaarten, eerste kaart op 4859px
+   kopkolom 0px, langste woord "TapKaarten." is 272px, 36 regels
+   hoogtes: {"wrap":4354,"kop":2019,"sub":2193,"knoppen":70,"calc":0,"foto":4548}, venster 1080px
+   bordje voor 100% binnen de foto-uitsnede, 0% binnen het scherm
+
+desktop-groot 1920x1080 — thema 196964024697
+   bestand: tk3-hero-ai-desktop.jpg  (bron 1800x1005, vlak 1920x971)
+   object-fit cover, object-position 38% 100%
+   bordje op het scherm: x 528–924, y 249–964 (715px hoog)
+   hero 971px hoog, kop rgb(255, 255, 255), onderkop rgba(255, 255, 255, 0.84)
+   kop "Laat jouw bedrijf groeien met TapKaarten."
+   overloop 0px, oude wisselfoto's nog aanwezig: false
+   botsing kop: geen
+   botsing onderkop: geen
+   botsing knoppen: geen
+   botsing rekenlink: geen
+   na de hero: blk, 5 productkaarten, eerste kaart op 1282px
+   kopkolom 240px, langste woord "TapKaarten." is 272px, 6 regels
+   hoogtes: {"wrap":582,"kop":337,"sub":128,"knoppen":46,"calc":0,"foto":971}, venster 1080px
+   bordje voor 100% binnen de foto-uitsnede, 100% binnen het scherm
 
 desktop 1440x900 — thema 196964024697
    bestand: tk3-hero-ai-desktop.jpg  (bron 1800x1005, vlak 1440x791)
@@ -17,7 +51,8 @@ desktop 1440x900 — thema 196964024697
    botsing onderkop: geen
    botsing knoppen: geen
    botsing rekenlink: geen
-   na de hero: wjd, 5 productkaarten, eerste kaart op 1497px
+   na de hero: blk, 5 productkaarten, eerste kaart op 1102px
+   kopkolom 480px, langste woord "TapKaarten." is 272px, 3 regels
    hoogtes: {"wrap":337,"kop":168,"sub":51,"knoppen":46,"calc":0,"foto":791}, venster 900px
    bordje voor 100% binnen de foto-uitsnede, 100% binnen het scherm
 
@@ -32,7 +67,8 @@ tablet 834x1000 — thema 196964024697
    botsing onderkop: geen
    botsing knoppen: geen
    botsing rekenlink: geen
-   na de hero: wjd, 5 productkaarten, eerste kaart op 1566px
+   na de hero: blk, 5 productkaarten, eerste kaart op 1171px
+   kopkolom 768px, langste woord "TapKaarten." is 272px, 2 regels
    hoogtes: {"wrap":281,"kop":112,"sub":51,"knoppen":46,"calc":0,"foto":566}, venster 1000px
    bordje voor 100% binnen de foto-uitsnede, 100% binnen het scherm
 
@@ -47,7 +83,8 @@ tablet-kort 834x700 — thema 196964024697
    botsing onderkop: geen
    botsing knoppen: geen
    botsing rekenlink: geen
-   na de hero: wjd, 5 productkaarten, eerste kaart op 1266px
+   na de hero: blk, 5 productkaarten, eerste kaart op 871px
+   kopkolom 729px, langste woord "TapKaarten." is 213px, 1 regels
    hoogtes: {"wrap":102,"kop":44,"sub":0,"knoppen":46,"calc":0,"foto":454}, venster 700px
    bordje voor 100% binnen de foto-uitsnede, 100% binnen het scherm
 
@@ -62,7 +99,8 @@ telefoon 390x844 — thema 196964024697
    botsing onderkop: geen
    botsing knoppen: geen
    botsing rekenlink: geen
-   na de hero: wjd, 5 productkaarten, eerste kaart op 1429px
+   na de hero: blk, 5 productkaarten, eerste kaart op 989px
+   kopkolom 354px, langste woord "TapKaarten." is 166px, 2 regels
    hoogtes: {"wrap":218,"kop":68,"sub":70,"knoppen":50,"calc":0,"foto":478}, venster 844px
    bordje voor 100% binnen de foto-uitsnede, 100% binnen het scherm
 
@@ -77,7 +115,8 @@ telefoon-kort 360x615 — thema 196964024697
    botsing onderkop: geen
    botsing knoppen: geen
    botsing rekenlink: geen
-   na de hero: wjd, 5 productkaarten, eerste kaart op 1250px
+   na de hero: blk, 5 productkaarten, eerste kaart op 770px
+   kopkolom 324px, langste woord "TapKaarten." is 153px, 2 regels
    hoogtes: {"wrap":123,"kop":62,"sub":0,"knoppen":50,"calc":0,"foto":360}, venster 615px
    bordje voor 100% binnen de foto-uitsnede, 100% binnen het scherm
 
@@ -92,6 +131,7 @@ telefoon-klein 360x560 — thema 196964024697
    botsing onderkop: geen
    botsing knoppen: geen
    botsing rekenlink: geen
-   na de hero: wjd, 5 productkaarten, eerste kaart op 1249px
+   na de hero: blk, 5 productkaarten, eerste kaart op 769px
+   kopkolom 324px, langste woord "TapKaarten." is 153px, 2 regels
    hoogtes: {"wrap":123,"kop":62,"sub":0,"knoppen":50,"calc":0,"foto":360}, venster 560px
    bordje voor 100% binnen de foto-uitsnede, 89% binnen het scherm

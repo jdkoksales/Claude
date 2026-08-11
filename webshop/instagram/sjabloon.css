@@ -87,3 +87,92 @@ h1 em { font-style: normal; color: #FFE3B8 }
 
 /* De bronregel hoort bij elk cijfer dat we tonen. Klein, maar leesbaar. */
 .bron { font-size: 24px; font-weight: 400; opacity: .8 }
+
+
+/* ---------- carrousel: paginanummer en swipe-hint ---------- */
+/* Het nummer laat zien dat er meer komt. Dat klinkt klein, maar de
+   doorswipe bepaalt hoeveel niet-volgers de post te zien krijgen. */
+.nr {
+  position: absolute; top: 40px; right: 46px; z-index: 3;
+  font-size: 28px; font-weight: 700; color: rgba(255,255,255,.72);
+  letter-spacing: .04em;
+}
+.vlak.licht ~ .nr, .nr.donkerop { color: rgba(0,0,0,.4) }
+
+.swipe {
+  display: inline-flex; align-items: center; gap: 12px; align-self: flex-start;
+  margin-top: 40px; padding: 16px 32px; border-radius: 999px;
+  background: var(--wit); color: var(--oranje-diep);
+  font-size: 32px; font-weight: 700;
+}
+
+/* ---------- stapdia ---------- */
+.stap { display: flex; align-items: baseline; gap: 26px; margin-bottom: 8px }
+.stap-nr {
+  font-size: 120px; line-height: .9; font-weight: 700; letter-spacing: -.05em;
+  color: rgba(255,255,255,.42);
+}
+.vlak.licht .stap-nr { color: rgba(244,128,31,.32) }
+.stap h2 { font-size: 72px; line-height: 1.05; font-weight: 700; letter-spacing: -.03em }
+
+/* ---------- 2x2 fotoraster ---------- */
+.raster { flex: 1 1 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 6px; background: #fff }
+.raster figure { position: relative; overflow: hidden; margin: 0 }
+.raster img { width: 100%; height: 100%; object-fit: cover; display: block }
+.raster figcaption {
+  position: absolute; left: 22px; bottom: 20px;
+  padding: 10px 22px; border-radius: 999px;
+  background: rgba(0,0,0,.62); color: var(--wit);
+  font-size: 28px; font-weight: 700;
+}
+
+/* ---------- quote / review ---------- */
+.sterren { display: flex; gap: 10px; margin-bottom: 34px }
+.sterren svg { width: 58px; height: 58px; fill: #FFD98A }
+blockquote {
+  font-size: 66px; line-height: 1.16; font-weight: 700; letter-spacing: -.03em;
+  margin-bottom: 40px;
+}
+.wie { display: flex; align-items: center; gap: 22px; font-size: 34px }
+.wie .letter {
+  width: 82px; height: 82px; border-radius: 50%; display: grid; place-items: center;
+  background: rgba(255,255,255,.24); font-weight: 700; font-size: 40px; flex: 0 0 auto;
+}
+.wie b { display: block; font-weight: 700 }
+.wie span { opacity: .82; font-size: 30px }
+
+/* ---------- vergelijking ---------- */
+.vgl { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-top: 12px }
+.vgl div {
+  background: rgba(255,255,255,.16); border-radius: 26px; padding: 34px 30px;
+}
+.vgl .goed { background: var(--wit); color: var(--inkt) }
+.vgl h3 { font-size: 38px; font-weight: 700; margin-bottom: 14px }
+.vgl p { font-size: 33px; line-height: 1.34; opacity: .9 }
+.vgl .goed p { opacity: 1 }
+.vgl .uitslag { margin-top: 22px; font-size: 33px; font-weight: 700 }
+
+/* ---------- slotdia ---------- */
+.slot { flex: 1 1 auto; display: flex; flex-direction: column; justify-content: center; align-items: center;
+  text-align: center; padding: 90px 80px; gap: 30px }
+.slot .prijs { font-size: 150px; line-height: .9; font-weight: 700; letter-spacing: -.05em }
+.slot .knop {
+  margin-top: 12px; padding: 26px 54px; border-radius: 999px;
+  background: var(--wit); color: var(--inkt); font-size: 40px; font-weight: 700;
+}
+.slot .fijn { font-size: 32px; opacity: .88; line-height: 1.4 }
+
+
+/* Stapdia's hebben weinig tekst; geef de foto dan meer ruimte in plaats van
+   een half leeg oranje vlak. */
+.vlak.kort { flex: 0 0 46% }
+
+/* Dia's zonder foto misten een basis: de tekst zweefde in het midden van een
+   leeg vlak. Deze regel verankert de compositie en zet op elke dia het adres,
+   ook als iemand alleen die ene dia doorstuurt. */
+.merkregel {
+  position: absolute; left: 76px; bottom: 62px; z-index: 3;
+  display: flex; align-items: center; gap: 16px;
+  font-size: 30px; font-weight: 600; color: rgba(255,255,255,.9);
+}
+.merkregel img { width: 52px; height: 52px; border-radius: 12px; display: block }

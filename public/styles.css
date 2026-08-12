@@ -1084,12 +1084,13 @@ button.row { cursor: pointer; }
 }
 .gate-card h1 { font-size: 1.7rem; }
 
-/* Het merkteken zweeft. Twee cirkels die elkaar overlappen — dat is de app in
-   één beeld, dus die verdient de enige echte 3D-beweging in de app. */
+/* Daya zweeft. Dit is het eerste wat je ziet als je de app opent, dus dit is
+   de plek voor de enige echte 3D-beweging in de app. */
 .gate-mark {
-  width: 62px;
-  height: 62px;
-  filter: drop-shadow(0 6px 14px var(--glow));
+  width: 76px;
+  height: 76px;
+  border-radius: 22px;
+  box-shadow: 0 8px 20px -8px rgba(34, 38, 43, .4), inset 0 1px 0 var(--sheen);
   animation: mark-float 7s ease-in-out infinite;
   transform-origin: 50% 50%;
 }

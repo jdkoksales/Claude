@@ -4,8 +4,8 @@
  * de cache geserveerd — alleen de schil, zodat je nooit oude cijfers ziet.
  */
 
-const CACHE = 'samen-v2';
-const SHELL = ['/', '/index.html', '/styles.css', '/app.js', '/icon.svg', '/manifest.webmanifest'];
+const CACHE = 'samen-v3';
+const SHELL = ['/', '/index.html', '/styles.css', '/app.js', '/icon-192.png', '/manifest.webmanifest'];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting()));
@@ -46,8 +46,8 @@ self.addEventListener('push', (event) => {
   event.waitUntil(self.registration.showNotification(data.title, {
     body: data.body,
     tag: data.tag || 'samen',
-    icon: '/icon.svg',
-    badge: '/icon.svg',
+    icon: '/icon-192.png',
+    badge: '/icon-192.png',
     data: { url: data.url || '/' },
   }));
 });

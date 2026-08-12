@@ -31,8 +31,16 @@ Deze keuzes zijn met Julian doorgenomen. Verander ze niet zonder het te vragen.
   Achtergronden achter de agenda of de doelen zijn afgewezen: kost leesbaarheid
   en laadtijd op schermen die je tien keer per dag bekijkt. Twee uitzonderingen,
   allebei inhoud en geen versiering: de **avatars** van Julian en zijn vriendin
-  (`public/avatars/a1.jpg` en `a2.jpg`, ~27 kB per stuk), en foto's in albums.
-  Het app-icoon en het deelplaatje staan buiten de app.
+  (`public/avatars/a1.jpg` en `a2.jpg`, ~14 kB per stuk), en foto's in albums.
+  Daarnaast staat het **logo** op het inlogscherm — dat is identiteit, geen
+  behang.
+- **Het logo is Daya, hun hond.** Een getekende versie van haar kop: zwart met
+  tan, rechtopstaande puntoren, tan wenkbrauwstipjes. Hij staat op het
+  beginscherm (`icon-192/512`, `apple-touch-icon`, `icon-maskable-512`), als
+  favicon, op het inlogscherm en op het deelplaatje. Het merkteken met de twee
+  overlappende cirkels bestaat nog wél, maar alleen als symbool voor "Samen"
+  bij gedeelde items — dat is een ander idee dan het logo. Er is geen
+  `icon.svg` meer; alles loopt via de PNG's.
 - **De avatar hoort bij de plek in de rij.** De eerste persoon uit het
   instelscherm krijgt `a1.jpg`, de tweede `a2.jpg` — dezelfde volgorde die ook
   de kleur bepaalt. Daardoor is er niets in te stellen en niets op te slaan.
@@ -147,8 +155,8 @@ Openstaand:
 
 ## Higgsfield
 
-Gedaan: het app-icoon en het deelplaatje zijn ermee gemaakt. Niet gebruikt voor
-achtergronden in de app zelf — die afspraak staat.
+Gedaan: het app-icoon (Daya), het deelplaatje en de twee avatars zijn ermee
+gemaakt. Niet gebruikt voor achtergronden in de app zelf — die afspraak staat.
 
 Zo werkt het, mocht er ooit een nieuw plaatje nodig zijn. De sleutels staan als
 `HIGGSFIELD_API_KEY` en `HIGGSFIELD_API_SECRET` in de omgevingsvariabelen; ze

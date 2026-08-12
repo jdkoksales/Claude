@@ -16,6 +16,7 @@ HIER = pathlib.Path(__file__).parent
 UIT = HIER / "uit"
 LETTERS = HIER.parent / "drukwerk"
 DOEL = HIER / "tapkaarten-instagram.html"
+PLAN = HIER / "onderschriften.md"
 
 
 def b64(pad, mime):
@@ -77,6 +78,70 @@ def blok(p):
       <p class="waarom"><b>Waarom zo:</b> {html.escape(p['waarom'])}</p>
     </div>
   </article>"""
+
+
+def plan(posten):
+    """Hetzelfde plan als platte tekst, voor wie liever een document leest dan
+    een webpagina. Uit dezelfde posts.json, zodat de twee niet uit elkaar
+    kunnen lopen — dat gebeurde met de vorige, handgeschreven versie wel."""
+    regels = [
+        "# Instagram-contentplan TapKaarten",
+        "",
+        "Vijf posts, in deze volgorde te plaatsen. Alle beelden zijn 1080 x 1350",
+        "(4:5) en staan in `uit/`. De opgemaakte versie met downloadknoppen is",
+        "`tapkaarten-instagram.html`.",
+        "",
+        "| # | Vorm | Onderwerp | Wanneer |",
+        "|---|---|---|---|",
+    ]
+    for p in posten:
+        regels.append(f"| {p['nr']} | {p['vorm']} | {p['titel']} | {p['dag']} |")
+
+    for p in posten:
+        regels += [
+            "",
+            "---",
+            "",
+            f"## {p['nr']}. {p['titel']}",
+            "",
+            f"**Vorm:** {p['vorm']}  ",
+            f"**Wanneer:** {p['dag']}  ",
+            f"**Waarvoor:** {p['doel']}",
+            "",
+            "**Beelden:** " + ", ".join(f"`uit/{d}`" for d in p["dias"]),
+            "",
+            "### Onderschrift",
+            "",
+            "```",
+            p["tekst"],
+            "",
+            p["tags"],
+            "```",
+            "",
+            f"**Waarom zo:** {p['waarom']}",
+        ]
+
+    regels += [
+        "",
+        "---",
+        "",
+        "## Wat hier niet in zit",
+        "",
+        "Reels. Die halen op Instagram veruit het meeste bereik, maar daar is",
+        "filmmateriaal voor nodig dat er nog niet is. Een telefoonopname van tien",
+        "seconden waarin een klant zijn telefoon tegen de standaard houdt is genoeg",
+        "voor de eerste.",
+        "",
+        "## Iets aanpassen",
+        "",
+        "Teksten staan in `posts.json`, de beelden zijn HTML in deze map.",
+        "`python3 render.py` maakt nieuwe beelden, `python3 bouw_pagina.py` bouwt",
+        "de webpagina en dit document opnieuw. Dit bestand niet met de hand",
+        "bijwerken: het wordt overschreven.",
+        "",
+    ]
+    PLAN.write_text("\n".join(regels))
+    print(f"{PLAN.relative_to(HIER.parent.parent)}  {PLAN.stat().st_size // 1024} kB")
 
 
 def maak():
@@ -396,6 +461,7 @@ function handmatig(tekst, klaar) {{
     DOEL.write_text(pagina, encoding="ascii")
     kb = DOEL.stat().st_size // 1024
     print(f"{DOEL.relative_to(HIER.parent.parent)}  {kb} kB  ({len(posten)} posts, {aantal_dias} beelden)")
+    plan(posten)
 
 
 if __name__ == "__main__":

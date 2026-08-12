@@ -1,0 +1,366 @@
+<meta charset="utf-8">
+<title>TapKaarten — Instagram-groeiplan</title>
+<style>
+:root {
+  --grond: #FBF8F4;
+  --vlak: #FFFFFF;
+  --inkt: #1F1B18;
+  --zacht: #6E635A;
+  --lijn: rgba(31,27,24,.12);
+  --accent: #C4430F;
+  --accent-vlak: #FDEFE3;
+  --waarschuw: #8A5A00;
+  --waarschuw-vlak: #FDF3DC;
+  --schaduw: 0 1px 2px rgba(31,27,24,.05), 0 8px 24px rgba(31,27,24,.06);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --grond: #15120F;
+    --vlak: #1E1A16;
+    --inkt: #F5EFE8;
+    --zacht: #A79889;
+    --lijn: rgba(255,255,255,.14);
+    --accent: #FF8340;
+    --accent-vlak: rgba(255,131,64,.14);
+    --waarschuw: #F0C46A;
+    --waarschuw-vlak: rgba(240,196,106,.13);
+    --schaduw: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="dark"] {
+  --grond: #15120F;
+  --vlak: #1E1A16;
+  --inkt: #F5EFE8;
+  --zacht: #A79889;
+  --lijn: rgba(255,255,255,.14);
+  --accent: #FF8340;
+  --accent-vlak: rgba(255,131,64,.14);
+  --waarschuw: #F0C46A;
+  --waarschuw-vlak: rgba(240,196,106,.13);
+  --schaduw: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+}
+
+* { box-sizing: border-box }
+
+body {
+  margin: 0; background: var(--grond); color: var(--inkt);
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 17px; line-height: 1.62;
+  -webkit-font-smoothing: antialiased;
+}
+
+.blad { max-width: 860px; margin: 0 auto; padding: 60px 26px 120px }
+
+.merk {
+  display: flex; align-items: center; gap: 12px;
+  font-size: 13px; font-weight: 700; letter-spacing: .15em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 24px;
+}
+.merk::after { content: ""; flex: 1 1 auto; height: 1px; background: var(--lijn) }
+
+h1 {
+  font-size: clamp(32px, 5.4vw, 50px); line-height: 1.05; letter-spacing: -.035em;
+  font-weight: 800; margin: 0 0 18px; text-wrap: balance; max-width: 18ch;
+}
+.intro { color: var(--zacht); font-size: 19px; margin: 0 0 14px; max-width: 62ch }
+.intro strong { color: var(--inkt); font-weight: 600 }
+
+/* Elke stap is een echte volgorde: eerst weten wie je zoekt, dan waar ze
+   zitten, dan pas doen. Vandaar de nummering. */
+section.stap { margin-top: 64px; scroll-margin-top: 20px }
+section.stap > h2 {
+  display: flex; align-items: baseline; gap: 16px;
+  font-size: clamp(23px, 3.4vw, 30px); line-height: 1.2; letter-spacing: -.025em;
+  font-weight: 800; margin: 0 0 8px; text-wrap: balance;
+}
+section.stap > h2 .cijfer {
+  flex: 0 0 auto; font-size: 15px; font-weight: 800; color: var(--accent);
+  font-variant-numeric: tabular-nums; letter-spacing: .08em;
+  padding-top: 4px;
+}
+.lead { color: var(--zacht); margin: 0 0 26px 42px; max-width: 60ch }
+@media (max-width: 620px) { .lead { margin-left: 0 } }
+
+h3 {
+  font-size: 18px; font-weight: 700; margin: 34px 0 10px; letter-spacing: -.01em;
+}
+p { margin: 0 0 16px; max-width: 66ch }
+ul, ol { margin: 0 0 16px; padding-left: 22px; max-width: 66ch }
+li { margin-bottom: 9px }
+li::marker { color: var(--accent) }
+b, strong { font-weight: 600 }
+code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .88em;
+  background: var(--accent-vlak); color: var(--accent);
+  padding: 2px 7px; border-radius: 6px;
+}
+
+.tabelwrap { overflow-x: auto; margin: 0 0 20px; border: 1px solid var(--lijn); border-radius: 14px }
+table { width: 100%; border-collapse: collapse; background: var(--vlak); min-width: 540px }
+th, td { text-align: left; padding: 13px 18px; border-bottom: 1px solid var(--lijn); vertical-align: top }
+tr:last-child td { border-bottom: 0 }
+th {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--zacht); font-weight: 600;
+}
+td { font-size: 15.5px; line-height: 1.45 }
+td.hand { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 14px; white-space: nowrap }
+td.getal { font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--zacht) }
+
+.kaart {
+  background: var(--vlak); border: 1px solid var(--lijn); border-radius: 15px;
+  padding: 22px 24px; margin: 0 0 18px; box-shadow: var(--schaduw);
+}
+.kaart h3 { margin-top: 0 }
+.kaart p:last-child, .kaart ul:last-child { margin-bottom: 0 }
+
+.let {
+  background: var(--waarschuw-vlak); border-radius: 14px;
+  padding: 20px 24px; margin: 22px 0;
+  border-left: 3px solid var(--waarschuw);
+}
+.let h3 { margin: 0 0 8px; color: var(--waarschuw) }
+.let p:last-child { margin-bottom: 0 }
+
+/* Wat je letterlijk overtypt, staat als tekstblok — niet als lopende zin,
+   zodat je ziet waar de regelafbrekingen horen. */
+.overtype {
+  background: var(--vlak); border: 1px solid var(--lijn); border-radius: 12px;
+  padding: 18px 20px; margin: 0 0 10px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 14.5px; line-height: 1.65; white-space: pre-wrap;
+}
+.tel { font-size: 13.5px; color: var(--zacht); margin: 0 0 22px }
+.tel b { color: var(--inkt) }
+
+.week {
+  display: grid; grid-template-columns: max-content 1fr; gap: 2px 20px;
+  margin: 0 0 20px; align-items: baseline;
+}
+.week dt {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--accent); font-weight: 700; padding-top: 5px;
+}
+.week dd { margin: 0 0 14px; max-width: 52ch }
+
+.bron { font-size: 14px; color: var(--zacht); margin-top: 46px; padding-top: 22px; border-top: 1px solid var(--lijn) }
+.bron a { color: var(--accent) }
+.bron a:hover { color: var(--inkt) }
+
+@media (max-width: 620px) {
+  .blad { padding: 40px 18px 80px }
+  section.stap > h2 { gap: 12px }
+  .week { grid-template-columns: 1fr; gap: 0 }
+  .week dt { padding-top: 12px }
+}
+</style>
+
+<div class="blad">
+  <p class="merk">TapKaarten · groeiplan</p>
+  <h1>Van nul naar de eerste honderd die ertoe doen.</h1>
+  <p class="intro">Een volgplan voor Instagram, gericht op <strong>kappers, speciaalzaken,
+    visboeren, kramen en koffiezaken</strong>. Geen groeitrucs — die kosten je het account.
+    Wel: waar je doelgroep echt zit, hoe je ze binnenhaalt zonder geblokkeerd te worden,
+    en hoe je profiel eruit moet zien voordat je begint.</p>
+  <p class="intro">Volgorde aanhouden. Als je stap 4 doet voordat stap 3 klaar is, stuur je
+    honderden mensen naar een profiel dat ze niets zegt.</p>
+
+  <section class="stap">
+    <h2><span class="cijfer">01</span> Wie je precies zoekt</h2>
+    <p class="lead">Scherper dan "kleine ondernemers", want daar zit je advertentiebudget zo in.</p>
+
+    <p>Wat jouw vijf typen gemeen hebben is niet hun branche maar één moment: <b>de klant staat
+      even stil bij het afrekenen, is net tevreden, en heeft de telefoon al in de hand.</b>
+      Dat moment is je hele product. Elke zaak waar dat moment bestaat, is een prospect.</p>
+
+    <p>Dat maakt je doelgroep in de praktijk:</p>
+    <ul>
+      <li>Eén tot tien man, een fysieke plek, een toonbank of balie.</li>
+      <li>De eigenaar doet zelf de Instagram — dat is degene die je wil bereiken.</li>
+      <li>Vaak wel een Google-vermelding, maar weinig of oude reviews. Dat is je opening.</li>
+    </ul>
+
+    <p>En het omgekeerde, net zo belangrijk: <b>ketens en filialen niet.</b> Die beslissen niet
+      zelf en de reviewwinst is er kleiner. Het onderzoek waar je "5 tot 9% meer omzet per ster"
+      vandaan komt, vond dat effect vrijwel alleen bij zelfstandige zaken.</p>
+  </section>
+
+  <section class="stap">
+    <h2><span class="cijfer">02</span> Waar ze zitten</h2>
+    <p class="lead">Zeven accounts waarvan de volgerslijst vrijwel volledig uit jouw doelgroep bestaat. Namen en aantallen opgezocht, niet gegokt — maar loop ze na voor je begint.</p>
+
+    <div class="tabelwrap">
+      <table>
+        <thead>
+          <tr><th>Account</th><th>Volgers</th><th>Wie daar zit</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="hand">@ankokappers</td><td class="getal">12.000</td><td>Brancheorganisatie voor kappers, barbiers en haarwerkspecialisten. Je zuiverste lijst.</td></tr>
+          <tr><td class="hand">@misset_horeca</td><td class="getal">13.000</td><td>Vakblad horeca. Breed: van sterrenzaken tot koffietentjes, dus selecteren.</td></tr>
+          <tr><td class="hand">@koninklijkehorecanederland</td><td class="getal">7.900</td><td>KHN. Meer eigenaren, minder koks — precies wie beslist.</td></tr>
+          <tr><td class="hand">@inretail</td><td class="getal">6.200</td><td>Brancheorganisatie retail. Hier zitten je speciaalzaken.</td></tr>
+          <tr><td class="hand">@mkbnl</td><td class="getal">7.300</td><td>MKB-Nederland. Breed, maar bijna allemaal ondernemers.</td></tr>
+          <tr><td class="hand">@kvk_nl</td><td class="getal">20.000</td><td>Grootste lijst, laagste dichtheid. Bewaar voor als de rest op is.</td></tr>
+          <tr><td class="hand">@koninklijke_cvah</td><td class="getal">570</td><td>Ambulante handel: markt en kramen. Klein, maar vrijwel iedereen is raak.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>Die laatste is het voorbeeld van waar het echt om gaat: <b>570 volgers waarvan er 500
+      passen is meer waard dan 20.000 waarvan er 800 passen.</b> Begin bij CVAH en ANKO,
+      niet bij KVK.</p>
+
+    <h3>Zelf meer lijsten vinden</h3>
+    <p>Voor visboeren, churroskramen en koffiezaken bestaat geen net brancheaccount dat ik kon
+      verifiëren. Verzonnen namen heb je niets aan, dus hier is de methode in plaats daarvan:</p>
+    <ol>
+      <li>Zoek in Instagram op de branche + "Nederland" en kijk bij <b>Accounts</b>, niet bij posts.</li>
+      <li>Open één zaak die duidelijk jouw type is. Instagram toont dan <b>Vergelijkbare accounts</b> —
+        dat is de goudader, want die suggesties komen uit wie elkaar volgt.</li>
+      <li>Kijk wie díe zaak volgt. Groothandels, leveranciers en vakbeurzen die daar terugkomen,
+        zijn je volgende lijst.</li>
+    </ol>
+
+    <div class="kaart">
+      <h3>Twee lijsten die beter zijn dan alle bovenstaande</h3>
+      <p><b>Volgers van je concurrenten.</b> Zoek op Instagram naar andere aanbieders van
+        NFC-reviewbordjes en review-standaards. Wie die volgt, is al overtuigd van het idee en
+        vergelijkt alleen nog. Dat is de hoogste koopintentie die je op Instagram kunt vinden.</p>
+      <p><b>Zaken met oude reviews.</b> Zoek in Google Maps op "kapper" plus een stad, en kijk
+        wie een goede score heeft maar wiens laatste review maanden oud is. Dat bedrijf heeft
+        precies het probleem dat jij oplost. Zoek hun Instagram op, volg, en reageer op een post.
+        Trager dan lijsten leegvolgen — en veruit het meest raak.</p>
+    </div>
+  </section>
+
+  <section class="stap">
+    <h2><span class="cijfer">03</span> Eerst je profiel, dan pas volgen</h2>
+    <p class="lead">Van iedereen die je volgt, klikt een deel op je naam. Wat ze dan zien beslist alles.</p>
+
+    <h3>Het naamveld — hier laat bijna iedereen punten liggen</h3>
+    <p>Je <b>gebruikersnaam</b> (@tapkaarten) en je <b>naam</b> zijn twee verschillende velden, en
+      alleen dat tweede is doorzoekbaar op woorden. Staat daar alleen "TapKaarten", dan vind je
+      niemand die zoekt op wat je verkoopt. Zet er dus in:</p>
+    <div class="overtype">TapKaarten · Google-reviews</div>
+    <p class="tel"><b>27 van de 30 tekens.</b> Nu verschijn je ook bij wie zoekt op "google reviews".</p>
+
+    <h3>De bio</h3>
+    <p>Vier dingen in drie regels: wat het is, wat het doet, wat het kost, voor wie.</p>
+    <div class="overtype">Eén tik en je klant staat op jouw Google-pagina.
+Geen app, geen abonnement. Vanaf € 34,95.
+Kappers · winkels · kramen · koffiezaken 🧡</div>
+    <p class="tel"><b>133 van de 150 tekens.</b> De prijs staat er expres in: dat filtert de
+      mensen weg die dachten dat het een abonnement was, en dat scheelt je gesprekken.</p>
+
+    <h3>De rest van je profiel</h3>
+    <ul>
+      <li><b>Profielfoto:</b> het vierkante logo dat er al ligt — <code>tapkaarten-instagram-1080.png</code>.
+        Instagram snijdt rond bij; dat is nagemeten, er valt niets af.</li>
+      <li><b>Accounttype:</b> zet om naar <b>Bedrijf</b> als dat nog niet zo is. Je krijgt statistieken,
+        je kunt later inplannen via Meta Business Suite, en er komt een categorie onder je naam.</li>
+      <li><b>Link:</b> tapkaarten.nl. Eén link, geen linktree — elke tussenstap kost je klikken.</li>
+      <li><b>Highlights:</b> vier stuks, in deze volgorde — <b>Zo werkt het</b> · <b>Voor wie</b> ·
+        <b>Reviews</b> · <b>Bestellen</b>. Vul ze met de dia's die je al hebt; die zijn 4:5 en
+        werken ook als story.</li>
+    </ul>
+
+    <p>Zorg dat er <b>minstens negen posts</b> staan voordat je begint met volgen. Een profiel met
+      drie posts oogt als een account dat er over een maand niet meer is, en dat is precies het
+      omgekeerde van wat je verkoopt.</p>
+  </section>
+
+  <section class="stap">
+    <h2><span class="cijfer">04</span> Volgen zonder je account te verbranden</h2>
+    <p class="lead">Instagram let hier scherp op. De limieten hieronder zijn de praktijkgrenzen — geen officiële cijfers, want die publiceert Meta niet.</p>
+
+    <div class="tabelwrap">
+      <table>
+        <thead><tr><th>Fase</th><th>Per dag</th><th>Per uur</th></tr></thead>
+        <tbody>
+          <tr><td>Eerste 2 à 3 weken</td><td class="getal">maximaal 50–100</td><td class="getal">10–15</td></tr>
+          <tr><td>Na 6 maanden actief</td><td class="getal">100–150</td><td class="getal">max. 20</td></tr>
+          <tr><td>Ontvolgen</td><td class="getal">30–50, en liever niet</td><td class="getal">—</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="let">
+      <h3>Volgen en daarna weer ontvolgen: niet doen</h3>
+      <p>Massaal volgen om een terugvolg te scoren en daarna opruimen is het patroon dat Instagram
+        het strengst in de gaten houdt. Zelfs áls je onder de aantallen blijft, is het ritme zelf
+        herkenbaar en levert het een blokkade van 24 tot 48 uur op — of erger bij herhaling.
+        Bouw je lijst dus langzaam op en laat hem staan. Je mag tot 7.500 accounts volgen;
+        met 100 per dag doe je daar ruim twee maanden over.</p>
+    </div>
+
+    <h3>Wat je terug mag verwachten</h3>
+    <p>Kaal volgen levert bij een zakelijk account grofweg <b>3 tot 8 terugvolgers per honderd</b>.
+      Dus 100 per dag is 3 tot 8 volgers per dag. Dat is traag, en daarom doe je het anders:</p>
+    <ol>
+      <li><b>Reageer eerst, volg daarna.</b> Eén oprechte reactie op hun nieuwste post — over hun
+        zaak, niet over jou — en dan pas volgen. Dat verdubbelt tot verdrievoudigt de terugvolg,
+        want je bent geen naam meer maar iemand die keek.</li>
+      <li><b>Nooit een verkoop-DM als eerste bericht.</b> Dat kost je de volger én de kans. Laat je
+        posts het werk doen; ze zien je vanzelf voorbijkomen.</li>
+      <li><b>Twintig goede per dag verslaat honderd willekeurige.</b> Dat is ongeveer twintig minuten
+        werk, en je houdt het vol.</li>
+    </ol>
+  </section>
+
+  <section class="stap">
+    <h2><span class="cijfer">05</span> De eerste dertig dagen</h2>
+    <p class="lead">Twee posts per week uit het contentplan, en elke dag twintig minuten volgen en reageren.</p>
+
+    <dl class="week">
+      <dt>Week 0</dt>
+      <dd>Profiel af: naamveld, bio, profielfoto, bedrijfsaccount, vier highlights. Zet de eerste
+        drie posts online zodat het profiel niet leeg is. Nog niets volgen.</dd>
+
+      <dt>Week 1</dt>
+      <dd>Begin bij <b>@koninklijke_cvah</b> en <b>@ankokappers</b> — de zuiverste lijsten. Twintig
+        per dag, elk met een reactie vooraf. Post dinsdag en vrijdag volgens het contentplan.</dd>
+
+      <dt>Week 2</dt>
+      <dd>Verder met <b>@inretail</b> en <b>@koninklijkehorecanederland</b>. Zoek er nu de eerste
+        concurrenten bij en volg hún volgers — daar zit je hoogste intentie. Naar 30 per dag.</dd>
+
+      <dt>Week 3</dt>
+      <dd>Google Maps erbij: zoek per stad zaken met oude reviews en volg die gericht. Begin met
+        de steden waar je zelf komt; een lokale reactie valt op.</dd>
+
+      <dt>Week 4</dt>
+      <dd>Kijk in je statistieken welke van de vijf posts het meeste is opgeslagen en gedeeld. Dát
+        onderwerp maak je opnieuw, in een andere vorm. En maak nu je eerste reel — tien seconden
+        telefoon tegen een bordje is genoeg.</dd>
+    </dl>
+
+    <p>Realistisch na een maand: <b>150 tot 300 volgers</b>, waarvan het overgrote deel je
+      doelgroep is. Dat klinkt bescheiden naast accounts die er duizenden kopen, maar honderd
+      kappers die je kunnen bestellen is meer waard dan tienduizend volgers uit Bangladesh —
+      en het kost je je account niet.</p>
+  </section>
+
+  <section class="stap">
+    <h2><span class="cijfer">06</span> Wat je niet moet doen</h2>
+    <p class="lead">Kort, omdat elk van deze dingen maanden werk kan kosten.</p>
+    <ul>
+      <li><b>Geen volgers kopen.</b> Je bereik wordt berekend op hoeveel procent van je volgers
+        reageert. Duizend nepvolgers halveert dat percentage, en daarmee je bereik naar de echte.</li>
+      <li><b>Geen automatiseringstools</b> die voor je volgen. Precies waar Instagram op filtert.</li>
+      <li><b>Geen volg-voor-volg-groepen.</b> Levert accounts op die nooit iets bij je kopen en je
+        cijfers vervuilen.</li>
+      <li><b>Niet elke dag posten omdat het moet.</b> Twee goede posts per week verslaan zeven
+        haastige — en je houdt het vol, wat op de lange termijn het enige is dat telt.</li>
+    </ul>
+  </section>
+
+  <p class="bron">Volgersaantallen nagelopen op de accounts zelf, augustus 2026; die lopen op, en
+    accountnamen kunnen wijzigen — controleer voordat je een lijst afwerkt. Volglimieten zijn
+    praktijkcijfers uit
+    <a href="https://www.unfollr.com/blog/instagram-follow-unfollow-limits">Unfollr</a> en
+    <a href="https://socialrails.com/blog/instagram-follow-limits-explained">SocialRails</a>;
+    Meta publiceert geen officiële getallen. Het omzeteffect per ster komt uit
+    Michael Luca, Harvard Business School.</p>
+</div>

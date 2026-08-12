@@ -1948,11 +1948,13 @@ async function enablePush() {
 // ── Inloggen en inrichten ──────────────────────────────────────────────────
 
 /** Het beeldmerk op het inlogscherm: twee cirkels die elkaar overlappen. */
+/**
+ * Daya op het inlogscherm — hetzelfde gezicht als op het beginscherm, zodat je
+ * meteen ziet dat je in de goede app zit. Het merkteken met de twee cirkels
+ * blijft bestaan voor "Samen"; dat is een ander idee dan het logo.
+ */
 function gateMark() {
-  const svg = icon('mark');
-  svg.setAttribute('class', 'gate-mark');
-  svg.style.color = 'var(--accent)';
-  return svg;
+  return h('img', { class: 'gate-mark', src: '/icon-192.png', alt: '', width: '76', height: '76' });
 }
 
 function renderSetup() {

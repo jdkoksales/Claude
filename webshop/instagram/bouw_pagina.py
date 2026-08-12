@@ -34,7 +34,8 @@ def dia(naam):
         <img src="{bron}" alt="{html.escape(naam)}" loading="lazy" width="1080" height="1350">
         <figcaption>
           <span class="best">{html.escape(naam)}</span>
-          <a class="haal" href="{bron}" download="{html.escape(naam)}">Downloaden</a>
+          <a class="haal" href="{bron}" download="{html.escape(naam)}"
+            data-naam="{html.escape(naam)}">Downloaden</a>
         </figcaption>
       </figure>"""
 
@@ -155,6 +156,13 @@ h1 {{
 }}
 .intro {{ max-width: 62ch; color: var(--zacht); font-size: 19px; margin: 0 0 40px }}
 .intro strong {{ color: var(--inkt); font-weight: 600 }}
+
+.tip {{
+  margin: 0 0 30px; padding: 16px 20px; border-radius: 12px;
+  background: var(--accent-vlak); color: var(--inkt);
+  font-size: 15px; line-height: 1.5; max-width: 68ch;
+}}
+.tip b {{ font-weight: 600 }}
 
 .feiten {{
   display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 1px;
@@ -288,6 +296,11 @@ pre.tags {{ color: var(--accent); font-size: 15px; margin-bottom: 22px }}
     plak de hashtags eronder. In deze volgorde plaatsen werkt het best: de posts bouwen op
     elkaar voort.</p>
 
+  <p class="tip" id="tip">Werkt <b>Downloaden</b> niet? Dan kijk je naar deze pagina in een
+    ingebed kader, en dat kader blokkeert downloads. Open de pagina in een eigen tabblad,
+    of klik met de rechtermuisknop op een beeld en kies <b>Afbeelding opslaan als</b>.
+    Op een telefoon: houd het beeld ingedrukt.</p>
+
   <dl class="feiten">
     <div><dt>Posts</dt><dd>5</dd></div>
     <div><dt>Beelden</dt><dd>{aantal_dias}</dd></div>
@@ -312,6 +325,33 @@ pre.tags {{ color: var(--accent); font-size: 15px; margin-bottom: 22px }}
 </div>
 
 <script>
+// Een <a download> naar een data-URI wordt in een ingebed kader geweigerd.
+// Via een blob lukt het meestal wel; lukt dat ook niet, dan openen we het beeld
+// in een nieuw tabblad zodat je het daar kunt opslaan.
+document.querySelectorAll('.haal').forEach(function (link) {{
+  link.addEventListener('click', function (e) {{
+    var naam = link.dataset.naam || 'post.jpg';
+    e.preventDefault();
+    fetch(link.href).then(function (r) {{ return r.blob(); }}).then(function (blob) {{
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url; a.download = naam;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function () {{ URL.revokeObjectURL(url); }}, 5000);
+    }}).catch(function () {{
+      var w = window.open(link.href, '_blank');
+      if (!w) {{
+        var tip = document.getElementById('tip');
+        if (tip) {{
+          tip.scrollIntoView({{ behavior: 'smooth', block: 'center' }});
+          tip.style.outline = '2px solid var(--accent)';
+          tip.style.outlineOffset = '4px';
+        }}
+      }}
+    }});
+  }});
+}});
+
 document.querySelectorAll('.kopieer').forEach(function (knop) {{
   knop.addEventListener('click', function () {{
     var bron = document.getElementById(knop.dataset.doel);

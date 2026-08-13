@@ -183,3 +183,39 @@ blockquote {
   font-size: 30px; font-weight: 600; color: rgba(255,255,255,.9);
 }
 .merkregel img { width: 52px; height: 52px; border-radius: 12px; display: block }
+
+
+/* ---------- productvlak in de kleur van het platform ---------- */
+/* Drie informatieve posts achter elkaar in hetzelfde oranje worden één
+   grijze brij in het raster. De kleur van het platform zelf maakt in een
+   halve seconde duidelijk waar de post over gaat; typografie, voet en
+   opbouw blijven van TapKaarten, dus het merk houdt stand. */
+.vlak.insta { background: linear-gradient(150deg, #7A3AB8 0%, #C32A8E 46%, #E8546A 76%, #F98247 100%) }
+.vlak.fb    { background: linear-gradient(150deg, #0B3D8C 0%, #1559B8 52%, #2C7BF2 100%) }
+.vlak.insta h1 em, .vlak.fb h1 em { color: #FFE3B8 }
+
+/* ---------- feitenlijst ---------- */
+/* Voor de posts die iets uitleggen in plaats van iets oproepen. Label links,
+   antwoord rechts: wie scant leest alleen de rechterkolom en heeft dan nog
+   steeds het verhaal.
+
+   Waarom een witte kaart en geen witte tekst op het verloop: gemeten op het
+   gerenderde beeld haalde wit-op-oranje 2,2:1 en wit-op-roze 3,5:1. Dat is
+   voor tekst van 32px te weinig, en aan de dekking draaien helpt niet - de
+   ondergrond is simpelweg te licht. Donkere inkt op wit haalt 15:1 en leest
+   bovendien als een specificatieblad, wat deze posts ook zijn. */
+.feiten {
+  margin-top: 38px; background: var(--wit); color: var(--inkt);
+  border-radius: 30px; padding: 4px 36px;
+}
+.feiten div {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 28px;
+  padding: 24px 0; border-top: 2px solid rgba(0,0,0,.10);
+}
+.feiten div:first-child { border-top: 0 }
+.feiten dt { font-size: 31px; font-weight: 400; color: #5A6472 }
+.feiten dd { font-size: 34px; font-weight: 700; text-align: right }
+
+/* Vlak met een feitenlijst heeft meer hoogte nodig dan een vlak met alleen
+   een kop. */
+.vlak.lang { flex: 0 0 64% }

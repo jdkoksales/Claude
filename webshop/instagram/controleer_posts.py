@@ -8,7 +8,11 @@ opgevraagd en vergeleken met de doos van zijn ouder.
 
 import json, pathlib, shutil, subprocess, sys
 
+import numpy as np
+from PIL import Image
+
 MAP = pathlib.Path(__file__).parent
+UIT = MAP / "uit"
 
 
 def chroom():
@@ -44,9 +48,51 @@ METING = """
   const f = document.querySelector('.foto img'), voet = document.querySelector('.voet');
   uit.voet_hoogte = voet ? Math.round(kader(voet).height) : 0;
   uit.doek = [document.querySelector('.post').offsetWidth, document.querySelector('.post').offsetHeight];
+  // Labels van de feitenlijst: kleur en plek, zodat het contrast op het
+  // gerenderde beeld te meten is in plaats van uit de CSS te raden.
+  uit.labels = [...document.querySelectorAll('.feiten dt')].map(e => {
+    const r = kader(e);
+    return {kleur: getComputedStyle(e).color,
+            doos: [Math.round(r.left), Math.round(r.top), Math.round(r.right), Math.round(r.bottom)]};
+  });
   return JSON.stringify(uit);
 })()
 """
+
+def helderheid(kleur):
+    c = np.asarray(kleur, float) / 255
+    c = np.where(c <= .03928, c / 12.92, ((c + .055) / 1.055) ** 2.4)
+    return .2126 * c[0] + .7152 * c[1] + .0722 * c[2]
+
+
+def contrast(voor, achter):
+    a, b = helderheid(voor), helderheid(achter)
+    return (max(a, b) + .05) / (min(a, b) + .05)
+
+
+def labelcontrast(data, naam):
+    """Contrast van de feitenlabels, gemeten op de JPEG die eruit komt.
+
+    Niet uit de CSS afgeleid: de vlakken hebben een verloop, dus de
+    achtergrond onder rij 1 is een andere kleur dan onder rij 4. Een enkele
+    berekening zou de onderste rijen missen - precies wat er eerder misging
+    toen wit-op-oranje er in de code goed uitzag en op het beeld 2,2:1 haalde.
+    """
+    beeld = UIT / f"{naam}.jpg"
+    if not data["labels"] or not beeld.exists():
+        return []
+    px = np.asarray(Image.open(beeld).convert("RGB"))
+    klachten = []
+    for i, label in enumerate(data["labels"]):
+        voor = [int(v) for v in label["kleur"].strip("rgb()").split(",")[:3]]
+        l, t, r, b = label["doos"]
+        y = (t + b) // 2
+        achter = px[y - 4:y + 4, r + 40:r + 140].reshape(-1, 3).mean(axis=0)
+        v = contrast(voor, achter)
+        if v < 4.5:
+            klachten.append(f"feitenlabel {i+1} haalt {v:.2f}:1 op {tuple(achter.round().astype(int))} (4.5 nodig)")
+    return klachten
+
 
 fout = 0
 for html in sorted(MAP.glob("post-*.html")):
@@ -72,6 +118,7 @@ for html in sorted(MAP.glob("post-*.html")):
     for r in data["regels"]:
         if r > 4:
             melding.append(f"kop van {r} regels")
+    melding += labelcontrast(data, html.stem)
     if melding:
         fout += 1
         print(f"FOUT  {html.name}")

@@ -74,3 +74,32 @@ if __name__ == "__main__":
     # Wit bordje op zwart: onder een oranje vlak leest dat het scherpst,
     # en post 9 is de enige andere donkere in het raster.
     liggend("tk3-detail-1.jpg",   "../theme3/assets/tk3-post-formaat.jpg", 1080, 580, vulling=0.80, y=0.46)
+
+
+def duo(namen, doel, breed, hoog, vulling=0.72, midden=(0.28, 0.72), y=0.54):
+    """Twee bordjes naast elkaar op één doek.
+
+    De twee bronfoto's zijn in dezelfde studio gemaakt en hebben dezelfde
+    achtergrondkleur, dus ze mogen op één doek zonder dat er iets wordt
+    verzonnen. De uitsneden bevatten de slagschaduw; die mogen elkaar
+    overlappen, want zo staan twee voorwerpen ook echt op een tafel.
+    """
+    knipsels, kleur = [], None
+    for naam in namen:
+        im = Image.open(BRON + naam).convert("RGB")
+        a = np.asarray(im)
+        kleur = achtergrondkleur(a) if kleur is None else kleur
+        l, b, r, o = knipsel(a, kleur)
+        uit = im.crop((l, b, r, o))
+        schaal = (hoog * vulling) / uit.height
+        knipsels.append(uit.resize((round(uit.width * schaal), round(uit.height * schaal)), Image.LANCZOS))
+
+    doek = Image.new("RGB", (breed, hoog), tuple(int(round(k)) for k in kleur))
+    for k, mx in zip(knipsels, midden):
+        px, py = round(breed * mx - k.width / 2), round((hoog - k.height) * y)
+        masker = Image.new("L", k.size, 0)
+        masker.paste(255, (18, 18, k.width - 18, k.height - 18))
+        masker = masker.filter(ImageFilter.GaussianBlur(14))
+        doek.paste(k, (px, py), masker)
+    doek.save(doel, quality=94, optimize=True)
+    print(f"{doel}  {breed}x{hoog}  {len(knipsels)} bordjes van {knipsels[0].width}x{knipsels[0].height}")

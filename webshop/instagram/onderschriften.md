@@ -16,6 +16,10 @@ Vijf posts, in deze volgorde te plaatsen. Alle beelden zijn 1080 x 1350
 | 8 | Los beeld | Facebook-kaart: waar jouw klanten wel zitten | Week 4 — vrijdag |
 | 9 | Los beeld | “Mijn klanten zijn er te oud voor” | Week 5 — dinsdag |
 | 10 | Los beeld | 7,6 bij 12,75 cm | Week 5 — vrijdag |
+| 11 | Los beeld | Nieuw: de Instagram- en Facebookstandaard | Week 6 — dinsdag |
+| 12 | Los beeld | De Google-standaard, uitgelegd | Week 6 — vrijdag |
+| 13 | Los beeld | De Instagram-standaard, uitgelegd | Week 7 — dinsdag |
+| 14 | Los beeld | De Facebook-standaard, uitgelegd | Week 7 — vrijdag |
 
 ---
 
@@ -320,6 +324,144 @@ Sta jij op de markt of met een kraam? Waar, en wat verkoop je? 👇
 ```
 
 **Waarom zo:** De doelgroep met een kraam denkt dat dit een winkelproduct is en scrollt door. Deze post haalt ze binnen door hun eigen situatie te beschrijven, inclusief het argument dat alleen voor hen geldt: wie geen vaste plek heeft, moet online vindbaar zijn.
+
+---
+
+## 11. Nieuw: de Instagram- en Facebookstandaard
+
+**Vorm:** Los beeld  
+**Wanneer:** Week 6 — dinsdag  
+**Waarvoor:** De aankondiging. Niet 'we hebben iets nieuws', maar waarom het bestaat.
+
+**Beelden:** `uit/post-11-nieuw.jpg`
+
+### Onderschrift
+
+```
+Nieuw: de Instagram- en de Facebookstandaard.
+
+Even eerlijk over waarom we ze gemaakt hebben.
+
+Een Google-review is prachtig, maar het is één moment. Iemand schrijft hem, en daarna is het klaar. Je kunt alleen maar hopen dat de volgende klant hem leest.
+
+Een volger werkt anders. Die zie je terug. Elke keer dat je iets plaatst — wat er vanochtend binnenkwam, het nieuwe seizoen, je zaak op een rustige dinsdag — sta jij weer even in het hoofd van iemand die al eens bij je is geweest. Zonder dat je daar per keer voor betaalt.
+
+En die mensen heb je al gehad. Ze zijn deze maand gewoon bij je binnen geweest. Ze vonden het leuk. Sommigen maakten zelfs een foto. En toen liepen ze de deur uit en was het weg.
+
+De Instagram- en de Facebookstandaard stellen die ene vraag wel.
+
+Allebei € 34,95. Of alle drie samen — Google, Instagram én Facebook — voor € 79,95 in plaats van € 104,85. Alle bedragen zonder btw; als ondernemer krijg je die terug.
+
+Welke zou jij neerzetten? 👇
+
+#tapkaarten #nieuw #instagramvolgers #facebookpagina #socialmedia #lokaalondernemen #mkbnederland #kleinbedrijf #ondernemen #horeca #kapper #winkel
+```
+
+**Waarom zo:** Een aankondiging die alleen 'nieuw!' roept geeft de lezer geen reden om te stoppen. Deze legt in twee zinnen uit waarom een volger iets anders is dan een review — dat is het argument voor het product én meteen de reden om door te lezen. Het bundelvoordeel staat er pas onderaan, als de lezer al overtuigd is.
+
+---
+
+## 12. De Google-standaard, uitgelegd
+
+**Vorm:** Los beeld  
+**Wanneer:** Week 6 — vrijdag  
+**Waarvoor:** Informatief. Voor wie het product al eens voorbij zag komen maar niet weet wat het precies doet.
+
+**Beelden:** `uit/post-12-google.jpg`
+
+### Onderschrift
+
+```
+De Google-standaard. Wat hij doet, in het kort.
+
+Hij staat op je balie en wijst naar jouw Google-reviewpagina. Je klant houdt zijn telefoon ertegenaan en die pagina opent. Geen app, geen account, geen zoeken.
+
+Waarom dat werkt: 83% van de mensen die om een review gevraagd wordt, schrijft er ook een. De bereidheid is nooit het probleem geweest. Het probleem is dat vragen ongemakkelijk voelt, zeker met iemand achter je die staat te wachten.
+
+Het bordje vraagt het voor je.
+
+→ 7,6 bij 12,75 cm, past naast de pin
+→ Wij zoeken je Google-pagina op en koppelen hem voordat je pakket weggaat
+→ Leest een ouder toestel geen NFC? Er staat ook een QR-code op
+→ € 34,95 excl. btw, eenmalig, geen abonnement
+→ In het wit of in het zwart
+
+Bron: BrightLocal, Local Consumer Review Survey 2026
+
+Waar zou hij bij jou komen te staan? 👇
+
+#tapkaarten #googlereviews #meerreviews #localseo #nfc #lokaalondernemen #mkbnederland #klantbeleving #ondernemerstips #kleinbedrijf
+```
+
+**Waarom zo:** Een informatieve post mag saai lijken maar wordt het vaakst bewaard en doorgestuurd, want iemand die twijfelt wil de feiten op één plek. De opsomming staat er in de volgorde waarin mensen ze vragen: hoe groot, moet ik iets doen, wat als het niet werkt, wat kost het.
+
+---
+
+## 13. De Instagram-standaard, uitgelegd
+
+**Vorm:** Los beeld  
+**Wanneer:** Week 7 — dinsdag  
+**Waarvoor:** Informatief, en het gat benoemen tussen gefotografeerd worden en gevolgd worden.
+
+**Beelden:** `uit/post-13-insta-info.jpg`
+
+### Onderschrift
+
+```
+De Instagram-standaard. Voor het gat tussen "wat leuk hier" en een volger.
+
+Mensen fotograferen je zaak vaker dan je denkt. Het bord buiten, de koffie, de kleur van je muur. Dat is gratis reclame — alleen weten ze meestal niet hoe je op Instagram heet, en dan blijft die foto in hun eigen camerarol hangen.
+
+De Instagram-standaard haalt dat gat weg. Eén tik en ze staan op jouw profiel, terwijl ze nog binnen zijn.
+
+→ Wijst naar jouw Instagram-profiel
+→ 7,6 bij 12,75 cm
+→ Wij koppelen je profiel voordat het pakket weggaat, jij hoeft niets in te stellen
+→ Ook een QR-code, voor toestellen die geen NFC lezen
+→ € 34,95 excl. btw, eenmalig
+
+En dan het echte werk, eerlijk gezegd: daarna wel iets plaatsen. Eén keer per week is genoeg. Een volger die nooit iets van je ziet, is geen volger.
+
+Wat is jouw Instagram? Zet 'm hieronder, dan volg ik je 🧡
+
+#tapkaarten #instagramvolgers #instagramtips #socialmedia #nfc #lokaalondernemen #mkbnederland #kleinbedrijf #horeca #kapper #winkel
+```
+
+**Waarom zo:** De laatste alinea verkoopt niets en geeft juist toe dat het product alleen werkt als de ondernemer zelf iets doet. Dat kost een fractie van de kopers en levert het vertrouwen van alle anderen op. De slotvraag is bovendien de goedkoopste manier om zelf volgers te krijgen.
+
+---
+
+## 14. De Facebook-standaard, uitgelegd
+
+**Vorm:** Los beeld  
+**Wanneer:** Week 7 — vrijdag  
+**Waarvoor:** Informatief, en tegelijk het enige verhaal dat tegen het gangbare advies in gaat.
+
+**Beelden:** `uit/post-14-fb-info.jpg`
+
+### Onderschrift
+
+```
+De Facebook-standaard. Ja, Facebook.
+
+Daar krijgen we vragen over, dus laten we het gewoon zeggen: voor heel veel zaken is Facebook nog altijd de plek waar hun klanten zitten. De visboer op de markt, de buurtsuper, de kaaskraam, de kapper waar dezelfde mensen al vijftien jaar komen.
+
+Die klanten zitten in buurtgroepen. Daar wordt gedeeld wie er open is, wat er vandaag binnen is, waar de markt staat. Word jij daar gedeeld, dan kom je terecht bij precies de mensen die bij je in de straat wonen.
+
+Instagram is sterker voor bereik. Facebook is sterker voor de buurt.
+
+→ Wijst naar jouw Facebookpagina
+→ 7,6 bij 12,75 cm, past op de rand van een kraam
+→ Wij koppelen je pagina voordat het pakket weggaat
+→ Ook een QR-code
+→ € 34,95 excl. btw, eenmalig
+
+Sta jij op de markt, of in een buurt waar iedereen elkaar kent? Vertel eens 👇
+
+#tapkaarten #facebook #buurtwinkel #markt #visboer #streekproducten #lokaalondernemen #mkbnederland #kleinbedrijf #ondernemen
+```
+
+**Waarom zo:** Iedereen roept dat Facebook dood is. Voor deze doelgroep is dat niet waar, en een post die dat hardop tegenspreekt wordt gelezen én beantwoord door precies de mensen voor wie het klopt. Het is de enige van de vier die een standpunt inneemt.
 
 ---
 

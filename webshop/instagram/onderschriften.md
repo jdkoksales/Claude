@@ -20,7 +20,7 @@ Vijf posts, in deze volgorde te plaatsen. Alle beelden zijn 1080 x 1350
 | 12 | Los beeld | De Google-standaard, uitgelegd | Week 6 — vrijdag |
 | 13 | Los beeld | De Instagram-standaard, uitgelegd | Week 7 — dinsdag |
 | 14 | Los beeld | De Facebook-standaard, uitgelegd | Week 7 — vrijdag |
-| 15 | Los beeld | Wist je dat: oude reviews tellen minder mee | Week 8 — dinsdag |
+| 15 | Los beeld | Wist je dat: stilstaan in reviews kost je plekken | Week 8 — dinsdag |
 
 ---
 
@@ -466,7 +466,7 @@ Sta jij op de markt, of in een buurt waar iedereen elkaar kent? Vertel eens 👇
 
 ---
 
-## 15. Wist je dat: oude reviews tellen minder mee
+## 15. Wist je dat: stilstaan in reviews kost je plekken
 
 **Vorm:** Los beeld  
 **Wanneer:** Week 8 — dinsdag  
@@ -477,17 +477,17 @@ Sta jij op de markt, of in een buurt waar iedereen elkaar kent? Vertel eens 👇
 ### Onderschrift
 
 ```
-Wist je dat Google niet alleen kijkt hoevéél reviews je hebt, maar vooral hoe recent ze zijn?
+Een zaak zonder nieuwe reviews zakt in Google. Ook als je het drukker hebt dan ooit.
 
 Stel: twee kappers in dezelfde straat. De één heeft 180 reviews, netjes verzameld tussen 2021 en 2023. De ander heeft er 45, waarvan zeven van de afgelopen maand.
 
 Meestal staat die tweede hoger.
 
-Reviews zijn ongeveer een vijfde van wat je positie in de lokale resultaten bepaalt, en binnen dat vijfde weegt versheid zwaarder dan het totaal. Een zaak die reviews blijft binnenhalen ziet eruit als een zaak die loopt. Een zaak met 180 reviews en al twee jaar niets nieuws ziet er van buitenaf uit alsof er niemand meer komt — ook als je het drukker hebt dan ooit.
+Reviews bepalen ongeveer een vijfde van je positie in de lokale resultaten, en binnen dat vijfde weegt versheid zwaarder dan je totaal. Een zaak die reviews blijft binnenhalen ziet eruit als een zaak die loopt. Een zaak met 180 reviews en al twee jaar niets nieuws ziet er van buitenaf uit alsof er niemand meer komt.
 
-Dat is het vervelende eraan: je hoeft niets fout te doen om te zakken. Je hoeft alleen te stoppen met vragen.
+Dat is het gemene eraan: je hoeft niets fout te doen om te zakken. Je hoeft alleen te stoppen met vragen. En dat gebeurt vanzelf, want vragen om een review is ongemakkelijk.
 
-Een TapKaart houdt die stroom op gang. Elke dag, bij elke klant, zonder dat jij er iets voor hoeft te zeggen.
+Een TapKaart vraagt het voor je. Elke dag, bij elke klant, zonder dat jij iets hoeft te zeggen.
 
 Zoek je eigen zaak eens op in Google Maps. Hoe oud is je bovenste review? 👇
 
@@ -496,7 +496,7 @@ Bron: Whitespark, Local Search Ranking Factors 2026
 #tapkaarten #googlereviews #localseo #googlemaps #vindbaarheid #meerreviews #lokaalondernemen #mkbnederland #kleinbedrijf #ondernemerstips
 ```
 
-**Waarom zo:** De meeste posts over reviews gaan over wat de klant ervan vindt. Deze gaat over waar je staat als iemand zoekt, en dat raakt een andere zenuw: omzet die je misloopt zonder het te merken. De slotvraag laat de lezer het zelf opzoeken - wie zijn eigen bovenste review van twee jaar geleden ziet staan, is overtuigd zonder dat wij iets hoeven te beweren.
+**Waarom zo:** De kop noemt het gevolg en niet het mechanisme: 'zakt in Google' raakt harder dan 'recentheid weegt mee', terwijl er niets beweerd wordt dat Google zelf zou hebben gezegd. De bronregel staat op het beeld, dus de claim is naar de lezer toe onderbouwd. De slotvraag laat mensen het zelf opzoeken - wie zijn bovenste review van twee jaar geleden ziet staan, overtuigt zichzelf.
 
 ---
 

@@ -218,4 +218,4 @@ blockquote {
 
 /* Vlak met een feitenlijst heeft meer hoogte nodig dan een vlak met alleen
    een kop. */
-.vlak.lang { flex: 0 0 64% }
+.vlak.lang { flex: 0 0 60% }

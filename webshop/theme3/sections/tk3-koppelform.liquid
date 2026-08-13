@@ -62,10 +62,10 @@
             </div>
 
             <p>
-              <label for="koppel-plaats">Vestigingsplaats en adres</label>
-              <input type="text" id="koppel-plaats" name="contact[Vestiging]" required
-                placeholder="Dorpsstraat 12, Roden" autocomplete="street-address">
-              <small>Hiermee vinden wij het juiste Google-bedrijfsprofiel. Heb je meerdere vestigingen, zet ze er dan allemaal bij.</small>
+              <label for="koppel-plaats">Plaats</label>
+              <input type="text" id="koppel-plaats" name="contact[Plaats]" required
+                placeholder="Roden" autocomplete="address-level2">
+              <small>Met je bedrijfsnaam en je plaats vinden wij je Google-bedrijfsprofiel. Heb je meerdere vestigingen of een naam die vaker voorkomt? Zet het adres er dan bij.</small>
             </p>
 
             <div class="koppel-scheiding"><span>Welke pagina’s moeten er op de kaarten?</span></div>
@@ -73,17 +73,19 @@
             <p>
               <label for="koppel-google">Google-bedrijfsprofiel</label>
               <input type="text" id="koppel-google" name="contact[Google]"
-                placeholder="Naam zoals hij op Google staat, of een link" spellcheck="false">
+                placeholder="Laat leeg als je naam en plaats kloppen" spellcheck="false">
+              <small>Alleen invullen als je zaak op Google anders heet dan hierboven.</small>
             </p>
             <p>
-              <label for="koppel-insta">Instagram</label>
+              <label for="koppel-insta">Instagram van je zaak</label>
               <input type="text" id="koppel-insta" name="contact[Instagram]"
-                placeholder="@jouwzaak" spellcheck="false">
+                placeholder="@jouwzaak" spellcheck="false" autocapitalize="off">
             </p>
             <p>
-              <label for="koppel-fb">Facebook</label>
+              <label for="koppel-fb">Facebook van je zaak</label>
               <input type="text" id="koppel-fb" name="contact[Facebook]"
-                placeholder="Naam van je bedrijfspagina, of een link" spellcheck="false">
+                placeholder="Naam van je bedrijfspagina" spellcheck="false" autocapitalize="off">
+              <small>Vul deze twee ook in als je nu alleen een Google-kaart hebt. Dan kunnen wij een kaart later omzetten zonder dat je iets hoeft op te zoeken.</small>
             </p>
             <p>
               <label for="koppel-verdeling">Welke kaart krijgt welke pagina?</label>
@@ -99,6 +101,34 @@
             </p>
           {%- endif -%}
         {%- endform -%}
+
+        {%- comment -%}
+          Instagram en Facebook zijn met opzet niet verplicht: wie alleen een
+          Google-kaart koopt heeft ze soms niet, en dan wordt er "nvt" ingetypt
+          en zijn we niets opgeschoten. Maar leeg laten is meestal overslaan,
+          niet "ik heb er geen". Deze vraag onderscheidt die twee. Zonder
+          JavaScript verstuurt het formulier gewoon, dus niemand loopt vast.
+        {%- endcomment -%}
+        <script>
+          (function () {
+            var form = document.querySelector('.koppel-form');
+            if (!form) return;
+            var insta = form.querySelector('#koppel-insta');
+            var fb = form.querySelector('#koppel-fb');
+            if (!insta || !fb) return;
+            var gevraagd = false;
+            form.addEventListener('submit', function (e) {
+              if (gevraagd || insta.value.trim() || fb.value.trim()) return;
+              e.preventDefault();
+              gevraagd = true;
+              if (window.confirm('Je hebt geen Instagram of Facebook ingevuld.\n\nHeb je die echt niet? Klik op OK om zo te versturen. Klik op Annuleren om ze alsnog in te vullen.')) {
+                form.submit();
+              } else {
+                insta.focus();
+              }
+            });
+          }());
+        </script>
       </div>
 
       {%- if section.settings.pdf_url != blank -%}
@@ -122,7 +152,7 @@
   "settings": [
     { "type": "text", "id": "eyebrow", "label": "Bovenregel", "default": "Na je bestelling" },
     { "type": "text", "id": "heading", "label": "Kop", "default": "Geef je pagina’s door, wij koppelen ze" },
-    { "type": "textarea", "id": "sub", "label": "Onderkop", "default": "Vul hieronder in hoe je zaak heet en waar je zit. Wij zoeken je Google-, Instagram- en Facebookpagina op en zetten ze op je kaarten voordat ze de deur uit gaan." },
+    { "type": "textarea", "id": "sub", "label": "Onderkop", "default": "Vul hieronder in hoe je zaak heet, in welke plaats je zit en hoe je op Instagram en Facebook heet. Wij zoeken de pagina’s op en zetten ze op je kaarten voordat ze de deur uit gaan." },
     { "type": "text", "id": "email", "label": "Contactadres", "default": "info@tapkaarten.nl" },
     { "type": "url", "id": "pdf_url", "label": "Link naar de handleiding (pdf)" }
   ],

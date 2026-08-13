@@ -157,7 +157,7 @@ def maak():
 
     blokken = "\n\n".join(blok(p) for p in posten)
 
-    pagina = f"""<meta charset="utf-8">\n<title>TapKaarten — vijf Instagram-posts</title>
+    pagina = f"""<meta charset="utf-8">\n<title>TapKaarten — Instagram-posts</title>
 <style>
 {fonts}
 
@@ -355,7 +355,7 @@ pre.tags {{ color: var(--accent); font-size: 15px; margin-bottom: 22px }}
 
 <div class="blad">
   <p class="merk">TapKaarten · contentplan</p>
-  <h1>Vijf posts, klaar om te plaatsen.</h1>
+  <h1>{len(posten)} posts, klaar om te plaatsen.</h1>
   <p class="intro">Alle beelden staan op <strong>1080 × 1350</strong> — het formaat dat in
     de tijdlijn de meeste schermhoogte pakt. Download het beeld, kopieer het onderschrift,
     plak de hashtags eronder. In deze volgorde plaatsen werkt het best: de posts bouwen op

@@ -31,6 +31,9 @@ export function emptyStore() {
     // Alleen de metagegevens van foto's: wie, waar, wanneer en het bijschrift.
     // De afbeelding zelf staat apart, zie putPhoto/getPhoto.
     photos: [],
+    // Berichtjes die ze elkaar sturen. Alleen de laatste vijftig; dit is geen
+    // chat-app, het is een por met een lief zinnetje eraan.
+    messages: [],
     pushSubs: [],
     sent: {},
     settings: {},

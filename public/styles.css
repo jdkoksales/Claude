@@ -1222,6 +1222,78 @@ button.row { cursor: pointer; }
 }
 .toast[hidden] { display: none; }
 
+/* ── Zinnetje van de dag ───────────────────────────────────────────────────
+
+   Bovenaan Vandaag, en bewust géén gewone kaart: een streep opzij en wat lucht
+   eromheen leest als een gedachte in plaats van als nóg een blok met gegevens. */
+
+.quote {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  padding: 14px 16px;
+  border-radius: var(--radius);
+  border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent);
+  border-left: 3px solid var(--accent);
+  background: linear-gradient(100deg, var(--accent-soft), color-mix(in srgb, var(--surface) 88%, transparent));
+  box-shadow: inset 0 1px 0 var(--sheen), var(--lift-1);
+}
+.quote svg {
+  width: 19px;
+  height: 19px;
+  flex-shrink: 0;
+  margin-top: 1px;
+  color: var(--accent);
+  stroke-width: 1.7;
+}
+.quote p {
+  font-size: .93rem;
+  line-height: 1.5;
+  font-weight: 550;
+  color: color-mix(in srgb, var(--text) 88%, var(--accent));
+  text-wrap: balance;
+}
+
+/* ── Berichtjes ────────────────────────────────────────────────────────────
+
+   Geen chat-app: een lijstje van wat er heen en weer is gestuurd, nieuwste
+   bovenaan. Wat jij stuurde staat in jouw accentkleur zodat je in één blik
+   ziet wie wat zei. */
+
+.messages { display: flex; flex-direction: column; }
+.message {
+  display: flex;
+  gap: 10px;
+  padding: 11px 14px;
+  border-top: 1px solid var(--line);
+}
+.messages > .message:first-child { border-top: 0; }
+.message .avatar { margin-top: 2px; }
+.message-main { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.message-main p {
+  font-size: .89rem;
+  line-height: 1.45;
+  /* Een verhaaltje mag lange woorden en enters bevatten. */
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.message-main span { font-size: .73rem; }
+.message.is-mine .message-main p { color: var(--text-soft); }
+
+/* Een stipje op het tabblad zolang er iets ongelezen is. */
+.tab.has-news::after {
+  content: "";
+  position: absolute;
+  top: 4px;
+  left: 50%;
+  margin-left: 8px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--danger);
+  box-shadow: 0 0 0 2px var(--surface);
+}
+
 /* ── Kaart ─────────────────────────────────────────────────────────────────
 
    Leaflet brengt zijn eigen opmaak mee; hieronder staat alleen wat de kaart in

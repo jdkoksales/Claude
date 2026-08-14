@@ -14,7 +14,7 @@ import { albumDate, describeRepeat, expandEvents } from './lib/recurrence.js';
 import { BOTH, goalStats, openToday } from './lib/goals.js';
 import {
   CATEGORIES, FUN, InputError, REMINDER_CHOICES, commentInput, entryInput,
-  eventInput, goalInput, photoInput, taskInput,
+  eventInput, goalInput, messageInput, photoInput, taskInput,
 } from './lib/validate.js';
 import {
   addSubscription, notify, publicKey, pushReady, removeSubscription,
@@ -243,6 +243,8 @@ api.get('/state', (req, res, next) => {
       goals,
       tasks: store.tasks,
       photos: store.photos || [],
+      // Nieuwste eerst: dat is de volgorde waarin je ze wilt lezen.
+      messages: [...(store.messages || [])].reverse(),
       openToday: openToday(
         store.goals.filter((g) => g.ownerId === req.user.id || g.ownerId === BOTH),
         now,
@@ -632,6 +634,68 @@ api.post('/push/test', async (req, res) => {
 });
 
 // ── Back-up ────────────────────────────────────────────────────────────────
+
+// ── Berichtjes ─────────────────────────────────────────────────────────────
+
+/**
+ * Een berichtje aan de ander, dat meteen als melding op haar telefoon komt.
+ *
+ * Het wordt ook bewaard, en dat is niet overbodig: staan de meldingen uit of
+ * ligt de telefoon op stil, dan is een melding die je mist voorgoed weg. In de
+ * app staat hij er dan gewoon nog. Vijftig is ruim genoeg om terug te kijken
+ * en houdt die ene rij met alle gegevens klein.
+ */
+api.post('/messages', async (req, res, next) => {
+  try {
+    const { text } = messageInput(req.body);
+    const other = db().users.find((u) => u.id !== req.user.id);
+    if (!other) throw new InputError('Er is nog niemand om iets naar te sturen.');
+
+    const message = {
+      id: newId(),
+      text,
+      fromId: req.user.id,
+      toId: other.id,
+      createdAt: new Date().toISOString(),
+      readAt: null,
+    };
+    const store = db();
+    store.messages = [...(store.messages || []), message].slice(-50);
+    touch();
+
+    // De melding is een extraatje: mislukt hij, dan staat het bericht er nog.
+    let delivered = 0;
+    try {
+      delivered = await notify(other.id, {
+        title: req.user.name,
+        body: text,
+        tag: `bericht-${message.id}`,
+        url: '/?tab=meer',
+      });
+    } catch (err) {
+      console.warn(`[bericht] melding versturen mislukt: ${err.message}`);
+    }
+
+    res.status(201).json({ message, delivered });
+  } catch (err) {
+    next(err);
+  }
+});
+
+/** Alles wat je hebt gezien is gezien; dat scheelt een teller in de balk. */
+api.post('/messages/read', (req, res) => {
+  const store = db();
+  const now = new Date().toISOString();
+  let changed = 0;
+  for (const m of store.messages || []) {
+    if (m.toId === req.user.id && !m.readAt) {
+      m.readAt = now;
+      changed += 1;
+    }
+  }
+  if (changed) touch();
+  res.json({ ok: true, changed });
+});
 
 // ── Plekken opzoeken ───────────────────────────────────────────────────────
 

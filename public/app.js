@@ -6,6 +6,8 @@
  * verouderde afhankelijkheden.
  */
 
+import { quoteOfDay } from './quotes.js';
+
 // ── Kleine hulpjes ─────────────────────────────────────────────────────────
 
 const $ = (sel, root = document) => root.querySelector(sel);
@@ -950,8 +952,19 @@ function renderAvatars() {
 
 // ── Scherm: Vandaag ────────────────────────────────────────────────────────
 
+/**
+ * Het zinnetje van de dag, bovenaan Vandaag. Uit de datum gerekend, dus jullie
+ * zien allebei hetzelfde en het wisselt om middernacht.
+ */
+function quoteCard(today) {
+  return h('section', { class: 'quote' },
+    icon('sparkle'),
+    h('p', { text: quoteOfDay(today) }));
+}
+
 function renderVandaag(root) {
   const { today, events, goals, tasks } = state.data;
+  root.append(quoteCard(today));
   const todays = events.filter((e) => e.date === today);
   const mine = goals.filter((g) => !g.archived && g.kind === 'habit'
     && (g.ownerId === state.me.id || g.ownerId === 'both'));
@@ -1823,6 +1836,69 @@ function renderTaken(root) {
 
 // ── Scherm: Meer ───────────────────────────────────────────────────────────
 
+// ── Berichtjes ─────────────────────────────────────────────────────────────
+
+/** Hoeveel berichtjes er nog niet gelezen zijn. */
+function unreadMessages() {
+  return (state.data?.messages || []).filter((m) => m.toId === state.me?.id && !m.readAt).length;
+}
+
+/**
+ * Typ iets, en het staat als melding op haar telefoon. Wat je stuurt blijft
+ * ook in de app staan: een gemiste melding is anders voorgoed weg.
+ */
+function messageSheet() {
+  const other = partner();
+  const err = errorLine();
+  const input = h('textarea', {
+    name: 'text',
+    maxlength: '500',
+    rows: '4',
+    required: true,
+    placeholder: other ? `Wat wil je tegen ${other.name} zeggen?` : '',
+  });
+
+  const form = h('form', { class: 'form' },
+    field('Bericht', input),
+    err,
+    h('button', { class: 'btn primary block', type: 'submit' }, 'Versturen'));
+
+  form.addEventListener('submit', submitter(form, err, async (values) => {
+    const res = await api('/messages', { method: 'POST', body: { text: values.text } });
+    // Eerlijk zijn over wat er is gebeurd: het bericht staat er hoe dan ook,
+    // maar of haar telefoon ook echt piept hangt aan haar meldingen.
+    toast(res.delivered
+      ? 'Verstuurd — hij staat op haar telefoon.'
+      : 'Opgeslagen. Ze heeft nog geen meldingen aanstaan, dus ze ziet hem in de app.');
+    buzz();
+    closeSheet();
+    await refresh();
+  }));
+
+  const list = (state.data?.messages || []).slice(0, 12);
+  return h('div', { class: 'form' },
+    form,
+    list.length
+      ? h('div', { class: 'card' },
+        h('div', { class: 'card-head' }, h('h2', { text: 'Eerder gestuurd' })),
+        h('div', { class: 'messages' }, ...list.map(messageRow)))
+      : emptyNote('Nog geen berichtjes. Dit is een goed moment.', 'comment'));
+}
+
+/** Eén berichtje: van wie, wat, en hoe lang geleden. */
+function messageRow(m) {
+  const mine = m.fromId === state.me.id;
+  const when = new Date(m.createdAt);
+  const label = when.toISOString().slice(0, 10) === state.data.today
+    ? when.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' })
+    : shortLabel(m.createdAt.slice(0, 10));
+  return h('div', { class: `message${mine ? ' is-mine' : ''}` },
+    avatarOf(m.fromId, 'xs'),
+    h('div', { class: 'message-main' },
+      h('p', { text: m.text }),
+      h('span', { class: 'muted', text: `${mine ? 'jij' : ownerName(m.fromId)} · ${label}` })));
+}
+
 function renderMeer(root) {
   root.append(card('Jij', null, h('div', { class: 'card-body' },
     h('div', { class: 'row', style: { padding: '0' } },
@@ -1836,6 +1912,29 @@ function renderMeer(root) {
       type: 'button',
       onclick: async () => { await api('/logout', { method: 'POST' }); location.reload(); },
     }, 'Uitloggen'))));
+
+  if (partner()) {
+    const unread = unreadMessages();
+    const recent = (state.data.messages || []).slice(0, 5);
+    root.append(card(
+      unread ? `Berichtjes · ${unread} nieuw` : 'Berichtjes',
+      h('button', {
+        class: 'btn ghost',
+        type: 'button',
+        onclick: () => openSheet(`Berichtje aan ${partner().name}`, messageSheet),
+      }, '+ Sturen'),
+      recent.length
+        ? h('div', { class: 'messages' }, ...recent.map(messageRow))
+        : h('div', { class: 'card-body' },
+          emptyNote(`Stuur ${partner().name} eens iets liefs. Ze krijgt het meteen als melding.`, 'comment'))));
+
+    // Wat je op dit scherm ziet staan, is gezien.
+    if (unread) {
+      api('/messages/read', { method: 'POST' })
+        .then(() => refresh())
+        .catch(() => {});
+    }
+  }
 
   root.append(card('Herinneringen', null, h('div', { class: 'card-body' }, ...notificationControls())));
 
@@ -2120,13 +2219,20 @@ $('#add-btn').addEventListener('click', () => {
   return openSheet('Nieuw', () => h('div', { class: 'form' },
     h('button', { class: 'btn block', type: 'button', onclick: () => openSheet('Nieuwe afspraak', () => eventForm(null, state.data.today)) }, 'Afspraak in de agenda'),
     h('button', { class: 'btn block', type: 'button', onclick: () => openSheet('Nieuw doel', () => goalForm(null)) }, 'Doel'),
-    h('button', { class: 'btn block', type: 'button', onclick: () => openSheet('Nieuwe taak', () => taskForm(null)) }, 'Taak')));
+    h('button', { class: 'btn block', type: 'button', onclick: () => openSheet('Nieuwe taak', () => taskForm(null)) }, 'Taak'),
+    partner() && h('button', {
+      class: 'btn block',
+      type: 'button',
+      onclick: () => openSheet(`Berichtje aan ${partner().name}`, messageSheet),
+    }, 'Berichtje sturen')));
 });
 
 function render() {
   const root = $(`.view[data-view="${state.tab}"]`);
   if (!root || !state.data) return;
   renderAvatars();
+  // Een stipje op "Meer" zolang er een berichtje ongelezen is.
+  $('.tab[data-tab="meer"]')?.classList.toggle('has-news', unreadMessages() > 0);
   root.replaceChildren();
   RENDERERS[state.tab](root);
   if (state.entering) {

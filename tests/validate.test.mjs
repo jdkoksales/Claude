@@ -162,3 +162,10 @@ test('een plek buiten de kaart wordt geweigerd', () => {
   assert.throws(() => eventInput({ ...ok, lat: 0, lon: -181 }, USERS), /buiten de kaart/);
   assert.throws(() => eventInput({ ...ok, lat: 'ergens', lon: 'daar' }, USERS), /klopt niet/);
 });
+
+test('een berichtje wordt schoongemaakt en mag niet leeg zijn', async () => {
+  const { messageInput } = await import('../src/lib/validate.js');
+  assert.equal(messageInput({ text: '  Denk aan je afspraak!  ' }).text, 'Denk aan je afspraak!');
+  assert.throws(() => messageInput({ text: '   ' }), /Bericht/);
+  assert.throws(() => messageInput({ text: 'x'.repeat(501) }), /Bericht/);
+});

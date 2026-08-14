@@ -206,6 +206,11 @@ export function entryInput(body, userIds) {
   };
 }
 
+/** Een berichtje aan de ander. Eén veld, dus één regel controle. */
+export function messageInput(body) {
+  return { text: text(body.text, 'Bericht', { max: 500 }) };
+}
+
 export function taskInput(body, userIds) {
   let assignee = null;
   if (body.assigneeId != null && body.assigneeId !== '') {

@@ -53,6 +53,16 @@ Deze keuzes zijn met Julian doorgenomen. Verander ze niet zonder het te vragen.
   een doorgeefluik naar Nominatim: die dienst wil één afzender met een eigen
   User-Agent zien in plaats van tientallen browsers, en hooguit één vraag per
   seconde. Antwoorden blijven een uur in het geheugen hangen.
+- **Het zinnetje van de dag zijn eigen regels, geen beroemde citaten.** Die
+  worden op internet aan de lopende band aan de verkeerde persoon toegeschreven,
+  en dan staat er elke dag een leugen op je beginscherm. Ze staan in
+  `public/quotes.js` en worden uit de datum gerekend: allebei hetzelfde, elke
+  dag anders, niets op te slaan en het werkt zonder bereik.
+- **Berichtjes worden ook bewaard, niet alleen verstuurd.** Staan de meldingen
+  uit of ligt de telefoon op stil, dan is een gemiste melding voorgoed weg — in
+  de app staat hij er dan nog. De laatste vijftig, want die ene JSONB-rij moet
+  klein blijven. De melding is een extraatje: mislukt hij, dan is het bericht
+  toch opgeslagen en zegt de app dat er ook eerlijk bij.
 - **Diepte en beweging zijn versiering, nooit constructie.** Er hangt geen
   enkele knop of scherm aan een animatie: haal het hele blok "Diepte en
   beweging" uit `styles.css` en de app doet nog precies hetzelfde. Wie in zijn
@@ -71,9 +81,9 @@ src/
   scheduler.js    elke minuut kijken of er iets verstuurd moet worden
   lib/            datums, herhalingen, doelen, invoercontrole
 api/index.js      ingang voor Vercel
-public/           de app zelf: één html, één css, één js
+public/           de app zelf: één html, één css, één js, plus quotes.js
 db/               de SQL-migraties (schema `samen`)
-tests/            81 tests
+tests/            90 tests
 ```
 
 Vier dingen die niet vanzelfsprekend zijn:
@@ -103,7 +113,7 @@ echt nodig: `DATABASE_URL`.
 
 ```bash
 npm install
-npm test          # 81 tests
+npm test          # 90 tests
 npm start         # draait op een JSON-bestand in data/
 ```
 

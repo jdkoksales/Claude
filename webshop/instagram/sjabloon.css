@@ -150,8 +150,12 @@ blockquote {
 
 /* ---------- vergelijking ---------- */
 .vgl { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-top: 12px }
+/* Het linkervak was een lichte waas over het verloop. Gemeten op het beeld
+   haalde de tekst daarin 2,5:1 - te weinig. Donkerder in plaats van lichter
+   lost het niet alleen op, het klopt ook: de kant die je niet wilt zijn hoort
+   gedempt te zijn, de kant die je wel wilt zijn helder wit. */
 .vgl div {
-  background: rgba(255,255,255,.16); border-radius: 26px; padding: 34px 30px;
+  background: rgba(0,0,0,.34); border-radius: 26px; padding: 34px 30px;
 }
 .vgl .goed { background: var(--wit); color: var(--inkt) }
 .vgl h3 { font-size: 38px; font-weight: 700; margin-bottom: 14px }

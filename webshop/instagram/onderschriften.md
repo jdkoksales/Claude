@@ -21,6 +21,7 @@ Vijf posts, in deze volgorde te plaatsen. Alle beelden zijn 1080 x 1350
 | 13 | Los beeld | De Instagram-standaard, uitgelegd | Week 7 — dinsdag |
 | 14 | Los beeld | De Facebook-standaard, uitgelegd | Week 7 — vrijdag |
 | 15 | Los beeld | Wist je dat: stilstaan in reviews kost je plekken | Week 8 — dinsdag |
+| 16 | Carrousel — 8 dia's | Hoe Google bepaalt wie er bovenaan staat | Week 8 — vrijdag |
 
 ---
 
@@ -497,6 +498,56 @@ Bron: Whitespark, Local Search Ranking Factors 2026
 ```
 
 **Waarom zo:** De kop noemt het gevolg en niet het mechanisme: 'zakt in Google' raakt harder dan 'recentheid weegt mee', terwijl er niets beweerd wordt dat Google zelf zou hebben gezegd. De bronregel staat op het beeld, dus de claim is naar de lezer toe onderbouwd. De slotvraag laat mensen het zelf opzoeken - wie zijn bovenste review van twee jaar geleden ziet staan, overtuigt zichzelf.
+
+---
+
+## 16. Hoe Google bepaalt wie er bovenaan staat
+
+**Vorm:** Carrousel — 8 dia's  
+**Wanneer:** Week 8 — vrijdag  
+**Waarvoor:** Saves. Een uitleg die mensen bewaren, met de recentheid als kern.
+
+**Beelden:** `uit/post-16a-hoe.jpg`, `uit/post-16b-drie.jpg`, `uit/post-16c-vast.jpg`, `uit/post-16d-prominentie.jpg`, `uit/post-16e-datum.jpg`, `uit/post-16f-bewijs.jpg`, `uit/post-16g-stroom.jpg`, `uit/post-16h-slot.jpg`
+
+### Onderschrift
+
+```
+Hoe bepaalt Google wie er bovenaan staat als iemand "kapper" of "visboer" intikt? Even uit de doeken 👇
+
+Google kijkt naar drie dingen:
+
+1. Relevantie — past jouw zaak bij wat er gezocht wordt
+2. Afstand — hoe ver je van de zoeker af zit
+3. Prominentie — hoe bekend je zaak is
+
+De eerste twee liggen vast. Je vak verander je niet en je adres ook niet. Blijft er één over waar je echt iets aan kunt doen: prominentie. En daarbinnen zijn je reviews het zwaarste dat je hebt.
+
+Dan nu het stuk dat de meeste mensen missen.
+
+Het gaat niet alleen om hoeveel reviews je hebt. Het gaat om wanneer ze binnenkwamen.
+
+Denk even mee vanuit Google. Die moet inschatten welke zaak vandaag goed is. Niet welke zaak in 2022 goed was. En dan is een review van vorige week iets totaal anders dan een review van drie jaar geleden.
+
+→ Een review uit 2022 bewijst dat het toen goed was. Meer niet. Misschien ben je verhuisd. Misschien is je personeel gewisseld. Misschien ben je al een jaar dicht.
+
+→ Een review van vorige week bewijst drie dingen tegelijk: je bent open, er komen mensen, en het is nog steeds goed.
+
+Dat tweede is veel meer waard. Recentheid staat inmiddels in de top vijf van losse factoren die je lokale positie bepalen.
+
+En daar zit het ongemakkelijke: je positie is geen stapel die je opbouwt en dan hébt. Het is een stroom. Wat je vorig jaar verzamelde telt steeds minder mee, dus je zakt zodra je stopt met vragen — zonder dat je ook maar iets fout doet.
+
+Je wint dit niet één keer. Je houdt het bij, of je raakt het kwijt.
+
+Een TapKaart vraagt het aan elke klant, elke dag, zonder dat jij iets hoeft te zeggen. Zo is die bovenste review altijd van deze week.
+
+Zoek je eigen zaak eens op. Van wanneer is jouw bovenste review? 👇
+
+Bronnen: Google (uitleg over lokale rangschikking), Whitespark Local Search Ranking Factors 2026
+
+#tapkaarten #localseo #googlereviews #googlemaps #vindbaarheid #lokaalondernemen #mkbnederland #kleinbedrijf #ondernemerstips #kapper #horeca #winkel
+```
+
+**Waarom zo:** Uitleg wordt bewaard, en een save telt zwaar en blijft doorwerken. De eerste helft geeft echte kennis weg zonder iets te verkopen — dat koopt het recht om in de tweede helft wél iets te vragen. De drie pijlers komen uit Googles eigen uitleg, de recentheid uit Whitespark; die scheiding staat ook op de dia's, zodat er niets aan Google wordt toegeschreven wat hij niet zelf zegt.
 
 ---
 

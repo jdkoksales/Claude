@@ -50,7 +50,7 @@ METING = """
   uit.doek = [document.querySelector('.post').offsetWidth, document.querySelector('.post').offsetHeight];
   // Labels van de feitenlijst: kleur en plek, zodat het contrast op het
   // gerenderde beeld te meten is in plaats van uit de CSS te raden.
-  uit.labels = [...document.querySelectorAll('.feiten dt')].map(e => {
+  uit.labels = [...document.querySelectorAll('.feiten dt, .vgl p, .vgl h3')].map(e => {
     const r = kader(e);
     return {kleur: getComputedStyle(e).color,
             doos: [Math.round(r.left), Math.round(r.top), Math.round(r.right), Math.round(r.bottom)]};
@@ -86,11 +86,19 @@ def labelcontrast(data, naam):
     for i, label in enumerate(data["labels"]):
         voor = [int(v) for v in label["kleur"].strip("rgb()").split(",")[:3]]
         l, t, r, b = label["doos"]
-        y = (t + b) // 2
-        achter = px[y - 4:y + 4, r + 40:r + 140].reshape(-1, 3).mean(axis=0)
+        # De achtergrond wordt binnen het element zelf gemeten, als mediaan
+        # over alle pixels. Tekst beslaat daar een minderheid van, dus de
+        # mediaan is de ondergrond - bij lichte tekst op donker net zo goed
+        # als andersom. Eerder werd rechts naast het element gemeten, en dat
+        # landde bij twee vakken naast elkaar op het buurvak: die meting gaf
+        # wit-op-wit en dus alarm waar niets aan de hand was.
+        vak = px[max(t, 0):b, max(l, 0):r].reshape(-1, 3)
+        if len(vak) < 50:
+            continue
+        achter = np.median(vak, axis=0)
         v = contrast(voor, achter)
         if v < 4.5:
-            klachten.append(f"feitenlabel {i+1} haalt {v:.2f}:1 op {tuple(achter.round().astype(int))} (4.5 nodig)")
+            klachten.append(f"kleine tekst {i+1} haalt {v:.2f}:1 op {tuple(achter.round().astype(int))} (4.5 nodig)")
     return klachten
 
 

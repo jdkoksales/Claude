@@ -22,6 +22,8 @@ Vijf posts, in deze volgorde te plaatsen. Alle beelden zijn 1080 x 1350
 | 14 | Los beeld | De Facebook-standaard, uitgelegd | Week 7 — vrijdag |
 | 15 | Los beeld | Wist je dat: stilstaan in reviews kost je plekken | Week 8 — dinsdag |
 | 16 | Carrousel — 8 dia's | Hoe Google bepaalt wie er bovenaan staat | Week 8 — vrijdag |
+| 17 | Los beeld | Wist je dat: onder de 20 reviews doe je niet mee | Week 9 — dinsdag |
+| 18 | Los beeld | Even rekenen: één boze review | Week 9 — vrijdag |
 
 ---
 
@@ -548,6 +550,74 @@ Bronnen: Google (uitleg over lokale rangschikking), Whitespark Local Search Rank
 ```
 
 **Waarom zo:** Uitleg wordt bewaard, en een save telt zwaar en blijft doorwerken. De eerste helft geeft echte kennis weg zonder iets te verkopen — dat koopt het recht om in de tweede helft wél iets te vragen. De drie pijlers komen uit Googles eigen uitleg, de recentheid uit Whitespark; die scheiding staat ook op de dia's, zodat er niets aan Google wordt toegeschreven wat hij niet zelf zegt.
+
+---
+
+## 17. Wist je dat: onder de 20 reviews doe je niet mee
+
+**Vorm:** Los beeld  
+**Wanneer:** Week 9 — dinsdag  
+**Waarvoor:** Een drempel die de lezer op zijn eigen profiel kan natellen.
+
+**Beelden:** `uit/post-17-drempel.jpg`
+
+### Onderschrift
+
+```
+47% van de mensen overweegt een zaak met minder dan twintig reviews niet eens.
+
+Niet dat ze je bekijken en dan afwijzen. Ze komen niet eens zover. Je staat er wel, maar je doet niet mee.
+
+En dat is een oneerlijke drempel, want hij zegt niets over hoe goed je bent. Er zijn zaken met dertig jaar vaste klanten en acht reviews. Die verliezen van een nieuwkomer met vierentwintig.
+
+Het goede nieuws: twintig is niet veel. Als je het aan iedereen vraagt, haal je dat in een paar weken. Het probleem is alleen dat vragen ongemakkelijk voelt — zeker aan de balie, met iemand achter je die staat te wachten. Dus doe je het niet.
+
+Een TapKaart stelt die vraag voor je. Je klant houdt zijn telefoon ertegenaan en staat meteen op jouw Google-pagina. Geen app, geen abonnement.
+
+Hoeveel staan er nu bij jou? Even eerlijk 👇
+
+Bron: BrightLocal, Local Consumer Review Survey 2026
+
+#tapkaarten #googlereviews #meerreviews #localseo #lokaalondernemen #mkbnederland #kleinbedrijf #winkel #ondernemerstips #vindbaarheid
+```
+
+**Waarom zo:** Het enige cijfer uit het onderzoek dat de lezer op zijn eigen profiel kan natellen. Dat maakt het geen statistiek maar een stand van zaken. En twintig is laag genoeg om haalbaar te voelen: een drempel die onmogelijk lijkt, zet mensen stil in plaats van in beweging.
+
+---
+
+## 18. Even rekenen: één boze review
+
+**Vorm:** Los beeld  
+**Wanneer:** Week 9 — vrijdag  
+**Waarvoor:** De angst die elke ondernemer heeft, met een rekensom die de oplossing laat zien.
+
+**Beelden:** `uit/post-18-buffer.jpg`
+
+### Onderschrift
+
+```
+Even rekenen, want dit is de reden dat volume niet om de sier is.
+
+Stel je hebt 12 reviews en gemiddeld 4,7 sterren. Er komt één woedende klant langs die één ster geeft. Je nieuwe gemiddelde: 4,4.
+
+Dezelfde review bij 120 reviews? Dan blijf je op 4,7 staan.
+
+Dat verschil is niet cosmetisch. 31% van de mensen gebruikt alleen zaken met 4,5 sterren of hoger — vorig jaar was dat nog 17%. Bij twaalf reviews duwt één slechte dag je onder die grens. Bij honderdtwintig merkt niemand het.
+
+En je krijgt die ene review. Iedereen krijgt hem. Een keer stond iemand te lang in de rij, een keer was het kortaf, een keer klopte de rekening niet. Dat hoort erbij.
+
+De vraag is alleen of er dan een buffer onder ligt.
+
+En die bouw je niet op de dag dat het misgaat. Die bouw je in de maanden ervoor, bij de klanten die wél tevreden waren.
+
+Hoeveel staan er bij jou? 👇
+
+Bron: BrightLocal, Local Consumer Review Survey 2026 (de 31%). De rekensom kun je zelf natrekken.
+
+#tapkaarten #googlereviews #reputatie #klantbeleving #lokaalondernemen #mkbnederland #kleinbedrijf #horeca #kapper #ondernemerstips
+```
+
+**Waarom zo:** Elke ondernemer heeft die ene review die blijft steken. Deze post begint bij dat gevoel en eindigt bij een rekensom die de lezer zelf kan natrekken — geen belofte, gewoon een gemiddelde. De laatste regel draait het om: de buffer bouw je bij de tevreden klanten, niet bij de boze.
 
 ---
 

@@ -765,19 +765,80 @@ function checkButton(goal) {
   }, icon('check'));
 }
 
+/** Zestig dagen terug is wat de server aanneemt; verder terug heeft geen zin. */
+const OLDEST_CHECKIN = () => addDays(state.data.today, -60);
+
+/**
+ * Eén dag om aan of uit te zetten. Vergeet je een dag in te vullen, dan tik je
+ * hem later alsnog aan — daar is dit knopje voor. Vooruit afvinken kan niet, en
+ * verder terug dan zestig dagen ook niet; die dagen staan uit in plaats van dat
+ * je een foutmelding krijgt als je erop drukt.
+ */
+function dayToggle(goal, date, done, label) {
+  const future = date > state.data.today;
+  const tooOld = date < OLDEST_CHECKIN();
+  return h('button', {
+    class: [
+      'daydot',
+      done ? 'on' : '',
+      date === state.data.today ? 'today' : '',
+    ].filter(Boolean).join(' '),
+    type: 'button',
+    disabled: future || tooOld,
+    'aria-pressed': String(Boolean(done)),
+    'aria-label': `${dayLabel(date)}${done ? ' — gedaan' : ''}`,
+    title: future ? 'Nog niet geweest' : dayLabel(date),
+    onclick: async (e) => {
+      e.stopPropagation();
+      const button = e.currentTarget;
+      try {
+        await api(`/goals/${goal.id}/checkin`, { method: 'POST', body: { date } });
+        if (!done) { celebrate(button); buzz(); }
+        await refresh();
+      } catch (err) {
+        toast(err.message);
+      }
+    },
+  }, label ? h('span', { text: label }) : null);
+}
+
+/** De zeven dagen van deze week, elk aan te tikken. */
 function weekDots(goal) {
   const start = weekStart(state.data.today);
   const wrap = h('div', { class: 'week-dots' });
   const byDate = new Map(goal.stats.history.map((d) => [d.date, d]));
   for (let i = 0; i < 7; i += 1) {
     const date = addDays(start, i);
-    const day = byDate.get(date);
-    wrap.append(h('i', {
-      class: [day?.done ? 'on' : '', date === state.data.today ? 'today' : ''].filter(Boolean).join(' '),
-      title: date,
-    }));
+    wrap.append(dayToggle(goal, date, byDate.get(date)?.done, fmtDow.format(asDate(date)).slice(0, 2)));
   }
   return wrap;
+}
+
+/**
+ * Verder terug dan deze week. Vijf weken past precies op een telefoonscherm en
+ * blijft ruim binnen wat de server aanneemt.
+ */
+function catchUpSheet(goal) {
+  const byDate = new Map(goal.stats.history.map((d) => [d.date, d]));
+  const start = addDays(weekStart(state.data.today), -28);
+
+  const grid = h('div', { class: 'catchup' });
+  for (const dow of ['ma', 'di', 'wo', 'do', 'vr', 'za', 'zo']) {
+    grid.append(h('span', { class: 'catchup-dow', text: dow }));
+  }
+  for (let i = 0; i < 35; i += 1) {
+    const date = addDays(start, i);
+    grid.append(dayToggle(goal, date, byDate.get(date)?.done, String(Number(date.slice(8, 10)))));
+  }
+
+  return h('div', { class: 'form' },
+    h('p', { class: 'muted', text: 'Tik een dag aan of uit. Wat je vergeten bent kun je tot zestig dagen terug alsnog invullen.' }),
+    grid,
+    h('button', {
+      class: 'btn block',
+      type: 'button',
+      onclick: closeSheet,
+    }, 'Klaar'));
 }
 
 function heatmap(goal) {
@@ -848,6 +909,11 @@ function goalCard(goal, { compact = false } = {}) {
         h('div', { class: 'muted', text: s.streakUnit }))));
     body.append(weekDots(goal));
     if (!compact) {
+      body.append(h('button', {
+        class: 'btn block',
+        type: 'button',
+        onclick: () => openSheet(goal.title, () => catchUpSheet(goal)),
+      }, 'Een andere dag invullen'));
       body.append(heatmap(goal));
       body.append(h('p', { class: 'muted', text: `${s.totalDone}× in de afgelopen 13 weken · langste reeks ${plural(s.longest, 'dag', 'dagen')}` }));
     }
@@ -1262,11 +1328,14 @@ function renderWeek(root) {
           h('i', { class: 'dot', style: { background: ownerColor(owner) } }),
           h('strong', { class: 'row-main', text: ownerName(owner) }),
           h('span', { class: 'muted', text: `${mine.filter((g) => g.stats.weekDone >= g.stats.weekTarget).length}/${mine.length} op koers` })),
-        ...mine.map((goal) => h('div', { class: 'row', style: { padding: '4px 0' } },
-          h('div', { class: 'row-main' },
-            h('div', { class: 'row-sub', text: goal.title })),
-          weekDots(goal),
-          h('span', { class: 'row-end muted', text: `${goal.stats.weekDone}/${goal.stats.weekTarget}` })))));
+        // De naam staat bóven de strip. Zeven knoppen van duimformaat naast een
+        // naam en een teller passen niet op een telefoon: dan wordt de naam tot
+        // één letter per regel geperst.
+        ...mine.map((goal) => h('div', { class: 'goalweek' },
+          h('div', { class: 'goalweek-head' },
+            h('span', { class: 'row-sub', text: goal.title }),
+            h('span', { class: 'muted', text: `${goal.stats.weekDone}/${goal.stats.weekTarget}` })),
+          weekDots(goal)))));
     }
     root.append(card('Doelen deze week', null, inner));
   }

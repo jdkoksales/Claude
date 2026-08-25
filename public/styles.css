@@ -644,16 +644,75 @@ button.row { cursor: pointer; }
   font-variant-numeric: tabular-nums;
 }
 
-.week-dots { display: flex; gap: 5px; }
-.week-dots i {
-  width: 16px;
-  height: 16px;
-  border-radius: 5px;
+/* De dagen van de week zijn knoppen, geen stipjes: je moet een dag die je
+   vergeten bent later alsnog kunnen aantikken. Daarom ook echt duimformaat en
+   niet de 16 pixels van vroeger. */
+.week-dots { display: flex; gap: 6px; }
+.week-dots .daydot { flex: 1; }
+
+.daydot {
+  display: grid;
+  place-items: center;
+  min-width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 0;
+  border-radius: 10px;
   background: var(--surface-3);
-  transition: background-color .2s ease;
+  color: var(--muted);
+  font: inherit;
+  font-size: .68rem;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  box-shadow: 0 2px 0 color-mix(in srgb, var(--line-strong) 70%, transparent);
+  transition: background-color .2s ease, color .2s ease,
+    transform .1s var(--ease), box-shadow .1s var(--ease);
 }
-.week-dots i.on { background: var(--accent); }
-.week-dots i.today { box-shadow: 0 0 0 2px var(--surface), 0 0 0 3.5px var(--line-strong); }
+.daydot:active { transform: translateY(2px); box-shadow: 0 0 0 var(--line-strong); }
+.daydot.on {
+  background: var(--accent);
+  color: var(--accent-ink);
+  box-shadow: 0 2px 0 var(--accent-deep);
+}
+.daydot.on:active { box-shadow: 0 0 0 var(--accent-deep); }
+.daydot.today { outline: 2px solid var(--line-strong); outline-offset: 2px; }
+.daydot.on.today { outline-color: var(--accent-deep); }
+/* Vooruit afvinken kan niet, en verder terug dan zestig dagen ook niet. Die
+   dagen staan uit in plaats van dat je een foutmelding krijgt. */
+.daydot:disabled { opacity: .35; cursor: default; box-shadow: none; }
+.daydot:disabled:active { transform: none; }
+
+/* Een doel in het weekoverzicht: naam en teller op één regel, de strip eronder. */
+.goalweek { display: flex; flex-direction: column; gap: 7px; padding: 7px 0; }
+.goalweek-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+.goalweek-head .row-sub {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Een andere dag invullen: vijf weken, met echte tikvlakken. */
+.catchup {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+.catchup-dow {
+  text-align: center;
+  font-size: .66rem;
+  font-weight: 650;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+.catchup .daydot { width: 100%; height: 40px; font-size: .78rem; }
 
 .heat {
   display: grid;

@@ -62,7 +62,10 @@ Deze keuzes zijn met Julian doorgenomen. Verander ze niet zonder het te vragen.
   maken), en "we zijn wat we herhaaldelijk doen" staat op naam van **Will
   Durant**, niet van Aristoteles. Staat er geen bron bij, dan is het een vraag
   om over na te denken — daar is een test op: iets zonder bron moet op een
-  vraagteken eindigen.
+  vraagteken eindigen. **Bij elk zinnetje staat ook wat het betekent en wat je
+  er vandaag mee doet** (`meaning` en `practice`); je tikt het zinnetje aan om
+  dat te lezen. Dat tweede veld is het punt: zonder een concrete stap blijft
+  een wijze les een spreuk aan de muur.
 - **Het zinnetje wordt uit de datum gerekend, niet opgeslagen.** Allebei
   hetzelfde, elke dag anders, werkt zonder bereik. De stap door de lijst is een
   getal dat geen deler deelt met de lengte, zodat álle zinnetjes langskomen
@@ -93,7 +96,7 @@ src/
 api/index.js      ingang voor Vercel
 public/           de app zelf: één html, één css, één js, plus quotes.js
 db/               de SQL-migraties (schema `samen`)
-tests/            93 tests
+tests/            95 tests
 ```
 
 Vier dingen die niet vanzelfsprekend zijn:
@@ -123,7 +126,7 @@ echt nodig: `DATABASE_URL`.
 
 ```bash
 npm install
-npm test          # 93 tests
+npm test          # 95 tests
 npm start         # draait op een JSON-bestand in data/
 ```
 

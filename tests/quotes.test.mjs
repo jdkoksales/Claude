@@ -46,3 +46,20 @@ test('geen dubbele zinnetjes', () => {
 test('zonder zinnetjes valt hij netjes stil in plaats van stuk te gaan', () => {
   assert.equal(quoteOfDay('2026-08-11', []), null);
 });
+
+test('bij elk zinnetje staat wat het betekent en wat je ermee doet', () => {
+  for (const q of QUOTES) {
+    assert.ok(typeof q.meaning === 'string' && q.meaning.trim().length > 40,
+      `uitleg ontbreekt of is te kort bij: ${q.text}`);
+    assert.ok(typeof q.practice === 'string' && q.practice.trim().length > 20,
+      `praktijkstap ontbreekt of is te kort bij: ${q.text}`);
+  }
+});
+
+test('de uitleg herhaalt het zinnetje niet letterlijk', () => {
+  // Anders staat er twee keer hetzelfde en heb je er niets aan.
+  for (const q of QUOTES) {
+    assert.notEqual(q.meaning.trim(), q.text.trim(), q.text);
+    assert.notEqual(q.practice.trim(), q.text.trim(), q.text);
+  }
+});

@@ -1025,12 +1025,36 @@ function renderAvatars() {
 function quoteCard(today) {
   const quote = quoteOfDay(today);
   if (!quote) return null;
-  return h('section', { class: 'quote' },
-    icon('sparkle'),
-    h('div', { class: 'quote-main' },
+  return h('button', {
+    class: 'quote',
+    type: 'button',
+    'aria-label': `${quote.text} — lees wat het betekent`,
+    onclick: () => openSheet('Het zinnetje van vandaag', () => quoteSheet(quote)),
+  },
+  icon('sparkle'),
+  h('span', { class: 'quote-main' },
+    h('span', { class: 'quote-text', text: quote.text }),
+    // Een vraag om over na te denken heeft geen bron; die regel blijft dan weg.
+    h('span', { class: 'quote-source', text: quote.source || 'Een vraag om mee te beginnen' })),
+  h('span', { class: 'quote-more', text: 'Wat betekent dit?' }));
+}
+
+/**
+ * Wat het zinnetje betekent, en wat je er vandaag mee doet. Dat tweede is het
+ * punt: zonder een concrete stap blijft een wijze les een spreuk aan de muur.
+ */
+function quoteSheet(quote) {
+  return h('div', { class: 'form quote-sheet' },
+    h('blockquote', {},
       h('p', { text: quote.text }),
-      // Een vraag om over na te denken heeft geen bron; die regel blijft dan weg.
-      quote.source ? h('span', { class: 'quote-source', text: quote.source }) : null));
+      quote.source ? h('cite', { text: quote.source }) : null),
+    h('div', {},
+      h('h3', { text: 'Wat het betekent' }),
+      h('p', { text: quote.meaning })),
+    h('div', { class: 'quote-do' },
+      h('h3', {}, icon('check'), 'Vandaag'),
+      h('p', { text: quote.practice })),
+    h('button', { class: 'btn block', type: 'button', onclick: closeSheet }, 'Sluiten'));
 }
 
 function renderVandaag(root) {

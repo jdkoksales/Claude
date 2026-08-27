@@ -1023,14 +1023,21 @@ function renderAvatars() {
  * zien allebei hetzelfde en het wisselt om middernacht.
  */
 function quoteCard(today) {
+  const quote = quoteOfDay(today);
+  if (!quote) return null;
   return h('section', { class: 'quote' },
     icon('sparkle'),
-    h('p', { text: quoteOfDay(today) }));
+    h('div', { class: 'quote-main' },
+      h('p', { text: quote.text }),
+      // Een vraag om over na te denken heeft geen bron; die regel blijft dan weg.
+      quote.source ? h('span', { class: 'quote-source', text: quote.source }) : null));
 }
 
 function renderVandaag(root) {
   const { today, events, goals, tasks } = state.data;
-  root.append(quoteCard(today));
+  // append() maakt van een null de tekst "null"; dus eerst kijken of er wat is.
+  const quote = quoteCard(today);
+  if (quote) root.append(quote);
   const todays = events.filter((e) => e.date === today);
   const mine = goals.filter((g) => !g.archived && g.kind === 'habit'
     && (g.ownerId === state.me.id || g.ownerId === 'both'));

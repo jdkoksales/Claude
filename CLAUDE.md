@@ -53,11 +53,21 @@ Deze keuzes zijn met Julian doorgenomen. Verander ze niet zonder het te vragen.
   een doorgeefluik naar Nominatim: die dienst wil één afzender met een eigen
   User-Agent zien in plaats van tientallen browsers, en hooguit één vraag per
   seconde. Antwoorden blijven een uur in het geheugen hangen.
-- **Het zinnetje van de dag zijn eigen regels, geen beroemde citaten.** Die
-  worden op internet aan de lopende band aan de verkeerde persoon toegeschreven,
-  en dan staat er elke dag een leugen op je beginscherm. Ze staan in
-  `public/quotes.js` en worden uit de datum gerekend: allebei hetzelfde, elke
-  dag anders, niets op te slaan en het werkt zonder bereik.
+- **Het zinnetje van de dag is een echt citaat mét bron, of anders een vraag.**
+  Julian wilde echte wijsheid: boeddhisme, stoïcijnen, meditatie, de psychologie
+  achter doelen. Dat mag, maar dan wél naslaanbaar — rond dit soort teksten gaat
+  het toeschrijven online structureel mis. Vandaar de regels in
+  `public/quotes.js`: boeddhistische regels komen uit de **Dhammapada** met
+  versnummer (niet "Boeddha zei", dat is bij losse citaten zelden hard te
+  maken), en "we zijn wat we herhaaldelijk doen" staat op naam van **Will
+  Durant**, niet van Aristoteles. Staat er geen bron bij, dan is het een vraag
+  om over na te denken — daar is een test op: iets zonder bron moet op een
+  vraagteken eindigen.
+- **Het zinnetje wordt uit de datum gerekend, niet opgeslagen.** Allebei
+  hetzelfde, elke dag anders, werkt zonder bereik. De stap door de lijst is een
+  getal dat geen deler deelt met de lengte, zodat álle zinnetjes langskomen
+  voordat er één terugkeert. Een tekstsom over de datum werkte "meestal", en
+  botste zodra de lijst groeide.
 - **Berichtjes worden ook bewaard, niet alleen verstuurd.** Staan de meldingen
   uit of ligt de telefoon op stil, dan is een gemiste melding voorgoed weg — in
   de app staat hij er dan nog. De laatste vijftig, want die ene JSONB-rij moet
@@ -83,7 +93,7 @@ src/
 api/index.js      ingang voor Vercel
 public/           de app zelf: één html, één css, één js, plus quotes.js
 db/               de SQL-migraties (schema `samen`)
-tests/            90 tests
+tests/            93 tests
 ```
 
 Vier dingen die niet vanzelfsprekend zijn:
@@ -113,7 +123,7 @@ echt nodig: `DATABASE_URL`.
 
 ```bash
 npm install
-npm test          # 90 tests
+npm test          # 93 tests
 npm start         # draait op een JSON-bestand in data/
 ```
 

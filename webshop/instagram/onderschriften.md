@@ -24,7 +24,7 @@ Vijf posts, in deze volgorde te plaatsen. Alle beelden zijn 1080 x 1350
 | 16 | Carrousel — 8 dia's | Hoe Google bepaalt wie er bovenaan staat | Week 8 — vrijdag |
 | 17 | Los beeld | Wist je dat: onder de 20 reviews doe je niet mee | Week 9 — dinsdag |
 | 18 | Los beeld | Even rekenen: één boze review | Week 9 — vrijdag |
-| 19 | Carrousel — 6 dia's | Hoe kom je aan meer Google-reviews? (advertentie) | Advertentie |
+| 19 | Carrousel — 6 dia's | De zaak boven je vraagt het wél (advertentie) | Advertentie |
 
 ---
 
@@ -622,7 +622,7 @@ Bron: BrightLocal, Local Consumer Review Survey 2026 (de 31%). De rekensom kun j
 
 ---
 
-## 19. Hoe kom je aan meer Google-reviews? (advertentie)
+## 19. De zaak boven je vraagt het wél (advertentie)
 
 **Vorm:** Carrousel — 6 dia's  
 **Wanneer:** Advertentie  
@@ -633,21 +633,21 @@ Bron: BrightLocal, Local Consumer Review Survey 2026 (de 31%). De rekensom kun j
 ### Onderschrift
 
 ```
-Hoe kom je aan meer Google-reviews zonder er steeds om te moeten vragen? Zo dus 👇
+De zaak boven je in Google is niet beter dan jij. Die vraagt alleen wél om een review.
 
-Het probleem is nooit geweest dat klanten niet willen. 83% van de mensen die om een review gevraagd wordt, schrijft er ook een. Het probleem is dat vragen ongemakkelijk voelt — zeker aan de balie, met iemand achter je die staat te wachten. Dus doe je het niet, en gaat er weer een tevreden klant de deur uit.
+Dat is het hele verschil. Niet je werk, niet je prijzen, niet hoe lang je er al zit.
+
+En het ligt ook niet aan je klanten: 83% van de mensen die om een review gevraagd wordt, schrijft er ook een. Vier van de vijf. Ze worden alleen nooit gevraagd.
+
+Want vragen is ongemakkelijk. Je klant staat af te rekenen, er staat iemand achter haar te wachten, en dan ga je niet zeggen "wil je ons even een review geven?". Dus zeg je niks. En loopt er weer iemand tevreden de deur uit die je nooit terugziet op je Google-pagina.
 
 Een TapKaart vraagt het voor je.
 
-1. Je zet hem neer. Op de balie, het tafeltje of naast de pin.
-2. Je klant houdt zijn telefoon ertegenaan.
-3. Jouw Google-reviewpagina opent meteen. Sterren aantikken, klaar.
+Je zet hem op de balie. Je klant houdt zijn telefoon ertegenaan. Jouw reviewpagina opent meteen — sterren aantikken, een regel typen, klaar. Geen app, geen account, geen uitleg.
 
-Geen app. Geen account. Geen abonnement.
+Wij zoeken jouw Google-pagina op en koppelen hem voordat het pakket de deur uit gaat, dus hij werkt zodra je hem uitpakt. Leest een ouder toestel geen NFC? Er staat ook een QR-code op.
 
-Wij zoeken je Google-pagina op en koppelen hem voordat het pakket de deur uit gaat, dus hij werkt zodra je hem uitpakt. Leest een ouder toestel geen NFC? Dan scant je klant de QR-code die er ook op staat.
-
-€ 34,95 excl. btw, eenmalig. Op werkdagen voor 16:00 besteld gaat dezelfde dag op de post.
+€ 34,95 excl. btw. Eenmalig, geen abonnement, nooit.
 
 tapkaarten.nl
 
@@ -656,7 +656,9 @@ Bron: BrightLocal, Local Consumer Review Survey 2026
 #tapkaarten #googlereviews #meerreviews #lokaalondernemen #mkbnederland #kleinbedrijf #horeca #kapper #winkel #klantbeleving #nfc #ondernemerstips
 ```
 
-**Waarom zo:** Voor betaald verkeer telt dat iemand de handeling snapt zonder te lezen. Dia 3 en 4 tonen daarom hetzelfde toonbankje, dezelfde hand en dezelfde telefoon: eerst tegen het bordje, dan met de reviewpagina in beeld. Die continuïteit doet het werk dat de tekst anders had moeten doen. Het bezwaar staat vóór de oplossing, en de prijs pas op de laatste dia.
+**Waarom zo:** De eerste versie opende met "Hoe kom je aan meer Google-reviews?". Dat is een kop en geen haak: hij stopt alleen iemand die al weet dat hij reviews wil, en deze doelgroep denkt 's ochtends niet aan reviews maar aan een rustige dinsdag. De sterkste regel stond bovendien op dia 2, terwijl in een carrousel dia 1 bijna al het werk doet.
+
+Nu opent hij met het verschil tussen jou en de buurman, wat tegelijk vleit, steekt en de oplossing al noemt. Dia 2 is donker geworden: dat breekt vier oranje vlakken op rij en geeft het ongemakkelijke moment het gewicht dat het verdient. Dia 6 noemt eerst wat je krijgt en pas daarna de prijs.
 
 ---
 

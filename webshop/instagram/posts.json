@@ -251,20 +251,21 @@
   {
    "nr": 19,
    "titel": "De zaak boven je vraagt het wél (advertentie)",
-   "vorm": "Carrousel — 6 dia's",
+   "vorm": "Carrousel — 7 dia's",
    "dag": "Advertentie",
    "doel": "Betaald. De handeling moet in twee dia's te snappen zijn zonder de tekst te lezen.",
    "dias": [
     "post-19a-hoe.jpg",
     "post-19b-probleem.jpg",
-    "post-19c-tap.jpg",
-    "post-19d-pagina.jpg",
-    "post-19e-waarom.jpg",
-    "post-19f-slot.jpg"
+    "post-19c-wat.jpg",
+    "post-19d-tap.jpg",
+    "post-19e-pagina.jpg",
+    "post-19f-waarom.jpg",
+    "post-19g-slot.jpg"
    ],
-   "tekst": "De zaak boven je in Google is niet beter dan jij. Die vraagt alleen wél om een review.\n\nDat is het hele verschil. Niet je werk, niet je prijzen, niet hoe lang je er al zit.\n\nEn het ligt ook niet aan je klanten: 83% van de mensen die om een review gevraagd wordt, schrijft er ook een. Vier van de vijf. Ze worden alleen nooit gevraagd.\n\nWant vragen is ongemakkelijk. Je klant staat af te rekenen, er staat iemand achter haar te wachten, en dan ga je niet zeggen \"wil je ons even een review geven?\". Dus zeg je niks. En loopt er weer iemand tevreden de deur uit die je nooit terugziet op je Google-pagina.\n\nEen TapKaart vraagt het voor je.\n\nJe zet hem op de balie. Je klant houdt zijn telefoon ertegenaan. Jouw reviewpagina opent meteen — sterren aantikken, een regel typen, klaar. Geen app, geen account, geen uitleg.\n\nWij zoeken jouw Google-pagina op en koppelen hem voordat het pakket de deur uit gaat, dus hij werkt zodra je hem uitpakt. Leest een ouder toestel geen NFC? Er staat ook een QR-code op.\n\n€ 34,95 excl. btw. Eenmalig, geen abonnement, nooit.\n\ntapkaarten.nl\n\nBron: BrightLocal, Local Consumer Review Survey 2026",
+   "tekst": "De zaak boven je in Google is niet beter dan jij. Die vraagt alleen wél om een review.\n\nDat is het hele verschil. Niet je werk, niet je prijzen, niet hoe lang je er al zit.\n\nEn het ligt ook niet aan je klanten: 83% van de mensen die om een review gevraagd wordt, schrijft er ook een. Vier van de vijf. Ze worden alleen nooit gevraagd.\n\nWant vragen is ongemakkelijk. Je klant staat af te rekenen, er staat iemand achter haar te wachten, en dan ga je niet zeggen \"wil je ons even een review geven?\". Dus zeg je niks.\n\nWat is een TapKaart precies?\n\nEen bordje van ongeveer 8 bij 13 cm dat je op je balie zet. Er zit een chip in, dezelfde soort als in je pinpas. Je klant houdt zijn telefoon ertegenaan — precies zoals hij pint — en jouw Google-reviewpagina opent op zijn eigen scherm. Sterren aantikken, een regel typen, klaar.\n\nGeen app die hij moet downloaden. Geen account. En geen QR-code die hij eerst moet scannen — die staat er wel op, voor oudere telefoons die geen chip lezen.\n\nJij hoeft ook niets in te stellen. Wij zoeken jouw Google-pagina op en koppelen hem voordat het pakket de deur uit gaat. Je haalt hem uit de doos en hij werkt.\n\n€ 34,95 excl. btw. Eenmalig, geen abonnement, nooit. Niet tevreden? 14 dagen retour.\n\nWil je hem van dichtbij zien en kijken of hij bij jouw zaak past? Klik op Meer informatie.\n\nBron: BrightLocal, Local Consumer Review Survey 2026",
    "tags": "#tapkaarten #googlereviews #meerreviews #lokaalondernemen #mkbnederland #kleinbedrijf #horeca #kapper #winkel #klantbeleving #nfc #ondernemerstips",
-   "waarom": "De eerste versie opende met \"Hoe kom je aan meer Google-reviews?\". Dat is een kop en geen haak: hij stopt alleen iemand die al weet dat hij reviews wil, en deze doelgroep denkt 's ochtends niet aan reviews maar aan een rustige dinsdag. De sterkste regel stond bovendien op dia 2, terwijl in een carrousel dia 1 bijna al het werk doet.\n\nNu opent hij met het verschil tussen jou en de buurman, wat tegelijk vleit, steekt en de oplossing al noemt. Dia 2 is donker geworden: dat breekt vier oranje vlakken op rij en geeft het ongemakkelijke moment het gewicht dat het verdient. Dia 6 noemt eerst wat je krijgt en pas daarna de prijs."
+   "waarom": "Tweede herziening, op twee punten. Ten eerste veronderstelde de uitleg kennis die de lezer niet heeft: op dia 3 stond \"telefoon tegen het bordje\" terwijl nergens verteld was wát dat bordje is. Nu zijn het drie stappen die bij nul beginnen - dit is het, dit doet je klant, dit gebeurt er - met de pinautomaat als vergelijking, want iedereen in Nederland weet hoe pinnen voelt.\n\nTen tweede moest doorklikken logisch aanvoelen. De laatste dia noemt daarom niet alleen de prijs maar ook wat het risico wegneemt (geen abonnement, 14 dagen retour), en de knop heet Meer informatie in plaats van een webadres, zodat hij hetzelfde zegt als de knop van de advertentie eronder."
   }
  ]
 }

@@ -24,7 +24,7 @@ Vijf posts, in deze volgorde te plaatsen. Alle beelden zijn 1080 x 1350
 | 16 | Carrousel — 8 dia's | Hoe Google bepaalt wie er bovenaan staat | Week 8 — vrijdag |
 | 17 | Los beeld | Wist je dat: onder de 20 reviews doe je niet mee | Week 9 — dinsdag |
 | 18 | Los beeld | Even rekenen: één boze review | Week 9 — vrijdag |
-| 19 | Carrousel — 6 dia's | De zaak boven je vraagt het wél (advertentie) | Advertentie |
+| 19 | Carrousel — 7 dia's | De zaak boven je vraagt het wél (advertentie) | Advertentie |
 
 ---
 
@@ -624,11 +624,11 @@ Bron: BrightLocal, Local Consumer Review Survey 2026 (de 31%). De rekensom kun j
 
 ## 19. De zaak boven je vraagt het wél (advertentie)
 
-**Vorm:** Carrousel — 6 dia's  
+**Vorm:** Carrousel — 7 dia's  
 **Wanneer:** Advertentie  
 **Waarvoor:** Betaald. De handeling moet in twee dia's te snappen zijn zonder de tekst te lezen.
 
-**Beelden:** `uit/post-19a-hoe.jpg`, `uit/post-19b-probleem.jpg`, `uit/post-19c-tap.jpg`, `uit/post-19d-pagina.jpg`, `uit/post-19e-waarom.jpg`, `uit/post-19f-slot.jpg`
+**Beelden:** `uit/post-19a-hoe.jpg`, `uit/post-19b-probleem.jpg`, `uit/post-19c-wat.jpg`, `uit/post-19d-tap.jpg`, `uit/post-19e-pagina.jpg`, `uit/post-19f-waarom.jpg`, `uit/post-19g-slot.jpg`
 
 ### Onderschrift
 
@@ -639,26 +639,28 @@ Dat is het hele verschil. Niet je werk, niet je prijzen, niet hoe lang je er al 
 
 En het ligt ook niet aan je klanten: 83% van de mensen die om een review gevraagd wordt, schrijft er ook een. Vier van de vijf. Ze worden alleen nooit gevraagd.
 
-Want vragen is ongemakkelijk. Je klant staat af te rekenen, er staat iemand achter haar te wachten, en dan ga je niet zeggen "wil je ons even een review geven?". Dus zeg je niks. En loopt er weer iemand tevreden de deur uit die je nooit terugziet op je Google-pagina.
+Want vragen is ongemakkelijk. Je klant staat af te rekenen, er staat iemand achter haar te wachten, en dan ga je niet zeggen "wil je ons even een review geven?". Dus zeg je niks.
 
-Een TapKaart vraagt het voor je.
+Wat is een TapKaart precies?
 
-Je zet hem op de balie. Je klant houdt zijn telefoon ertegenaan. Jouw reviewpagina opent meteen — sterren aantikken, een regel typen, klaar. Geen app, geen account, geen uitleg.
+Een bordje van ongeveer 8 bij 13 cm dat je op je balie zet. Er zit een chip in, dezelfde soort als in je pinpas. Je klant houdt zijn telefoon ertegenaan — precies zoals hij pint — en jouw Google-reviewpagina opent op zijn eigen scherm. Sterren aantikken, een regel typen, klaar.
 
-Wij zoeken jouw Google-pagina op en koppelen hem voordat het pakket de deur uit gaat, dus hij werkt zodra je hem uitpakt. Leest een ouder toestel geen NFC? Er staat ook een QR-code op.
+Geen app die hij moet downloaden. Geen account. En geen QR-code die hij eerst moet scannen — die staat er wel op, voor oudere telefoons die geen chip lezen.
 
-€ 34,95 excl. btw. Eenmalig, geen abonnement, nooit.
+Jij hoeft ook niets in te stellen. Wij zoeken jouw Google-pagina op en koppelen hem voordat het pakket de deur uit gaat. Je haalt hem uit de doos en hij werkt.
 
-tapkaarten.nl
+€ 34,95 excl. btw. Eenmalig, geen abonnement, nooit. Niet tevreden? 14 dagen retour.
+
+Wil je hem van dichtbij zien en kijken of hij bij jouw zaak past? Klik op Meer informatie.
 
 Bron: BrightLocal, Local Consumer Review Survey 2026
 
 #tapkaarten #googlereviews #meerreviews #lokaalondernemen #mkbnederland #kleinbedrijf #horeca #kapper #winkel #klantbeleving #nfc #ondernemerstips
 ```
 
-**Waarom zo:** De eerste versie opende met "Hoe kom je aan meer Google-reviews?". Dat is een kop en geen haak: hij stopt alleen iemand die al weet dat hij reviews wil, en deze doelgroep denkt 's ochtends niet aan reviews maar aan een rustige dinsdag. De sterkste regel stond bovendien op dia 2, terwijl in een carrousel dia 1 bijna al het werk doet.
+**Waarom zo:** Tweede herziening, op twee punten. Ten eerste veronderstelde de uitleg kennis die de lezer niet heeft: op dia 3 stond "telefoon tegen het bordje" terwijl nergens verteld was wát dat bordje is. Nu zijn het drie stappen die bij nul beginnen - dit is het, dit doet je klant, dit gebeurt er - met de pinautomaat als vergelijking, want iedereen in Nederland weet hoe pinnen voelt.
 
-Nu opent hij met het verschil tussen jou en de buurman, wat tegelijk vleit, steekt en de oplossing al noemt. Dia 2 is donker geworden: dat breekt vier oranje vlakken op rij en geeft het ongemakkelijke moment het gewicht dat het verdient. Dia 6 noemt eerst wat je krijgt en pas daarna de prijs.
+Ten tweede moest doorklikken logisch aanvoelen. De laatste dia noemt daarom niet alleen de prijs maar ook wat het risico wegneemt (geen abonnement, 14 dagen retour), en de knop heet Meer informatie in plaats van een webadres, zodat hij hetzelfde zegt als de knop van de advertentie eronder.
 
 ---
 

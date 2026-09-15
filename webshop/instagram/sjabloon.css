@@ -223,3 +223,27 @@ blockquote {
 /* Vlak met een feitenlijst heeft meer hoogte nodig dan een vlak met alleen
    een kop. */
 .vlak.lang { flex: 0 0 60% }
+
+
+/* ---------- rekenhulp op de slotdia ---------- */
+/* De advertentie eindigt niet met een prijs maar met een vraag die de lezer
+   alleen op de site beantwoord krijgt. Er staat met opzet geen getal in: dat
+   zou een belofte zijn die per zaak verschilt, en het ontbrekende getal is
+   precies wat de klik oplevert. */
+.reken {
+  background: var(--wit); color: var(--inkt);
+  border-radius: 34px; padding: 42px 48px 46px; width: 100%;
+}
+.reken .rlabel { font-size: 29px; color: #5A6472; margin-bottom: 26px }
+.reken .rbalk { height: 18px; border-radius: 999px; background: #E6E9ED; position: relative; margin-bottom: 44px }
+.reken .rbalk i { position: absolute; top: 0; bottom: 0; left: 0; width: 38%; border-radius: 999px; background: var(--oranje) }
+.reken .rknop {
+  position: absolute; left: 38%; top: 50%; width: 54px; height: 54px; margin: -27px 0 0 -27px;
+  border-radius: 50%; background: #fff; border: 6px solid var(--oranje);
+  box-shadow: 0 6px 18px rgba(0,0,0,.20);
+}
+.reken .rgetal {
+  font-size: 128px; font-weight: 700; line-height: .92; letter-spacing: -.04em;
+  color: var(--oranje-diep);
+}
+.reken .rsub { font-size: 29px; color: #5A6472; margin-top: 10px }

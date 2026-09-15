@@ -651,7 +651,7 @@ Jij hoeft ook niets in te stellen. Wij zoeken jouw Google-pagina op en koppelen 
 
 € 34,95 excl. btw. Eenmalig, geen abonnement, nooit. Niet tevreden? 14 dagen retour.
 
-Wil je hem van dichtbij zien en kijken of hij bij jouw zaak past? Klik op Meer informatie.
+Benieuwd wat het bij jóu zou opleveren? Op tapkaarten.nl staat een rekenhulp. Je schuift naar het aantal klanten dat je per dag hebt en ziet meteen hoeveel reviews dat per maand kan opleveren. Klik op Meer informatie en probeer het even.
 
 Bron: BrightLocal, Local Consumer Review Survey 2026
 
@@ -663,6 +663,8 @@ Bron: BrightLocal, Local Consumer Review Survey 2026
 Elke foto komt precies één keer voor. Dia 3 kreeg de studio-opname in plaats van de winkelfoto, want die laatste staat nu op dia 1, en voor 'dit is het ding' werkt een schone opname zonder afleiding beter.
 
 De knop heet Meer informatie in plaats van een webadres, zodat hij hetzelfde zegt als de knop van de advertentie eronder, en de laatste dia neemt eerst het risico weg voordat hij om de klik vraagt.
+
+De slotdia noemt niet de prijs maar stelt een vraag die alleen op de site beantwoord wordt: hoeveel reviews levert het bij jou op? Er staat met opzet geen getal in - dat verschilt per zaak en zou een belofte worden - en juist het ontbrekende getal is wat de klik oplevert. De rekenhulp waarnaar verwezen wordt staat echt op de homepage; hij rekent per maand, dus de dia zegt per maand en niet per week.
 
 ---
 

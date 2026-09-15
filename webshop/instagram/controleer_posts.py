@@ -50,7 +50,7 @@ METING = """
   uit.doek = [document.querySelector('.post').offsetWidth, document.querySelector('.post').offsetHeight];
   // Labels van de feitenlijst: kleur en plek, zodat het contrast op het
   // gerenderde beeld te meten is in plaats van uit de CSS te raden.
-  uit.labels = [...document.querySelectorAll('.feiten dt, .vgl p, .vgl h3')].map(e => {
+  uit.labels = [...document.querySelectorAll('.feiten dt, .vgl p, .vgl h3, .reken .rlabel, .reken .rsub')].map(e => {
     const r = kader(e);
     return {kleur: getComputedStyle(e).color,
             doos: [Math.round(r.left), Math.round(r.top), Math.round(r.right), Math.round(r.bottom)]};

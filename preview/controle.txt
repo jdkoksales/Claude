@@ -27,7 +27,7 @@ product mobiel status=200
     steekt uit: span 1015..1305
     steekt uit: i.mq-dot 1305..1310
     steekt uit: span 1310..1731
-  KLEINE KNOPPEN a 106x20, a.brand 148x21, a.cartlink 26x26, button.product-gallery__dot 14x11, a 169x15, a 81x16, a 236x20, a 79x20
+  KLEINE KNOPPEN a.brand 148x21, a.cartlink 26x26, button.product-gallery__dot 14x11, a 169x15, a 81x16, a 236x20, a 79x20, a 96x20
 collectie desktop status=200
   titel  Alle TapKaarten — NFC-bordjes voor reviews en volgers
   omschr Vijf NFC-kaarten voor op de balie: Google-reviews in wit of zwart, Instagram, Facebook en 
@@ -127,15 +127,16 @@ link 200 /policies/privacy-policy
 link 200 /pages/retourbeleid
 
 --- fouten ---
-home/desktop 403 https://shop.app/pay/hop?analytics_trace_id=8e053ee1-1c43-484b-8943-28a29badfdc2&target_origin=https%3A%2F%2Ftapkaarten.
-home/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=c5536629-a90b-44c9-840d-5e9ba76eb45e&target_origin=https%3A%2F%2Ftapkaarten.
-product/desktop 403 https://shop.app/pay/hop?analytics_trace_id=9c3ad58f-48f5-4db7-b14d-e74dd5e0df0f&target_origin=https%3A%2F%2Ftapkaarten.
-product/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=ea49b722-5660-4477-9103-1a9a5bf36e00&target_origin=https%3A%2F%2Ftapkaarten.
-collectie/desktop 403 https://shop.app/pay/hop?analytics_trace_id=b2298ed0-1aa4-4494-820c-1c6c47d592cf&target_origin=https%3A%2F%2Ftapkaarten.
-collectie/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=8a7b20ec-d452-4183-82ab-7148fc6f0f84&target_origin=https%3A%2F%2Ftapkaarten.
-winkelwagen/desktop 403 https://shop.app/pay/hop?analytics_trace_id=fbce094d-bdca-48b1-99ee-f784dfe157b2&target_origin=https%3A%2F%2Ftapkaarten.
-winkelwagen/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=4aabea34-3d97-4ad1-aeaf-c24f6f3e8b51&target_origin=https%3A%2F%2Ftapkaarten.
-verzending/desktop 403 https://shop.app/pay/hop?analytics_trace_id=fad2ba8a-ee9c-4805-be02-834ddb46ac71&target_origin=https%3A%2F%2Ftapkaarten.
-verzending/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=de1c1ba7-d1f2-4c18-9640-62c00482a35d&target_origin=https%3A%2F%2Ftapkaarten.
-contact/desktop 403 https://shop.app/pay/hop?analytics_trace_id=83bb0c37-64f4-4c64-890a-7b1053000da8&target_origin=https%3A%2F%2Ftapkaarten.
-contact/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=0d642fe3-c307-4ba8-bd6f-28249793df6e&target_origin=https%3A%2F%2Ftapkaarten.
+home/desktop 403 https://shop.app/pay/hop?analytics_trace_id=c0c12cc2-7b60-4224-ad9b-eb1280a4e35b&target_origin=https%3A%2F%2Ftapkaarten.
+home/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=985be7e2-2995-42c7-a817-3b9713cb76bb&target_origin=https%3A%2F%2Ftapkaarten.
+product/desktop 403 https://shop.app/pay/hop?analytics_trace_id=c1eefa0d-a045-4ee2-9dd7-a5059cfc6cce&target_origin=https%3A%2F%2Ftapkaarten.
+product/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=c9103bd3-d4d2-4d2a-9016-416c92ebf8f5&target_origin=https%3A%2F%2Ftapkaarten.
+collectie/desktop 403 https://shop.app/pay/hop?analytics_trace_id=870e426f-578f-4bdc-a85a-9330c0c16b1b&target_origin=https%3A%2F%2Ftapkaarten.
+collectie/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=03b5fb7c-32f1-4106-9710-32b332c6e19f&target_origin=https%3A%2F%2Ftapkaarten.
+winkelwagen/desktop 403 https://shop.app/pay/hop?analytics_trace_id=8f6cec74-0e70-4982-ba5d-03910547b018&target_origin=https%3A%2F%2Ftapkaarten.
+winkelwagen/mobiel JS: Failed to fetch dynamically imported module: https://cdn.shopify.com/shopifycloud/shop-js/modules/v2/loader.init-shop-cart-sync.nl.esm.js
+verzending/desktop JS: Failed to fetch dynamically imported module: https://tapkaarten.nl/cdn/shopifycloud/storefront/assets/storefront/event_observer_reporter-ed358274.js
+verzending/desktop 403 https://shop.app/pay/hop?analytics_trace_id=9341194d-49c9-481d-93f7-6f623a50ae0f&target_origin=https%3A%2F%2Ftapkaarten.
+verzending/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=1e979c6b-49ac-49e2-b8e8-fa8bfd2f02b1&target_origin=https%3A%2F%2Ftapkaarten.
+contact/desktop 403 https://shop.app/pay/hop?analytics_trace_id=b3757e20-5b9a-412d-a4da-d59acb6832f0&target_origin=https%3A%2F%2Ftapkaarten.
+contact/mobiel 403 https://shop.app/pay/hop?analytics_trace_id=290a140e-a0e2-4a06-a92d-93f9ead83824&target_origin=https%3A%2F%2Ftapkaarten.

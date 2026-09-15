@@ -1,14 +1,17 @@
 """Adreslabel voor een bestelling, als PDF op A6.
 
-Let op wat dit wel en niet is. Dit is een adreslabel: afzender, geadresseerde
-en het bestelnummer. Het is GEEN frankering. Er staat bewust geen streepjes-
-code op die op port lijkt, want die zou bij de balie niet werken en een
-nagemaakte postzegelcode is geen grap. Je plakt dit op de doos en koopt de
-port bij PostNL, of je haalt via je eigen PostNL-account een gefrankeerd
-label op en plakt dat ernaast.
+Dit is het adres van de klant en het bestelnummer, meer niet. Er staat
+bewust geen streepjescode op die op port lijkt: die zou bij PostNL niet
+werken, en een nagemaakte frankeercode is iets anders dan een lelijk label.
+Bij een pakket krijgt de doos aan de balie zijn eigen barcode; dit label
+vertelt alleen waar hij heen moet.
 
 A6 is 105 x 148 mm. Dat is het formaat van de meeste labelvellen en past ook
 op een A4 die je zelf doormidden knipt.
+
+Zet "afzender": true in de bestelling om het retouradres erop te krijgen.
+Standaard staat het eraf. Zonder retouradres komt een onbestelbaar pakket
+niet bij je terug, dus dat is een afweging en geen detail.
 
 Gebruik:
     python3 maaklabel.py bestelling.json label.pdf
@@ -53,13 +56,23 @@ def veilig(tekst):
 
 def bouw_html(b):
     logo = base64.b64encode(LOGO.resolve().read_bytes()).decode() if LOGO.exists() else ""
-    regels = [b["naam"], b["straat"]]
-    if b.get("straat2"):
-        regels.insert(2, b["straat2"])
     inhoud = "".join(
         f"<li>{veilig(r['aantal'])}&times; {veilig(r['titel'])}"
         + (f" <span class=\"sku\">{veilig(r['sku'])}</span>" if r.get("sku") else "")
         + "</li>" for r in b.get("regels", []))
+
+    afzender = ""
+    if b.get("afzender"):
+        a = AFZENDER
+        afzender = f"""<div class="afzender">
+  {'<img src="data:image/png;base64,' + logo + '" alt="">' if logo else ''}
+  <div>
+    <div class="kop">Afzender</div>
+    <b>{veilig(a['naam'])}</b>
+    {veilig(a['straat'])}<br>
+    {veilig(a['postcode'])} {veilig(a['plaats'])}, {veilig(a['land'])}
+  </div>
+</div>"""
 
     return f"""<!doctype html>
 <html lang="nl">
@@ -72,7 +85,7 @@ def bouw_html(b):
   body {{
     font-family: Inter, "Helvetica Neue", Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
-    color: #000; padding: 7mm 7mm 6mm;
+    color: #000; padding: 8mm 8mm 7mm;
     display: flex; flex-direction: column;
   }}
   /* Een rand geeft de schaar een lijn om op te knippen als je van een A4 af
@@ -87,34 +100,26 @@ def bouw_html(b):
   .afzender .kop {{ font-size: 6.5pt; letter-spacing: .12em; text-transform: uppercase;
                     margin-bottom: .8mm }}
 
-  .naar {{ flex: 1 1 auto; display: flex; flex-direction: column; justify-content: center;
-           padding: 6mm 0 }}
+  /* Zonder afzenderblok is er ruimte over. Die gaat naar het adres zelf: hoe
+     groter dat staat, hoe minder kans dat er iets misgaat bij het sorteren. */
+  .naar {{ flex: 1 1 auto; display: flex; flex-direction: column; justify-content: center }}
   .naar .kop {{ font-size: 7pt; letter-spacing: .14em; text-transform: uppercase;
-                margin-bottom: 3mm }}
-  .naar .naam {{ font-size: 15pt; font-weight: 700; line-height: 1.2; margin-bottom: 2.5mm }}
-  .naar .adres {{ font-size: 13pt; line-height: 1.35 }}
+                margin-bottom: 3.5mm }}
+  .naar .naam {{ font-size: 18pt; font-weight: 700; line-height: 1.18; margin-bottom: 3mm }}
+  .naar .adres {{ font-size: 15pt; line-height: 1.38 }}
   .naar .pc {{ font-weight: 700 }}
-  .naar .land {{ font-size: 11pt; text-transform: uppercase; letter-spacing: .06em;
-                 margin-top: 2mm }}
+  .naar .land {{ font-size: 12pt; text-transform: uppercase; letter-spacing: .06em;
+                 margin-top: 2.5mm }}
 
   .voet {{ border-top: 0.3mm solid #000; padding-top: 3mm; font-size: 8pt; line-height: 1.5 }}
   .voet .nr {{ font-size: 10pt; font-weight: 700 }}
   .voet ul {{ list-style: none; margin-top: 1mm }}
   .voet .sku {{ font-family: ui-monospace, "DejaVu Sans Mono", monospace; font-size: 7.5pt }}
-  .voet .let {{ margin-top: 2mm; font-size: 6.5pt; line-height: 1.4 }}
 </style>
 
 <div class="rand"></div>
 
-<div class="afzender">
-  {'<img src="data:image/png;base64,' + logo + '" alt="">' if logo else ''}
-  <div>
-    <div class="kop">Afzender</div>
-    <b>{veilig(AFZENDER['naam'])}</b>
-    {veilig(AFZENDER['straat'])}<br>
-    {veilig(AFZENDER['postcode'])} {veilig(AFZENDER['plaats'])}, {veilig(AFZENDER['land'])}
-  </div>
-</div>
+{afzender}
 
 <div class="naar">
   <div class="kop">Geadresseerde</div>
@@ -130,7 +135,6 @@ def bouw_html(b):
 <div class="voet">
   <span class="nr">Bestelling {veilig(b['bestelling'])}</span> &middot; {veilig(b['datum'])}
   <ul>{inhoud}</ul>
-  <div class="let">Dit is een adreslabel, geen frankering. Port bij verzending voldoen.</div>
 </div>
 </html>
 """

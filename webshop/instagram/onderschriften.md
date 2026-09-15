@@ -24,7 +24,7 @@ Vijf posts, in deze volgorde te plaatsen. Alle beelden zijn 1080 x 1350
 | 16 | Carrousel — 8 dia's | Hoe Google bepaalt wie er bovenaan staat | Week 8 — vrijdag |
 | 17 | Los beeld | Wist je dat: onder de 20 reviews doe je niet mee | Week 9 — dinsdag |
 | 18 | Los beeld | Even rekenen: één boze review | Week 9 — vrijdag |
-| 19 | Carrousel — 7 dia's | De zaak boven je vraagt het wél (advertentie) | Advertentie |
+| 19 | Carrousel — 7 dia's | Hoe kom je aan meer Google-reviews? (advertentie) | Advertentie |
 
 ---
 
@@ -622,7 +622,7 @@ Bron: BrightLocal, Local Consumer Review Survey 2026 (de 31%). De rekensom kun j
 
 ---
 
-## 19. De zaak boven je vraagt het wél (advertentie)
+## 19. Hoe kom je aan meer Google-reviews? (advertentie)
 
 **Vorm:** Carrousel — 7 dia's  
 **Wanneer:** Advertentie  
@@ -633,13 +633,13 @@ Bron: BrightLocal, Local Consumer Review Survey 2026 (de 31%). De rekensom kun j
 ### Onderschrift
 
 ```
-De zaak boven je in Google is niet beter dan jij. Die vraagt alleen wél om een review.
+Hoe kom je aan meer Google-reviews, zonder dat je het elke keer zelf moet vragen?
 
-Dat is het hele verschil. Niet je werk, niet je prijzen, niet hoe lang je er al zit.
+Om te beginnen: de zaak die boven je staat is meestal niet beter dan jij. Die vraagt het alleen wél.
 
-En het ligt ook niet aan je klanten: 83% van de mensen die om een review gevraagd wordt, schrijft er ook een. Vier van de vijf. Ze worden alleen nooit gevraagd.
+En het ligt ook niet aan je klanten. 83% van de mensen die om een review gevraagd wordt, schrijft er ook een. Vier van de vijf. Ze worden alleen nooit gevraagd.
 
-Want vragen is ongemakkelijk. Je klant staat af te rekenen, er staat iemand achter haar te wachten, en dan ga je niet zeggen "wil je ons even een review geven?". Dus zeg je niks.
+Want vragen is ongemakkelijk. Je klant staat af te rekenen, er staat iemand achter haar te wachten, en dan ga je niet zeggen "wil je ons even een review geven?". Dus zeg je niks. En loopt er weer iemand tevreden de deur uit die je nooit terugziet op je Google-pagina.
 
 Wat is een TapKaart precies?
 
@@ -658,9 +658,11 @@ Bron: BrightLocal, Local Consumer Review Survey 2026
 #tapkaarten #googlereviews #meerreviews #lokaalondernemen #mkbnederland #kleinbedrijf #horeca #kapper #winkel #klantbeleving #nfc #ondernemerstips
 ```
 
-**Waarom zo:** Tweede herziening, op twee punten. Ten eerste veronderstelde de uitleg kennis die de lezer niet heeft: op dia 3 stond "telefoon tegen het bordje" terwijl nergens verteld was wát dat bordje is. Nu zijn het drie stappen die bij nul beginnen - dit is het, dit doet je klant, dit gebeurt er - met de pinautomaat als vergelijking, want iedereen in Nederland weet hoe pinnen voelt.
+**Waarom zo:** Samengesteld uit twee versies: de openingsdia's van de eerste - de vraag en het moment waarop de tevreden klant wegloopt - en de uitleg van de tweede, die bij nul begint en niets veronderstelt. De drie stappen gebruiken de pinautomaat als vergelijking, want iedereen hier weet hoe pinnen voelt.
 
-Ten tweede moest doorklikken logisch aanvoelen. De laatste dia noemt daarom niet alleen de prijs maar ook wat het risico wegneemt (geen abonnement, 14 dagen retour), en de knop heet Meer informatie in plaats van een webadres, zodat hij hetzelfde zegt als de knop van de advertentie eronder.
+Elke foto komt precies één keer voor. Dia 3 kreeg de studio-opname in plaats van de winkelfoto, want die laatste staat nu op dia 1, en voor 'dit is het ding' werkt een schone opname zonder afleiding beter.
+
+De knop heet Meer informatie in plaats van een webadres, zodat hij hetzelfde zegt als de knop van de advertentie eronder, en de laatste dia neemt eerst het risico weg voordat hij om de klik vraagt.
 
 ---
 

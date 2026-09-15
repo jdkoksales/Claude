@@ -24,6 +24,7 @@ Vijf posts, in deze volgorde te plaatsen. Alle beelden zijn 1080 x 1350
 | 16 | Carrousel — 8 dia's | Hoe Google bepaalt wie er bovenaan staat | Week 8 — vrijdag |
 | 17 | Los beeld | Wist je dat: onder de 20 reviews doe je niet mee | Week 9 — dinsdag |
 | 18 | Los beeld | Even rekenen: één boze review | Week 9 — vrijdag |
+| 19 | Carrousel — 6 dia's | Hoe kom je aan meer Google-reviews? (advertentie) | Advertentie |
 
 ---
 
@@ -618,6 +619,44 @@ Bron: BrightLocal, Local Consumer Review Survey 2026 (de 31%). De rekensom kun j
 ```
 
 **Waarom zo:** Elke ondernemer heeft die ene review die blijft steken. Deze post begint bij dat gevoel en eindigt bij een rekensom die de lezer zelf kan natrekken — geen belofte, gewoon een gemiddelde. De laatste regel draait het om: de buffer bouw je bij de tevreden klanten, niet bij de boze.
+
+---
+
+## 19. Hoe kom je aan meer Google-reviews? (advertentie)
+
+**Vorm:** Carrousel — 6 dia's  
+**Wanneer:** Advertentie  
+**Waarvoor:** Betaald. De handeling moet in twee dia's te snappen zijn zonder de tekst te lezen.
+
+**Beelden:** `uit/post-19a-hoe.jpg`, `uit/post-19b-probleem.jpg`, `uit/post-19c-tap.jpg`, `uit/post-19d-pagina.jpg`, `uit/post-19e-waarom.jpg`, `uit/post-19f-slot.jpg`
+
+### Onderschrift
+
+```
+Hoe kom je aan meer Google-reviews zonder er steeds om te moeten vragen? Zo dus 👇
+
+Het probleem is nooit geweest dat klanten niet willen. 83% van de mensen die om een review gevraagd wordt, schrijft er ook een. Het probleem is dat vragen ongemakkelijk voelt — zeker aan de balie, met iemand achter je die staat te wachten. Dus doe je het niet, en gaat er weer een tevreden klant de deur uit.
+
+Een TapKaart vraagt het voor je.
+
+1. Je zet hem neer. Op de balie, het tafeltje of naast de pin.
+2. Je klant houdt zijn telefoon ertegenaan.
+3. Jouw Google-reviewpagina opent meteen. Sterren aantikken, klaar.
+
+Geen app. Geen account. Geen abonnement.
+
+Wij zoeken je Google-pagina op en koppelen hem voordat het pakket de deur uit gaat, dus hij werkt zodra je hem uitpakt. Leest een ouder toestel geen NFC? Dan scant je klant de QR-code die er ook op staat.
+
+€ 34,95 excl. btw, eenmalig. Op werkdagen voor 16:00 besteld gaat dezelfde dag op de post.
+
+tapkaarten.nl
+
+Bron: BrightLocal, Local Consumer Review Survey 2026
+
+#tapkaarten #googlereviews #meerreviews #lokaalondernemen #mkbnederland #kleinbedrijf #horeca #kapper #winkel #klantbeleving #nfc #ondernemerstips
+```
+
+**Waarom zo:** Voor betaald verkeer telt dat iemand de handeling snapt zonder te lezen. Dia 3 en 4 tonen daarom hetzelfde toonbankje, dezelfde hand en dezelfde telefoon: eerst tegen het bordje, dan met de reviewpagina in beeld. Die continuïteit doet het werk dat de tekst anders had moeten doen. Het bezwaar staat vóór de oplossing, en de prijs pas op de laatste dia.
 
 ---
 
